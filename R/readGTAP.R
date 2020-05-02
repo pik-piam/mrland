@@ -37,7 +37,8 @@
 #'     a <- readSource("GTAP7", "VIWS")
 #'            }
 #' @importFrom reshape2 acast
-#' @importFrom magclass as.magpie getYears
+#' @importFrom magclass as.magpie getYears unwrap getYears<- getRegions<-
+#' @importFrom utils read.csv
 readGTAP <- function(subtype = NULL) {
   files <- c(
     GTAP7_VIMS = "BaseData.csv",

@@ -6,8 +6,7 @@
 #' @author Benjamin Leon Bodirsky
 #' @seealso
 #' \code{\link{readNCDrisc}},
-#' \code{\link{calcIntake}},
-#' \code{\link{readKuczmarski}}
+#' \code{\link{calcIntake}}
 #' 
 #' @examples
 #' 

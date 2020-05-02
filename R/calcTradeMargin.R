@@ -15,6 +15,7 @@
 #'     x <- calcTradeMargin("GTAP7")
 #'     }
 #' @importFrom magpiesets findset
+#' @importFrom magclass is.magpie
 
 
 

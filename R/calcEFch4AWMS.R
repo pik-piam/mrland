@@ -12,7 +12,7 @@
 #' calcOutput("EFch4AWMS")
 #' }
 #' 
-#' @importFrom magclass getSets
+#' @importFrom magclass getSets clean_magpie
 #' @importFrom stats median
 
 calcEFch4AWMS<-function(){

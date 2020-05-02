@@ -20,6 +20,8 @@
 #' calcOutput("EATLancetDiets")
 #' }
 #' @export
+#' @importFrom magclass getSets<- new.magpie add_dimension dimSums where
+#' @importFrom madrat toolNAreplace
 
 calcEATLancetDiets <- function(attributes = c("wm","kcal"), calib = TRUE, FAOcountr = TRUE){
   

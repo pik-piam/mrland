@@ -6,6 +6,8 @@
 #' @author Florian Humpenoeder
 #' @seealso \code{\link{setConfig}}, \code{\link{readSource}},
 #' \code{\link{calcOutput}}
+#' @importFrom magclass new.magpie
+#' @importFrom utils read.csv2
 
 calcExoTcDummy <- function() {
   #data(moinput)

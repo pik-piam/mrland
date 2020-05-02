@@ -1,3 +1,6 @@
+#' @importFrom madrat readSource calcOutput
+#' @importFrom magclass collapseNames time_interpolate mbind
+
 calc2ndBioDem <- function(datasource) {
   
   if (datasource == "REMIND") {

@@ -8,7 +8,7 @@
 #' 
 #' \dontrun{ a <- readSource("TimberShare",convert=FALSE)
 #' }
-#' 
+#' @importFrom madrat getConfig
 convertTimberShare<-function(x) {
 map <- read.csv(toolMappingFile("regional",getConfig("regionmapping")),sep=";")
 y <- toolAggregate(x = x,rel = map,from = "RegionCode",to = "CountryCode",dim = 1)

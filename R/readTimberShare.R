@@ -9,9 +9,10 @@
 #' \dontrun{ a <- readSource("TimberShare")
 #' }
 #' 
-#' @importFrom magclass as.magpie
+#' @importFrom magclass as.magpie getYears<-
 #' @importFrom magclass magpiesort
 #' @importFrom madrat toolSubtypeSelect
+#' @importFrom utils read.csv
 #' 
 readTimberShare<-function(subtype="abare"){
   x<-read.csv("WorkingPaperFP13_BrownC_March2001.csv")

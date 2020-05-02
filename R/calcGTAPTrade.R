@@ -9,6 +9,7 @@
 #'     \dontrun{
 #'     x <- calcGTAP("GTAP7_VXMD")
 #'     }
+#' @importFrom magclass fulldim
 
 calcGTAPTrade <- function(subtype = NULL, bilateral = FALSE){
   out <- readSource(type ="GTAP",subtype = subtype)

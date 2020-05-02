@@ -1,3 +1,4 @@
+#' @importFrom magclass new.magpie
 
 calcCalibrationDummy <- function() {
   #data(moinput)

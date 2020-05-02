@@ -12,7 +12,7 @@
 #' \dontrun{ 
 #' a <- calcTradeBalance()
 #' }
-#' 
+#' @import mrcommons
 calcTradeBalance <- function() {
   
   kall <- findset("kall")

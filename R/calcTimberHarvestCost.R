@@ -8,6 +8,7 @@
 #' calcOutput("TimberHarvestCost")
 #' }
 #' @importFrom magclass setNames
+#' @importFrom madrat toolGetMapping
 calcTimberHarvestCost<-function(){
   
 gtap <- readSource("GTAP","GTAP7_VFM",convert = F)

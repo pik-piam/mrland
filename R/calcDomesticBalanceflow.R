@@ -2,6 +2,8 @@
 # becomes 0 in 2050
 ## f21_domestic_balanceflow
 
+#' @importFrom magclass dimSums convergence
+
 calcDomesticBalanceflow <- function() {
   
   mb<-calcOutput("FAOmassbalance",aggregate = F)

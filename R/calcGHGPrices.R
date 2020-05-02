@@ -13,9 +13,7 @@
 #' calcOutput("GHGPrices")
 #' }
 #' @importFrom magpiesets findset
-
-##IMPORT FROM mrvalidation doesn't necessarily work
-
+#' @importFrom magclass complete_magpie
 
 calcGHGPrices <- function(emissions="pollutants",datasource="REMMAG") {
   

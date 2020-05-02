@@ -11,7 +11,7 @@
 #' \dontrun{ 
 #' calcOutput("TimberDemandExt")
 #' }
-#' @importFrom magclass getNames<- as.magpie
+#' @importFrom magclass getNames<- as.magpie getYears<-
 #' @export
 
 calcTimberDemandExt <- function(){

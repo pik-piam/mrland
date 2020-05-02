@@ -16,6 +16,7 @@
 #' @importFrom madrat toolSubtypeSelect
 #' @import readxl
 #' @import countrycode 
+#' @importFrom stats complete.cases
 
 readFRA2015Doc <- function(subtype){
   
