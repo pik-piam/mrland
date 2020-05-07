@@ -1,4 +1,7 @@
-# R moinput package
+# R mrland package
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.3699594.svg)](https://doi.org/10.5281/zenodo.3699594) [![Travis build status](https://travis-ci.com/pik-piam/moinput.svg?branch=master)](https://travis-ci.com/pik-piam/moinput)
+
+
 
 ## Purpose and Functionality
 
@@ -17,7 +20,7 @@ The additional repository can be made available permanently by adding the line a
 After that the most recent version of the package can be installed using `install.packages`:
 
 ```r 
-install.packages("moinput")
+install.packages("mrland")
 ```
 
 Package updates can be installed using `update.packages` (make sure that the additional repository has been added before running that command):
@@ -34,15 +37,12 @@ The package comes with a vignette describing the basic functionality of the pack
 vignette("moinput")
 ```
 
-## Travis CI Integration
-
-[![Travis build status](https://travis-ci.com/pik-piam/moinput.svg?branch=master)](https://travis-ci.com/pik-piam/moinput)
-
-
 ## Questions / Problems
 
 In case of questions / problems please contact Jan Dietrich <dietrich@pik-potsdam.de>.
 
 ## Citation
 
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.3699594.svg)](https://doi.org/10.5281/zenodo.3699594)
+```r 
+citation("mrland")
+```
