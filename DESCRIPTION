@@ -35,4 +35,6 @@ Suggests: knitr,
     testthat,
     rmarkdown,
 	ggplot2
+URL: https://github.com/pik-piam/mrland, https://doi.org/10.5281/zenodo.3822083
+BugReports: https://github.com/pik-piam/mrland/issues
 VignetteBuilder: knitr
