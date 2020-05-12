@@ -10,8 +10,7 @@
 #' @importFrom utils read.csv2
 
 calcExoTcDummy <- function() {
-  #data(moinput)
-  iso_country <- read.csv2(system.file("extdata","iso_country.csv",package = "moinput"),row.names=NULL)
+  iso_country <- read.csv2(system.file("extdata","iso_country.csv",package = "mrland"),row.names=NULL)
   iso_country1<-as.vector(iso_country[,"x"])
   names(iso_country1)<-iso_country[,"X"]
   x <- new.magpie(cells_and_regions = iso_country1,years = seq(1995,2150,by=5), names = NULL, fill = 0)
