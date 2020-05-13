@@ -174,4 +174,7 @@ fullMAGPIE <- function(rev=0.1) {
     calcOutput("LivestockProductivity", years=mag_years,  round=4, file="f70_livestock_productivity.cs3")
     calcOutput("SlaughterFeedShare",    years=mag_years,  round=4, file="f70_slaughter_feed_share.cs4")
     calcOutput("PYieldSlope",                             round=2, file="f70_pyld_slope_reg.cs4")
+    
+    #73 timber -- Always needed on iso country level so no need to aggregate
+    calcOutput("EndUseTimber", aggregate = FALSE, years=mag_years_past, round=4, file="f73_prod_specific_timber.csv")
 }
