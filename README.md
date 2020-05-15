@@ -1,6 +1,8 @@
 # MadRaT land data package
-#### R package **mrland**, version **0.0.3**
-[![Travis build status](https://travis-ci.com/pik-piam/mrland.svg?branch=master)](https://travis-ci.com/pik-piam/mrland) [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.3822083.svg)](https://doi.org/10.5281/zenodo.3822083)
+
+R package **mrland**, version **0.0.4**
+
+[![Travis build status](https://travis-ci.com/pik-piam/mrland.svg?branch=master)](https://travis-ci.com/pik-piam/mrland) [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.3822083.svg)](https://doi.org/10.5281/zenodo.3822083) 
 
 ## Purpose and Functionality
 
