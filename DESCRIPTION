@@ -1,8 +1,8 @@
 Package: mrland
 Type: Package
 Title: MadRaT land data package
-Version: 0.0.4
-Date: 2020-05-15
+Version: 0.0.5
+Date: 2020-05-18
 Authors@R: c(person("Jan Philipp", "Dietrich", email = "dietrich@pik-potsdam.de", role = c("aut","cre")),
              person("Abhijeet", "Mishra", role = "aut"),
              person("Isabelle", "Weindl", role = "aut"),
@@ -30,7 +30,7 @@ License: LGPL-3 | file LICENSE
 LazyData: no
 Encoding: UTF-8
 RoxygenNote: 7.1.0
-ValidationKey: 73588
+ValidationKey: 92000
 Suggests: knitr,
     testthat,
     rmarkdown,
