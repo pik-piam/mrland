@@ -1,15 +1,16 @@
-#' Read in data from the EAT Lancet Comission
+#' Read in data from the EAT-Lancet Comission
 #' 
-#' Read in supplementary data for:
+#' Read in data from:
 #' Food in the Anthropocene: the EAT-Lancet Commission on healthy diets from sustainable food systems, Lancet 2019
 #' https://doi.org/10.1016/S0140-6736(18)31788-4 
 #' 
 #' 
-#' @param subtype Type of EAT Lancet data that should be read. Available types are:
+#' @param subtype Type of EAT-Lancet data that should be read. Available types are:
 #' \itemize{ 
 #' \item \code{cons_data}: Consumption analysis ("EAT_Lancet_cons_data.csv")
+#' \item \code{recommend}: Food recommendations ("EAT_Lancet_recommendations.csv")
 #' }
-#' @return magpie object containing EAT Lancet Comission data
+#' @return magpie object containing EAT-Lancet Comission data
 #' @author Isabelle Weindl
 #' @seealso \code{\link{readSource}}
 #' @examples
@@ -74,9 +75,16 @@ readEATLancet <- function(subtype) {
    
     mdata<-as.magpie(data.new,spatial=which(colnames(data.new)=="region"),temporal=which(colnames(data.new)=="year"),datacol=dim(data.new)[2],tidy=TRUE)
     
- 
-  }else {
+  } else if (subtype == "recommend") { 
+    
+    data <- read.csv("EAT_Lancet_recommendations.csv",sep=",", header=TRUE,stringsAsFactors = FALSE)
+    mdata<-as.magpie(data,spatial=0,temporal=0,datacol=2)
+    getSets(mdata)[4] <- "target"
+  
+  } else {
+    
     stop("Not a valid subtype!")
+  
   } 
   
   return(mdata)

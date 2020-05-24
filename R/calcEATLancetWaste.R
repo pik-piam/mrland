@@ -1,10 +1,12 @@
 #' @title calcEATLancetWaste
 #' @description 
-#' Calculates the ratio between food supply at household level and food intake for different MAgPIE commodities. 
+#' Calculates the ratio between food supply at household level and food intake for different MAgPIE commodities
+#' accounting for food-specific estimates of baseline intake of quantification of EAT Lancet diets by the 
+#' EAT-Lancet comission, as well as for FAO food waste shares.
 #'
 #' @param out_type ratio: total food supply to totoal intake. 
-#' ratio_detailed: food-specific estimates. 
-#' ratio_detailed_FAO: food-specific estimates based on FAO food waste shares 
+#' ratio_detailed_calib: calibrated food-specific estimates. 
+#' ratio_detailed: food-specific estimates based on FAO food waste shares 
 #' calib: factor for calibrating estimates based on FAO waste shares to food supply
 #' @return List of magpie objects with results on country level, weight on country level, unit and description.
 #' 
@@ -43,9 +45,9 @@ calcEATLancetWaste <- function(out_type="ratio"){
   # mapping of FAO waste categories to MAgPIE food commodities
   Mag_kfo <- findset("kfo")
   
-  FAO_wgroups <- c("Oilseeds and pulses","Cereals","Roots and tubers","Meat","Oilseeds and pulses","Meat","Milk","Milk","Meat","Meat",
-            "Cereals","Fruits and vegetables","Oilseeds and pulses","Fruits and vegetables","Roots and tubers","Oilseeds and pulses","Oilseeds and pulses","Cereals",
-            "Oilseeds and pulses","Oilseeds and pulses","Oilseeds and pulses","Fruits and vegetables","Fruits and vegetables","Oilseeds and pulses","Cereals","Cereals")
+  FAO_wgroups <- c("Oilseeds and pulses","Cereals","Roots and tubers","Fish and seafood","Oilseeds and pulses","Meat","Eggs","Milk","Meat","Meat",
+                   "Cereals","Roots and tubers","Oilseeds and pulses","Fruits and vegetables","Roots and tubers","Oilseeds and pulses","Oilseeds and pulses","Cereals",
+                   "Oilseeds and pulses","Oilseeds and pulses","Oilseeds and pulses","Roots and tubers","Roots and tubers","Oilseeds and pulses","Cereals","Cereals")
   rel_matrix <- cbind(Mag_kfo,FAO_wgroups)
   
   FAO_waste_shr_detailed<-toolAggregate(FAO_waste_shr,rel = rel_matrix,
@@ -101,16 +103,16 @@ calcEATLancetWaste <- function(out_type="ratio"){
   
   if(out_type=="ratio") {
     data.out <- Mag_overcons_fctr
-    description = "ratio between total food calorie supply and total food calorie intake"
-  } else if(out_type=="ratio_detailed") {
+    description = "ratio between total calorie supply and total calorie intake"
+  } else if(out_type=="ratio_detailed_calib") {
     data.out <- overcons_estimated
-    description = "food-specific ratio between food calorie supply and food intake"
-  } else if(out_type=="ratio_detailed_FAO") {
+    description = "food-specific ratio between calorie supply and intake consistent with EAT-Lancet baseline diets"
+  } else if(out_type=="ratio_detailed") {
     data.out <- overcons_FAO
-    description = "food-specific ratio between food calorie supply and food intake based on FAO food waste shares"    
+    description = "food-specific ratio between calorie supply and intake based on FAO food waste shares and EAT-Lancet baseline diets"    
   } else if (out_type=="calib") {
     data.out <-  fsupply_calib 
-    description = "factor for calibrating estimated food supply (based on intake and FAO waste shares) to FAO food supply"
+    description = "factor for calibrating estimated food supply (based on EAT-Lancet baseline diets and FAO waste shares) to FAO food supply"
   } else {stop("unknown type")}
   
   data.out <- setYears(data.out,NULL)

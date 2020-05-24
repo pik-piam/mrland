@@ -2,6 +2,7 @@
 
 export(calcEATLancetDiets)
 export(calcEATLancetWaste)
+export(calcFAOLossesWaste)
 export(calcForestAreaInitialization)
 export(calcForestProductionInitialization)
 export(calcForestryProductionRatio)
