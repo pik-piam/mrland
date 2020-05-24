@@ -21,7 +21,7 @@
 readFRA2015Doc <- function(subtype){
   
   ## Mapping file
-  iso_country <- read.csv2(system.file("extdata","FAOiso_faocode.csv",package = "moinput"),row.names=NULL)
+  iso_country <- read.csv2(system.file("extdata","FAOiso_faocode.csv",package = "mrland"),row.names=NULL)
   
   ## Original data file name
   location <- "FRA2015_data.xlsx"

@@ -13,7 +13,7 @@ calcTimberHarvestCost<-function(){
   
 gtap <- readSource("GTAP","GTAP7_VFM",convert = F)
 gtap_harv_forestry <- dimSums(collapseNames(gtap[,,"frs"][,,c("SkLab")]),dim=3) ##SkLab as proxy. Maybe not 100percent good proxy
-map <-  toolGetMapping("GTAP7Mapping2016.csv", type = "regional", where="moinput")
+map <-  toolGetMapping("GTAP7Mapping2016.csv", type = "regional", where="mrland")
 
 out <- toolAggregate(gtap_harv_forestry, rel=map, from="Region.code", to="Country.code", 
                      dim=1, partrel = TRUE, verbosity=2)

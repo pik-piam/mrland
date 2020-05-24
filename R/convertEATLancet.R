@@ -18,6 +18,7 @@
 #' \dontrun{
 #' a <- readSource(type="EATLancet",subtype="cons_data")
 #' }
+#' @importFrom madrat getISOlist
 
 convertEATLancet <- function(x,subtype) {
   

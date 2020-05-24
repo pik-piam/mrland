@@ -1,8 +1,12 @@
-# R moinput package
+# MadRaT land data package
+
+R package **mrland**, version **0.0.6**
+
+[![Travis build status](https://travis-ci.com/pik-piam/mrland.svg?branch=master)](https://travis-ci.com/pik-piam/mrland) [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.3822083.svg)](https://doi.org/10.5281/zenodo.3822083) 
 
 ## Purpose and Functionality
 
-The R-library moinput provides useful functions and a common structure to all the input data required to run models like MAgPIE and REMIND
+The package provides land related data via the madrat framework.
 
 
 ## Installation
@@ -17,7 +21,7 @@ The additional repository can be made available permanently by adding the line a
 After that the most recent version of the package can be installed using `install.packages`:
 
 ```r 
-install.packages("moinput")
+install.packages("mrland")
 ```
 
 Package updates can be installed using `update.packages` (make sure that the additional repository has been added before running that command):
@@ -26,23 +30,26 @@ Package updates can be installed using `update.packages` (make sure that the add
 update.packages()
 ```
 
-## Tutorial
-
-The package comes with a vignette describing the basic functionality of the package and how to use it. You can load it with the following command (the package needs to be installed):
-
-```r 
-vignette("moinput")
-```
-
-## Travis CI Integration
-
-[![Travis build status](https://travis-ci.com/pik-piam/moinput.svg?branch=master)](https://travis-ci.com/pik-piam/moinput)
-
-
 ## Questions / Problems
 
-In case of questions / problems please contact Jan Dietrich <dietrich@pik-potsdam.de>.
+In case of questions / problems please contact Jan Philipp Dietrich <dietrich@pik-potsdam.de>.
 
 ## Citation
 
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.3699594.svg)](https://doi.org/10.5281/zenodo.3699594)
+To cite package **mrland** in publications use:
+
+Dietrich J, Mishra A, Weindl I, Bodirsky B, Wang X, Baumstark L, Kreidenweis U, Klein D, Steinmetz N, Chen
+D, Humpenoeder F, Wirth S (2020). _mrland: MadRaT land data package_. https://github.com/pik-piam/mrland,
+https://doi.org/10.5281/zenodo.3822083.
+
+A BibTeX entry for LaTeX users is
+
+ ```latex
+@Manual{,
+  title = {mrland: MadRaT land data package},
+  author = {Jan Philipp Dietrich and Abhijeet Mishra and Isabelle Weindl and Benjamin Leon Bodirsky and Xiaoxi Wang and Lavinia Baumstark and Ulrich Kreidenweis and David Klein and Nele Steinmetz and David Chen and Florian Humpenoeder and Stephen Wirth},
+  year = {2020},
+  note = {https://github.com/pik-piam/mrland, https://doi.org/10.5281/zenodo.3822083},
+}
+```
+
