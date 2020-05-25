@@ -28,6 +28,15 @@ calcTradeSelfSuff <- function() {
   self_suff[self_suff == Inf] <- 1
   self_suff[,,newproducts]<-1
   
+  ### Manual fix for self sufficiency in timber production in Middle east and Japan
+  mapppnig <- toolGetMapping(type = "regional",name = "h12.csv")
+  mea_list <- subset(mapppnig,mapppnig$RegionCode=="MEA")
+  ## ARCHIVED VERSION - 
+  ## https://web.archive.org/web/20200525075439/http://www.jatan.org/eng/japan-e.html
+  ## https://web.archive.org/web/20200525120517/http://www.fao.org/3/Y2199E/y2199e10.htm
+  self_suff["JPN",,findset("kforest")]                <- 0.40 ## Magpiesets need update it should be kforestry
+  self_suff[mea_list$CountryCode,,findset("kforest")] <- 0.05 ## Magpiesets need update it should be kforestry
+  
   weight <- massbalance[,,"domestic_supply.dm"]
   weight <- collapseNames(weight)
   weight[is.nan(weight)] <- 0
@@ -44,22 +53,3 @@ calcTradeSelfSuff <- function() {
               description="countries' self sufficiencies in agricultural production. Production/Domestic supply")
   )
 }
-
-
-
-# compare these aggregated values to current ones
-
-# test <- calcSelfSuffSeedred(years = 1995, avrg_years=3)
-# aggregation <- read.csv(toolMappingFile("regional","regionmappingMAgPIE.csv"), sep=";") 
-# self_suff <- toolAggregate(x = test$x, rel = aggregation, weight = test$weight, from="CountryCode", to="RegionCode")
-# 
-# 
-# self_suff_old <- read.magpie("D:/MAGPIE/modules/21_trade/input/self_suff.csv")
-# getYears(self_suff_old) <-  1995
-# comitems <- intersect(getNames(self_suff), getNames(self_suff_old))
-# ratio <- self_suff[,1995,comitems]/self_suff_old[,1995,comitems]
-# ratio[ratio < 1.05 & ratio > 0.95] <- 1
-# ratio
-
-## high agreement for data where definition hasn't changed. For instance for sugar it changed, therefore different values are well explained.
-
