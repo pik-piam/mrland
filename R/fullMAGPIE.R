@@ -6,7 +6,7 @@
 #' @param rev data revision which should be used as input (positive numeric).
 #' \code{\link{setConfig}} (e.g. for setting the mainfolder if not already set
 #' properly).
-#' @author Jan Philipp Dietrich, Benjamin Leon Bodirsky
+#' @author Jan Philipp Dietrich, Benjamin Leon Bodirsky, Florian Humpenoeder
 #' @seealso
 #' \code{\link{readSource}},\code{\link{getCalculations}},\code{\link{calcOutput}},\code{\link{setConfig}}
 #' @examples
@@ -154,8 +154,10 @@ fullMAGPIE <- function(rev=0.1) {
     
     # 57 maccs
     short_years_from_2010 <- short_years[as.integer(sub("y","",short_years))>=2010]
-    calcOutput("MACCsN2O",sector="landuse",years=short_years_from_2010, round=4, file="f57_maccs_n2o.cs3")
-    calcOutput("MACCsCH4",sector="landuse",years=short_years_from_2010, round=4, file="f57_maccs_ch4.cs3")
+    calcOutput("MACCsN2O",sector="landuse",source="ImageMacc",years=short_years_from_2010, round=4, file="f57_maccs_n2o.cs3")
+    calcOutput("MACCsCH4",sector="landuse",source="ImageMacc",years=short_years_from_2010, round=4, file="f57_maccs_ch4.cs3")
+    calcOutput("MACCsN2O",sector="landuse",source="PBL_MACC_2019",years=short_years_from_2010, round=4, file="f57_maccs_n2o_2019.cs3")
+    calcOutput("MACCsCH4",sector="landuse",source="PBL_MACC_2019",years=short_years_from_2010, round=4, file="f57_maccs_ch4_2019.cs3")
     
 
     #60 bioenergy
