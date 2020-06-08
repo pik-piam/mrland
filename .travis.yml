@@ -13,6 +13,5 @@ r_packages:
   - devtools
   - testthat
   - lucode2
-  - quitte
 script:
   - Rscript -e 'devtools::test()'
