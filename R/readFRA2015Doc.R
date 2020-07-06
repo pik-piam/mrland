@@ -1,6 +1,6 @@
 #' Read FRA2015Doc
 #' 
-#' Read-in an FRA data from 2015 (forest resource assessment) pdf file. 
+#' Read-in an FRA data from 2015 (forest resource assessment). 
 #' 
 #' 
 #' @param subtype data subtype. 
