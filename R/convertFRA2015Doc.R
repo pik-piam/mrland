@@ -15,12 +15,30 @@
 
 
 convertFRA2015Doc <- function(x,subtype) { 
+  
+  unreported = FALSE
+  missing    = FALSE
  
  if (!is.null(x)) {
-    x[is.na(x)] <- 0
-    x <- toolCountryFill(x, fill=0, verbosity = 2)
-  } 
- else {return(x)}
+   fill <- mean(x,na.rm = TRUE)
+   x[is.na(x)] <- 0
+   
+   ## missing data
+   for (i in getRegions(x)) {
+     if(all(x[i,,]==0)){
+       x[i,,] <- fill
+       unreported = TRUE
+       }
+     if(any(x[i,,]==0)){
+       x[i,,] <- max(x[i,,])
+       missing = TRUE
+       }
+   }
+   if(unreported) cat("Countries with no data in FRA 2015 have been given the mean value.\n")
+   if(missing)    cat("Countries with missing data in FRA 2015 have been given the maximum reported value.")
+   
+   x <- toolCountryFill(x, fill=0, verbosity = 2)
+  } else {return(x)}
 }
 
 
