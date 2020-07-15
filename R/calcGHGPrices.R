@@ -5,6 +5,7 @@
 #' @author David Chen, Benjamin Leon Bodirsky, David Klein
 #' @param emissions which type of emissions shall be returned. ghg just returns n2o, ch4 and co2, pollutants a longer list including also air pollutants
 #' @param datasource REMIND for prices from R2M4 coupled runs, REMMAG for old coupled runs, SSPResults for prices from the SSP scenarios from the IIASA database, SSP_and_REM for a combination of REMIND and SSPResults
+#' @param rev data revision the output will be produced for (positive numeric).
 #' @seealso
 #' \code{\link{readSSPResults}}
 #' @examples   
@@ -15,10 +16,10 @@
 #' @importFrom magpiesets findset
 #' @importFrom magclass complete_magpie
 
-calcGHGPrices <- function(emissions="pollutants",datasource="REMMAG") {
+calcGHGPrices <- function(emissions="pollutants",datasource="REMMAG", rev=0.1) {
   
   if (datasource == "REMIND") {
-    x <- readSource("REMIND", subtype = "intensive")
+    x <- readSource("REMIND", subtype = "intensive", rev=rev)
     out_c <- x[,,"Price|Carbon (US$2005/t CO2)"]*44/12 # US$2005/tCO2 -> US$2005/tC
     getNames(out_c,dim=2) <- "co2_c"
     
