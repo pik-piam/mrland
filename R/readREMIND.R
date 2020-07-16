@@ -2,7 +2,6 @@
 #' @description Reads in a reporting mif file from REMIND
 #' 
 #' @param subtype Either "intensive" or "extensive"
-#' @param rev data revision the output will be produced for (positive numeric).
 #' @return MAgPIE object with regional aggregation of REMIND H12
 #' @author David Klein
 #' @seealso
@@ -14,7 +13,7 @@
 #' }
 #' @importFrom magclass read.report
 
-readREMIND <- function(subtype, rev=0.1) {
+readREMIND <- function(subtype) {
   
   # /p/projects/remind/runs/r8473-trunk-C/output/r8473-trunk-C_*/report.mif
   
@@ -24,24 +23,30 @@ readREMIND <- function(subtype, rev=0.1) {
                  "REMIND_generic_r8473-trunk-C_NDC-rem-5.mif",
                  "REMIND_generic_r8473-trunk-C_NPi-rem-5.mif")
   
-  if (rev > 5) {
-    file_list <- c(file_list,
-                   "REMIND_generic_C_SDP-NPi-rem-5.mif",
-                   "REMIND_generic_C_SDP-PkBudg900-rem-5.mif",
-                   "REMIND_generic_C_SDP-PkBudg1000-rem-5.mif",
-                   "REMIND_generic_C_SDP-PkBudg1100-rem-5.mif",
-                   "REMIND_generic_C_SSP1-NPi-rem-5.mif",     
-                   "REMIND_generic_C_SSP1-PkBudg900-rem-5.mif",
-                   "REMIND_generic_C_SSP1-PkBudg1100-rem-5.mif",
-                   "REMIND_generic_C_SSP1-PkBudg1300-rem-5.mif",
-                   "REMIND_generic_C_SSP2-NPi-rem-5.mif",
-                   "REMIND_generic_C_SSP2-PkBudg900-rem-5.mif",
-                   "REMIND_generic_C_SSP2-PkBudg1100-rem-5.mif",
-                   "REMIND_generic_C_SSP2-PkBudg1300-rem-5.mif",
-                   "REMIND_generic_C_SSP5-NPi-rem-5.mif",
-                   "REMIND_generic_C_SSP5-PkBudg900-rem-5.mif",
-                   "REMIND_generic_C_SSP5-PkBudg1100-rem-5.mif",
-                   "REMIND_generic_C_SSP5-PkBudg1300-rem-5.mif")
+  if(grepl("_",subtype)){
+    
+    subtype     <- strsplit(subtype, split="_")
+    revision    <- as.numeric(unlist(subtype)[2])
+
+    if (revision > 4) {
+      file_list <- c(file_list,
+                     "REMIND_generic_C_SDP-NPi-rem-5.mif",
+                     "REMIND_generic_C_SDP-PkBudg900-rem-5.mif",
+                     "REMIND_generic_C_SDP-PkBudg1000-rem-5.mif",
+                     "REMIND_generic_C_SDP-PkBudg1100-rem-5.mif",
+                     "REMIND_generic_C_SSP1-NPi-rem-5.mif",     
+                     "REMIND_generic_C_SSP1-PkBudg900-rem-5.mif",
+                     "REMIND_generic_C_SSP1-PkBudg1100-rem-5.mif",
+                     "REMIND_generic_C_SSP1-PkBudg1300-rem-5.mif",
+                     "REMIND_generic_C_SSP2-NPi-rem-5.mif",
+                     "REMIND_generic_C_SSP2-PkBudg900-rem-5.mif",
+                     "REMIND_generic_C_SSP2-PkBudg1100-rem-5.mif",
+                     "REMIND_generic_C_SSP2-PkBudg1300-rem-5.mif",
+                     "REMIND_generic_C_SSP5-NPi-rem-5.mif",
+                     "REMIND_generic_C_SSP5-PkBudg900-rem-5.mif",
+                     "REMIND_generic_C_SSP5-PkBudg1100-rem-5.mif",
+                     "REMIND_generic_C_SSP5-PkBudg1300-rem-5.mif")
+    }
   }
   
   x <- NULL

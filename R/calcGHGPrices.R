@@ -19,7 +19,7 @@
 calcGHGPrices <- function(emissions="pollutants",datasource="REMMAG", rev=0.1) {
   
   if (datasource == "REMIND") {
-    x <- readSource("REMIND", subtype = "intensive", rev=rev)
+    x <- readSource("REMIND", subtype = paste0("intensive_",rev))
     out_c <- x[,,"Price|Carbon (US$2005/t CO2)"]*44/12 # US$2005/tCO2 -> US$2005/tC
     getNames(out_c,dim=2) <- "co2_c"
     
@@ -93,8 +93,8 @@ calcGHGPrices <- function(emissions="pollutants",datasource="REMMAG", rev=0.1) {
     description <- "ghg certificate prices for different scenarios based on the multimodel SSP results from the IIASA DB"
 
   } else if (datasource=="SSP_and_REM") {
-    ssp <- calcOutput("GHGPrices",datasource = "SSPResults",aggregate = FALSE)
-    rem <- calcOutput("GHGPrices",datasource = "REMIND", aggregate = FALSE)
+    ssp <- calcOutput("GHGPrices",datasource = "SSPResults",aggregate = FALSE, rev = rev)
+    rem <- calcOutput("GHGPrices",datasource = "REMIND", aggregate = FALSE, rev = rev)
     
     x <- mbind(ssp[,getYears(rem),],rem)
     
