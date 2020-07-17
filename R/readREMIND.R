@@ -28,7 +28,7 @@ readREMIND <- function(subtype) {
     subtype     <- strsplit(subtype, split="_")
     revision    <- as.numeric(unlist(subtype)[2])
 
-    if (revision > 4) {
+    if (revision > 5) {
       file_list <- c(file_list,
                      "REMIND_generic_C_SDP-NPi-rem-5.mif",
                      "REMIND_generic_C_SDP-PkBudg900-rem-5.mif",
