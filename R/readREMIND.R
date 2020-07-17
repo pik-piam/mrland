@@ -21,23 +21,33 @@ readREMIND <- function(subtype) {
                  "REMIND_generic_r8473-trunk-C_Budg950-rem-5.mif",
                  "REMIND_generic_r8473-trunk-C_Budg1300-rem-5.mif",
                  "REMIND_generic_r8473-trunk-C_NDC-rem-5.mif",
-                 "REMIND_generic_r8473-trunk-C_NPi-rem-5.mif",
-                 "REMIND_generic_C_SDP-NPi-rem-5.mif",
-                 "REMIND_generic_C_SDP-PkBudg900-rem-5.mif",
-                 "REMIND_generic_C_SDP-PkBudg1000-rem-5.mif",
-                 "REMIND_generic_C_SDP-PkBudg1100-rem-5.mif",
-                 "REMIND_generic_C_SSP1-NPi-rem-5.mif",     
-                 "REMIND_generic_C_SSP1-PkBudg900-rem-5.mif",
-                 "REMIND_generic_C_SSP1-PkBudg1100-rem-5.mif",
-                 "REMIND_generic_C_SSP1-PkBudg1300-rem-5.mif",
-                 "REMIND_generic_C_SSP2-NPi-rem-5.mif",
-                 "REMIND_generic_C_SSP2-PkBudg900-rem-5.mif",
-                 "REMIND_generic_C_SSP2-PkBudg1100-rem-5.mif",
-                 "REMIND_generic_C_SSP2-PkBudg1300-rem-5.mif",
-                 "REMIND_generic_C_SSP5-NPi-rem-5.mif",
-                 "REMIND_generic_C_SSP5-PkBudg900-rem-5.mif",
-                 "REMIND_generic_C_SSP5-PkBudg1100-rem-5.mif",
-                 "REMIND_generic_C_SSP5-PkBudg1300-rem-5.mif")
+                 "REMIND_generic_r8473-trunk-C_NPi-rem-5.mif")
+  
+  if(grepl("_",subtype)){
+    
+    subtype     <- strsplit(subtype, split="_")
+    revision    <- as.numeric(unlist(subtype)[2])
+
+    if (revision > 5) {
+      file_list <- c(file_list,
+                     "REMIND_generic_C_SDP-NPi-rem-5.mif",
+                     "REMIND_generic_C_SDP-PkBudg900-rem-5.mif",
+                     "REMIND_generic_C_SDP-PkBudg1000-rem-5.mif",
+                     "REMIND_generic_C_SDP-PkBudg1100-rem-5.mif",
+                     "REMIND_generic_C_SSP1-NPi-rem-5.mif",     
+                     "REMIND_generic_C_SSP1-PkBudg900-rem-5.mif",
+                     "REMIND_generic_C_SSP1-PkBudg1100-rem-5.mif",
+                     "REMIND_generic_C_SSP1-PkBudg1300-rem-5.mif",
+                     "REMIND_generic_C_SSP2-NPi-rem-5.mif",
+                     "REMIND_generic_C_SSP2-PkBudg900-rem-5.mif",
+                     "REMIND_generic_C_SSP2-PkBudg1100-rem-5.mif",
+                     "REMIND_generic_C_SSP2-PkBudg1300-rem-5.mif",
+                     "REMIND_generic_C_SSP5-NPi-rem-5.mif",
+                     "REMIND_generic_C_SSP5-PkBudg900-rem-5.mif",
+                     "REMIND_generic_C_SSP5-PkBudg1100-rem-5.mif",
+                     "REMIND_generic_C_SSP5-PkBudg1300-rem-5.mif")
+    }
+  }
   
   x <- NULL
   for(f in file_list) {

@@ -5,11 +5,11 @@ convertREMIND <- function(x,subtype) {
   
   map <- toolMappingFile("regional","regionmappingH12.csv")
   
-  if(subtype=="intensive") {
+  if(grepl("intensive",subtype)) {
     # No weight for disaggregation because it's prices
     y <- toolAggregate(x,map) 
     
-  } else if(subtype=="extensive") {
+  } else if(grepl("extensive",subtype)) {
     # Use population of 2010 as weight for disaggregation
     pop <- calcOutput("Population",aggregate=FALSE)
     y <- toolAggregate(x,map,weight=pop[,2010,1])

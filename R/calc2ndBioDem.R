@@ -1,10 +1,11 @@
+#' @param rev data revision the output will be produced for (positive numeric).
 #' @importFrom madrat readSource calcOutput
 #' @importFrom magclass collapseNames time_interpolate mbind
 
-calc2ndBioDem <- function(datasource) {
+calc2ndBioDem <- function(datasource, rev = 0.1) {
   
   if (datasource == "REMIND") {
-    x <- readSource("REMIND","extensive")
+    x <- readSource("REMIND", subtype = paste0("extensive_",rev))
     x <- x[,,"Primary Energy Production|Biomass|Energy Crops (EJ/yr)"]*10^3
     x <- collapseNames(x)
     first_remind_year <- sort(getYears(x))[1]
@@ -27,8 +28,8 @@ calc2ndBioDem <- function(datasource) {
     description <- "2nd generation bioenergy demand for different scenarios taken from IIASA SSP database"
     
   } else if (datasource == "SSP_and_REM") {
-    ssp <- calcOutput("2ndBioDem",datasource="SSPResults",aggregate = FALSE)
-    rem <- calcOutput("2ndBioDem",datasource="REMIND",aggregate = FALSE)
+    ssp <- calcOutput("2ndBioDem",datasource="SSPResults",aggregate = FALSE, rev = rev)
+    rem <- calcOutput("2ndBioDem",datasource="REMIND",aggregate = FALSE, rev = rev)
     
     ssp <- time_interpolate(ssp,getYears(rem),extrapolation_type = "constant")
     x <- mbind(ssp,rem)

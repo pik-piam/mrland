@@ -149,7 +149,7 @@ fullMAGPIE <- function(rev=0.1) {
     if(rev<4) {
       calcOutput("GHGPrices",emissions="pollutants", years=short_years, round=2, file="f56_pollutant_prices.cs3")
     } else {
-      calcOutput("GHGPrices",datasource="SSP_and_REM", years=short_years, round=2, file="f56_pollutant_prices.cs3")
+      calcOutput("GHGPrices",datasource="SSP_and_REM", years=short_years, round=2, file="f56_pollutant_prices.cs3", rev = rev)
     }
     
     # 57 maccs
@@ -162,7 +162,7 @@ fullMAGPIE <- function(rev=0.1) {
 
     #60 bioenergy
     calcOutput("1stBioDem",years = mag_years,round=3, file="f60_1stgen_bioenergy_dem.cs3")
-    calcOutput("2ndBioDem",datasource="SSP_and_REM",years=short_years, round=3, file="f60_bioenergy_dem.cs3")
+    calcOutput("2ndBioDem",datasource="SSP_and_REM",years=short_years, round=3, file="f60_bioenergy_dem.cs3", rev =rev)
     calcOutput("ResFor2ndBioengery", products="kres",product_aggr=TRUE, add_off=TRUE, years=mag_years, round=3, file="f60_2ndgenBE_residue_dem.cs3")
     
     #62 Material
