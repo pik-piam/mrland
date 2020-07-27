@@ -4,7 +4,7 @@
 #' accounting for food-specific estimates of baseline intake of quantification of EAT Lancet diets by the 
 #' EAT-Lancet comission, as well as for FAO food waste shares.
 #'
-#' @param out_type ratio: total food supply to totoal intake. 
+#' @param out_type ratio: total food supply to total intake. 
 #' ratio_detailed_calib: calibrated food-specific estimates. 
 #' ratio_detailed: food-specific estimates based on FAO food waste shares 
 #' calib: factor for calibrating estimates based on FAO waste shares to food supply
