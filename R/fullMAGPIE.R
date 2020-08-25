@@ -74,7 +74,7 @@ fullMAGPIE <- function(rev=0.1) {
     calcOutput("BMIshr", convert=TRUE,years=mag_years_past, round=4, file="f15_bmi_shr_past.cs3",aggregate = FALSE)
     calcOutput("BMI",file="f15_bmi.cs3",aggregate = FALSE)
     
-    calcOutput("EATLancetDiets",  aggregate = TRUE, round=4, file="f15_intake_EATLancet.cs3", attributes = "kcal", calib = TRUE, FAOcountr = TRUE)
+    calcOutput("EATLancetDiets",  aggregate = TRUE, round=4, file="f15_intake_EATLancet.cs3", attributes = "kcal", calib = TRUE, FAOcountr = FALSE)
     calcOutput("EATLancetWaste",  aggregate = TRUE, round=4, file="f15_supply2intake_ratio_bottomup.cs3", out_type="ratio_detailed")
     calcOutput("EATLancetWaste",  aggregate = TRUE, round=4, file="f15_calib_factor_FAOfsupply.cs4", out_type="calib")
     calcOutput("FAOLossesWaste",  aggregate = TRUE, round=4, file="f15_supply2intake_ratio_FAO.cs3", out_type="waste")

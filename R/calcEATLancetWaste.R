@@ -28,7 +28,7 @@ calcEATLancetWaste <- function(out_type="ratio"){
   Mag_Intake <- calcOutput("Intake",modelinput="TRUE", standardize=FALSE, method="FAO_WHO_UNU1985", aggregate=FALSE)
   Mag_Intake <- collapseNames(Mag_Intake[,"y2010","SSP2"])
   
-  Mag_EAT_diets <- calcOutput(type = "EATLancetDiets", aggregate = FALSE, attributes = c("kcal","wm"), calib = TRUE, FAOcountr = TRUE)
+  Mag_EAT_diets <- calcOutput(type = "EATLancetDiets", aggregate = FALSE, attributes = c("kcal","wm"), calib = TRUE, FAOcountr = FALSE)
   Mag_EAT_diets <- collapseNames(Mag_EAT_diets[,"y2010","BMK"][,,"2100kcal"][,,"wm",invert=TRUE])
   
   Intake_calib <- Mag_Intake/dimSums(Mag_EAT_diets,dim=3)
@@ -56,6 +56,7 @@ calcEATLancetWaste <- function(out_type="ratio"){
   #Conversion factors into edible matter: 0.82 for roots, 0.79 for maize, 0.78 for wheat, 1 for rice, 
   #0.78 for other grains, 0.77 for fruits and vegetables, 1 for meat, 1 for oilseeds and pulses, 1 for milk
   conv_fact <- dimSums(FAO_waste_shr,dim=1)
+  conv_fact[,,] <- 1
   conv_fact[,,"Cereals"] <- 0.78
   conv_fact[,,"Roots and tubers"] <- 0.82
   conv_fact[,,"Oilseeds and pulses"] <- 1
@@ -71,32 +72,20 @@ calcEATLancetWaste <- function(out_type="ratio"){
   conv_fact_detailed[,,"rice_pro"] <- 1
 
   
-  #calculation of the share of wasted food at household level including losses from food conversion into edible matter
-  HH_waste_shr_detailed <- FAO_waste_shr_detailed + (1-FAO_waste_shr_detailed)*(1-conv_fact_detailed)
-  fsupply_estimated <- Mag_EAT_diets/(1-HH_waste_shr_detailed)
-  overcons_FAO <- fsupply_estimated/Mag_EAT_diets
-  if(any(!is.finite(overcons_FAO)) ){
-    temp_overcons <- overcons_FAO
-    temp_overcons[which(!is.finite(temp_overcons))] <- 1
-    replacement <- as.magpie(apply(temp_overcons,3,mean, na.rm=TRUE))
-    overcons_FAO <- collapseNames(toolNAreplace(overcons_FAO, replaceby=replacement)$x)
-  }
+  #calculation of the ratio of available food at household level to intake (accounting also for losses from food conversion into edible matter)
+  overcons_FAO <- 1/(1-FAO_waste_shr_detailed)/conv_fact_detailed
   
+  fsupply_estimated <- Mag_EAT_diets*overcons_FAO
   fsupply_calib <-  dimSums(fsupply.hist,dim=3)/dimSums(fsupply_estimated,dim=3)
   fsupply_calib[which(!is.finite(fsupply_calib))] <- 1
   
-  overcons_estimated <- fsupply_estimated*fsupply_calib/Mag_EAT_diets
-  if(any(!is.finite(overcons_estimated)) ){
-    temp_overcons <- overcons_estimated
-    temp_overcons[which(!is.finite(temp_overcons))] <- 1
-    replacement <- as.magpie(apply(temp_overcons,3,mean, na.rm=TRUE))
-    overcons_estimated <- collapseNames(toolNAreplace(overcons_estimated, replaceby=replacement)$x)
-  }
+  overcons_calib <- overcons_FAO*fsupply_calib
+  
   
   Mag_overcons_fctr <- dimSums(fsupply.hist,dim=3)/Mag_Intake
   if(min(Mag_overcons_fctr)==0){
     temp_overcons <- Mag_overcons_fctr
-    temp_overcons[which(Mag_overcons_fctr==0)] <- 1
+    temp_overcons[which(Mag_overcons_fctr==0)] <- NA
     replacement <- as.magpie(apply(temp_overcons,3,mean, na.rm=TRUE))
     Mag_overcons_fctr[which(Mag_overcons_fctr==0)] <- replacement
   }
@@ -105,11 +94,11 @@ calcEATLancetWaste <- function(out_type="ratio"){
     data.out <- Mag_overcons_fctr
     description = "ratio between total calorie supply and total calorie intake"
   } else if(out_type=="ratio_detailed_calib") {
-    data.out <- overcons_estimated
+    data.out <- overcons_calib
     description = "food-specific ratio between calorie supply and intake consistent with EAT-Lancet baseline diets"
   } else if(out_type=="ratio_detailed") {
     data.out <- overcons_FAO
-    description = "food-specific ratio between calorie supply and intake based on FAO food waste shares and EAT-Lancet baseline diets"    
+    description = "food-specific ratio between calorie supply and intake based on FAO food waste shares and conversion factors"    
   } else if (out_type=="calib") {
     data.out <-  fsupply_calib 
     description = "factor for calibrating estimated food supply (based on EAT-Lancet baseline diets and FAO waste shares) to FAO food supply"

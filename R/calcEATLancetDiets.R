@@ -23,7 +23,7 @@
 #' @importFrom magclass getSets<- new.magpie add_dimension dimSums where
 #' @importFrom madrat toolNAreplace
 
-calcEATLancetDiets <- function(attributes = c("wm","kcal"), calib = TRUE, FAOcountr = TRUE){
+calcEATLancetDiets <- function(attributes = c("wm","kcal"), calib = TRUE, FAOcountr = FALSE){
   
   #read data for EAT Lancet diet (intake)
   EAT_diets <- readSource(type="EATLancet", subtype="cons_data")
@@ -288,7 +288,7 @@ calcEATLancetDiets <- function(attributes = c("wm","kcal"), calib = TRUE, FAOcou
   
   #Ideas for further improvement:
   #in EAT Lancet diet, cereals should be consumed in the form of wholegrain meals
-  #this can be realized re-allocating a share of calories from cereles to brans according to the milling share
+  #this can be realized re-allocating a share of calories from cereals to brans according to the milling share
   
   
   ##### Mapping of EAT Lancet food commodities to MAgPIE commodities finished ####

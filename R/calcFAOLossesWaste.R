@@ -36,6 +36,7 @@ FAO_waste_shr_detailed<-toolAggregate(FAO_waste_shr,rel = rel_matrix,
 #Conversion factors into edible matter: 0.82 for roots, 0.79 for maize, 0.78 for wheat, 1 for rice, 
 #0.78 for other grains, 0.77 for fruits and vegetables, 1 for meat, 1 for oilseeds and pulses, 1 for milk
 conv_fact <- dimSums(FAO_waste_shr,dim=1)
+conv_fact[,,] <- 1
 conv_fact[,,"Cereals"] <- 0.78
 conv_fact[,,"Roots and tubers"] <- 0.82
 conv_fact[,,"Oilseeds and pulses"] <- 1
