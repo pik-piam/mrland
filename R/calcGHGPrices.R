@@ -47,7 +47,7 @@ calcGHGPrices <- function(emissions="pollutants",datasource="REMMAG", rev=0.1) {
     getNames(x) <- gsub("^([^\\.]*)\\.(.*$)","\\2.\\1",getNames(x))
     
     description <- "GHG certificate prices for different scenarios based on data from REMIND-MAgPIE coupling"
-
+    
     
   } else if(datasource=="REMMAG") {
     x   <- readSource("REMMAG","ghgprices")
@@ -60,12 +60,12 @@ calcGHGPrices <- function(emissions="pollutants",datasource="REMMAG", rev=0.1) {
       y[,,c("n2o_n_direct","n2o_n_indirect")]<-collapseNames(x[,,"n2o_n"])
       x<-y[,,pollutants]
     } else if (emissions!="ghg") {stop("unknown emission type")}
-
+    
     description <- "ghg certificate prices for different scenarios based on data from REMIND-MAgPIE-coupling"
-
+    
     
   } else if (datasource=="SSPResults") {
-
+    
     x<-readSource("SSPResults")
     x<- collapseNames(x[,,"Price|Carbon (US$2005/t CO2)"])
     x<- x*44/12
@@ -89,9 +89,44 @@ calcGHGPrices <- function(emissions="pollutants",datasource="REMMAG", rev=0.1) {
     
     x<-time_interpolate(dataset = x[,2010+(0:9)*10,],interpolated_year = c(1965+(0:8)*5,2015+(0:8)*10),integrate_interpolated_years = TRUE,extrapolation_type = "constant")
     x<-toolHoldConstantBeyondEnd(x)
-
+    
     description <- "ghg certificate prices for different scenarios based on the multimodel SSP results from the IIASA DB"
+    
+  } else if (datasource=="S4N_project") {
+    
+    # Carbon price (in USD2005 per t CO2) at country level
+    x <- readSource("S4Nproject_input", subtype="co2prices", convert="onlycorrect")
+    # Convert in USD2005 per tons of carbon
+    x <- x*44/12
+    
+    # Add pollutants dimension to magpie object
+    pollutants<-findset("pollutants") 
+    y <- add_dimension(x, dim=3.1, nm="co2_c")
+    y <- add_columns(y, dim=3.1, addnm=setdiff(pollutants,getNames(y,dim=1)))
 
+    # Fill object with pollutant prices (including transformation to CO2-equivalents)
+    y[,,]        <- 0
+    # CO2 in USD2005 per tons of C
+    y[,,"co2_c"] <- x
+    # CH4 in USD2005 per tons of CO2-equivalent
+    y[,,"ch4"]   <- (x*28*12/44)
+    # N2O in USD2005 per tons of N
+    y[,,c("n2o_n_direct","n2o_n_indirect")] <- collapseNames(x)*265*44/28*12/44
+    
+    x <- y[,,c(pollutants)]
+
+    # pollutant prices to be returned
+    if(emissions=="ghg"){
+      x                  <- x[,,c("co2_c","n2o_n_direct","ch4")]
+      getNames(x, dim=1) <- c("co2_c", "n2o_n", "ch4")
+    } else if (emissions!="pollutants") {
+      stop("emissions has to be set to ghg or pollutants")
+    }
+    # co2 pricing starts in 2015
+    x[,c(2005,2010),] <- 0
+
+    description <- "ghg certificate prices for different scenarios based on CO2 prices provided by IMAGE"
+     
   } else if (datasource=="SSP_and_REM") {
     ssp <- calcOutput("GHGPrices",datasource = "SSPResults",aggregate = FALSE, rev = rev)
     rem <- calcOutput("GHGPrices",datasource = "REMIND", aggregate = FALSE, rev = rev)
@@ -104,7 +139,7 @@ calcGHGPrices <- function(emissions="pollutants",datasource="REMMAG", rev=0.1) {
     x <- x[,,sort(getNames(x,dim=2))]
     
     description <- "ghg certificate prices for different scenarios based on data from REMIND-MAgPIE-coupling and the multimodel SSP results from the IIASA DB"
-
+    
   } 
   
   pop <- calcOutput("Population",aggregate=FALSE)
