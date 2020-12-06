@@ -39,10 +39,11 @@ calc2ndBioDem <- function(datasource, rev = 0.1) {
     description <- "2nd generation bioenergy demand for different scenarios taken from IIASA SSP database"
     
   } else if (datasource == "S4N_project") {
-    # Total bioenergy demand (including 1st genation, 2nd generation and residues) at country level from IMAGE for 2 different SSP2 scenarios (in EJ per year)
-    x <- readSource("S4Nproject_input", subtype="bioenergy", convert="onlycorrect")
+    # Total bioenergy demand (including 1st genation, 2nd generation and residues) at country level from IMAGE for 2 different SSP2 scenarios starting in 2005 (in EJ per year)
+    image_be <- readSource("S4Nproject_input", subtype="bioenergy", convert="onlycorrect")
+
     # Transform units: from PJ to EJ
-    x <- x*1e3
+    image_be <- image_be*1e3
     
     # 1st gen BE demand in MAgPIE in scenario selected for Sim4Nexus (in PJ/yr)
     BE_1st <- calcOutput("1stBioDem", years=seq(2005, 2100,by=5), aggregate=FALSE)
@@ -53,10 +54,19 @@ calc2ndBioDem <- function(datasource, rev = 0.1) {
     res    <- collapseNames(res[,,"ssp2"])
     
     # 2nd generation bioenergy demand: Total BE (IMAGE) - 1st BE (MAgPIE) - residues (MAgPIE)
-    x <- x - BE_1st - res
+    image_be <- image_be - BE_1st - res
     
     # Correct negative values
-    x[x<0] <- 0
+    image_be[image_be<0] <- 0
+    
+    # Fill missing years (1995, 2000) with 2nd generation bioenergy demand from REMMAG data
+    remmag_be  <- readSource("REMMAG", subtype="biodem")
+    remmag_be  <- collapseNames(remmag_be[,c("y1995","y2000"),"SSP2-26-SPA2"])
+    x <- new.magpie(getCells(image_be), paste0("y",seq(1995, 2100,by=5)), getNames(image_be))
+    
+    x[,getYears(remmag_be),"SSP2"] <- remmag_be
+    x[,getYears(remmag_be),"SSP2_SPA2_26I_D"] <- remmag_be
+    x[,getYears(image_be),] <- image_be
     
     #x<- collapseNames(x[,,"Primary Energy|Biomass|Energy Crops (EJ/yr)"])*10^3
     description <- "2nd generation bioenergy demand for different scenarios provided by IMAGE"
