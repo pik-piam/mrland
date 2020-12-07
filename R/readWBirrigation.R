@@ -14,9 +14,8 @@
 readWBirrigation <- function() {    
       irr <- read.csv("irrigation.csv", sep=";", row.names=1)
       regions <- c("East and South Asia"="ESA","East Asia"="EAS", "South Asia"="SAS", "India"="IND", "Europe"="ERP", "Middle East"="MET", "Africa" ="AFR", "North Africa"="NAF", "Sub-Saharan Africa"="SAF", "Latin America and Caribbean"="LAC")
-      row.names(irr) <- regions #better: independent ordering"
+      irr <- data.frame(ad_unit_cost=irr$ad_unit_cost, reg=as.character(regions),stringsAsFactors=F)
       irr <- as.magpie(irr)
-      irr <- irr[,,"ad_unit_cost"]
       getYears(irr) <- "y1995"
       return(irr)
 }  
