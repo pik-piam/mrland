@@ -64,11 +64,10 @@ calc2ndBioDem <- function(datasource, rev = 0.1) {
     remmag_be  <- collapseNames(remmag_be[,c("y1995","y2000"),"SSP2-26-SPA2"])
     x <- new.magpie(getCells(image_be), paste0("y",seq(1995, 2100,by=5)), getNames(image_be))
     
-    x[,getYears(remmag_be),"SSP2"] <- remmag_be
+    x[,getYears(remmag_be),"SSP2"]            <- remmag_be
     x[,getYears(remmag_be),"SSP2_SPA2_26I_D"] <- remmag_be
-    x[,getYears(image_be),] <- image_be
+    x[,getYears(image_be),]                   <- image_be
     
-    #x<- collapseNames(x[,,"Primary Energy|Biomass|Energy Crops (EJ/yr)"])*10^3
     description <- "2nd generation bioenergy demand for different scenarios provided by IMAGE"
     
   } else if (datasource == "SSP_and_REM") {

@@ -96,6 +96,10 @@ calcGHGPrices <- function(emissions="pollutants",datasource="REMMAG", rev=0.1) {
     
     # Carbon price (in USD2005 per t CO2) at country level
     x <- readSource("S4Nproject_input", subtype="co2prices", convert="onlycorrect")
+    # Extend years and set to 0 before 2030
+    x <- toolFillYears(x,paste0("y", seq(1995, 2100,by=5)))
+    x[,paste0("y",seq(1995,2025,by=5)),] <- 0
+    
     # Convert in USD2005 per tons of carbon
     x <- x*44/12
     
