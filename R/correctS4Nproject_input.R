@@ -1,7 +1,7 @@
 #' @title correctS4Nproject_input
 #' @description corrects IMAGE inputs of total bioenergy (1st gen, 2nd gen and residues) demand and co2 prices
 #' 
-#' @subtype IMAGE input to be read in and corrected: co2prices or bioenergy
+#' @param x magpie object
 #' 
 #' @return magpie object at country-level resolution
 #' @author Felicitas Beier

@@ -2,6 +2,7 @@
 #' @description calculates 2nd generation bioenergy demand
 #' @return magpie object with results on country level, weight on country level, unit and description.
 #' 
+#' @param datasource source to be used
 #' @param rev data revision the output will be produced for (positive numeric)
 #' 
 #' @examples   

@@ -1,7 +1,7 @@
 #' @title readS4Nproject_input
 #' @description reads in total bioenergy (1st gen, 2nd gen and residues) demand and co2 prices from IMAGE model for Sim4Nexus project
 #' 
-#' @subtype IMAGE input to be read in: co2prices or bioenergy
+#' @param subtype IMAGE input to be read in: co2prices or bioenergy
 #' 
 #' @return magpie object at country-level resolution
 #' @author Felicitas Beier

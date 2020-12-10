@@ -15,6 +15,7 @@
 #' }
 #' @importFrom magpiesets findset
 #' @importFrom magclass complete_magpie
+#' @importFrom madrat toolFillYears
 
 calcGHGPrices <- function(emissions="pollutants",datasource="REMMAG", rev=0.1) {
   
