@@ -61,5 +61,25 @@ readS4Nproject_input <- function(subtype="co2prices") {
   data$year <- paste0("y",data$year)
   x         <- collapseNames(as.magpie(data))
   
+  if (subtype=="bioenergy"){
+    # Disaggregate regional bioenergy to country values using population weight
+    # country population in SSP2
+    pop     <- calcOutput("CollectProjectionDrivers", driver="pop",aggregate=FALSE, years=paste0("y",c(2005, seq(2010, 2100, by=10))), round=6)
+    pop     <- collapseNames(pop[,,"SSP2"])
+
+    # regional population
+    pop_reg <- toolAggregate(pop, rel=regionmapping, weight=NULL)
+    pop_reg <- as.data.frame(pop_reg)
+    pop_reg <- data.frame(Region=pop_reg$Region, year=as.character(pop_reg$Year), Value=pop_reg$Value, stringsAsFactors=F)
+    pop_reg <- merge(pop_reg, regionmapping, "Region") 
+    pop_reg <- collapseNames(as.magpie(data.frame(iso=pop_reg$iso, year=pop_reg$year, Value=pop_reg$Value)))
+
+    # country population share
+    pop_shr <- pop/pop_reg
+    
+    # bioenergy demand weighted by population
+    x <- x * pop/pop_reg
+  }
+  
   return(x)
 }

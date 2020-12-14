@@ -43,7 +43,7 @@ calc2ndBioDem <- function(datasource, rev = 0.1) {
     # Total bioenergy demand (including 1st genation, 2nd generation and residues) at country level from IMAGE for 2 different SSP2 scenarios starting in 2005 (in EJ per year)
     image_be <- readSource("S4Nproject_input", subtype="bioenergy", convert="onlycorrect")
 
-    # Transform units: from PJ to EJ
+    # Transform units: from EJ to PJ
     image_be <- image_be*1e3
     
     # 1st gen BE demand in MAgPIE in scenario selected for Sim4Nexus (in PJ/yr)
