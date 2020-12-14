@@ -69,6 +69,9 @@ calc2ndBioDem <- function(datasource, rev = 0.1) {
     x[,getYears(remmag_be),"SSP2_SPA2_26I_D"] <- remmag_be
     x[,getYears(image_be),]                   <- image_be
     
+    # fill missing years in the future
+    x <- time_interpolate(x, seq(1995,2150,5), extrapolation_type="constant")
+    
     description <- "2nd generation bioenergy demand for different scenarios provided by IMAGE"
     
   } else if (datasource == "SSP_and_REM") {

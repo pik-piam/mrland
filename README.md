@@ -1,6 +1,6 @@
 # MadRaT land data package
 
-R package **mrland**, version **0.5.9**
+R package **mrland**, version **0.5.10**
 
 [![Travis build status](https://travis-ci.com/pik-piam/mrland.svg?branch=master)](https://travis-ci.com/pik-piam/mrland) [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.3822083.svg)](https://doi.org/10.5281/zenodo.3822083) 
 
@@ -38,8 +38,9 @@ In case of questions / problems please contact Jan Philipp Dietrich <dietrich@pi
 
 To cite package **mrland** in publications use:
 
-Dietrich J, Mishra A, Weindl I, Bodirsky B, Wang X, Baumstark L, Kreidenweis U, Klein D, Steinmetz N, Chen D, Humpenoeder F, Wirth S
-(2020). _mrland: MadRaT land data package_. https://github.com/pik-piam/mrland, https://doi.org/10.5281/zenodo.3822083.
+Dietrich J, Mishra A, Weindl I, Bodirsky B, Wang X, Baumstark L, Kreidenweis U, Klein D, Steinmetz
+N, Chen D, Humpenoeder F, Wirth S (2020). _mrland: MadRaT land data package_.
+https://github.com/pik-piam/mrland, https://doi.org/10.5281/zenodo.3822083.
 
 A BibTeX entry for LaTeX users is
 

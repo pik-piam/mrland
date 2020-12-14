@@ -130,6 +130,9 @@ calcGHGPrices <- function(emissions="pollutants",datasource="REMMAG", rev=0.1) {
     # co2 pricing starts in 2015
     x[,c(2005,2010),] <- 0
 
+    # fill missing years in the future
+    x <- time_interpolate(x, seq(1995,2150,5), extrapolation_type="constant")
+    
     description <- "ghg certificate prices for different scenarios based on CO2 prices provided by IMAGE"
      
   } else if (datasource=="SSP_and_REM") {
