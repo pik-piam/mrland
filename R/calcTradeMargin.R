@@ -66,6 +66,9 @@ calcTradeMargin <- function(gtap_version ="GTAP7", bilateral = FALSE,producer_pr
   
   weight <- setYears(vxmd *voa,NULL)[,,k_trade]
   weight <- toolCountryFill(weight,0)
+  weight <- add_columns(x = weight,addnm = findset("kforest"),dim = 3.1)
+  weight[,,"wood"] <- weight[,,"tece"] * 0.5
+  weight[,,"woodfuel"] <- weight[,,"wood"] * 0.5
   unit <- "US$05"
   description <- "Trade margins"
  
