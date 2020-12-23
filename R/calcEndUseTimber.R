@@ -18,7 +18,7 @@ calcEndUseTimber <- function(){
 
   fao_timber <- collapseNames(calcOutput("TimberDemand",aggregate = F)[,,"domestic_supply"])
   
-  fao_timber <- fao_timber[,findset("past")]
+  fao_timber <- fao_timber[,c(paste0("y",seq(from=1965,to=2015,by=5))),]
   
   getNames(fao_timber) <- gsub(x = getNames(fao_timber),pattern = " ",replacement = "_")
   getNames(fao_timber) <- gsub(x = getNames(fao_timber),pattern = "-",replacement = "_")
@@ -27,7 +27,7 @@ calcEndUseTimber <- function(){
   out <- fao_timber
   
   return(list(x=out,weight=NULL,
-                unit="mio m3",
+                unit="mio m3/yr",
                 description="historical timber domestic demand")
          )
 }
