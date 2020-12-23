@@ -110,7 +110,7 @@ fullMAGPIE <- function(rev=0.1) {
     calcOutput("TimberHarvestCost",file = "f32_harvestingcost.cs4")
     
     # 35 natural vegetation
-    calcOutput("ForestLossShare", round=7, file="f35_forest_lost_share.cs4")
+    calcOutput("ForestLossShare", round=7, file="f35_forest_lost_share.cs3")
     calcOutput("ForestDisturbances", round=7, file="f35_forest_disturbance_share.cs4")
 
     #38 factor costs
