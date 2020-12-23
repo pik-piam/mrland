@@ -27,8 +27,8 @@ calcForestDisturbances <- function(){
   disturbance_share[is.na(disturbance_share)] <- 0
   disturbance_share[disturbance_share>1] <- 1
   
-  out <- disturbance_share
-  weight <- forest_area[,common_yrs,]
+  out <- setYears(disturbance_share[,"y2010",],NULL)
+  weight <- setYears(forest_area[,"y2010",],NULL)
   
   return(list(x=out,
               weight=weight,

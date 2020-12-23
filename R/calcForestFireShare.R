@@ -27,8 +27,8 @@ calcForestFireShare <- function(){
   fire_share[is.na(fire_share)] <- 0
   fire_share[fire_share>1] <- 1
   
-  out <- fire_share
-  weight <- forest_area[,common_yrs,]
+  out <- setYears(fire_share[,"y2000",],NULL)
+  weight <- setYears(forest_area[,"y2000",],NULL)
   
   return(list(x=out,
               weight=weight,
