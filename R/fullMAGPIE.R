@@ -108,6 +108,9 @@ fullMAGPIE <- function(rev=0.1) {
     # 32 forestry
     calcOutput("AfforestCosts", years=2001,        round=0, file="f32_fac_req_ha.csv")
     calcOutput("TimberHarvestCost",file = "f32_harvestingcost.cs4")
+    
+    # 35 natural vegetation
+    calcOutput("ForestFireShare",years = 2000, round=7, file="f35_forest_fire_share.csv")
 
     #38 factor costs
     calcOutput("Yield", cut=0.95, years=1995, round=2, file="f38_region_yield.csv")
