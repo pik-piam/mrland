@@ -17,7 +17,11 @@
 
 calcForestFireLoss <- function(){
   
-  out<-setNames(readSource("FRA2020",subtype = "forest_fire",convert = TRUE),NULL) # Convert=T returns Mha area lost to fire
+    fao <-setNames(readSource("FRA2020",subtype = "forest_fire",convert = TRUE),"overall") # Convert=T returns Mha area lost to fire
+    fao <- dimSums(fao,dim=2)/length(getYears(fao)) # Average forest loss due to fires
+    curtis <- readSource("ForestLossDrivers")
+    
+    out <- mbind(fao,curtis)
   
   return(list(x=out,
               weight=NULL,
