@@ -56,7 +56,7 @@ fullMAGPIE <- function(rev=0.1) {
     calcOutput("CalibrationDummy", round=0, file="f14_yld_calib.csv")
     calcOutput("PastureYield",round=3,file="f14_pasture_yields_hist.csv")
     calcOutput("Yield", cut=0.95, years=mag_years_past, round=2, file="f14_region_yields.cs3")
-    calcOutput("GrowingStockPlantations",aggregate=TRUE,round=0,file="f14_gs_target.cs3")
+    calcOutput("GrowingStockPlantations",aggregate=TRUE,round=0,file="f14_gs_target.cs4")
 
     # 15 food
     calcOutput("BodyHeight",aggregate = FALSE,years=mag_years_past, round=2, file="f15_bodyheight_historical.cs3")
