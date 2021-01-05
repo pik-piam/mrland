@@ -114,6 +114,7 @@ fullMAGPIE <- function(rev=0.1) {
     # 35 natural vegetation
     calcOutput("ForestLossShare", round=7, file="f35_forest_lost_share.cs3")
     calcOutput("ForestDisturbances", round=7, file="f35_forest_disturbance_share.cs4")
+    calcOutput("GrowingStockNatVegAbsolute",aggregate=TRUE,round=0,file="f35_gs_absolutetarget.cs4")
 
     #38 factor costs
     calcOutput("Yield", cut=0.95, years=1995, round=2, file="f38_region_yield.csv")
