@@ -15,7 +15,7 @@
 #' @importFrom utils read.csv
 #' 
 readTimberShare<-function(subtype="abare"){
-  x<-read.csv("WorkingPaperFP13_BrownC_March2001.csv")
+  x<-read.csv("C:/PIK/data_processing/inputdata/sources/TimberShare/WorkingPaperFP13_BrownC_March2001.csv",header = TRUE,sep = ";")
   keep <- c(1,grep(colnames(x),pattern = subtype))
   x<-x[,keep]
   
