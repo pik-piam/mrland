@@ -37,10 +37,10 @@ calcTradeExportShr <- function() {
   exp_shr <- toolHoldConstantBeyondEnd(exp_shr)
   
   ## Manual fix for Middle east and Japan
-  mapppnig <- toolGetMapping(type = "regional",name = "h12.csv")
-  mea_list <- subset(mapppnig,mapppnig$RegionCode=="MEA")
-  exp_shr["JPN",,findset("kforest")]                <- 0 ## Magpiesets need update it should be kforestry
-  exp_shr[mea_list$CountryCode,,findset("kforest")] <- 0 ## Magpiesets need update it should be kforestry
+  # mapppnig <- toolGetMapping(type = "regional",name = "h12.csv")
+  # mea_list <- subset(mapppnig,mapppnig$RegionCode=="MEA")
+  # exp_shr["JPN",,findset("kforest")]                <- 0 ## Magpiesets need update it should be kforestry
+  # exp_shr[mea_list$CountryCode,,findset("kforest")] <- 0 ## Magpiesets need update it should be kforestry
   
   return(list(x=exp_shr,
               weight=NULL,
