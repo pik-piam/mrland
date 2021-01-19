@@ -15,10 +15,7 @@
 #' @export
 
 calcPlantationContribution <- function(){
-  
-  ## Define a mapping
-  map <- read.csv(toolMappingFile("regional",getConfig("regionmapping")),sep=";")
-  
+
   ## Read Share from source
   out <- mbind(readSource("TimberShare",subtype = "abare",convert = TRUE),readSource("TimberShare",subtype = "brown",convert = TRUE))
   out <- setYears(out,"y1995")

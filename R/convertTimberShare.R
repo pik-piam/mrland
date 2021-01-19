@@ -10,7 +10,8 @@
 #' }
 #' @importFrom madrat getConfig
 convertTimberShare<-function(x) {
-map <- read.csv(toolMappingFile("regional",getConfig("regionmapping")),sep=";")
+ map <- read.csv("regionmapping_default.csv",sep=";")
+#map <- read.csv(toolMappingFile("regional",getConfig("regionmapping")),sep=";")
 y <- toolAggregate(x = x,rel = map,from = "RegionCode",to = "CountryCode",dim = 1)
 
 #y <- toolCountryFill(x, fill = NA, BHR="QAT", HKG="CHN", MUS="MDG", PSE="ISR", SGP="MYS", TLS="IDN")
