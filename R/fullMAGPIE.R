@@ -112,6 +112,7 @@ fullMAGPIE <- function(rev=0.1) {
     calcOutput("GrowingStockPlantAbsolute",aggregate=TRUE,round=0,file="f32_gs_absolutetarget.cs4")
     calcOutput("GrowingStockpha",aggregate=TRUE,round=0,file="f32_gs_relativetarget.cs4")
     calcOutput("PlantationContribution",aggregate = TRUE,round=3,file="f32_plantation_contribution.cs3")
+    calcOutput("PlantedForest",aggregate = TRUE,round=3,file="f32_plantedforest.cs4")
     
     # 35 natural vegetation
     calcOutput("ForestLossShare", round=7, file="f35_forest_lost_share.cs3")
