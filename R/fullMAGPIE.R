@@ -191,4 +191,5 @@ fullMAGPIE <- function(rev=0.1) {
     
     #73 timber -- Always needed on iso country level so no need to aggregate
     calcOutput("EndUseTimber", aggregate = FALSE, round=4, file="f73_prod_specific_timber.csv")
+    calcOutput("EndUseTimber", aggregate = TRUE, round=2, file="f73_regional_timber_demand.csv")
 }
