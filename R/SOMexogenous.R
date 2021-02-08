@@ -11,7 +11,7 @@
 #' calcOutput("SOMexogenous")
 #' }
 #' @export
-#' @importFrom madrat toolHoldConstantBeyondEnd
+#' @importFrom mrcommons toolHoldConstantBeyondEnd
 #' @importFrom magpiesets findset
 
 calcSOMexogenous <- function(){
