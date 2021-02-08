@@ -112,11 +112,13 @@ fullMAGPIE <- function(rev=0.1) {
     calcOutput("GrowingStockPlantAbsolute",aggregate=TRUE,round=0,file="f32_gs_absolutetarget.cs4")
     calcOutput("GrowingStockpha",aggregate=TRUE,round=0,file="f32_gs_relativetarget.cs4")
     calcOutput("PlantationContribution",aggregate = TRUE,round=3,file="f32_plantation_contribution.cs3")
+    calcOutput("PlantedForest",aggregate = TRUE,round=3,file="f32_plantedforest.cs4")
     
     # 35 natural vegetation
     calcOutput("ForestLossShare", round=7, file="f35_forest_lost_share.cs3")
     calcOutput("ForestDisturbances", round=7, file="f35_forest_disturbance_share.cs4")
     calcOutput("GrowingStockNatVegAbsolute",aggregate=TRUE,round=0,file="f35_gs_absolutetarget.cs4")
+    calcOutput("GrowingStockNRF",aggregate=TRUE,round=0,file="f35_gs_relativetarget.cs4")
 
     #38 factor costs
     calcOutput("Yield", cut=0.95, years=1995, round=2, file="f38_region_yield.csv")
@@ -191,4 +193,5 @@ fullMAGPIE <- function(rev=0.1) {
     
     #73 timber -- Always needed on iso country level so no need to aggregate
     calcOutput("EndUseTimber", aggregate = FALSE, round=4, file="f73_prod_specific_timber.csv")
+    calcOutput("EndUseTimber", aggregate = TRUE, round=2, file="f73_regional_timber_demand.csv")
 }

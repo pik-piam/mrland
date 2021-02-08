@@ -20,6 +20,8 @@ calcEndUseTimber <- function(){
   
   fao_timber <- fao_timber[,c(paste0("y",seq(from=1965,to=2015,by=5))),]
   
+  fao_timber[,"y2015","Wood fuel"] <- fao_timber[,"y2010","Wood fuel"]
+  
   getNames(fao_timber) <- gsub(x = getNames(fao_timber),pattern = " ",replacement = "_")
   getNames(fao_timber) <- gsub(x = getNames(fao_timber),pattern = "-",replacement = "_")
   getNames(fao_timber) <- tolower(getNames(fao_timber))
