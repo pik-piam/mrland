@@ -173,7 +173,7 @@ fullMAGPIE <- function(rev=0.1) {
     calcOutput("MACCsCH4",sector="landuse",source="PBL_MACC_2019",years=short_years_from_2010, round=4, file="f57_maccs_ch4_2019.cs3")
     
     #59 som
-    calcOutput("SOMexogenous",years=short_years_from_2010, round=4, file="f59_som_exogenous.cs2")
+    calcOutput("SOMexogenous",years=mag_years, round=4, file="f59_som_exogenous.cs3")
     
     #60 bioenergy
     calcOutput("1stBioDem",years = mag_years,round=3, file="f60_1stgen_bioenergy_dem.cs3")
