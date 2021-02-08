@@ -11,7 +11,6 @@
 #' calcOutput("PlantedForest")
 #' }
 #' @importFrom magclass getNames<- as.magpie time_interpolate
-#' @importFrom stringr str_extract_all
 #' @export
 
 calcPlantedForest <- function(){
