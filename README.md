@@ -1,6 +1,6 @@
 # MadRaT land data package
 
-R package **mrland**, version **0.6.25**
+R package **mrland**, version **0.6.26**
 
 [![CRAN status](https://www.r-pkg.org/badges/version/mrland)](https://cran.r-project.org/package=mrland) [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.3822083.svg)](https://doi.org/10.5281/zenodo.3822083)  [![R build status](https://github.com/pik-piam/mrland/workflows/check/badge.svg)](https://github.com/pik-piam/mrland/actions) [![codecov](https://codecov.io/gh/pik-piam/mrland/branch/master/graph/badge.svg)](https://codecov.io/gh/pik-piam/mrland)
 

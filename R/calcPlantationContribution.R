@@ -12,12 +12,14 @@
 #' }
 #' @importFrom magclass getNames<- as.magpie time_interpolate
 #' @importFrom stringr str_extract_all
+#' @importFrom madrat toolMappingFile
 #' @export
 
 calcPlantationContribution <- function(){
 
   ## Read Share from source
   out <- mbind(readSource("TimberShare",subtype = "abare",convert = TRUE),readSource("TimberShare",subtype = "brown",convert = TRUE))
+  
   out <- setYears(out,"y1995")
 
   ## Create Scenarios
@@ -60,6 +62,21 @@ calcPlantationContribution <- function(){
   out[,length(year) + 1,] <- out[,length(year),]
   out[out > 1] <- 1
   out <- round(out,3)
+  
+  ## Fix JPN and REF values - Both have 0 plantations Growing stock so set 
+  ## Plantation contribution to overall demand in JPN = 0 (or very tiny value)
+  ## Plantation contribution to overall demand in REF = 0.01 
+  
+  ## Find standard mapping - which countries belong to REF and JPN in standard mapping - 
+  ## we will modify ISO codes here so that this works with all mappings
+  h12_mapping <- toolMappingFile(type = "regional",name = "h12.csv",readcsv = TRUE)
+  JPN <- h12_mapping[h12_mapping$RegionCode=="JPN",]$CountryCode
+  REF <- h12_mapping[h12_mapping$RegionCode=="REF",]$CountryCode
+  out[JPN,,] <- 0.00001
+  out[REF,,] <- 0.01
+  ## WARNING : (DO NOT CHANGE 0.01 value in REF to any value lower than this as 
+  ## this will result in wrong plantation establishment in REF and would need 
+  ## adjustment in establishment calibration factors - currently 0.05 for REF)
 
   ## Weight
   weight <- collapseNames(calcOutput("TimberDemand",aggregate = FALSE)[,"y1995","production"])[,,c("Roundwood")]
