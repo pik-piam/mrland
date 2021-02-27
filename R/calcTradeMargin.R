@@ -60,8 +60,8 @@ calcTradeMargin <- function(gtap_version ="GTAP7", bilateral = FALSE,producer_pr
   out <- y[,,k_trade]*p[,,k_trade]
   out <- toolCountryFill(out,0)
   out <- add_columns(x = out,addnm = findset("kforest"),dim = 3.1)
-  out[,,"wood"] <- out[,,"tece"] * 0.5
-  out[,,"woodfuel"] <- out[,,"wood"] * 0.5
+  out[,,"wood"] <- out[,,"others"]
+  out[,,"woodfuel"] <- out[,,"wood"]
  
   
   weight <- setYears(vxmd *voa,NULL)[,,k_trade]
