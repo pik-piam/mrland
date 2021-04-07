@@ -26,7 +26,7 @@ calcProcessing_shares<-function(){
     out$weight[,,to]<-setNames(dimSums(tmpweight,dim=3.1),paste0("X",getNames(dimSums(tmpweight,dim=3.1)))) 
     return(out)
   }
-  out<-calcshare(c("alcohol1","alcohol2","alcohol3"),c("alcohol"))
+  out<-calcshare(c("alcohol1","alcohol2","alcohol3", "alcohol4"),c("alcohol"))
   out<-calcshare(c("brewers_grain1","distillers_grain1"),c("distillers_grain"))
   out<-calcshare(c("brans1"),c("brans"))
   out<-calcshare(c("branoil1","oil1","oil2"),c("oils"))
