@@ -35,9 +35,9 @@ calcTradeSelfSuff <- function() {
   # ## ARCHIVED VERSION - 
   # ## https://web.archive.org/web/20200525075439/http://www.jatan.org/eng/japan-e.html
   # ## https://web.archive.org/web/20200525120517/http://www.fao.org/3/Y2199E/y2199e10.htm
-  # self_suff["JPN",,findset("kforest")]                <- 0.40 ## Magpiesets need update it should be kforestry
-  # self_suff[mea_list$CountryCode,,findset("kforest")] <- 0.01 ## Magpiesets need update it should be kforestry
-  # self_suff[ref_list$CountryCode,,findset("kforest")] <- 1.05 ## Magpiesets need update it should be kforestry#
+  # self_suff["JPN",,findset("kforestry")]                <- 0.40 ## Magpiesets need update it should be kforestry
+  # self_suff[mea_list$CountryCode,,findset("kforestry")] <- 0.01 ## Magpiesets need update it should be kforestry
+  # self_suff[ref_list$CountryCode,,findset("kforestry")] <- 1.05 ## Magpiesets need update it should be kforestry#
   
   weight <- massbalance[,,"domestic_supply.dm"]
   weight <- collapseNames(weight)
