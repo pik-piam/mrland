@@ -49,10 +49,17 @@ calcProcessing_conversion_factors<-function(){
   convmatrix[,,"oils"][,,"extracting"]<-setNames(tmp,paste0("X",getNames(tmp))) 
   
   # add conversion attributes of Single cell Protein (SCP)
+  # based on Table S3 in Pikaar et al 2018, which provides conversion factors in as "ton substrate DM / ton microbial protein (MP)"
+  # Miscanthus (begr): 5.5 t DM begr / t DM MP
+  # Sugar Cane (sugr_cane): 4.3 t DM sugar_cane / t DM MP
+  # maize (foddr): 5.6 t DM foodr / t DM MP
+  # We need to convert these factors into "Conversion factors of primary products into secondary products"
+  # How much MP (secondary product) do get per ton DM substrate (primary product)?
+  # For each t DM sugr_cane we get 1/4.3=0.2326 t DM MP.
+  convmatrix[,,"breeding"][,,"scp"][,,"Xbegr"]<-1/5.5 #0.1818
+  convmatrix[,,"breeding"][,,"scp"][,,"Xsugr_cane"]<-1/4.3 #0.2326
+  convmatrix[,,"breeding"][,,"scp"][,,"Xfoddr"]<-1/5.6 #0.1786
   
-  convmatrix[,,"breeding"][,,"scp"][,,"Xbegr"]<-5.6
-  convmatrix[,,"breeding"][,,"scp"][,,"Xsugr_cane"]<-4.7
-  convmatrix[,,"breeding"][,,"scp"][,,"Xfoddr"]<-5.5
   tmp<-collapseNames(dimSums(massbalance[,,"production"][,,"dm"][,,"fibres"],dim=c(1))/dimSums(massbalance[,,"production"][,,"dm"][,,"cottn_pro"],dim=c(1)))
   convmatrix[,,"ginning"][,,"fibres"][,getYears(tmp),"Xcottn_pro"]=tmp
   convmatrix[is.nan(convmatrix)]<-0
@@ -80,5 +87,5 @@ calcProcessing_conversion_factors<-function(){
   
   convmatrix <- toolHoldConstantBeyondEnd(convmatrix)
   
-  return(list(x=convmatrix,weight=NULL,unit="t DM / t DM",description="Conversion factors to transform one product into another"))
+  return(list(x=convmatrix,weight=NULL,unit="t DM / t DM",description="Conversion factors of primary products into secondary products. primary product x conversion factor = secondary product"))
 }
