@@ -27,7 +27,7 @@ fullMAGPIE <- function(rev=0.1) {
       cwd <- getwd()
       if(!file.exists(getConfig("outputfolder"))) dir.create(getConfig("outputfolder"),recursive = TRUE)
       setwd(getConfig("outputfolder"))
-      map <- toolMappingFile("regional",getConfig("regionmapping"),readcsv = TRUE)
+      map <- toolGetMapping(type = "regional", name = getConfig("regionmapping"))
       regionscode <- regionscode(map)
       spatial_header <- spatial_header(map)
       save(spatial_header,regionscode,map,reg_revision,file="spatial_header.rda",compress="xz")

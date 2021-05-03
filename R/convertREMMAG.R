@@ -1,5 +1,5 @@
 convertREMMAG <- function(x,subtype) {
-  map <- toolMappingFile("regional","regionmappingMAgPIE.csv")
+  map <- toolGetMapping(type = "regional", name = "regionmappingMAgPIE.csv")
   
   if(subtype=="ghgprices") {
     y <- toolAggregate(x,map)
