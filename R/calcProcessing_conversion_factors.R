@@ -18,7 +18,7 @@ calcProcessing_conversion_factors<-function(){
   
   mb_reduced2<-mb_reduced[,,kpr]
   
-  tmp <- dimSums(mb_reduced2[,,c("alcohol1","alcohol2","alcohol3")],dim = c(3.2))/dimSums(mb_reduced2[,,c("fermentation")],dim = c(3.2))
+  tmp <- dimSums(mb_reduced2[,,c("alcohol1","alcohol2","alcohol3", "alcohol4")],dim = c(3.2))/dimSums(mb_reduced2[,,c("fermentation")],dim = c(3.2))
   convmatrix[,,"alcohol"][,,"fermentation"]<-setNames(tmp,paste0("X",getNames(tmp)))  
   
   tmp <- dimSums(mb_reduced2[,,c("brewers_grain1")],dim = c(3.2))/dimSums(mb_reduced2[,,c("fermentation")],dim = c(3.2))
