@@ -6,7 +6,7 @@
 #' @param rev data revision which should be used as input (positive numeric).
 #' \code{\link{setConfig}} (e.g. for setting the mainfolder if not already set
 #' properly).
-#' @author Jan Philipp Dietrich, Benjamin Leon Bodirsky, Florian Humpenoeder
+#' @author Jan Philipp Dietrich, Benjamin Leon Bodirsky, Florian Humpenoeder, Edna J. Molina Bacca
 #' @seealso
 #' \code{\link{readSource}},\code{\link{getCalculations}},\code{\link{calcOutput}},\code{\link{setConfig}}
 #' @examples
@@ -123,6 +123,8 @@ fullMAGPIE <- function(rev=0.1) {
 
     #38 factor costs
     calcOutput("Yield", cut=0.95, years=1995, round=2, file="f38_region_yield.csv")
+    calcOutput("FacReqGLO",round=2,aggregate=FALSE,file="f38_fac_req_fao.csv")
+    calcOutput("AgCapLabourShare",round=2,aggregate=TRUE,years=c(1995,2000,2005,2010),file="f38_historical_share.csv")
     
     #41 Area Equipped for Irrigation
     #f41_irrig(j) should be read out of calcAreaEquippedForIrrigation()
