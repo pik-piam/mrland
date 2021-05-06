@@ -125,6 +125,8 @@ fullMAGPIE <- function(rev=0.1) {
     calcOutput("Yield", cut=0.95, years=1995, round=2, file="f38_region_yield.csv")
     calcOutput("FacReqGLO",round=2,aggregate=FALSE,file="f38_fac_req_fao.csv")
     calcOutput("AgCapLabourShare",round=2,aggregate=TRUE,years=c(1995,2000,2005,2010),file="f38_historical_share.csv")
+    calcOutput("RegFactorShare",datasource="USDA",factor="cap",round=4,aggregate=FALSE,file="f38_regression_cap_share.csv")
+    
     
     #41 Area Equipped for Irrigation
     #f41_irrig(j) should be read out of calcAreaEquippedForIrrigation()
