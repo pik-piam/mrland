@@ -24,7 +24,7 @@ fullMAGPIE <- function(rev=0.1) {
     # Check if mapping comes with an additional "superregion" layer and if so,
     # aggregate some outputs to the superregional level. Otherwise,
     # aggregate everything to regional level.
-    map <- toolGetMapping(getConfig("regionmapping"))
+    map <- toolGetMapping(getConfig("regionmapping"), type = "regional")
     superregion <- ifelse("superregion" %in% colnames(map), "superregion", "region")
     
     cellsregions <- function(reg_revision=0, map) {
