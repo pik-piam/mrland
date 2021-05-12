@@ -60,7 +60,7 @@ fullMAGPIE <- function(rev=0.1) {
     # 14 yields
     calcOutput("CalibrationDummy", round=0, file="f14_yld_calib.csv")
     calcOutput("PastureYield",round=3,file="f14_pasture_yields_hist.csv")
-    calcOutput("Yield", cut=0.98, years=mag_years_past, round=2, file="f14_region_yields.cs3")
+    calcOutput("FAOYield", cut=0.98, years=mag_years_past, round=2, file="f14_region_yields.cs3")
 
     # 15 food
     calcOutput("BodyHeight",aggregate = FALSE,years=mag_years_past, round=2, file="f15_bodyheight_historical.cs3")
@@ -127,7 +127,7 @@ fullMAGPIE <- function(rev=0.1) {
     calcOutput("GrowingStockNRF",aggregate=TRUE,round=0,file="f35_gs_relativetarget.cs4")
 
     #38 factor costs
-    calcOutput("Yield", cut=0.98, years=1995, round=2, file="f38_region_yield.csv")
+    calcOutput("FAOYield", cut=0.98, years=1995, round=2, file="f38_region_yield.csv")
     calcOutput("FacReqGLO",round=2,aggregate=FALSE,file="f38_fac_req_fao.csv")
     calcOutput("AgCapLabourShare",round=2,aggregate=TRUE,years=c(1995,2000,2005,2010),file="f38_historical_share.csv")
     calcOutput("RegFactorShare",datasource="USDA",factor="cap",round=4,aggregate=FALSE,file="f38_regression_cap_share.csv")
