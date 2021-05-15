@@ -28,6 +28,18 @@ calc2ndBioDem <- function(datasource, rev = 0.1) {
     
     description <- "2nd generation bioenergy demand for different scenarios taken from R2M41 coupled runs"
     
+  } else if (datasource == "Strefler2021") {
+    x <- readSource("Strefler2021", subtype = paste0("extensive_",rev))
+    x <- x[,,"Primary Energy Production|Biomass|Energy Crops (EJ/yr)"]*10^3
+    x <- collapseNames(x)
+    first_remind_year <- sort(getYears(x))[1]
+    x <- time_interpolate(x,seq(1995,2150,5),extrapolation_type = "constant")
+    
+    # set values in initial years that are not existing in REMIND data to zero
+    x[,getYears(x)<first_remind_year,]<-0
+    
+    description <- "2nd generation bioenergy demand for different scenarios taken from Strefler et al 2021 (DOI 10.1038/s41467-021-22211-2)"
+    
   } else if (datasource == "REMMAG") {
     x <- readSource("REMMAG","biodem")
     #harmonize historic period
@@ -77,9 +89,10 @@ calc2ndBioDem <- function(datasource, rev = 0.1) {
   } else if (datasource == "SSP_and_REM") {
     ssp <- calcOutput("2ndBioDem",datasource="SSPResults",aggregate = FALSE, rev = rev)
     rem <- calcOutput("2ndBioDem",datasource="REMIND",aggregate = FALSE, rev = rev)
+    strefler <- calcOutput("2ndBioDem",datasource="Strefler2021",aggregate = FALSE, rev = rev)
     
     ssp <- time_interpolate(ssp,getYears(rem),extrapolation_type = "constant")
-    x <- mbind(ssp,rem)
+    x <- mbind(ssp,rem,strefler)
     
     # sort scenarios alphabetically
     x <- x[,,sort(getNames(x))]
