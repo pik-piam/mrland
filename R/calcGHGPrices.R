@@ -168,7 +168,10 @@ calcGHGPrices <- function(emissions="pollutants",datasource="REMMAG", rev=0.1) {
   } else if (datasource=="SSP_and_REM") {
     ssp <- calcOutput("GHGPrices",datasource = "SSPResults",aggregate = FALSE, rev = rev)
     rem <- calcOutput("GHGPrices",datasource = "REMIND", aggregate = FALSE, rev = rev)
-    strefler <- calcOutput("GHGPrices",datasource = "Strefler2021", aggregate = FALSE, rev = rev)
+    if (rev > 4.58) {
+      strefler <- calcOutput("GHGPrices",datasource = "Strefler2021", aggregate = FALSE, rev = rev)  
+    } else strefler <- NULL
+    
     
     x <- mbind(ssp[,getYears(rem),],rem,strefler)
     

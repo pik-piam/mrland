@@ -89,7 +89,9 @@ calc2ndBioDem <- function(datasource, rev = 0.1) {
   } else if (datasource == "SSP_and_REM") {
     ssp <- calcOutput("2ndBioDem",datasource="SSPResults",aggregate = FALSE, rev = rev)
     rem <- calcOutput("2ndBioDem",datasource="REMIND",aggregate = FALSE, rev = rev)
-    strefler <- calcOutput("2ndBioDem",datasource="Strefler2021",aggregate = FALSE, rev = rev)
+    if (rev > 4.58) {
+      strefler <- calcOutput("2ndBioDem",datasource="Strefler2021",aggregate = FALSE, rev = rev)
+    } else strefler <- NULL
     
     ssp <- time_interpolate(ssp,getYears(rem),extrapolation_type = "constant")
     x <- mbind(ssp,rem,strefler)
