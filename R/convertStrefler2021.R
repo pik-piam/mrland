@@ -3,7 +3,7 @@ convertStrefler2021 <- function(x,subtype) {
   # remove global dimension
   x <- x["GLO",,,invert=TRUE]
   
-  map <- toolMappingFile("regional","regionmappingH12.csv")
+  map <- toolGetMapping(type = "regional", name = "regionmappingH12.csv", returnPathOnly = TRUE)
   
   if(grepl("intensive",subtype)) {
     # No weight for disaggregation because it's prices
