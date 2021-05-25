@@ -21,22 +21,27 @@ fullMAGPIE <- function(rev=0.1) {
     mag_years_past <- findset("past")
     short_years <- findset("t_all")
     
-    cellsregions <- function(reg_revision=0) {
+    # Check if mapping comes with an additional "superregion" layer and if so,
+    # aggregate some outputs to the superregional level. Otherwise,
+    # aggregate everything to regional level.
+    map <- toolGetMapping(getConfig("regionmapping"), type = "regional")
+    superregion <- ifelse("superregion" %in% colnames(map), "superregion", "region")
+    
+    cellsregions <- function(reg_revision=0, map) {
       # function which calculates the name vector for spatial 0.5 degree MAgPIE data sets
       # containing MAgPIE cell number and corresponding region
       cwd <- getwd()
-      if(!file.exists(getConfig("outputfolder"))) dir.create(getConfig("outputfolder"),recursive = TRUE)
+      if (!file.exists(getConfig("outputfolder"))) dir.create(getConfig("outputfolder"),recursive = TRUE)
       setwd(getConfig("outputfolder"))
-      map <- toolGetMapping(type = "regional", name = getConfig("regionmapping"))
       regionscode <- regionscode(map)
       spatial_header <- spatial_header(map)
       save(spatial_header,regionscode,map,reg_revision,file="spatial_header.rda",compress="xz")
       setwd(cwd)
     }
-    cellsregions(rev)
+    cellsregions(rev, map)
     
     # data fully agrees with the data currently used in MAgPIE and new data set is implemented
-    calcOutput("TauTotal",  years=1995,        round=2, file="fm_tau1995.cs4")
+    calcOutput("TauTotal",  years=1995,        round=2, file="fm_tau1995.cs4", aggregate = superregion)
   
     # 09 drivers
     calcOutput("CollectProjectionDrivers", driver="gdp",aggregate=FALSE, years=mag_years, round=3, file="f09_gdp_ppp_iso.csv") # please dont increase rounding, this can create errors
@@ -48,14 +53,14 @@ fullMAGPIE <- function(rev=0.1) {
     calcOutput("PhysicalInactivity",aggregate = FALSE,years=mag_years, round=3, file="f09_physical_inactivity.cs3")
     
     # 13 tc
-    calcOutput("ExoTcDummy",       round=4, file="f13_tau_scenario.csv")
-    calcOutput("TCguess",          round=3, file="f13_tcguess.cs4")
-    calcOutput("TauHistorical",    round=2, file="f13_tau_historical.csv")
+    calcOutput("ExoTcDummy",       round=4, file="f13_tau_scenario.csv", aggregate = superregion)
+    calcOutput("TCguess",          round=3, file="f13_tcguess.cs4", aggregate = superregion)
+    calcOutput("TauHistorical",    round=2, file="f13_tau_historical.csv", aggregate = superregion)
     
     # 14 yields
     calcOutput("CalibrationDummy", round=0, file="f14_yld_calib.csv")
     calcOutput("PastureYield",round=3,file="f14_pasture_yields_hist.csv")
-    calcOutput("Yield", cut=0.95, years=mag_years_past, round=2, file="f14_region_yields.cs3")
+    calcOutput("FAOYield", cut=0.98, years=mag_years_past, round=2, file="f14_region_yields.cs3")
 
     # 15 food
     calcOutput("BodyHeight",aggregate = FALSE,years=mag_years_past, round=2, file="f15_bodyheight_historical.cs3")
@@ -96,14 +101,14 @@ fullMAGPIE <- function(rev=0.1) {
     calcOutput("Processing_balanceflow",        years=mag_years, round=4, file="f20_processing_balanceflow.cs3")
     
     # 21 trade
-    calcOutput("TradeSelfSuff",    years=mag_years, round=2, file="f21_trade_self_suff.cs3")
-    calcOutput("TradeExportShr",   years=mag_years, round=2, file="f21_trade_export_share.cs3")
-    calcOutput("TradeBalanceflow", years=mag_years, round=4, file="f21_trade_balanceflow.cs3", aggregate=FALSE)
-    calcOutput("TradeBalance"    , years=mag_years, round=2, file="f21_trade_balance.cs3")
-    calcOutput("TradeMargin",      years=2005,      round=4, file="f21_trade_margin.cs3")
-    calcOutput("TradeTariff",      years=2005,      round=4, file="f21_trade_tariff.cs3")
-    calcOutput("TradeTariff", type_tariff="export",    round=4, file="f21_trade_tariff_export.cs3")
-    calcOutput("TradeTariff", type_tariff="import",    round=4, file="f21_trade_tariff_import.cs3")
+    calcOutput("TradeSelfSuff",    years=mag_years, round=2, file="f21_trade_self_suff.cs3", aggregate = superregion)
+    calcOutput("TradeExportShr",   years=mag_years, round=2, file="f21_trade_export_share.cs3", aggregate = superregion)
+    calcOutput("TradeBalanceflow", years=mag_years, round=4, file="f21_trade_balanceflow.cs3", aggregate = FALSE)
+    calcOutput("TradeBalance"    , years=mag_years, round=2, file="f21_trade_balance.cs3", aggregate = superregion)
+    calcOutput("TradeMargin",      years=2005,      round=4, file="f21_trade_margin.cs3", aggregate = superregion)
+    calcOutput("TradeTariff",      years=2005,      round=4, file="f21_trade_tariff.cs3", aggregate = superregion)
+    calcOutput("TradeTariff", type_tariff="export",    round=4, file="f21_trade_tariff_export.cs3", aggregate = superregion)
+    calcOutput("TradeTariff", type_tariff="import",    round=4, file="f21_trade_tariff_import.cs3", aggregate = superregion)
 
     # 32 forestry
     calcOutput("AfforestCosts", years=2001,        round=0, file="f32_fac_req_ha.csv")
@@ -122,9 +127,11 @@ fullMAGPIE <- function(rev=0.1) {
     calcOutput("GrowingStockNRF",aggregate=TRUE,round=0,file="f35_gs_relativetarget.cs4")
 
     #38 factor costs
-    calcOutput("Yield", cut=0.95, years=1995, round=2, file="f38_region_yield.csv")
+    calcOutput("FAOYield", cut=0.98, years=1995, round=2, file="f38_region_yield.csv")
     calcOutput("FacReqGLO",round=2,aggregate=FALSE,file="f38_fac_req_fao.csv")
     calcOutput("AgCapLabourShare",round=2,aggregate=TRUE,years=c(1995,2000,2005,2010),file="f38_historical_share.csv")
+    calcOutput("RegFactorShare",datasource="USDA",factor="cap",round=4,aggregate=FALSE,file="f38_regression_cap_share.csv")
+    
     
     #41 Area Equipped for Irrigation
     #f41_irrig(j) should be read out of calcAreaEquippedForIrrigation()

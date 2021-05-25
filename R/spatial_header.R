@@ -17,17 +17,25 @@
 #' }
 
 spatial_header <- function(mapping) {
-  if(is.character(mapping)) {
+  if (is.character(mapping)) {
     map <- read.csv(mapping, sep = ";")
-  } else if(is.data.frame(mapping)) {
+  } else if (is.data.frame(mapping)) {
     map <- mapping
   } else {
     stop("Mapping is provided in an unsupported format. It should be either a character or a data.frame!")
   }
+  
+  .getColumn <- function(map, what) {
+    col <- which(names(map) %in% what)
+    if (length(col) == 0) stop("No fitting column found")
+    else if (length(col) > 1) stop("Ambiguous column selection")
+    return(as.character(map[[col]]))
+  }
+    
   regionscode <- regionscode(map)
-  reg <- as.character(map$RegionCode)
-  names(reg) <- as.character(map$CountryCode)
-  iso <- toolGetMapping(type = "cell", name = "CountryToCellMapping.csv")$iso
+  reg <- .getColumn(map, c("region", "RegionCode"))
+  names(reg) <- .getColumn(map, c("country", "CountryCode"))
+  iso <- toolGetMapping("CountryToCellMapping.csv", type = "cell")$iso
   spatial_header <- paste(reg[iso], 1:length(iso), 
                           sep = ".")
   return(spatial_header)
