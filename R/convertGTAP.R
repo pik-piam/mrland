@@ -21,8 +21,8 @@ convertGTAP <- function(x,subtype) {
   
   fao <- collapseNames(calcOutput("FAOmassbalance", aggregate = FALSE)[, 2005, "dm"])
 
-  region_mapping <- toolMappingFile("regional",paste0(gtap,"Mapping2016.csv"),readcsv = TRUE,where = "mrland")
-  sector_mapping <- toolMappingFile("sectoral","mappingGTAPMAgPIETrade.csv",readcsv = TRUE,where ="mrland")
+  region_mapping <- toolGetMapping(type = "regional", name = paste0(gtap,"Mapping2016.csv"), where = "mrland")
+  sector_mapping <- toolGetMapping(type = "sectoral", name = "mappingGTAPMAgPIETrade.csv", where ="mrland")
   sector_mapping <- sector_mapping[which(sector_mapping$gtap !="xxx" & sector_mapping$magpie !="zzz"),]
   if (subtype %in% c("VIWS","VIMS","VXWD","VXMD")){
     fao_import <- collapseNames(fao[, 2005, "import"])

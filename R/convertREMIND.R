@@ -3,7 +3,7 @@ convertREMIND <- function(x,subtype) {
   # remove global dimension
   x <- x["GLO",,,invert=TRUE]
   
-  map <- toolMappingFile("regional","regionmappingH12.csv")
+  map <- toolGetMapping(type = "regional", name = "regionmappingH12.csv")
   
   if(grepl("intensive",subtype)) {
     # No weight for disaggregation because it's prices

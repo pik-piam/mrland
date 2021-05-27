@@ -10,7 +10,7 @@
 #' }
 #' 
 convertForestryProductionRatio<-function(x) {
-  map <- read.csv(toolMappingFile("regional",getConfig("regionmapping")),sep=";")
+  map <- toolGetMapping(type = "regional", name = getConfig("regionmapping"))
   y <- toolAggregate(x = x,rel = map,from = "RegionCode",to = "CountryCode",dim = 1)
   
   #y <- toolCountryFill(x, fill = NA, BHR="QAT", HKG="CHN", MUS="MDG", PSE="ISR", SGP="MYS", TLS="IDN")

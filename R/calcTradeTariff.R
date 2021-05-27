@@ -17,7 +17,7 @@
 #'     \dontrun{
 #'     x <- calcTradeTariff("GTAP7")
 #'     }
-#' @importFrom madrat toolAggregate toolMappingFile
+#' @importFrom madrat toolAggregate
 #' @importFrom reshape2 acast
 #' @importFrom magclass as.data.frame add_columns
 #' @importFrom magpiesets findset
