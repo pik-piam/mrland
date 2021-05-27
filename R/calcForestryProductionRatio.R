@@ -17,7 +17,6 @@
 calcForestryProductionRatio <- function(){
   
   ## Define a mapping
-  # map <- toolGetMapping(type = "regional", name = getConfig("regionmapping"))
   
   ## Reading in the area data from FAO
   prod_ratio <- readSource("ForestryProductionRatio")
