@@ -17,7 +17,6 @@ convertTimberShare<-function(x) {
   map <- map[!duplicated(map$ISO3), ]
   map <- map[map$Region!="Antarctica",]
   map <- map[!is.na(map$LETTERCODE),]
-  #map <- toolGetMapping(type = "regional", name = getConfig("regionmapping"))
   y <- toolAggregate(x = x,rel = map,from = "Region",to = "ISO3",dim = 1,weight = NULL,partrel = F)
 
   y <- toolCountryFill(y, fill = 0)
