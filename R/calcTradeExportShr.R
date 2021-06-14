@@ -17,7 +17,7 @@
 calcTradeExportShr <- function() {
   
   massbalance<-calcOutput("FAOmassbalance",aggregate = F)
-  newproducts<-c("betr","begr","scp","wood","woodfuel")
+  newproducts<-c("betr","begr","scp","wood","woodfuel") ## Why is this vector created here, not used anywhere in code?
     
   k_trade<-findset("k_trade")
   massbalance<-massbalance[,,k_trade]
@@ -39,8 +39,8 @@ calcTradeExportShr <- function() {
   ## Manual fix for Middle east and Japan
   # mapppnig <- toolGetMapping(type = "regional",name = "h12.csv")
   # mea_list <- subset(mapppnig,mapppnig$RegionCode=="MEA")
-  # exp_shr["JPN",,findset("kforest")]                <- 0 ## Magpiesets need update it should be kforestry
-  # exp_shr[mea_list$CountryCode,,findset("kforest")] <- 0 ## Magpiesets need update it should be kforestry
+  # exp_shr["JPN",,findset("kforestry")]                <- 0 ## Magpiesets need update it should be kforestry
+  # exp_shr[mea_list$CountryCode,,findset("kforestry")] <- 0 ## Magpiesets need update it should be kforestry
   
   return(list(x=exp_shr,
               weight=NULL,

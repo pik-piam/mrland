@@ -12,7 +12,7 @@
 #' }
 #' @importFrom magclass getNames<- as.magpie time_interpolate
 #' @importFrom stringr str_extract_all
-#' @importFrom madrat toolMappingFile
+#' @importFrom madrat toolGetMapping
 #' @export
 
 calcPlantationContribution <- function(){
@@ -69,7 +69,7 @@ calcPlantationContribution <- function(){
   
   ## Find standard mapping - which countries belong to REF and JPN in standard mapping - 
   ## we will modify ISO codes here so that this works with all mappings
-  h12_mapping <- toolMappingFile(type = "regional",name = "h12.csv",readcsv = TRUE)
+  h12_mapping <- toolGetMapping(type = "regional", name = "h12.csv")
   JPN <- h12_mapping[h12_mapping$RegionCode=="JPN",]$CountryCode
   REF <- h12_mapping[h12_mapping$RegionCode=="REF",]$CountryCode
   out[JPN,,] <- 0.00001

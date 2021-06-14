@@ -50,6 +50,36 @@ calcGHGPrices <- function(emissions="pollutants",datasource="REMMAG", rev=0.1) {
     description <- "GHG certificate prices for different scenarios based on data from REMIND-MAgPIE coupling"
     
     
+  } else if (datasource == "Strefler2021") {
+    x <- readSource("Strefler2021", subtype = paste0("intensive_",rev))
+    out_c <- x[,,"Price|Carbon (US$2005/t CO2)"]*44/12 # US$2005/tCO2 -> US$2005/tC
+    getNames(out_c,dim=2) <- "co2_c"
+    
+    out_n2o_direct <- x[,,"Price|Carbon (US$2005/t CO2)"]*265*44/28 # US$2005/tN2O -> US$2005/tN
+    getNames(out_n2o_direct,dim=2) <- "n2o_n_direct"
+    
+    out_n2o_indirect <- x[,,"Price|Carbon (US$2005/t CO2)"]*265*44/28 # US$2005/tN2O -> US$2005/tN
+    getNames(out_n2o_indirect,dim=2) <- "n2o_n_indirect"
+    
+    out_ch4 <- x[,,"Price|Carbon (US$2005/t CO2)"]*28
+    getNames(out_ch4,dim=2) <- "ch4"
+    
+    x <- mbind(out_n2o_direct,out_n2o_indirect,out_ch4,out_c)
+    
+    x <- time_interpolate(x,seq(1995,2150,5),extrapolation_type = "constant")
+    
+    # Set prices to zero before and in 2020
+    x[,getYears(x)<="y2020",]<-0
+    
+    # find scenario names that have NPi or NDC in their name and set their GHG prices to zero (replicating the coupling script)
+    set_to_zero <- getNames(x)[grepl("NPI|NDC",getNames(x))]
+    x[,,set_to_zero] <- 0
+    
+    # swap dimensions (scenario and gas) such that in the output file gas is in lines and scenarios in columns
+    getNames(x) <- gsub("^([^\\.]*)\\.(.*$)","\\2.\\1",getNames(x))
+    
+    description <- "GHG certificate prices for different scenarios taken from Strefler et al 2021 (DOI 10.1038/s41467-021-22211-2)"
+    
   } else if(datasource=="REMMAG") {
     x   <- readSource("REMMAG","ghgprices")
     if (emissions=="pollutants"){
@@ -138,8 +168,12 @@ calcGHGPrices <- function(emissions="pollutants",datasource="REMMAG", rev=0.1) {
   } else if (datasource=="SSP_and_REM") {
     ssp <- calcOutput("GHGPrices",datasource = "SSPResults",aggregate = FALSE, rev = rev)
     rem <- calcOutput("GHGPrices",datasource = "REMIND", aggregate = FALSE, rev = rev)
+    if (rev > 4.58) {
+      strefler <- calcOutput("GHGPrices",datasource = "Strefler2021", aggregate = FALSE, rev = rev)  
+    } else strefler <- NULL
     
-    x <- mbind(ssp[,getYears(rem),],rem)
+    
+    x <- mbind(ssp[,getYears(rem),],rem,strefler)
     
     x <- complete_magpie(x,fill=0)
     
