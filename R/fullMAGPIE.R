@@ -102,7 +102,7 @@ fullMAGPIE <- function(rev=0.1) {
     calcOutput("Processing_balanceflow",        years=mag_years, round=4, file="f20_processing_balanceflow.cs3")
     
     # 21 trade
-    calcOutput("TradeSelfSuff",    years=mag_years, round=2, file="f21_trade_self_suff.cs3", aggregate = superregion)
+    calcOutput("TradeSelfSuff",    years=mag_years, round=2, file="f21_trade_self_suff.cs3", aggregate = superregion) ## THIS FILE HAS TO BE RECREATED FOR FORESTRY MODULE - IF THIS CHANGES HERE ALSO ADD IT TO FORESTRY MODULE DATA AS WELL
     calcOutput("TradeExportShr",   years=mag_years, round=2, file="f21_trade_export_share.cs3", aggregate = superregion)
     calcOutput("TradeBalanceflow", years=mag_years, round=4, file="f21_trade_balanceflow.cs3", aggregate = FALSE)
     calcOutput("TradeBalance"    , years=mag_years, round=2, file="f21_trade_balance.cs3", aggregate = superregion)
@@ -120,6 +120,7 @@ fullMAGPIE <- function(rev=0.1) {
     calcOutput("PlantationContribution",aggregate = TRUE,round=3,file="f32_plantation_contribution.cs3")
     calcOutput("PlantedForest",aggregate = TRUE,round=3,file="f32_plantedforest.cs4")
     calcOutput("PlantEstablishCalib",aggregate=TRUE,round=2,file="f32_estb_calib.cs4")
+    calcOutput("TradeSelfSuff",    years=mag_years, round=2, file="f32_trade_self_suff.cs3", aggregate = superregion) ## THIS FILE IS RECREATED FOR FORESTRY MODULE - IF THE LINE IN TRADE SEGMENT CHANGES - DO NOT FORGET TO ADD IT TO FORESTRY MODULE DATA AS WELL
     
     # 35 natural vegetation
     calcOutput("ForestLossShare", round=7, file="f35_forest_lost_share.cs3")
