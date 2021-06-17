@@ -1,24 +1,23 @@
 #' @title calcEATFruitvegRatio
-#' @description 
+#' @description
 #' Calculates the share of fruits and vegetables in the calorie supply from the others MAgPIE commodity for the past.
 #' Information on the calorie supply from fruits and vegetables is relevant in the context of dietary recommendations,
 #' e.g. as proposed by the EAT-Lancet Commission on healthy diets from sustainable food systems.
 #'
-#' @param populationweight datasource of populationweight: FAO can be selected in order to better meet exact values. Normal datasource is PopulationPast
+#' @param populationweight datasource of populationweight: FAO can be selected in order to better meet exact values. 
+#' Normal datasource is PopulationPast
 #' @return List of magpie objects with results on country level, weight on country level, unit and description.
-#' 
 #' @author Isabelle Weindl
 #' @seealso \code{\link{calcOutput}}, \code{\link{calcEATLancetTargets}}, \code{\link{calcFAOharmonized}},
 #' \code{\link{calcEATLancetDiets}}
 #' @examples
-#' 
 #' \dontrun{ 
 #' calcOutput("EATFruitvegRatio")
 #' }
 #' @importFrom madrat toolFillWithRegionAvg
 #' @export
 
-calcEATFruitvegRatio <- function(populationweight="PopulationPast"){
+calcEATFruitvegRatio <- function(populationweight="PopulationPast") {
   
   ### FAO Commodity balance 
   FAO_CBS <- calcOutput(type = "FAOharmonized", aggregate = FALSE)[,,"food_supply_kcal"]
@@ -29,9 +28,9 @@ calcEATFruitvegRatio <- function(populationweight="PopulationPast"){
   
   ### Population weight
   if (populationweight=="PopulationPast"){
-    weight=collapseNames(calcOutput("PopulationPast",aggregate = FALSE))
+    weight=collapseNames(calcOutput("PopulationPast", aggregate = FALSE))
   }else if (populationweight=="FAO"){
-    weight <- collapseNames(readSource(type="FAO",subtype = "Pop",convert = T)[,,"population"])/1000000
+    weight <- collapseNames(readSource(type="FAO", subtype = "Pop", convert = T)[,,"population"])/1000000
   }
   weight<-weight[,mag_past,]
  
@@ -70,8 +69,8 @@ calcEATFruitvegRatio <- function(populationweight="PopulationPast"){
   fruitveg2others_kcal_ratio <- fruitveg_kcal/others_kcal
   out <- toolFillWithRegionAvg(fruitveg2others_kcal_ratio, weight = weight, verbose = FALSE)
   
-  min=0
-  max=1
+  min <- 0
+  max <- 1
   
   
   return(list(x=out,
@@ -82,8 +81,3 @@ calcEATFruitvegRatio <- function(populationweight="PopulationPast"){
               )
   )
 }
-    
-    
-    
-    
-    
