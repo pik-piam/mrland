@@ -84,6 +84,7 @@ fullMAGPIE <- function(rev=0.1) {
     calcOutput("EATLancetWaste",  aggregate = TRUE, round=4, file="f15_calib_factor_FAOfsupply.cs4", out_type="calib")
     calcOutput("FAOLossesWaste",  aggregate = TRUE, round=4, file="f15_supply2intake_ratio_FAO.cs3", out_type="waste")
     calcOutput("EATLancetTargets",aggregate = TRUE, round=4, file="f15_targets_EATLancet.cs3", attributes="kcal/d")
+    calcOutput("EATFruitvegRatio",aggregate = TRUE, round=4, file="f15_fruitveg2others_kcal_ratio.csv", populationweight="PopulationPast")
     
     # 16 demand
     calcOutput("Attributes", round=4, aggregate = FALSE,        file="fm_attributes.cs3")
