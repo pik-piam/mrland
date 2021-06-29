@@ -17,6 +17,7 @@
 #' @importFrom grDevices boxplot.stats
 
 calcEFch4Rice<-function(physical=TRUE){
+  past <- findset("past")
   emis <- readSource("FAO_online","EmisAgRiceCult")
   
   ef   <- emis[,,"Emissions_(CH4)_(Rice_cultivation)_(gigagrams)"] / emis[,,"area_harvested"]
@@ -26,7 +27,7 @@ calcEFch4Rice<-function(physical=TRUE){
     stop("FAOSTAT seems to have changed, recheck this function, ef seems dynamic over time")
   }
   
-  weight <- calcOutput("Croparea",sectoral = "kcr",physical=physical,aggregate = FALSE)
+  weight <- calcOutput("Croparea",sectoral = "kcr",physical=physical,aggregate = FALSE)[,past,]
   weight <- weight[,,"rice_pro"]
   weight <- toolHoldConstantBeyondEnd(weight)
   years  <- intersect(getYears(weight), getYears(emis))
@@ -48,7 +49,7 @@ calcEFch4Rice<-function(physical=TRUE){
   # transform from Gg 10^9g to Mt
   ef <- ef / 1000
   
-  weight  <- collapseNames(weight)[,years,]
+  weight  <- collapseNames(weight)
   out     <- weight
   out[,,] <- ef
   
