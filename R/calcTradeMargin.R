@@ -59,14 +59,12 @@ calcTradeMargin <- function(gtap_version ="GTAP7", bilateral = FALSE,producer_pr
   k_trade <- intersect(intersect(getNames(p),getNames(y)),k_trade)
   out <- y[,,k_trade]*p[,,k_trade]
   out <- toolCountryFill(out,0)
-  out <- add_columns(x = out,addnm = findset("kforest"),dim = 3.1)
-  out[,,"wood"] <- out[,,"others"]
-  out[,,"woodfuel"] <- out[,,"wood"]
- 
+  out <- add_columns(x = out,addnm = findset("kforestry"),dim = 3.1)
+  out[,,findset("kforestry")] <- out[,,"others"]
   
   weight <- setYears(vxmd *voa,NULL)[,,k_trade]
   weight <- toolCountryFill(weight,0)
-  weight <- add_columns(x = weight,addnm = findset("kforest"),dim = 3.1)
+  weight <- add_columns(x = weight,addnm = findset("kforestry"),dim = 3.1)
   weight[,,"wood"] <- weight[,,"tece"] * 0.5
   weight[,,"woodfuel"] <- weight[,,"wood"] * 0.5
   unit <- "US$05"
