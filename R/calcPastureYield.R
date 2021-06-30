@@ -15,7 +15,6 @@
 #' @importFrom stats quantile
 
 calcPastureYield <- function(range_pastr = FALSE) {
-  
   if (range_pastr) {
     mag_years_past <- findset("past")[c(7, 8, 9, 10)]
     biomass <- calcOutput("FAOmassbalance", aggregate = FALSE)[, , "production.dm"][, mag_years_past, "pasture"]
@@ -50,14 +49,15 @@ calcPastureYield <- function(range_pastr = FALSE) {
 
     biomass_split <- biomass * livst_share_ctry
     grassl_land_ctry <- toolAggregate(grassl_land, rel = mapping, to = "iso", from = "celliso")
-
     pstr_yield <- biomass_split / grassl_land_ctry
-    pstr_yield[is.nan(pstr_yield)] <- 1
     pstr_yield[pstr_yield > 100] <- 100
     pstr_yield <- toolCountryFill(pstr_yield)
+    pstr_yield[is.nan(pstr_yield) | is.na(pstr_yield)] <- 1
+    grassl_land_ctry <- toolCountryFill(grassl_land_ctry)
+    grassl_land_ctry[is.na(grassl_land_ctry)] <- 0
     return(list(
       x = pstr_yield,
-      weight = grassl_land,
+      weight = grassl_land_ctry,
       isocountries = FALSE,
       unit = "ton DM per ha",
       description = "Pasture yields"
