@@ -49,6 +49,7 @@ fullMAGPIE <- function(rev=0.1) {
     calcOutput("CollectProjectionDrivers", driver="pop",aggregate=FALSE, years=mag_years, round=6, file="f09_pop_iso.csv") # please dont increase rounding, this can create errors
     calcOutput("CollectProjectionDrivers", driver="urban",aggregate=FALSE, years=mag_years, round=4, file="f09_urban_iso.csv") # please dont increase rounding, this can create errors
     calcOutput("DevelopmentState", round=4, file="f09_development_state.cs3")
+    calcOutput("GovernanceIndicator", years=short_years, round=4, file="f09_governance_indicator.cs3")
     calcOutput("Demography",education=FALSE,aggregate=FALSE, file="f09_demography.cs3", round=6) # please dont increase rounding, this can create errors
     calcOutput("PhysicalInactivity",aggregate = FALSE,years=mag_years, round=3, file="f09_physical_inactivity.cs3")
     
