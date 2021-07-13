@@ -61,7 +61,7 @@ fullMAGPIE <- function(rev=0.1) {
     # 14 yields
     calcOutput("CalibrationDummy", round=0, file="f14_yld_calib.csv")
     calcOutput("PastureYield",round=3,file="f14_pasture_yields_hist.csv")
-    calcOutput("PastureYield",range_pastr = TRUE, round=3, file="f14_grassL_yld_hist_land.cs3")
+    calcOutput("PastureYield",range_pastr = TRUE, round=3, file="f14_grassl_yld_hist.cs3")
     calcOutput("FAOYield", cut=0.98, years=mag_years_past, round=2, file="f14_region_yields.cs3")
 
     # 15 food
