@@ -1,8 +1,8 @@
 Package: mrland
 Type: Package
 Title: MadRaT land data package
-Version: 0.10.5
-Date: 2021-06-10
+Version: 0.13.4
+Date: 2021-07-13
 Authors@R: c(person("Jan Philipp", "Dietrich", email = "dietrich@pik-potsdam.de", role = c("aut","cre")),
              person("Abhijeet", "Mishra", role = "aut"),
              person("Isabelle", "Weindl", role = "aut"),
@@ -29,7 +29,9 @@ Imports:
     readxl,
     reshape2,
     SPEI,
-    stringr
+    stringr,
+    raster,
+    dplyr
 License: LGPL-3 | file LICENSE
 LazyData: no
 Encoding: UTF-8

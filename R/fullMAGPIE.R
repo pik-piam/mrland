@@ -49,6 +49,7 @@ fullMAGPIE <- function(rev=0.1) {
     calcOutput("CollectProjectionDrivers", driver="pop",aggregate=FALSE, years=mag_years, round=6, file="f09_pop_iso.csv") # please dont increase rounding, this can create errors
     calcOutput("CollectProjectionDrivers", driver="urban",aggregate=FALSE, years=mag_years, round=4, file="f09_urban_iso.csv") # please dont increase rounding, this can create errors
     calcOutput("DevelopmentState", round=4, file="f09_development_state.cs3")
+    calcOutput("GovernanceIndicator", years=short_years, round=4, file="f09_governance_indicator.cs3")
     calcOutput("Demography",education=FALSE,aggregate=FALSE, file="f09_demography.cs3", round=6) # please dont increase rounding, this can create errors
     calcOutput("PhysicalInactivity",aggregate = FALSE,years=mag_years, round=3, file="f09_physical_inactivity.cs3")
     
@@ -60,6 +61,7 @@ fullMAGPIE <- function(rev=0.1) {
     # 14 yields
     calcOutput("CalibrationDummy", round=0, file="f14_yld_calib.csv")
     calcOutput("PastureYield",round=3,file="f14_pasture_yields_hist.csv")
+    calcOutput("PastureYield",range_pastr = TRUE, round=3, file="f14_grassl_yld_hist.cs3")
     calcOutput("FAOYield", cut=0.98, years=mag_years_past, round=2, file="f14_region_yields.cs3")
 
     # 15 food
@@ -84,6 +86,7 @@ fullMAGPIE <- function(rev=0.1) {
     calcOutput("EATLancetWaste",  aggregate = TRUE, round=4, file="f15_calib_factor_FAOfsupply.cs4", out_type="calib")
     calcOutput("FAOLossesWaste",  aggregate = TRUE, round=4, file="f15_supply2intake_ratio_FAO.cs3", out_type="waste")
     calcOutput("EATLancetTargets",aggregate = TRUE, round=4, file="f15_targets_EATLancet.cs3", attributes="kcal/d")
+    calcOutput("EATFruitvegRatio",aggregate = TRUE, round=4, file="f15_fruitveg2others_kcal_ratio.csv", populationweight="PopulationPast")
     
     # 16 demand
     calcOutput("Attributes", round=4, aggregate = FALSE,        file="fm_attributes.cs3")
