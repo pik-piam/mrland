@@ -20,7 +20,7 @@ calcEFch4AWMS<-function(){
   emis   <- readSource("FAO_online","EmisAgManureManag")
   ch4    <- emis[,,c("Emissions_(CH4)_(Manure_management)_(gigagrams)","Manure_treated_(N_content)_(kg)")]
 
-  map    <- toolMappingFile(type = "sectoral", name="FAOitems_animals_ch4.csv", readcsv=TRUE, where = "mrland")
+  map    <- toolGetMapping(type = "sectoral", name="FAOitems_animals_ch4.csv", where = "mrland")
   ch4_ag <- toolAggregate(x = ch4,dim = 3.1,rel = map,from = "fao",to="magpie",partrel = TRUE, verbosity = 2)
   ef     <- collapseNames((ch4_ag[,,"Emissions_(CH4)_(Manure_management)_(gigagrams)"]/1000) / (ch4_ag[,,"Manure_treated_(N_content)_(kg)"]/1000000000))
 
