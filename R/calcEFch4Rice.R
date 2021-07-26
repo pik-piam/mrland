@@ -38,6 +38,7 @@ calcEFch4Rice<-function(physical=TRUE){
   #select maximum ef for countries without estimates
   upper_value   <- boxplot.stats(ef)$stats[4]
   ef[is.na(ef)] <- upper_value
+  ef[is.infinite(ef)] <- upper_value
   ef[ef==0]     <- upper_value
 
   if (physical==TRUE){
