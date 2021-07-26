@@ -95,7 +95,7 @@ fullMAGPIE <- function(rev=0.1) {
     calcOutput("DomesticBalanceflow", years=mag_years, round=4, file="f16_domestic_balanceflow.csv")
       
     # 18 residues
-    calcOutput("Multicropping", extend_future = TRUE, round=4, file="f18_multicropping.csv",aggregate = TRUE)
+    calcOutput("Multicropping", extend_future = TRUE, years=mag_years, round=4, file="f18_multicropping.csv",aggregate = TRUE)
     calcOutput("ResCombustEff", round=4, file="f18_res_combust_eff.cs4",aggregate = F)
     
     # 20 processing
