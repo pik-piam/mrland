@@ -17,7 +17,7 @@
 
 fullMAGPIE <- function(rev=0.1) {
   
-   if(rev < 4.63) stop("mrland(>= 0.14.0) does not support revision under 4.63 anymore.
+   if(rev < 4.63) stop("mrland(>= 0.14.0) does not support revision below 4.63 anymore.
                        Please use a older snapshot/version of the library, if you need older revisions.")
   
     mag_years <- findset("time")
