@@ -165,7 +165,6 @@ fullMAGPIE <- function(rev=0.1) {
     calcOutput("EfNSoil",  round=4, file="f51_ef_n_soil_reg.cs3")
     calcOutput("EF3confinement",round=4, file="f51_ef3_confinement.cs4")
     calcOutput("EF3prp",round=4, file="f51_ef3_prp.cs4")
-    calcOutput("IPCCfracLeach", round=4, cellular=FALSE, file="f51_ipcc_frac_leach.cs4")
     
     #53 methane
     calcOutput("EFch4Rice",years=mag_years,round=4, file="f53_EFch4Rice.cs4")
