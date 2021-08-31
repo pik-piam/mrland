@@ -21,7 +21,7 @@ calcEfNSoil<-function(method="IPCC_reg"){
     EfNSoil<-emis/surplus
     weight=surplus
   } else if (method=="IPCC"){
-    EfNSoil<-calcOutput("IPCCefNSoil",aggregate = "GLO")
+    EfNSoil<-setYears(calcOutput("IPCCefNSoil",aggregate = "GLO")[,"y2010,"],NULL)
     weight=NULL
   } else if (method=="IPCC_reg"){
     tmp<-calcOutput("IPCCefNSoil",aggregate = FALSE,supplementary = TRUE)
