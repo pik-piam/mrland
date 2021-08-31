@@ -13,17 +13,24 @@
 #' 
 
 
-calcEfNSoil<-function(method="IPCC"){
-  EfNSoil<-setYears(readSource("IPCC","efnsoil",convert = FALSE),NULL)
-  weight=NULL
+calcEfNSoil<-function(method="IPCC_reg"){
+  
   if (method=="Nloss") {
     surplus<-dimSums(calcOutput("NitrogenBudgetCropland")[,,"surplus"],dim=1)
     emis<-dimSums(calcOutput("EmisNitrogenCroplandPast",method="IPCC"),dim=c(1,3.2))
     EfNSoil<-emis/surplus
-  }else if (method!="IPCC"){stop("mtehod unknown")}
+    weight=surplus
+  } else if (method=="IPCC"){
+    EfNSoil<-calcOutput("IPCCefNSoil",aggregate = "GLO")
+    weight=NULL
+  } else if (method=="IPCC_reg"){
+    tmp<-calcOutput("IPCCefNSoil",aggregate = FALSE,supplementary = TRUE)
+    EfNSoil<-tmp$x
+    weight<-tmp$weight
+  } else {stop("mtehod unknown")}
   return(list(
     x=EfNSoil,
-    weight=NULL,
+    weight=weight,
     unit="Share",
     description="Emission factors from cropland soils. If IPCC, using the ipcc emission factors as share of applied N inputs. If Nloss, as share of cropland budget surplus."))
 }
