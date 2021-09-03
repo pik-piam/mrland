@@ -17,6 +17,9 @@
 
 fullMAGPIE <- function(rev=0.1) {
   
+   if(rev < 4.63) stop("mrland(>= 0.14.0) does not support revision below 4.63 anymore.
+                       Please use a older snapshot/version of the library, if you need older revisions.")
+  
     mag_years <- findset("time")
     mag_years_past <- findset("past")
     short_years <- findset("t_all")
@@ -158,7 +161,8 @@ fullMAGPIE <- function(rev=0.1) {
     calcOutput("NitrogenFixationRatePasture",years=mag_years, round=5, file="f50_nitrogen_fixation_rates_pasture.cs4")
     
     #51 nitrogen pollution
-    calcOutput("EfNSoil",  round=4, file="f51_ef_n_soil.cs3", aggregate = FALSE)
+    calcOutput("EfNSoil",  round=4, file="f51_ef_n_soil.cs3", aggregate=FALSE, method="IPCC")
+    calcOutput("EfNSoil",  round=4, file="f51_ef_n_soil_reg.cs3")
     calcOutput("EF3confinement",round=4, file="f51_ef3_confinement.cs4")
     calcOutput("EF3prp",round=4, file="f51_ef3_prp.cs4")
     
