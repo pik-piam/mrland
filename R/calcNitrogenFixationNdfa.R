@@ -12,10 +12,12 @@
 #' }
 #' 
 calcNitrogenFixationNdfa<-function(){
+  past   <- findset("past")
+  
   ndfa<-setYears(readSource("Herridge",subtype = "ndfa"),NULL)
   harvest<-collapseNames(calcOutput("FAOmassbalance",aggregate = FALSE)[,,"nr"][,,"production"])
   harvest<-add_dimension(harvest,dim = 3.1,add = "data1",nm = "organ")
-  res<-collapseNames(calcOutput("ResBiomass",aggregate = FALSE)[,,"nr"])
+  res<-collapseNames(calcOutput("ResBiomass",aggregate = FALSE)[,past,"nr"])
   biomass<-mbind(harvest[,,getNames(res,dim=2)],res)
   weight<-dimSums(biomass,dim=3.1)
   out<-weight<-toolHoldConstantBeyondEnd(weight)
