@@ -64,7 +64,12 @@ readS4Nproject_input <- function(subtype="co2prices") {
   if (subtype=="bioenergy"){
     # Disaggregate regional bioenergy to country values using population weight
     # country population in SSP2
-    pop     <- calcOutput("CollectProjectionDrivers", driver="pop",aggregate=FALSE, years=paste0("y",c(2005, seq(2010, 2100, by=10))), round=6)
+    pop     <- calcOutput("Population", 
+                          naming = "indicator.scenario",
+                          extension2150 = "none",
+                          aggregate = FALSE, 
+                          years = paste0("y", c(2005, seq(2010, 2100, by = 10))), 
+                          round = 6)
     pop     <- collapseNames(pop[,,"SSP2"])
 
     # regional population
