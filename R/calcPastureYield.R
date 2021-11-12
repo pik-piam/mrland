@@ -2,7 +2,6 @@
 #'
 #' Provides Pasture yields defined as ratio of grazed biomass to grazed area
 #' @param range_pastr Boolean value indicating if the grass yields should be split between rangelands and pastures.
-#' @description `max_yields` and `max_iter` are only affecting the calculations if `cellular` is TRUE.
 #' @return Pasture yields and corresponding weights as a list of
 #' two MAgPIE objects
 #' @author Isabelle Weindl, Marcos Alves
@@ -31,7 +30,7 @@ calcPastureYield <- function(range_pastr = FALSE) {
     grassl_shares[is.nan(grassl_shares) | is.infinite(grassl_shares)] <- 0
 
     mapping <- toolGetMapping(name = "CountryToCellMapping.csv", type = "cell")
-
+    mapping <- toolGetMapping(name = "regionmappingH12.csv", type = "cell")
     livestock <- setNames(toolCell2isoCell(readSource("GLW3")), "liv_numb")
     livst_split <- livestock * grassl_shares
     livst_split <- collapseNames(livst_split)
@@ -44,11 +43,12 @@ calcPastureYield <- function(range_pastr = FALSE) {
     # I am splitting biomass consumption assuming the share
     # between animals reared on rangelands and pastures correlates linearly
     # with the production of grass in pastures and rangelands in a country. That can be
-    # derived by the fact that the feedbaskets assume the same productivity (feed ingreedients shares)
+    # derived by the fact that the feedbaskets assume the same feed ingredients shares
     # within a country.
 
     biomass_split <- biomass * livst_share_ctry
     grassl_land_ctry <- toolAggregate(grassl_land, rel = mapping, to = "iso", from = "celliso")
+    biomass_split <- toolAggregate(biomass_split, rel = mapping, to = "RegionCode", from = "CountryCode")
     pstr_yield <- biomass_split / grassl_land_ctry
     pstr_yield[pstr_yield > 100] <- 100
     pstr_yield <- toolCountryFill(pstr_yield)
