@@ -43,7 +43,7 @@ calcGrasslandBiomass <- function() {
   # within a country.
 
   biomass_split <- biomass * livst_share_ctry
-
+  biomass_split <- toolCountryFill(biomass_split)
 
   return(list(
     x = biomass_split,

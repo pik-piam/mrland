@@ -30,7 +30,7 @@ calcPastureYield <- function(range_pastr = FALSE) {
     grassl_shares[is.nan(grassl_shares) | is.infinite(grassl_shares)] <- 0
 
     mapping <- toolGetMapping(name = "CountryToCellMapping.csv", type = "cell")
-    mapping <- toolGetMapping(name = "regionmappingH12.csv", type = "cell")
+
     livestock <- setNames(toolCell2isoCell(readSource("GLW3")), "liv_numb")
     livst_split <- livestock * grassl_shares
     livst_split <- collapseNames(livst_split)
@@ -48,7 +48,6 @@ calcPastureYield <- function(range_pastr = FALSE) {
 
     biomass_split <- biomass * livst_share_ctry
     grassl_land_ctry <- toolAggregate(grassl_land, rel = mapping, to = "iso", from = "celliso")
-    biomass_split <- toolAggregate(biomass_split, rel = mapping, to = "RegionCode", from = "CountryCode")
     pstr_yield <- biomass_split / grassl_land_ctry
     pstr_yield[pstr_yield > 100] <- 100
     pstr_yield <- toolCountryFill(pstr_yield)
