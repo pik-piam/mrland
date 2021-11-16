@@ -17,7 +17,7 @@ MAgPIE model.
 }
 \examples{
 
-\dontrun{ 
+\dontrun{
 fullMAgPIE(revision=12, mainfolder="pathtowhereallfilesarestored")
 }
 }
