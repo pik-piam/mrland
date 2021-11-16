@@ -18,8 +18,8 @@ Converts timber share
 Update dd-Jmm-jjjj - Please add comment if changes made here (Abhi)
 }
 \examples{
-
-\dontrun{ a <- readSource("TimberShare",convert=FALSE)
+\dontrun{
+a <- readSource("TimberShare", convert = FALSE)
 }
 }
 \author{

@@ -16,9 +16,8 @@ Magpie objects
 Read the gridded livestock of the world 3 dataset.
 }
 \examples{
-
 \dontrun{
-readSource("GLW3", subtype = "DA", convert="onlycorrect")
+readSource("GLW3", subtype = "DA", convert = "onlycorrect")
 }
 
 }
