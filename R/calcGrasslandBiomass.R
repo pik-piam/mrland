@@ -11,7 +11,8 @@
 #' }
 #'
 calcGrasslandBiomass <- function() {
-  mag_years_past <- findset("past")[c(7, 8, 9, 10)]
+  # mag_years_past <- findset("past")[c(7, 8, 9, 10)]
+  mag_years_past <- findset("past")
   biomass <- calcOutput("FAOmassbalance", aggregate = FALSE)[, , "production.dm"][, mag_years_past, "pasture"]
   biomass <- collapseNames(biomass)
   biomass <- toolIso2CellCountries(biomass)
