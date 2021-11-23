@@ -13,8 +13,7 @@ Dummy file for regional exogenous tau path
 Dummy file for regional exogenous tau path
 }
 \seealso{
-\code{\link{setConfig}}, \code{\link{readSource}},
-\code{\link{calcOutput}}
+\code{\link{readSource}}, \code{\link{calcOutput}}
 }
 \author{
 Florian Humpenoeder

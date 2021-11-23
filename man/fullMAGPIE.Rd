@@ -7,22 +7,20 @@
 fullMAGPIE(rev = 0.1)
 }
 \arguments{
-\item{rev}{data revision which should be used as input (positive numeric).
-\code{\link{setConfig}} (e.g. for setting the mainfolder if not already set
-properly).}
+\item{rev}{data revision which should be used as input (positive numeric).}
 }
 \description{
 Function that produces the complete regional data set required for running the
 MAgPIE model.
 }
 \examples{
-
 \dontrun{
-fullMAgPIE(revision=12, mainfolder="pathtowhereallfilesarestored")
+fullMAgPIE(revision = 12, mainfolder = "pathtowhereallfilesarestored")
 }
+
 }
 \seealso{
-\code{\link{readSource}},\code{\link{getCalculations}},\code{\link{calcOutput}},\code{\link{setConfig}}
+\code{\link{readSource}}, \code{\link{getCalculations}}, \code{\link{calcOutput}}
 }
 \author{
 Jan Philipp Dietrich, Benjamin Leon Bodirsky, Florian Humpenoeder, Edna J. Molina Bacca
