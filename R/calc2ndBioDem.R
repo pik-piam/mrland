@@ -105,6 +105,15 @@ calc2ndBioDem <- function(datasource, rev = 0.1) {
     stop("Unknown datasource",datasource)
   }
   
+  #years
+  years <- getYears(x,as.integer = T)
+  yr_hist <- years[years > 1995 & years <= 2020]
+  yr_fut <- years[years >= 2020]
+  
+  #apply lowpass filter (not applied on 1st time step, applied separately on historic and future period)
+  lowpass <- 3
+  x <- mbind(x[,1995,],lowpass(x[,yr_hist,],i=lowpass),lowpass(x[,yr_fut,],i=lowpass)[,-1,])
+  
   return(list(x=x, weight=NULL, 
               description=description,
               unit="PJ per year", 
