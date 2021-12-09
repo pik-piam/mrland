@@ -50,6 +50,7 @@ calc2ndBioDem <- function(datasource, rev = 0.1) {
     x<-readSource("SSPResults")
     x<- collapseNames(x[,,"Primary Energy|Biomass|Energy Crops (EJ/yr)"])*10^3
     description <- "2nd generation bioenergy demand for different scenarios taken from IIASA SSP database"
+    toolFillYears()
     
   } else if (datasource == "S4N_project") {
     # Total bioenergy demand (including 1st genation, 2nd generation and residues) at country level from IMAGE for 2 different SSP2 scenarios starting in 2005 (in EJ per year)
@@ -96,6 +97,15 @@ calc2ndBioDem <- function(datasource, rev = 0.1) {
     ssp <- time_interpolate(ssp,getYears(rem),extrapolation_type = "constant")
     x <- mbind(ssp,rem,strefler)
     
+    #years
+    years <- getYears(x,as.integer = T)
+    yr_hist <- years[years > 1995 & years <= 2020]
+    yr_fut <- years[years >= 2020]
+    
+    #apply lowpass filter (not applied on 1st time step, applied separately on historic and future period)
+    iter <- 3
+    x <- mbind(x[,1995,],lowpass(x[,yr_hist,],i=iter),lowpass(x[,yr_fut,],i=iter)[,-1,])
+    
     # sort scenarios alphabetically
     x <- x[,,sort(getNames(x))]
     
@@ -104,15 +114,6 @@ calc2ndBioDem <- function(datasource, rev = 0.1) {
   } else { 
     stop("Unknown datasource",datasource)
   }
-  
-  #years
-  years <- getYears(x,as.integer = T)
-  yr_hist <- years[years > 1995 & years <= 2020]
-  yr_fut <- years[years >= 2020]
-  
-  #apply lowpass filter (not applied on 1st time step, applied separately on historic and future period)
-  iter <- 3
-  x <- mbind(x[,1995,],lowpass(x[,yr_hist,],i=iter),lowpass(x[,yr_fut,],i=iter)[,-1,])
   
   return(list(x=x, weight=NULL, 
               description=description,
