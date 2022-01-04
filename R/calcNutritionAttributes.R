@@ -29,7 +29,7 @@ calcNutritionAttributes<-function(){
   kall<-findset("kall")
   out<-out[,,kall]
   out[,,"scp"][,,"kcal"]<-20.9/4.184
-  out[,,"scp"][,,"protein"]<-0.7
+  out[,,"scp"][,,"protein"]<-0.45
   
   #add years beyond 2010
   years<-findset("time")
