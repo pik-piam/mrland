@@ -26,7 +26,7 @@ calcGrasslandBiomass <- function() {
   grassl_shares[, , "range"] <- 1 - grassl_shares[, , "pastr"]
   grassl_shares[is.nan(grassl_shares) | is.infinite(grassl_shares)] <- 0
 
-  mapping <- toolGetMapping(name = "CountryToCellMapping.csv", type = "cell")
+  mapping <- toolGetMapping("CountryToCellMapping.rds", where="mrcommons")
 
   livestock <- setNames(toolCell2isoCell(readSource("GLW3")), "liv_numb")
   livst_split <- livestock * grassl_shares

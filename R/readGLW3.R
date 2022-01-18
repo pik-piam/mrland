@@ -18,7 +18,7 @@ readGLW3 <- function(subtype = "Da") {
     x <- raster(strName)
     x <- raster::aggregate(x, fact = 6, fun = sum)
     x <- rasterToPoints(x)
-    mapping <- toolGetMapping(name = "CountryToCellMapping.csv", type = "cell")
+    mapping <- toolGetMapping("CountryToCellMapping.rds", where="mrcommons")
     colnames(x) <- c("lon", "lat", paste0("X5_Ct_2010_", subtype))
     x <- left_join(mapping, x, by = c("lat", "lon"), copy = TRUE)
     x <- as.magpie(x[, c(2, 7)])

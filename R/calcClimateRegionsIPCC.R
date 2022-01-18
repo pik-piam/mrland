@@ -30,7 +30,7 @@ calcClimateRegionsIPCC<-function(landusetypes="all", cellular=FALSE, yearly=FALS
   lat[,,]<-NA
   pe[,,]<-NA
   lat<-p[,1,1]
-  lat[,,] <- as.numeric(toolGetMapping(type = "cell", name = "CountryToCellMapping.csv")$lat)
+  lat[,,] <- as.numeric(toolGetMapping("CountryToCellMapping.rds", where="mrcommons")$lat)
   lat<-setNames(setYears(lat,NULL),NULL)
   tmp<-t
   tmp<-aperm(tmp,c(3,2,1))
@@ -94,7 +94,7 @@ calcClimateRegionsIPCC<-function(landusetypes="all", cellular=FALSE, yearly=FALS
   }
   
   else if (cellular==FALSE){
-    CountryToCell <- toolGetMapping(type = "cell", name = "CountryToCellMapping.csv")
+    CountryToCell <- toolGetMapping("CountryToCellMapping.rds", where="mrcommons")
     
     if (landusetypes=="all"){
       landuse<-calcOutput("LanduseInitialisation",cellular=TRUE,aggregate=FALSE)
