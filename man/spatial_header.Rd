@@ -19,10 +19,10 @@ function calculates a 0.5 degree spatial header for 0.5 degree magclass
 objects
 }
 \examples{
-
 \dontrun{
 spatial_header("regionmappingMAgPIE.csv")
 }
+
 }
 \seealso{
 \code{\link{regionscode}}

@@ -13,32 +13,31 @@
 #' }
 #' @importFrom stats quantile
 
-calcPastureYield <- function(range_pastr = FALSE) {
+calcPastureYield <- function(range_pastr = FALSE) { # nolint
   if (range_pastr) {
-    mag_years_past <- findset("past")[c(7, 8, 9, 10)]
-    biomass <- calcOutput("FAOmassbalance", aggregate = FALSE)[, , "production.dm"][, mag_years_past, "pasture"]
+    magYearsPast <- findset("past")[c(7, 8, 9, 10)]
+    biomass <- calcOutput("FAOmassbalance", aggregate = FALSE)[, , "production.dm"][, magYearsPast, "pasture"]
     biomass <- collapseNames(biomass)
 
     biomass <- toolIso2CellCountries(biomass)
-    land <- calcOutput("LanduseInitialisation", cellular = TRUE, nclasses = "nine", aggregate = FALSE)[, mag_years_past, ]
-    land_total <- dimSums(land, dim = 3)
-    grassl_land <- land[, , c("past", "range")]
-    grassl_land <- setNames(grassl_land, c("pastr", "range"))
-    grassl_shares <- setNames(grassl_land[, , "pastr"] / dimSums(grassl_land, dim = 3), "pastr")
-    grassl_shares <- add_columns(grassl_shares, addnm = "range", dim = 3.1)
-    grassl_shares[, , "range"] <- 1 - grassl_shares[, , "pastr"]
-    grassl_shares[is.nan(grassl_shares) | is.infinite(grassl_shares)] <- 0
+    land <- calcOutput("LanduseInitialisation", cellular = TRUE, nclasses = "nine", aggregate = FALSE)[, magYearsPast, ]
+    grasslLand <- land[, , c("past", "range")]
+    grasslLand <- setNames(grasslLand, c("pastr", "range"))
+    grasslShares <- setNames(grasslLand[, , "pastr"] / dimSums(grasslLand, dim = 3), "pastr")
+    grasslShares <- add_columns(grasslShares, addnm = "range", dim = 3.1)
+    grasslShares[, , "range"] <- 1 - grasslShares[, , "pastr"]
+    grasslShares[is.nan(grasslShares) | is.infinite(grasslShares)] <- 0
 
-    mapping <- toolGetMapping("CountryToCellMapping.rds", where="mrcommons")
+    mapping <- toolGetMapping("CountryToCellMapping.rds", where = "mrcommons")
 
     livestock <- setNames(toolCell2isoCell(readSource("GLW3")), "liv_numb")
-    livst_split <- livestock * grassl_shares
-    livst_split <- collapseNames(livst_split)
-    livst_split_ctry <- toolAggregate(livst_split, rel = mapping, to = "iso", from = "celliso")
-    livst_share_ctry <- livst_split_ctry[, , "pastr"] / dimSums(livst_split_ctry, dim = 3)
-    livst_share_ctry[is.nan(livst_share_ctry) | is.infinite(livst_share_ctry)] <- 0
-    livst_share_ctry <- add_columns(livst_share_ctry, addnm = "range", dim = 3.1)
-    livst_share_ctry[, , "range"] <- 1 - livst_share_ctry[, , "pastr"]
+    livstSplit <- livestock * grasslShares
+    livstSplit <- collapseNames(livstSplit)
+    livstSplitCtry <- toolAggregate(livstSplit, rel = mapping, to = "iso", from = "celliso")
+    livstShareCtry <- livstSplitCtry[, , "pastr"] / dimSums(livstSplitCtry, dim = 3)
+    livstShareCtry[is.nan(livstShareCtry) | is.infinite(livstShareCtry)] <- 0
+    livstShareCtry <- add_columns(livstShareCtry, addnm = "range", dim = 3.1)
+    livstShareCtry[, , "range"] <- 1 - livstShareCtry[, , "pastr"]
 
     # I am splitting biomass consumption assuming the share
     # between animals reared on rangelands and pastures correlates linearly
@@ -46,35 +45,35 @@ calcPastureYield <- function(range_pastr = FALSE) {
     # derived by the fact that the feedbaskets assume the same feed ingredients shares
     # within a country.
 
-    biomass_split <- biomass * livst_share_ctry
-    grassl_land_ctry <- toolAggregate(grassl_land, rel = mapping, to = "iso", from = "celliso")
-    pstr_yield <- biomass_split / grassl_land_ctry
-    pstr_yield[pstr_yield > 100] <- 100
-    pstr_yield <- toolCountryFill(pstr_yield)
-    pstr_yield[is.nan(pstr_yield) | is.na(pstr_yield)] <- 1
-    grassl_land_ctry <- toolCountryFill(grassl_land_ctry)
-    grassl_land_ctry[is.na(grassl_land_ctry)] <- 0
+    biomassSplit <- biomass * livstShareCtry
+    grasslLandCtry <- toolAggregate(grasslLand, rel = mapping, to = "iso", from = "celliso")
+    pstrYield <- biomassSplit / grasslLandCtry
+    pstrYield[pstrYield > 100] <- 100
+    pstrYield <- toolCountryFill(pstrYield)
+    pstrYield[is.nan(pstrYield) | is.na(pstrYield)] <- 1
+    grasslLandCtry <- toolCountryFill(grasslLandCtry)
+    grasslLandCtry[is.na(grasslLandCtry)] <- 0
     return(list(
-      x = pstr_yield,
-      weight = grassl_land_ctry,
+      x = pstrYield,
+      weight = grasslLandCtry,
       isocountries = FALSE,
       unit = "ton DM per ha",
       description = "Pasture yields"
     ))
   }
 
-  mag_years_past <- findset("past")
-  biomass <- calcOutput("FAOmassbalance", aggregate = FALSE)[, , "production.dm"][, mag_years_past, "pasture"]
+  magYearsPast <- findset("past")
+  biomass <- calcOutput("FAOmassbalance", aggregate = FALSE)[, , "production.dm"][, magYearsPast, "pasture"]
   biomass <- collapseNames(biomass)
-  past.land <- calcOutput("LanduseInitialisation", aggregate = FALSE)[, mag_years_past, "past"]
-  pstr_yield <- biomass / past.land
-  pstr_yield[is.nan(pstr_yield)] <- 1
-  pstr_yield[pstr_yield > 100] <- 100
-  getNames(pstr_yield) <- NULL
+  pastLand <- calcOutput("LanduseInitialisation", aggregate = FALSE)[, magYearsPast, "past"]
+  pstrYield <- biomass / pastLand
+  pstrYield[is.nan(pstrYield)] <- 1
+  pstrYield[pstrYield > 100] <- 100
+  getNames(pstrYield) <- NULL
 
   return(list(
-    x = pstr_yield,
-    weight = past.land,
+    x = pstrYield,
+    weight = pastLand,
     unit = "ton DM per ha",
     description = "Pasture yields"
   ))

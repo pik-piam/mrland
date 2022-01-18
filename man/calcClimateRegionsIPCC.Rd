@@ -18,17 +18,18 @@ calcClimateRegionsIPCC(
 
 \item{yearly}{FALSE for normal magpie 5 year time spans, TRUE for yearly}
 
-\item{convert}{fills missing countries for country level aggregation with warm temperate moist (mostly small island nations)}
+\item{convert}{fills missing countries for country level aggregation with warm
+temperate moist (mostly small island nations)}
 }
 \value{
 Country or cellular magpie object with fraction of each climate region by country or cell
 }
 \description{
-calculates IPCC Climate Regions (IPCC2006 ch.4.3) based on t, ppt, pet from LPJml. elevation dimension not included for tropical montane class
+calculates IPCC Climate Regions (IPCC2006 ch.4.3) based on t, ppt,
+pet from LPJml. elevation dimension not included for tropical montane class
 }
 \examples{
-
-\dontrun{ 
+\dontrun{
 calcOutput("ClimateRegionsIPCC")
 }
 }
