@@ -85,7 +85,6 @@ fullMAGPIE <- function(rev = 0.1) {
     # 14 yields
     calcOutput("CalibrationDummy", round = 0, file = "f14_yld_calib.csv")
     calcOutput("PastureYield", round = 3, file = "f14_pasture_yields_hist.csv")
-    calcOutput("GrasslandBiomass",  round = 3, file = "f14_grass_bio_hist.cs3")
     calcOutput("PastureYield", range_pastr = TRUE, round = 3, file = "f14_grassl_yld_hist.cs3")
     calcOutput("FAOYield", cut = 0.98, years = magYearsPast, round = 2, file = "f14_region_yields.cs3")
 
@@ -165,7 +164,10 @@ fullMAGPIE <- function(rev = 0.1) {
                aggregate = superregion)
     calcOutput("TradeTariff", type_tariff = "import",    round = 4, file = "f21_trade_tariff_import.cs3",
                aggregate = superregion)
-
+    
+    # 31 Past
+    calcOutput("GrasslandBiomass",  round = 3, file = "f31_grass_bio_hist.cs3")
+    
     # 32 forestry
     calcOutput("AfforestCosts", years = 2001,        round = 0, file = "f32_fac_req_ha.csv")
     calcOutput("TimberHarvestCost", file = "f32_harvestingcost.cs4")
