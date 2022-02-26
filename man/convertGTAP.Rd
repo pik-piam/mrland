@@ -15,13 +15,13 @@ convertGTAP(x, subtype)
 Converted GTAP Data
 }
 \description{
-Converts GTAP data to fit to the common country list. Weighting is done by using the Imports and Exports from FAO
+Converts GTAP data to fit to the common country list. Weighting is done by using the Imports and
+Exports from FAO
 }
 \examples{
-
-  \dontrun{
-    x <- ReadSource("GTAP", "GTAP7_VIMS")
-  }
+\dontrun{
+x <- ReadSource("GTAP", "GTAP7_VIMS")
+}
 }
 \author{
 Xiaoxi Wang
