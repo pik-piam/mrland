@@ -1,6 +1,6 @@
 {
   "title": "mrland: MadRaT land data package",
-  "version": "0.21.6",
+  "version": "0.21.7",
   "description": "<p>The package provides land related data via the madrat framework.<\/p>",
   "creators": [
     {
@@ -41,6 +41,9 @@
     },
     {
       "name": "Wirth, Stephen"
+    },
+    {
+      "name": "Hoetten, David"
     }
   ]
 }
