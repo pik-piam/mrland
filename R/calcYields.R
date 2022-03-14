@@ -116,8 +116,9 @@ calcYields <- function(source = c(lpjml = "ggcmi_phase3_nchecks_9ca735cb", isimi
   
   if (multicropping) {
     # No multicropping factor for MAgPIE perennials:
-    yields[, , "oilpalm"] <- perennialProxies[, , "oilpalm"] * Calib[, , "oilpalm"] # @KRISTINE: Please check
-    yields[, , "others"]  <- perennialProxies[, , "others"] * Calib[, , "others"]
+    yields[, , "oilpalm"]   <- perennialProxies[, , "groundnut"] * Calib[, , "oilpalm"] 
+    yields[, , "others"]    <- perennialProxies[, , "maize"] * Calib[, , "others"]   #ToDo: decide whether to treat others as single or multiple cropped or whether to choose different proxy
+    yields[, , "cottn_pro"] <- perennialProxies[, , "groundnut"] * Calib[, , "cottn_pro"] 
   }
   
   if (cells == "magpiecell") {
