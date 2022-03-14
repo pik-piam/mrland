@@ -9,6 +9,7 @@ calcYields(
   climatetype = "GSWP3-W5E5:historical",
   cells = "magpiecell",
   weighting = "totalCrop",
+  multicropping = FALSE,
   indiaYields = FALSE,
   scaleFactor = 0.3
 )
@@ -25,6 +26,9 @@ For isimip choose crop model/gcm/rcp/co2 combination formatted like this:
 \item{weighting}{use of different weights (totalCrop (default), totalLUspecific, cropSpecific, crop+irrigSpecific,
 avlCropland, avlCropland+avlPasture)}
 
+\item{multicropping}{if TRUE: multiple cropping is allowed
+if FALSE: only single cropping in the main growing period of LPJmL possible}
+
 \item{indiaYields}{if TRUE returns scaled yields for rainfed crops in India}
 
 \item{scaleFactor}{integer value by which indiaYields will be scaled}
@@ -33,7 +37,9 @@ avlCropland, avlCropland+avlPasture)}
 magpie object in cellular resolution
 }
 \description{
-This function extracts yields from LPJmL to MAgPIE
+This function extracts yields from LPJmL
+             and transforms them to MAgPIE crops calibrating proxy crops 
+             to FAO yields. Optionally, ISIMIP yields can be returned.
 }
 \examples{
 \dontrun{

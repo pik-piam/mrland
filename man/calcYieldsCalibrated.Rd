@@ -8,7 +8,8 @@ calcYieldsCalibrated(
   source = c(lpjml = "ggcmi_phase3_nchecks_9ca735cb", isimip = NULL),
   climatetype = "GSWP3-W5E5:historical",
   refYear = "y1995",
-  cells = "magpiecell"
+  cells = "magpiecell",
+  multicropping = FALSE
 )
 }
 \arguments{
@@ -22,6 +23,9 @@ For isimip choose crop model/gcm/rcp/co2 combination formatted like this:
 
 \item{cells}{number of cells "magpiecell" for 59199 cells or
 "lpjcell" for 67420 cells}
+
+\item{multicropping}{if TRUE: multiple cropping is allowed
+if FALSE: only single cropping in the main growing period of LPJmL possible}
 }
 \value{
 magpie object in cellular resolution from reference year onwards

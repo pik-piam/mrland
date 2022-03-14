@@ -2,13 +2,15 @@
 #' @description This functions calibrates extracted yields from LPJmL to
 #'              FAO country level yields
 #'
-#' @param source      Defines LPJmL version for main crop inputs and isimip replacement.
-#'                    For isimip choose crop model/gcm/rcp/co2 combination formatted like this:
-#'                    "yields:EPIC-IIASA:ukesm1-0-ll:ssp585:default:3b"
-#' @param climatetype switch between different climate scenarios
-#' @param refYear     reference year for calibration
-#' @param cells       number of cells "magpiecell" for 59199 cells or
-#'                    "lpjcell" for 67420 cells
+#' @param source        Defines LPJmL version for main crop inputs and isimip replacement.
+#'                      For isimip choose crop model/gcm/rcp/co2 combination formatted like this:
+#'                      "yields:EPIC-IIASA:ukesm1-0-ll:ssp585:default:3b"
+#' @param climatetype   switch between different climate scenarios
+#' @param refYear       reference year for calibration
+#' @param cells         number of cells "magpiecell" for 59199 cells or
+#'                      "lpjcell" for 67420 cells
+#' @param multicropping if TRUE: multiple cropping is allowed
+#'                      if FALSE: only single cropping in the main growing period of LPJmL possible
 #'
 #' @return magpie object in cellular resolution from reference year onwards
 #'
@@ -25,7 +27,8 @@
 #' @importFrom mrcommons toolCoord2Isocell
 
 calcYieldsCalibrated <- function(source = c(lpjml = "ggcmi_phase3_nchecks_9ca735cb", isimip = NULL),
-                                 climatetype = "GSWP3-W5E5:historical", refYear = "y1995", cells = "magpiecell") {
+                                 climatetype = "GSWP3-W5E5:historical", refYear = "y1995", cells = "magpiecell",
+                                 multicropping = FALSE) {
 
     sizelimit <- getOption("magclass_sizeLimit")
     options(magclass_sizeLimit = 1e+12)
@@ -42,7 +45,8 @@ calcYieldsCalibrated <- function(source = c(lpjml = "ggcmi_phase3_nchecks_9ca735
     # read FAO and LPJmL yields
     yieldFAOiso    <- calcOutput("FAOYield", cut = 0.98, aggregate = FALSE)[, refYear, crops]
     yieldLPJmLgrid <- calcOutput("Yields", source = source, climatetype = climatetype,
-                                  aggregate = FALSE, supplementary = TRUE, cells = cells)
+                                 multicropping = multicropping,
+                                 aggregate = FALSE, supplementary = TRUE, cells = cells)
 
     years          <- getYears(yieldLPJmLgrid$x, as.integer = TRUE)
     years          <- years[years >= as.integer(gsub("y", "", refYear))]

@@ -21,8 +21,9 @@ Reads in landuse output of LPJmL input toolbox
 }
 \examples{
 \dontrun{
-A <- readSource("LanduseToolbox", subtype = "harvestedArea")
+A <- readSource("LanduseToolbox", subtype = "harvestedArea", aggregate = FALSE)
 }
+
 }
 \seealso{
 \code{\link{readSource}}
