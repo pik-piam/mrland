@@ -9,9 +9,10 @@ calcMulticroppingYieldIncrease(
   lpjml,
   climatetype,
   output,
-  minThreshold = 100,
+  minThreshold = 50,
   addHarvest = 2,
-  fallowFactor = 0.75
+  fallowFactor = 0.75,
+  suitability = "endogenous"
 )
 }
 \arguments{
@@ -26,10 +27,11 @@ indicating which grid cells are suitable for multiple cropping,
 "multicroppingYieldIncreaseFactor": factor to determine 
 off season yield based on grass GPP}
 
-\item{minThreshold}{Threshold of grass GPP in crop growing period to be 
-considered suitable for multiple cropping.
+\item{minThreshold}{Threshold of grass GPP in crop growing period 
+and crop yield 
+to be considered suitable for multiple cropping.
 Unit of the threshold is gC/m^2.
-Default: 100gC/m^2}
+Default: 50gC/m^2}
 
 \item{addHarvest}{Minimum additional harvest factor (grassGPPannual / grassGPPgrper)
 to be considered suitable for multiple cropping}
@@ -37,6 +39,11 @@ to be considered suitable for multiple cropping}
 \item{fallowFactor}{Factor determining yield reduction in off season due to
 fallow period between harvest of first (main) season and
 sowing of second (off) season}
+
+\item{suitability}{"endogenous": suitability for multiple cropping determined
+              by rules based on grass and crop productivity
+"exogenous": suitability for multiple cropping given by
+             GAEZ data set}
 }
 \value{
 magpie object in cellular resolution
