@@ -26,8 +26,14 @@ For isimip choose crop model/gcm/rcp/co2 combination formatted like this:
 \item{weighting}{use of different weights (totalCrop (default), totalLUspecific, cropSpecific, crop+irrigSpecific,
 avlCropland, avlCropland+avlPasture)}
 
-\item{multicropping}{if TRUE: multiple cropping is allowed
-if FALSE: only single cropping in the main growing period of LPJmL possible}
+\item{multicropping}{Multicropping activated (TRUE) or not (FALSE) and
+Multiple Cropping Suitability mask selected
+("endogenous": suitability for multiple cropping determined
+              by rules based on grass and crop productivity
+"exogenous": suitability for multiple cropping given by
+             GAEZ data set),
+separated by ":"
+(e.g. TRUE:endogenous; TRUE:exogenous; FALSE)}
 
 \item{indiaYields}{if TRUE returns scaled yields for rainfed crops in India}
 

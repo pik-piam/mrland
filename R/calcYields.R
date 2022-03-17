@@ -1,7 +1,7 @@
 #' @title calcYields
-#' 
+#'
 #' @description This function extracts yields from LPJmL
-#'              and transforms them to MAgPIE crops calibrating proxy crops 
+#'              and transforms them to MAgPIE crops calibrating proxy crops
 #'              to FAO yields. Optionally, ISIMIP yields can be returned.
 #'
 #' @param source        Defines LPJmL version for main crop inputs and isimip replacement.
@@ -11,13 +11,19 @@
 #' @param cells         if cellular is TRUE: "magpiecell" for 59199 cells or "lpjcell" for 67420 cells
 #' @param weighting     use of different weights (totalCrop (default), totalLUspecific, cropSpecific, crop+irrigSpecific,
 #'                                            avlCropland, avlCropland+avlPasture)
-#' @param multicropping if TRUE: multiple cropping is allowed
-#'                      if FALSE: only single cropping in the main growing period of LPJmL possible
+#' @param multicropping Multicropping activated (TRUE) or not (FALSE) and
+#'                      Multiple Cropping Suitability mask selected
+#'                      ("endogenous": suitability for multiple cropping determined
+#'                                    by rules based on grass and crop productivity
+#'                      "exogenous": suitability for multiple cropping given by
+#'                                   GAEZ data set),
+#'                      separated by ":"
+#'                      (e.g. TRUE:endogenous; TRUE:exogenous; FALSE)
 #' @param indiaYields   if TRUE returns scaled yields for rainfed crops in India
 #' @param scaleFactor   integer value by which indiaYields will be scaled
-#' 
+#'
 #' @return magpie object in cellular resolution
-#' 
+#'
 #' @author Kristine Karstens, Felicitas Beier
 #'
 #' @examples
@@ -29,13 +35,17 @@
 #' @importFrom magclass getYears add_columns dimSums time_interpolate
 #' @importFrom madrat toolFillYears toolGetMapping toolTimeAverage
 #' @importFrom mrcommons toolLPJmLVersion toolHarmonize2Baseline
+#' @importFrom stringr str_split
 
 calcYields <- function(source = c(lpjml = "ggcmi_phase3_nchecks_9ca735cb", isimip = NULL),
                        climatetype = "GSWP3-W5E5:historical", cells = "magpiecell",
                        weighting = "totalCrop", multicropping = FALSE,
                        indiaYields = FALSE, scaleFactor = 0.3) {
 
-  cfg <- toolLPJmLVersion(version = source["lpjml"], climatetype = climatetype)
+  # Extract argument information
+  cfg           <- toolLPJmLVersion(version = source["lpjml"], climatetype = climatetype)
+  suitability   <- str_split(multicropping, ":")[[1]][2]
+  multicropping <- str_split(multicropping, ":")[[1]][1]
 
   sizelimit <- getOption("magclass_sizeLimit")
   options(magclass_sizeLimit = 1e+12)
@@ -52,40 +62,42 @@ calcYields <- function(source = c(lpjml = "ggcmi_phase3_nchecks_9ca735cb", isimi
   lpjml_crops  <- unique(LPJ2MAG$LPJmL)
   irrig_types  <- c("irrigated", "rainfed")
   yields       <- list()
-  
+
   for (crop in lpjml_crops) {
     subdata        <- as.vector(outer(crop, irrig_types, paste, sep = "."))
     yields[[crop]] <- calcOutput("LPJmL_new", version = source[["lpjml"]], climatetype = climatetype,
                                  subtype = "harvest", subdata = subdata, stage = stage, aggregate = FALSE)
   }
   yields  <- mbind(yields)
-  
+
   if (multicropping) {
-    ###TEMPORARY (UNTIL LPJML RUNS READY)###
-    selectyears    <- 2010 ####ToDo: replace with all years (once LPJmL runs are ready)
+    ### TEMPORARY (UNTIL LPJML RUNS READY)###
+    selectyears    <- 2010 #### ToDo: replace with all years (once LPJmL runs are ready)
     yields         <- yields[, selectyears, ]
-    ###TEMPORARY (UNTIL LPJML RUNS READY)###
-    increaseFactor <- calcOutput("MulticroppingYieldIncrease",  
-                                 lpjml = "ggcmi_phase3_nchecks_9ca735cb",  ###ToDo: Switch to flexible lpjml argument (once LPJmL runs are ready) 
-                                 climatetype = "GSWP3-W5E5:historical", ###ToDo: Switch to flexible climatetype argument (once LPJmL runs are ready) 
-                                 selectyears = selectyears, ####ToDo: replace with all years (once LPJmL runs are ready)
+    ### TEMPORARY (UNTIL LPJML RUNS READY)###
+    increaseFactor <- calcOutput("MulticroppingYieldIncrease",
+                                 suitability = suitability,
+                                 lpjml = "ggcmi_phase3_nchecks_9ca735cb",  ### ToDo: Switch to flexible lpjml argument (once LPJmL runs are ready)
+                                 climatetype = "GSWP3-W5E5:historical", ### ToDo: Switch to flexible climatetype argument (once LPJmL runs are ready)
+                                 selectyears = selectyears, #### ToDo: replace with all years (once LPJmL runs are ready)
                                  aggregate = FALSE)
-    
-    # MAgPIE perennials or crops grown throughout entire year (cotton, others, oilpalm) 
+
+    # MAgPIE perennials or crops grown throughout entire year (cotton, others, oilpalm)
     # are proxied by maize and groundnut and require special treatment in mapping
     proxyYields   <- yields[, , c("groundnut", "maize")]
-    proxyIncrease <- calcOutput("MulticroppingYieldIncrease", crops = "proxy", 
-                                 lpjml = "ggcmi_phase3_nchecks_9ca735cb",  ###ToDo: Switch to flexible lpjml argument (once LPJmL runs are ready) 
-                                 climatetype = "GSWP3-W5E5:historical", ###ToDo: Switch to flexible climatetype argument (once LPJmL runs are ready) 
-                                 selectyears = selectyears, ####ToDo: replace with all years (once LPJmL runs are ready)
+    proxyIncrease <- calcOutput("MulticroppingYieldIncrease", crops = "proxy",
+                                 suitability = suitability,
+                                 lpjml = "ggcmi_phase3_nchecks_9ca735cb",  ### ToDo: Switch to flexible lpjml argument (once LPJmL runs are ready)
+                                 climatetype = "GSWP3-W5E5:historical", ### ToDo: Switch to flexible climatetype argument (once LPJmL runs are ready)
+                                 selectyears = selectyears, #### ToDo: replace with all years (once LPJmL runs are ready)
                                  aggregate = FALSE)
     # Whole year yields for proxy crops (main-season yield + off-season yield)
     proxyYields <- proxyYields + proxyYields * proxyIncrease
-    
+
     # Whole year yields under multicropping (main-season yield + off-season yield)
     yields <- yields + yields * increaseFactor
   }
-  
+
   # LPJmL to MAgPIE crops
   yields <- toolAggregate(yields, LPJ2MAG, from = "LPJmL", to = "MAgPIE", dim = 3.1, partrel = TRUE)
 
@@ -120,14 +132,14 @@ calcYields <- function(source = c(lpjml = "ggcmi_phase3_nchecks_9ca735cb", isimi
 
   # Recalibrate yields for proxys
   yields <- yields * Calib[, , getNames(yields, dim = 1)]
-  
+
   if (multicropping) {
     # No multicropping factor for MAgPIE perennials:
-    yields[, , "oilpalm"]   <- proxyYields[, , "groundnut"] * Calib[, , "oilpalm"] 
-    yields[, , "others"]    <- proxyYields[, , "maize"] * Calib[, , "others"]   
-    yields[, , "cottn_pro"] <- proxyYields[, , "groundnut"] * Calib[, , "cottn_pro"] 
+    yields[, , "oilpalm"]   <- proxyYields[, , "groundnut"] * Calib[, , "oilpalm"]
+    yields[, , "others"]    <- proxyYields[, , "maize"] * Calib[, , "others"]
+    yields[, , "cottn_pro"] <- proxyYields[, , "groundnut"] * Calib[, , "cottn_pro"]
   }
-  
+
   if (cells == "magpiecell") {
     yields <- toolCoord2Isocell(yields)
   }
