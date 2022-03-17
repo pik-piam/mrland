@@ -65,15 +65,22 @@ calcYields <- function(source = c(lpjml = "ggcmi_phase3_nchecks_9ca735cb", isimi
     selectyears    <- 2010 ####ToDo: replace with all years (once LPJmL runs are ready)
     yields         <- yields[, selectyears, ]
     ###TEMPORARY (UNTIL LPJML RUNS READY)###
-    increaseFactor <- calcOutput("MulticroppingYieldIncrease", output = "multicroppingYieldIncreaseFactor", 
+    increaseFactor <- calcOutput("MulticroppingYieldIncrease",  
                                  lpjml = "ggcmi_phase3_nchecks_9ca735cb",  ###ToDo: Switch to flexible lpjml argument (once LPJmL runs are ready) 
                                  climatetype = "GSWP3-W5E5:historical", ###ToDo: Switch to flexible climatetype argument (once LPJmL runs are ready) 
                                  selectyears = selectyears, ####ToDo: replace with all years (once LPJmL runs are ready)
                                  aggregate = FALSE)
     
-    # MAgPIE perennials (others and oilpalm) are proxied by maize and groundnut
-    # and require special treatment in mapping
-    perennialProxies <- yields[, , c("groundnut", "maize")]
+    # MAgPIE perennials or crops grown throughout entire year (cotton, others, oilpalm) 
+    # are proxied by maize and groundnut and require special treatment in mapping
+    proxyYields   <- yields[, , c("groundnut", "maize")]
+    proxyIncrease <- calcOutput("MulticroppingYieldIncrease", crops = "proxy", 
+                                 lpjml = "ggcmi_phase3_nchecks_9ca735cb",  ###ToDo: Switch to flexible lpjml argument (once LPJmL runs are ready) 
+                                 climatetype = "GSWP3-W5E5:historical", ###ToDo: Switch to flexible climatetype argument (once LPJmL runs are ready) 
+                                 selectyears = selectyears, ####ToDo: replace with all years (once LPJmL runs are ready)
+                                 aggregate = FALSE)
+    # Whole year yields for proxy crops (main-season yield + off-season yield)
+    proxyYields <- proxyYields + proxyYields * proxyIncrease
     
     # Whole year yields under multicropping (main-season yield + off-season yield)
     yields <- yields + yields * increaseFactor
@@ -116,9 +123,9 @@ calcYields <- function(source = c(lpjml = "ggcmi_phase3_nchecks_9ca735cb", isimi
   
   if (multicropping) {
     # No multicropping factor for MAgPIE perennials:
-    yields[, , "oilpalm"]   <- perennialProxies[, , "groundnut"] * Calib[, , "oilpalm"] 
-    yields[, , "others"]    <- perennialProxies[, , "maize"] * Calib[, , "others"]   #ToDo: decide whether to treat others as single or multiple cropped or whether to choose different proxy
-    yields[, , "cottn_pro"] <- perennialProxies[, , "groundnut"] * Calib[, , "cottn_pro"] 
+    yields[, , "oilpalm"]   <- proxyYields[, , "groundnut"] * Calib[, , "oilpalm"] 
+    yields[, , "others"]    <- proxyYields[, , "maize"] * Calib[, , "others"]   
+    yields[, , "cottn_pro"] <- proxyYields[, , "groundnut"] * Calib[, , "cottn_pro"] 
   }
   
   if (cells == "magpiecell") {

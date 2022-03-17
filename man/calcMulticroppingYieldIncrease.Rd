@@ -8,11 +8,9 @@ calcMulticroppingYieldIncrease(
   selectyears,
   lpjml,
   climatetype,
-  output,
-  minThreshold = 50,
-  addHarvest = 2,
   fallowFactor = 0.75,
-  suitability = "endogenous"
+  suitability = "endogenous",
+  crops = NULL
 )
 }
 \arguments{
@@ -22,20 +20,6 @@ calcMulticroppingYieldIncrease(
 
 \item{climatetype}{Switch between different climate scenarios or historical baseline "GSWP3-W5E5:historical"}
 
-\item{output}{"multicroppingSuitability": returns magpie object 
-indicating which grid cells are suitable for multiple cropping, 
-"multicroppingYieldIncreaseFactor": factor to determine 
-off season yield based on grass GPP}
-
-\item{minThreshold}{Threshold of grass GPP in crop growing period 
-and crop yield 
-to be considered suitable for multiple cropping.
-Unit of the threshold is gC/m^2.
-Default: 50gC/m^2}
-
-\item{addHarvest}{Minimum additional harvest factor (grassGPPannual / grassGPPgrper)
-to be considered suitable for multiple cropping}
-
 \item{fallowFactor}{Factor determining yield reduction in off season due to
 fallow period between harvest of first (main) season and
 sowing of second (off) season}
@@ -44,15 +28,18 @@ sowing of second (off) season}
               by rules based on grass and crop productivity
 "exogenous": suitability for multiple cropping given by
              GAEZ data set}
+
+\item{crops}{NULL: default crops,
+proxy: proxy crops for LPJmL to MAgPIE mapping and treatment of perennials}
 }
 \value{
 magpie object in cellular resolution
 }
 \description{
-Calculates yield increase achieved through multiple cropping 
-             (as factor of off season to main season crop yield) under 
-             irrigated and rainfed conditions respectively. 
-             Optionally: return which grid cells are potentially suitable for 
+Calculates yield increase achieved through multiple cropping
+             (as factor of off season to main season crop yield) under
+             irrigated and rainfed conditions respectively.
+             Optionally: return which grid cells are potentially suitable for
              multiple cropping activities under rainfed and irrigated conditions.
              Calculation is based on grassland gross primary production (GPP)
              in the growing period of the respective crop and annual grass GPP.

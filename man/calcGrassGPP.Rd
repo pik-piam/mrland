@@ -21,7 +21,7 @@ calcGrassGPP(selectyears, lpjml, climatetype, season)
 magpie object in cellular resolution
 }
 \description{
-Calculates gross primary production (GPP) of grassland 
+Calculates gross primary production (GPP) of grassland
              under irrigated and rainfed conditions based on LPJmL inputs.
 }
 \examples{
