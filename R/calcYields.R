@@ -45,7 +45,7 @@ calcYields <- function(source = c(lpjml = "ggcmi_phase3_nchecks_9ca735cb", isimi
   # Extract argument information
   cfg           <- toolLPJmLVersion(version = source["lpjml"], climatetype = climatetype)
   suitability   <- str_split(multicropping, ":")[[1]][2]
-  multicropping <- str_split(multicropping, ":")[[1]][1]
+  multicropping <- as.logical(str_split(multicropping, ":")[[1]][1])
 
   sizelimit <- getOption("magclass_sizeLimit")
   options(magclass_sizeLimit = 1e+12)

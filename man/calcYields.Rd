@@ -44,7 +44,7 @@ magpie object in cellular resolution
 }
 \description{
 This function extracts yields from LPJmL
-             and transforms them to MAgPIE crops calibrating proxy crops 
+             and transforms them to MAgPIE crops calibrating proxy crops
              to FAO yields. Optionally, ISIMIP yields can be returned.
 }
 \examples{
