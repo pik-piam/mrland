@@ -31,7 +31,7 @@
 #' @importFrom magclass setYears getSets mbind getItems new.magpie
 #'
 
-calcMulticroppingSuitability <- function(selectyears, lpjml, climatetype, 
+calcMulticroppingSuitability <- function(selectyears, lpjml, climatetype,
                                          minThreshold = 100, suitability = "endogenous") {
 
   ####################
@@ -42,24 +42,24 @@ calcMulticroppingSuitability <- function(selectyears, lpjml, climatetype,
                                         lpjml = lpjml, climatetype = climatetype,
                                         selectyears = selectyears, aggregate = FALSE),
                              selectyears)
-  
+
   ########################
   ### Data preparation ###
   ########################
-  
+
   # Initialize cells that are suitable for multiple cropping to 0
   suitMC       <- grassGPPannual
   suitMC[, , ] <- 0
-  
+
   # Choose how multiple cropping suitability is determined
   if (suitability == "endogenous") {
-    
+
     ####################
     ### Definitions  ###
     ####################
     # Transformation factor gC/m^2 -> tDM/ha
     yieldTransform <- 0.01 / 0.45
-    
+
     ####################
     ### Read in data ###
     ####################
@@ -77,52 +77,50 @@ calcMulticroppingSuitability <- function(selectyears, lpjml, climatetype,
     cropYields <- cropYields[, , getItems(grassGPPannual, dim = "crop")]
     getSets(cropYields)["d3.1"] <- "crop"
     getSets(cropYields)["d3.2"] <- "irrigation"
-    
+
     ####################
     ### Calculations ###
     ####################
-    
+
     ### Multicropping Mask  ###
     ## Rule 1: Minimum grass yield in main season (growing period of crop)
     minThreshold <- minThreshold * yieldTransform
     rule1        <- grassGPPgrper > minThreshold
-    
+
     ## Rule 2: Multicropping must lead to at least one full additional harvest
     rule2        <- (grassGPPannual / grassGPPgrper) > 2
-    
+
     ## Rule 3: Minimum crop yield in main season (growing period of crop)
     rule3        <- cropYields > minThreshold
-    
+
     ### Cells suitable for multiple cropping given grass GPP & specified rules
     suitMC[rule1 & rule2 & rule3] <- 1
-    
+
   } else if (suitability == "exogenous") {
-    
+
     ####################
     ### Read in data ###
     ####################
     suitMC[, , ] <- calcOutput("MultipleCroppingZones", layers = 2, aggregate = FALSE)
-    
+
   } else {
     stop("Please select whether endogenously calculated multiple cropping suitability
-         mask (endogenous) should be selected or whether 
+         mask (endogenous) should be selected or whether
          GAEZ Multiple Cropping Zones data set should be used (exogenous)")
   }
-  
-  # For perennials that are grown throughout the whole year, the full year yield
-  # is applied. This implies: 
-  # (a) no masking of multicropping suitability (suitable everywhere)
-  # (b) no fallow factor applied
-  suitMC[, , "sugarcane"] <- 1
-  
+
+  # For perennials that are grown throughout the whole year,
+  # multicropping yield is equal to single cropping yield
+  suitMC[, , "sugarcane"] <- 0
+
   # Add missing crops (betr, begr, mgrass)
-  # [Note: grown throughout the whole year]
+  # [Note: grown throughout the whole year -> multicropping yield = single cropping]
   missingCrops <- new.magpie(cells_and_regions = getItems(suitMC, dim = 1),
                              years = getItems(suitMC, dim = 2),
                              names = c("betr.irrigated", "betr.rainfed",
                                        "begr.irrigated", "begr.rainfed",
                                        "mgrass.irrigated", "mgrass.rainfed"),
-                             fill = 1)
+                             fill = 0)
   suitMC       <- mbind(suitMC, missingCrops)
 
   ##############
