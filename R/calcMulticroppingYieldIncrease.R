@@ -18,7 +18,7 @@
 #'                                    by rules based on grass and crop productivity
 #'                      "exogenous": suitability for multiple cropping given by
 #'                                   GAEZ data set
-#' @param crops         NULL: default crops,
+#' @param crops         standard: default crops,
 #'                      proxy: proxy crops for LPJmL to MAgPIE mapping and treatment of perennials
 #'
 #' @return magpie object in cellular resolution
@@ -36,7 +36,7 @@
 calcMulticroppingYieldIncrease <- function(selectyears, lpjml, climatetype,
                                            fallowFactor = 0.75,
                                            suitability = "endogenous",
-                                           crops = NULL) {
+                                           crops = "standard") {
 
   ####################
   ### Read in data ###

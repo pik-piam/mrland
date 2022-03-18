@@ -10,7 +10,7 @@ calcMulticroppingYieldIncrease(
   climatetype,
   fallowFactor = 0.75,
   suitability = "endogenous",
-  crops = NULL
+  crops = "standard"
 )
 }
 \arguments{
@@ -29,7 +29,7 @@ sowing of second (off) season}
 "exogenous": suitability for multiple cropping given by
              GAEZ data set}
 
-\item{crops}{NULL: default crops,
+\item{crops}{standard: default crops,
 proxy: proxy crops for LPJmL to MAgPIE mapping and treatment of perennials}
 }
 \value{
