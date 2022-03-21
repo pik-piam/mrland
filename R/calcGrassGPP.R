@@ -122,7 +122,7 @@ calcGrassGPP <- function(selectyears, lpjml, climatetype, season) {
     stop("calcGrassGPP produced negative values")
   }
   if (any((grassGPPannual - grassGPPgrper) < 0)) {
-    stop("Annual grass GPP < grass GPP in growing period. This may happen
+    warning("Annual grass GPP < grass GPP in growing period. This may happen
             when using raw rather than smoothed LPJmL inputs due to growing
             periods that can span over two years. It should, however, even out
             when time smoothing is applied.")
