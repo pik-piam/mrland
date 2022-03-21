@@ -71,7 +71,7 @@ calcMulticroppingSuitability <- function(selectyears, lpjml, climatetype,
     # crop yields in main season provided by LPJmL for LPJmL crop types (in tDM/ha)
     cropYields <- setYears(calcOutput("LPJmL_new", years = selectyears,
                                       version = lpjml, climatetype = climatetype,
-                                      subtype = "harvest", stage = "raw", # ToDo: change to smoothed or flexible (see calcYields)
+                                      subtype = "harvest", stage = "smoothed", #@KRISTINE: To confirm: Should this be harmonized or smoothed or flexible? 
                                       aggregate = FALSE),
                            selectyears)
     cropYields <- cropYields[, , getItems(grassGPPannual, dim = "crop")]
