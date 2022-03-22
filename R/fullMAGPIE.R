@@ -39,10 +39,6 @@ fullMAGPIE <- function(rev = 0.1) {
     # data fully agrees with the data currently used in MAgPIE and new data set is implemented
     calcOutput("TauTotal",  years = 1995,        round = 2, file = "fm_tau1995.cs4", aggregate = superregion)
 
-    # input
-    calcOutput("AdjustGrassi2021", aggregate = TRUE, file = "land_carbon_sink_adjust_grassi.mz")
-
-
     # 09 drivers
     calcOutput("GDP",
                naming = "scenario",
@@ -218,6 +214,9 @@ fullMAGPIE <- function(rev = 0.1) {
     calcOutput("EF3confinement", round = 4, file = "f51_ef3_confinement.cs4")
     calcOutput("EF3prp", round = 4, file = "f51_ef3_prp.cs4")
 
+    # 52 carbon 
+    calcOutput("AdjustGrassi2021", aggregate = TRUE, file = "f52_land_carbon_sink_adjust_grassi.cs3")
+    
     # 53 methane
     calcOutput("EFch4Rice", years = magYears, round = 4, file = "f53_EFch4Rice.cs4")
     calcOutput("EFch4AWMS", years = magYears, round = 4, file = "f53_EFch4AWMS.cs4")
