@@ -8,10 +8,10 @@
 #'
 #' @param selectyears   Years to be returned
 #' @param lpjml         LPJmL version required for respective inputs: natveg or crop
-#' @param climatetype   Switch between different climate scenarios or historical baseline "GSWP3-W5E5:historical"
-#' @param minThreshold  Threshold of grass GPP in crop growing period
-#'                      and crop yield
-#'                      to be considered suitable for multiple cropping.
+#' @param climatetype   Switch between different climate scenarios or
+#'                      historical baseline "GSWP3-W5E5:historical"
+#' @param minThreshold  Threshold of monthly grass GPP to be classified as
+#'                      growing period month
 #'                      Unit of the threshold is gC/m^2.
 #'                      Default: 100gC/m^2
 #' @param suitability   "endogenous": suitability for multiple cropping determined
@@ -68,33 +68,33 @@ calcMulticroppingSuitability <- function(selectyears, lpjml, climatetype,
                                           lpjml = lpjml, climatetype = climatetype,
                                           selectyears = selectyears, aggregate = FALSE),
                                selectyears)
-    # crop yields in main season provided by LPJmL for LPJmL crop types (in tDM/ha)
-    cropYields <- setYears(calcOutput("LPJmL_new", years = selectyears,
-                                      version = lpjml, climatetype = climatetype,
-                                      subtype = "harvest", stage = "smoothed", #@KRISTINE: To confirm: Should this be harmonized or smoothed or flexible? 
-                                      aggregate = FALSE),
-                           selectyears)
-    cropYields <- cropYields[, , getItems(grassGPPannual, dim = "crop")]
-    getSets(cropYields)["d3.1"] <- "crop"
-    getSets(cropYields)["d3.2"] <- "irrigation"
+    # monthly grass GPP (in tDM/ha)
+    grassGPPmonth <- setYears(calcOutput("GrassGPP", season = "monthly",
+                                         lpjml = lpjml, climatetype = climatetype,
+                                         selectyears = selectyears, aggregate = FALSE),
+                              selectyears)
 
     ####################
     ### Calculations ###
     ####################
 
+    # Calculate length of growing period
+    lgp       <- grassGPPmonth
+    lgp[, , ] <- 0
+    # Classification as growing period month when monthly grass GPP > 100gC/m^2
+    thresholdLGP <- minThreshold * yieldTransform
+    lgp[grassGPPmonth >= thresholdLGP] <- 1
+    lgp <- dimSums(lgp, dim = "month")
+
     ### Multicropping Mask  ###
-    ## Rule 1: Minimum grass yield in main season (growing period of crop)
-    minThreshold <- minThreshold * yieldTransform
-    rule1        <- grassGPPgrper > minThreshold
+    ## Rule 1: Minimum length of growing period of 8 months
+    rule1 <- lgp > 8
 
     ## Rule 2: Multicropping must lead to at least one full additional harvest
     rule2        <- (grassGPPannual / grassGPPgrper) > 2
 
-    ## Rule 3: Minimum crop yield in main season (growing period of crop)
-    rule3        <- cropYields > minThreshold
-
     ### Cells suitable for multiple cropping given grass GPP & specified rules
-    suitMC[rule1 & rule2 & rule3] <- 1
+    suitMC[rule1 & rule2] <- 1
 
   } else if (suitability == "exogenous") {
 
@@ -102,6 +102,8 @@ calcMulticroppingSuitability <- function(selectyears, lpjml, climatetype,
     ### Read in data ###
     ####################
     suitMC[, , ] <- calcOutput("MultipleCroppingZones", layers = 2, aggregate = FALSE)
+
+    # ToDo: remove exogenous option once our endogenous calculation is good enough to use
 
   } else {
     stop("Please select whether endogenously calculated multiple cropping suitability
@@ -142,7 +144,8 @@ calcMulticroppingSuitability <- function(selectyears, lpjml, climatetype,
   ##############
   out         <- suitMC
   unit        <- "boolean"
-  description <- "Suitability for multicropping under irrigated and rainfed conditions respectively.
+  description <- "Suitability for multicropping of different crops under
+                  irrigated and rainfed conditions respectively.
                   1 = suitable, 0 = not suitable"
 
   return(list(x            = out,

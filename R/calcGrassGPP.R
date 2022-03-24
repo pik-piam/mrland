@@ -79,14 +79,16 @@ calcGrassGPP <- function(selectyears, lpjml, climatetype, season) {
   ### Calculations ###
   ####################
 
+  # Monthly grass GPP
+  monthlyRainfed   <- add_dimension(monthlyRainfed,
+                                    add = "irrigation", nm = "rainfed")
+  monthlyIrrigated <- add_dimension(monthlyIrrigated,
+                                    add = "irrigation", nm = "irrigated")
+
   # Calculate annual rainfed grass GPP
-  grassGPPannual[, , "rainfed"]   <- add_dimension(dimSums(monthlyRainfed,
-                                                           dim = 3),
-                                                   add = "irrigation", nm = "rainfed")
+  grassGPPannual[, , "rainfed"]   <- dimSums(monthlyRainfed, dim = 3)
   # Calculate annual irrigated grass GPP
-  grassGPPannual[, , "irrigated"] <- add_dimension(dimSums(monthlyIrrigated,
-                                                           dim = 3),
-                                                   add = "irrigation", nm = "irrigated")
+  grassGPPannual[, , "irrigated"] <- dimSums(monthlyIrrigated, dim = 3)
 
   ##############
   ### Return ###
@@ -103,11 +105,17 @@ calcGrassGPP <- function(selectyears, lpjml, climatetype, season) {
   } else if (season == "wholeYear") {
 
     out         <- grassGPPannual
-    description <- paste0(description, "in the entire year")
+    description <- paste0(description, " in the entire year")
+
+  } else if (season == "monthly") {
+
+    out <- mbind(monthlyRainfed, monthlyIrrigated)
+    getSets(out)["d3.2"] <- "month"
+    description <- paste0(description, " per month")
 
   } else {
     stop("Please specify output to be returned by function calcGrassGPP:
-         mainSeason or wholeYear")
+         mainSeason or wholeYear or monthly")
   }
 
 
@@ -125,7 +133,7 @@ calcGrassGPP <- function(selectyears, lpjml, climatetype, season) {
     warning("Annual grass GPP < grass GPP in growing period. This may happen
             when using raw rather than smoothed LPJmL inputs due to growing
             periods that can span over two years. It should, however, even out
-            when time smoothing is applied.")
+            when time smoothing is applied.")  # @JENS?
   }
 
   return(list(x            = out,

@@ -17,11 +17,11 @@ calcMulticroppingSuitability(
 
 \item{lpjml}{LPJmL version required for respective inputs: natveg or crop}
 
-\item{climatetype}{Switch between different climate scenarios or historical baseline "GSWP3-W5E5:historical"}
+\item{climatetype}{Switch between different climate scenarios or 
+historical baseline "GSWP3-W5E5:historical"}
 
-\item{minThreshold}{Threshold of grass GPP in crop growing period
-and crop yield
-to be considered suitable for multiple cropping.
+\item{minThreshold}{Threshold of monthly grass GPP to be classified as 
+growing period month
 Unit of the threshold is gC/m^2.
 Default: 100gC/m^2}
 

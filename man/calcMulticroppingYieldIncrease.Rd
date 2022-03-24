@@ -9,6 +9,7 @@ calcMulticroppingYieldIncrease(
   lpjml,
   climatetype,
   fallowFactor = 0.75,
+  minThreshold = 50,
   suitability = "endogenous",
   crops = "standard"
 )
@@ -23,6 +24,12 @@ calcMulticroppingYieldIncrease(
 \item{fallowFactor}{Factor determining yield reduction in off season due to
 fallow period between harvest of first (main) season and
 sowing of second (off) season}
+
+\item{minThreshold}{Minimum threshold of grass GPP in crop growing period
+and crop yield to exclude low yielding cells that would
+be unsuitable for multiple cropping
+Unit of the threshold is gC/m^2.
+Default: 50 gC/m^2}
 
 \item{suitability}{"endogenous": suitability for multiple cropping determined
               by rules based on grass and crop productivity

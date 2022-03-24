@@ -14,6 +14,11 @@
 #' @param fallowFactor  Factor determining yield reduction in off season due to
 #'                      fallow period between harvest of first (main) season and
 #'                      sowing of second (off) season
+#' @param minThreshold  Minimum threshold of grass GPP in crop growing period
+#'                      and crop yield to exclude low yielding cells that would
+#'                      be unsuitable for multiple cropping
+#'                      Unit of the threshold is gC/m^2.
+#'                      Default: 50 gC/m^2
 #' @param suitability   "endogenous": suitability for multiple cropping determined
 #'                                    by rules based on grass and crop productivity
 #'                      "exogenous": suitability for multiple cropping given by
@@ -34,9 +39,18 @@
 #'
 
 calcMulticroppingYieldIncrease <- function(selectyears, lpjml, climatetype,
-                                           fallowFactor = 0.75,
+                                           fallowFactor = 0.75, minThreshold = 50,
                                            suitability = "endogenous",
                                            crops = "standard") {
+  ####################
+  ### Definitions  ###
+  ####################
+  # Transformation factor gC/m^2 -> tDM/ha
+  yieldTransform <- 0.01 / 0.45
+
+  # Minimum threshold in tDM/ha
+  minThreshold   <- minThreshold * yieldTransform
+
 
   ####################
   ### Read in data ###
@@ -54,7 +68,7 @@ calcMulticroppingYieldIncrease <- function(selectyears, lpjml, climatetype,
   # crop yields in main season provided by LPJmL for LPJmL crop types (in tDM/ha)
   cropYields <- setYears(calcOutput("LPJmL_new", years = selectyears,
                                      version = lpjml, climatetype = climatetype,
-                                    subtype = "harvest", stage = "smoothed", #@KRISTINE: To confirm: Should this be harmonized or smoothed or flexible? 
+                                    subtype = "harvest", stage = "smoothed", # @KRISTINE: To confirm: Should this be harmonized or smoothed or flexible?
                                     aggregate = FALSE),
                          selectyears)
   croplist   <- getItems(grassGPPannual, dim = "crop")
@@ -71,13 +85,22 @@ calcMulticroppingYieldIncrease <- function(selectyears, lpjml, climatetype,
   ### Calculations ###
   ####################
 
+
+  # Exclude cells with grass yields (in growing period of crop) below minimum threshold
+  # (Note: for numerical reasons)
+  rule1 <- grassGPPgrper > minThreshold
+
+  # Exclude low yielding cells (minimum crop yield in main season below minimum threshold)
+  # (Note: to account for non-matching growing periods)
+  rule2 <- cropYields > minThreshold
+
   ### Yield Increase Factor  ###
   # Calculate multiple cropping factor based on annual grass GPP and
   # grass GPP in growing period of crop
   grassGPPoffseason                        <- (grassGPPannual - grassGPPgrper)
   grassGPPoffseason[grassGPPoffseason < 0] <- 0
 
-  increaseFACTOR <- ifelse(grassGPPgrper > 0,
+  increaseFACTOR <- ifelse(rule1 & rule2,
                            grassGPPoffseason / grassGPPgrper,
                            0) * fallowFactor * suitMC
 
