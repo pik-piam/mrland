@@ -19,7 +19,6 @@
 #' @importFrom magclass dimOrder magpply dimSums getNames mbind time_interpolate
 #' @importFrom mrcommons toolCoord2Isocell toolSmooth
 
-
 calcISIMIP3bYields <- function(subtype = "yields:EPIC-IIASA:ukesm1-0-ll:ssp585:default:3b",
                                smooth = TRUE, cells = "magpiecell") {
 
@@ -28,7 +27,7 @@ if (grepl("historical", subtype)) {
 }
 
   st <- toolSplitSubtype(subtype, list(dataset = "yields",
-                                      model   = c("LPJmL", "EPIC-IIASA", "pDSSAT", "CYGMA1p74"),
+                                      model   = c("LPJmL", "EPIC-IIASA", "pDSSAT", "CYGMA1p74","PROMET"),
                                       gcm     = c("gfdl-esm4", "ipsl-cm6a-lr", "mpi-esm1-2-hr", "mri-esm2-0", "ukesm1-0-ll"),
                                       scen    = c("historical", "ssp126", "ssp370", "ssp585"),
                                       co2     = c("default", "2015co2"),
@@ -53,7 +52,16 @@ if (grepl("historical", subtype)) {
   if (st$model == "LPJmL") {
     x <- collapseNames(x)
     x <- dimOrder(x = x, perm = c(2, 1))
-    }
+  }
+  
+  if(st$model=="PROMET"){
+    x <- setNames(x, gsub("mai","maize",getNames(x)))
+    x <- setNames(x, gsub("ri1","ricea",getNames(x)))
+    x <- setNames(x, gsub("ri2","riceb",getNames(x)))
+    x <- setNames(x, gsub("soy","soy",getNames(x)))
+    x <- setNames(x, gsub("swh","springwheat",getNames(x)))
+    x <- setNames(x, gsub("wwh","winterwheat",getNames(x)))
+  }
 
   x[is.na(x)] <- 0
 
