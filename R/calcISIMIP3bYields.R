@@ -27,11 +27,7 @@ if (grepl("historical", subtype)) {
 }
 
   st <- toolSplitSubtype(subtype, list(dataset = "yields",
-<<<<<<< HEAD
                                       model   = c("LPJmL", "EPIC-IIASA", "pDSSAT", "CYGMA1p74","PROMET","CROVER"),
-=======
-                                      model   = c("LPJmL", "EPIC-IIASA", "pDSSAT", "CYGMA1p74","PROMET"),
->>>>>>> f7b888c141f3157c646ac1cb8ecc5b43acea805f
                                       gcm     = c("gfdl-esm4", "ipsl-cm6a-lr", "mpi-esm1-2-hr", "mri-esm2-0", "ukesm1-0-ll"),
                                       scen    = c("historical", "ssp126", "ssp370", "ssp585"),
                                       co2     = c("default", "2015co2"),
@@ -57,11 +53,7 @@ if (grepl("historical", subtype)) {
     x <- collapseNames(x)
     x <- dimOrder(x = x, perm = c(2, 1))
   }
-<<<<<<< HEAD
 
-=======
-  
->>>>>>> f7b888c141f3157c646ac1cb8ecc5b43acea805f
   if(st$model=="PROMET"){
     x <- setNames(x, gsub("mai","maize",getNames(x)))
     x <- setNames(x, gsub("ri1","ricea",getNames(x)))
