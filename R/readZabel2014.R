@@ -17,13 +17,12 @@
 #' readSource("Zabel2014", subtype = "all_marginal", convert = "onlycorrect")
 #' }
 #'
-#' @importFrom raster reclassify extract aggregate
+#' @importFrom terra rast classify extract aggregate
 #' @importFrom mrcommons toolGetMappingCoord2Country
 #'
 
 readZabel2014 <- function(subtype = "all_marginal") {
-
-  cropsuitZabel <- raster("./cropsuitability_rainfed_and_irrigated/1981-2010/overall_cropsuit_i_1981-2010/overall_cropsuit_i_1981-2010.tif")
+  cropsuitZabel <- rast("./cropsuitability_rainfed_and_irrigated/1981-2010/overall_cropsuit_i_1981-2010/overall_cropsuit_i_1981-2010.tif")
 
   # define suitability threshold for crop suitability in MAgPIE at original resolution of 30 arc seconds
   # In Zabel et al. (2014) marginal land is defined by a suitability index <= 0.33
@@ -41,8 +40,7 @@ readZabel2014 <- function(subtype = "all_marginal") {
     ),
     ncol = 3, byrow = TRUE
     )
-    siZabel <- reclassify(siZabel, rclass_matrx)
-
+    siZabel <- classify(siZabel, rclass_matrx)
   } else if (subtype == "q33_marginal") {
 
     # The bottom tertile (suitability index below 0.13) of the marginal land area is excluded
@@ -52,8 +50,7 @@ readZabel2014 <- function(subtype = "all_marginal") {
     ),
     ncol = 3, byrow = TRUE
     )
-    siZabel <- reclassify(siZabel, rclass_matrx)
-
+    siZabel <- classify(siZabel, rclass_matrx)
   } else if (subtype == "q50_marginal") {
 
     # The bottom  half (suitability index below 0.18) of the marginal land area is excluded
@@ -63,8 +60,7 @@ readZabel2014 <- function(subtype = "all_marginal") {
     ),
     ncol = 3, byrow = TRUE
     )
-    siZabel <- reclassify(siZabel, rclass_matrx)
-
+    siZabel <- classify(siZabel, rclass_matrx)
   } else if (subtype == "q66_marginal") {
 
     # The first and second tertile (suitability index below 0.23) of the marginal land area are excluded
@@ -74,8 +70,7 @@ readZabel2014 <- function(subtype = "all_marginal") {
     ),
     ncol = 3, byrow = TRUE
     )
-    siZabel <- reclassify(siZabel, rclass_matrx)
-
+    siZabel <- classify(siZabel, rclass_matrx)
   } else if (subtype == "q75_marginal") {
 
     # The first, second and third quartiles (suitability index below 0.25) of the marginal land are are excluded
@@ -85,8 +80,7 @@ readZabel2014 <- function(subtype = "all_marginal") {
     ),
     ncol = 3, byrow = TRUE
     )
-    siZabel <- reclassify(siZabel, rclass_matrx)
-
+    siZabel <- classify(siZabel, rclass_matrx)
   } else if (subtype == "no_marginal") {
 
     # marginal land (suitability index below 0.33) is fully excluded
@@ -96,18 +90,17 @@ readZabel2014 <- function(subtype = "all_marginal") {
     ),
     ncol = 3, byrow = TRUE
     )
-    siZabel <- reclassify(siZabel, rclass_matrx)
-
+    siZabel <- classify(siZabel, rclass_matrx)
   }
 
   # ignore all NA's and set all land cells to 1 to count total available land cells
   landcellsZabel <- cropsuitZabel
-  landcellsZabel <- reclassify(landcellsZabel, cbind(0, 1, 1), include.lowest = TRUE)
+  landcellsZabel <- classify(landcellsZabel, cbind(0, 1, 1), include.lowest = TRUE)
 
   # aggregate and sum up suitable pixels
   # in effect this means counting the pixels that are suitable (1) per 0.5 degree grid cell
   # aggregation factor from 30 arc sec to 0.5 degree: 60
-  siZabel_0.5        <- aggregate(siZabel, fact = 60, fun = sum)
+  siZabel_0.5 <- aggregate(siZabel, fact = 60, fun = sum)
   # aggregate and sum to obtain total land cells
   landcellsZabel_0.5 <- aggregate(landcellsZabel, fact = 60, fun = sum, na.rm = TRUE)
 
@@ -121,7 +114,7 @@ readZabel2014 <- function(subtype = "all_marginal") {
   # get spatial mapping
   map <- toolGetMappingCoord2Country(pretty = TRUE)
   # transform raster to magpie object
-  out <- as.magpie(extract(siZabel_share_0.5, map[c("lon", "lat")]), spatial = 1)
+  out <- as.magpie(extract(siZabel_share_0.5, map[c("lon", "lat")])[, 2], spatial = 1)
   # set dimension names
   dimnames(out) <- list("x.y.iso" = paste(map$coords, map$iso, sep = "."), "t" = NULL, "data" = paste0("si0_", subtype))
 
