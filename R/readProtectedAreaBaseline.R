@@ -17,7 +17,7 @@ readProtectedAreaBaseline <- function() {
   if (!dir.exists("./tmp")) {
     dir.create("./tmp")
   }
-  terraOptions(tempdir = "./tmp", todisk = TRUE)
+  terraOptions(tempdir = "./tmp", todisk = TRUE, memfrac = 0.5)
 
   # Historic reference years
   refyears <- c(1995, 2000, 2005, 2010, 2015, 2020)
@@ -39,18 +39,22 @@ readProtectedAreaBaseline <- function() {
     # set "urban" (1) and "water" (6) to NA, add "barren" to "other" (5)
     classMatrx_lc <- rbind(c(1, NA), c(6, NA), c(7, 5))
     luWDPA <- classify(luWDPA, classMatrx_lc)
+    gc()
 
     # divide into separate layers
     luWDPA <- segregate(luWDPA, other = NA)
+    gc()
 
     # compute cell size for each LULC layer
     luWDPA_area <- cellSize(luWDPA[[c("2", "3", "4", "5")]], mask = TRUE, unit = "ha")
+    gc()
     # set names
     names(luWDPA_area) <- c("crop", "past", "forest", "other")
 
     # sum cell area to 0.5 degree
     # aggregation factor from 10 arc sec to 0.5 degree: 180
     luWDPA_area_0.5 <- aggregate(luWDPA_area, fact = 180, fun = sum, na.rm = TRUE)
+    gc()
     # convert to Mha
     luWDPA_area_0.5 <- luWDPA_area_0.5 / 1e6
 
@@ -63,16 +67,19 @@ readProtectedAreaBaseline <- function() {
       as.magpie(extract(luWDPA_area_0.5[["forest"]], map[c("lon", "lat")])[, "forest"], spatial = 1),
       as.magpie(extract(luWDPA_area_0.5[["other"]], map[c("lon", "lat")])[, "other"], spatial = 1)
     )
-
     # set dimension names
     dimnames(luWDPA_lpj0.5) <- list("x.y.iso" = paste(map$coords, map$iso, sep = "."), "t" = paste0("y", yr), "data" = c("crop", "past", "forest", "other"))
 
     # bind to output
     out <- mbind(out, luWDPA_lpj0.5)
+
+    rm(luWDPA, luWDPA_area, luWDPA_area_0.5)
+    tmpFiles(current = FALSE, orphan = TRUE, remove = TRUE)
+    gc()
   }
 
   # Remove temporary files
-  tmpFiles(remove = TRUE)
+  tmpFiles(current = TRUE, remove = TRUE)
 
   return(out)
 }
