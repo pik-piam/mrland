@@ -14,6 +14,8 @@
 #' calcOutput("ProtectedAreaBaseline", aggregate = FALSE)
 #' }
 #'
+#' @importFrom mrcommons toolCoord2Isocell
+#'
 calcProtectedAreaBaseline <- function(cells = "magpiecell") {
   x <- readSource("ProtectedAreaBaseline")
 

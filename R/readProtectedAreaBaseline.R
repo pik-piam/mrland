@@ -73,8 +73,10 @@ readProtectedAreaBaseline <- function() {
     # bind to output
     out <- mbind(out, luWDPA_lpj0.5)
 
+    message(paste("Finished year", yr))
+
     rm(luWDPA, luWDPA_area, luWDPA_area_0.5)
-    tmpFiles(current = FALSE, orphan = TRUE, remove = TRUE)
+    tmpFiles(current = TRUE, orphan = TRUE, remove = FALSE)
     gc()
   }
 
