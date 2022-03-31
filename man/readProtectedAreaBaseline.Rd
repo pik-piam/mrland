@@ -14,7 +14,7 @@ Reads spatial land cover information within protected areas. Land cover informat
 }
 \examples{
 \dontrun{
-readSource("ProtectedAreaBaseline")
+readSource("ProtectedAreaBaseline", convert = "onlycorrect")
 }
 }
 \author{

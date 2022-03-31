@@ -5,7 +5,7 @@
 #'
 #' @examples
 #' \dontrun{
-#' readSource("ProtectedAreaBaseline")
+#' readSource("ProtectedAreaBaseline", convert = "onlycorrect")
 #' }
 #' @importFrom terra aggregate cellSize classify extract rast segregate terraOptions tmpFiles
 #' @importFrom mrcommons toolGetMappingCoord2Country
@@ -26,6 +26,8 @@ readProtectedAreaBaseline <- function() {
   out <- NULL
 
   for (yr in refyears) {
+
+    message(paste("Beginning year", yr))
 
     # Read raster file: The file contains land cover information for all legally
     # designated protected areas in the reference year, estimated based on
@@ -68,7 +70,9 @@ readProtectedAreaBaseline <- function() {
       as.magpie(extract(luWDPA_area_0.5[["other"]], map[c("lon", "lat")])[, "other"], spatial = 1)
     )
     # set dimension names
-    dimnames(luWDPA_lpj0.5) <- list("x.y.iso" = paste(map$coords, map$iso, sep = "."), "t" = paste0("y", yr), "data" = c("crop", "past", "forest", "other"))
+    dimnames(luWDPA_lpj0.5) <- list("x.y.iso" = paste(map$coords, map$iso, sep = "."),
+                                    "t" = paste0("y", yr),
+                                    "data" = c("crop", "past", "forest", "other"))
 
     # bind to output
     out <- mbind(out, luWDPA_lpj0.5)

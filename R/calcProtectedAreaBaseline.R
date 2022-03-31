@@ -17,7 +17,7 @@
 #' @importFrom mrcommons toolCoord2Isocell
 #'
 calcProtectedAreaBaseline <- function(cells = "magpiecell") {
-  x <- readSource("ProtectedAreaBaseline")
+  x <- readSource("ProtectedAreaBaseline", convert = "onlycorrect")
 
   if (cells == "magpiecell") {
     out <- toolCoord2Isocell(x)
