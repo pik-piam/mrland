@@ -1,8 +1,6 @@
 #' @title calcPumpingCosts
 #' @description provides costs of pumping irrigation water
-#' @cells Only works for magpiecells currently
-#' @irrigation Only works when irrigation = FALSE
-#' @return A magpie object for all magpiecells for all years with information on pumping costs
+#' @return A magpie object at iso level for all years with information on pumping costs
 #' @author Vartika Singh
 #' #' @seealso \code{\link{readSource}}, \code{\link{calcOutput}}
 #' @importFrom magclass new.magpie
