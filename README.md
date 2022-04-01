@@ -1,8 +1,8 @@
 # MadRaT land data package
 
-R package **mrland**, version **0.21.0**
+R package **mrland**, version **0.22.0**
 
-[![CRAN status](https://www.r-pkg.org/badges/version/mrland)](https://cran.r-project.org/package=mrland) [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.3822083.svg)](https://doi.org/10.5281/zenodo.3822083) [![R build status](https://github.com/pik-piam/mrland/workflows/check/badge.svg)](https://github.com/pik-piam/mrland/actions) [![codecov](https://codecov.io/gh/pik-piam/mrland/branch/master/graph/badge.svg)](https://codecov.io/gh/pik-piam/mrland) [![r-universe](https://pik-piam.r-universe.dev/badges/mrland)](https://pik-piam.r-universe.dev/ui#builds)
+[![CRAN status](https://www.r-pkg.org/badges/version/mrland)](https://cran.r-project.org/package=mrland) [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.3822083.svg)](https://doi.org/10.5281/zenodo.3822083) [![R build status](https://github.com/pik-piam/mrland/workflows/check/badge.svg)](https://github.com/pik-piam/mrland/actions) [![codecov](https://codecov.io/gh/pik-piam/mrland/branch/master/graph/badge.svg)](https://app.codecov.io/gh/pik-piam/mrland) [![r-universe](https://pik-piam.r-universe.dev/badges/mrland)](https://pik-piam.r-universe.dev/ui#builds)
 
 ## Purpose and Functionality
 
@@ -38,7 +38,7 @@ In case of questions / problems please contact Jan Philipp Dietrich <dietrich@pi
 
 To cite package **mrland** in publications use:
 
-Dietrich J, Mishra A, Weindl I, Bodirsky B, Wang X, Baumstark L, Kreidenweis U, Klein D, Steinmetz N, Chen D, Humpenoeder F, von Jeetze P, Wirth S (2022). _mrland: MadRaT land data package_. https://github.com/pik-piam/mrland, https://doi.org/10.5281/zenodo.3822083.
+Dietrich J, Mishra A, Weindl I, Bodirsky B, Wang X, Baumstark L, Kreidenweis U, Klein D, Steinmetz N, Chen D, Humpenoeder F, von Jeetze P, Wirth S (2022). _mrland: MadRaT land data package_. doi: 10.5281/zenodo.3822083 (URL: https://doi.org/10.5281/zenodo.3822083), R package version 0.22.0, <URL: https://github.com/pik-piam/mrland>.
 
 A BibTeX entry for LaTeX users is
 
@@ -47,6 +47,8 @@ A BibTeX entry for LaTeX users is
   title = {mrland: MadRaT land data package},
   author = {Jan Philipp Dietrich and Abhijeet Mishra and Isabelle Weindl and Benjamin Leon Bodirsky and Xiaoxi Wang and Lavinia Baumstark and Ulrich Kreidenweis and David Klein and Nele Steinmetz and David Chen and Florian Humpenoeder and Patrick {von Jeetze} and Stephen Wirth},
   year = {2022},
-  note = {https://github.com/pik-piam/mrland, https://doi.org/10.5281/zenodo.3822083},
+  note = {R package version 0.22.0},
+  doi = {10.5281/zenodo.3822083},
+  url = {https://github.com/pik-piam/mrland},
 }
 ```

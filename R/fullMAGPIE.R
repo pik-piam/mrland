@@ -196,6 +196,10 @@ fullMAGPIE <- function(rev = 0.1) {
     # 41 Area Equipped for Irrigation
     # f41_irrig(j) should be read out of calcAreaEquippedForIrrigation()
     calcOutput("IrrigationInvCosts", years = shortYears, round = 0, file = "f41_c_irrig.csv")
+    
+    # 42_water_demand
+    calcOutput("PumpingCosts",       round = 4, file = "f42_pumping_cost.csv", aggregate = superregion)
+    
 
     # 50 n soil budget
     calcOutput("SNUpE", years = magYears, round = 4, file = "f50_snupe.cs4", rev = rev)
