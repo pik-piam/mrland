@@ -1,8 +1,13 @@
 Package: mrland
 Type: Package
 Title: MadRaT land data package
+<<<<<<< HEAD
 Version: 0.22.0
 Date: 2022-04-01
+=======
+Version: 0.23.3
+Date: 2022-03-31
+>>>>>>> 0e975ae0f1d75f7b913bfd08423b0a43dfd38d2d
 Authors@R: c(person("Jan Philipp", "Dietrich", email = "dietrich@pik-potsdam.de", role = c("aut","cre")),
              person("Abhijeet", "Mishra", role = "aut"),
              person("Isabelle", "Weindl", role = "aut"),
@@ -15,7 +20,8 @@ Authors@R: c(person("Jan Philipp", "Dietrich", email = "dietrich@pik-potsdam.de"
              person("David", "Chen", role = "aut"),
              person("Florian", "Humpenoeder", role = "aut"),
              person("Patrick", "von Jeetze", role = "aut"),
-             person("Stephen", "Wirth", role = "aut"))
+             person("Stephen", "Wirth", role = "aut"),
+             person("David", "Hoetten", role = "aut"))
 Description: The package provides land related data via the madrat framework.
 Depends:
     R(>= 2.10.0),
@@ -26,12 +32,15 @@ Imports:
     countrycode,
     data.table,
     magpiesets,
+    mstools,
     readxl,
     reshape2,
     SPEI,
     stringr,
     raster,
-    dplyr
+    terra,
+    dplyr,
+    lpjclass
 License: LGPL-3 | file LICENSE
 LazyData: no
 Encoding: UTF-8

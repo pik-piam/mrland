@@ -39,10 +39,6 @@ fullMAGPIE <- function(rev = 0.1) {
     # data fully agrees with the data currently used in MAgPIE and new data set is implemented
     calcOutput("TauTotal",  years = 1995,        round = 2, file = "fm_tau1995.cs4", aggregate = superregion)
 
-    # input
-    calcOutput("AdjustGrassi2021", aggregate = TRUE, file = "land_carbon_sink_adjust_grassi.mz")
-
-
     # 09 drivers
     calcOutput("GDP",
                naming = "scenario",
@@ -85,8 +81,6 @@ fullMAGPIE <- function(rev = 0.1) {
     # 14 yields
     calcOutput("CalibrationDummy", round = 0, file = "f14_yld_calib.csv")
     calcOutput("PastureYield", round = 3, file = "f14_pasture_yields_hist.csv")
-    calcOutput("GrasslandBiomass",  round = 3, file = "f14_grass_bio_hist.cs3")
-    calcOutput("PastureYield", range_pastr = TRUE, round = 3, file = "f14_grassl_yld_hist.cs3")
     calcOutput("FAOYield", cut = 0.98, years = magYearsPast, round = 2, file = "f14_region_yields.cs3")
 
     # 15 food
@@ -165,7 +159,11 @@ fullMAGPIE <- function(rev = 0.1) {
                aggregate = superregion)
     calcOutput("TradeTariff", type_tariff = "import",    round = 4, file = "f21_trade_tariff_import.cs3",
                aggregate = superregion)
-
+    
+    # 31 Past
+    calcOutput("GrasslandBiomass",  round = 3, file = "f31_grass_bio_hist.cs3")
+    calcOutput("PastureYield", range_pastr = TRUE, round = 3, file = "f31_grassl_yld_hist.cs3")
+    
     # 32 forestry
     calcOutput("AfforestCosts", years = 2001,        round = 0, file = "f32_fac_req_ha.csv")
     calcOutput("TimberHarvestCost", file = "f32_harvestingcost.cs4")
@@ -220,6 +218,9 @@ fullMAGPIE <- function(rev = 0.1) {
     calcOutput("EF3confinement", round = 4, file = "f51_ef3_confinement.cs4")
     calcOutput("EF3prp", round = 4, file = "f51_ef3_prp.cs4")
 
+    # 52 carbon 
+    calcOutput("AdjustGrassi2021", aggregate = TRUE, file = "f52_land_carbon_sink_adjust_grassi.cs3")
+    
     # 53 methane
     calcOutput("EFch4Rice", years = magYears, round = 4, file = "f53_EFch4Rice.cs4")
     calcOutput("EFch4AWMS", years = magYears, round = 4, file = "f53_EFch4AWMS.cs4")

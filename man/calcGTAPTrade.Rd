@@ -18,9 +18,9 @@ Trade related data as an MAgPIE object
 calculate trade data from GTAP dataset
 }
 \examples{
-    \dontrun{
-    x <- calcGTAP("GTAP7_VXMD")
-    }
+\dontrun{
+x <- calcGTAP("GTAP7_VXMD")
+}
 }
 \author{
 Xiaoxi Wang

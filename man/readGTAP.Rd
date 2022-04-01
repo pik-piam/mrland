@@ -42,9 +42,9 @@ GTAP data as a MAgPie-Object
 Read BaseData and BaseView in GTAP database that has been downlodaded from the GTAP wewbsite.
 }
 \examples{
-  \dontrun{
-    a <- readSource("GTAP7", "VIWS")
-           }
+\dontrun{
+a <- readSource("GTAP7", "VIWS")
+}
 }
 \author{
 Stephen Wirth, Xiaoxi Wang

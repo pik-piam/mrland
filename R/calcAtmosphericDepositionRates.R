@@ -22,6 +22,9 @@ calcAtmosphericDepositionRates<-function(cellular=FALSE){
   luhdata<-calcOutput("LanduseInitialisation",cellular=cellular,aggregate=FALSE)
   dep <- toolHoldConstantBeyondEnd(dep)
   weight <- toolHoldConstantBeyondEnd(luhdata)
+  # dep <- collapseNames(dep)
+  # weight <- collapseNames(weight)
+  dep <- dep*(weight>10^-7)
   
   out<-dep/weight
   out[is.na(out)]<-0
