@@ -4,10 +4,12 @@
 \alias{fullMAGPIE}
 \title{fullMAgPIE}
 \usage{
-fullMAGPIE(rev = 0.1)
+fullMAGPIE(rev = 0.1, dev = "")
 }
 \arguments{
 \item{rev}{data revision which should be used as input (positive numeric).}
+
+\item{dev}{development suffix to distinguish development versions for the same data revision.}
 }
 \description{
 Function that produces the complete regional data set required for running the
