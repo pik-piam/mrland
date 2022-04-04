@@ -40,6 +40,7 @@ To cite package **mrland** in publications use:
 
 Dietrich J, Mishra A, Weindl I, Bodirsky B, Wang X, Baumstark L, Kreidenweis U, Klein D, Steinmetz N, Chen D, Humpenoeder F, von Jeetze P, Wirth S, Hoetten D (2022). _mrland: MadRaT land data package_. doi: 10.5281/zenodo.3822083 (URL: https://doi.org/10.5281/zenodo.3822083), R package version 0.24.1, <URL: https://github.com/pik-piam/mrland>.
 
+
 A BibTeX entry for LaTeX users is
 
  ```latex
