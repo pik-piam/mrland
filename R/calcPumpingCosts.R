@@ -1,8 +1,6 @@
 #' @title calcPumpingCosts
 #' @description provides costs of pumping irrigation water
-#' @cells Only works for magpiecells currently
-#' @irrigation Only works when irrigation = FALSE
-#' @return A magpie object for all magpiecells for all years with information on pumping costs
+#' @return A magpie object at iso level for all years with information on pumping costs
 #' @author Vartika Singh
 #' #' @seealso \code{\link{readSource}}, \code{\link{calcOutput}}
 #' @importFrom magclass new.magpie
@@ -19,8 +17,8 @@
     isoCountry  <- toolGetMapping("iso_country.csv")
     isoCountry1 <- as.vector(isoCountry[, "x"])
     names(isoCountry1) <- isoCountry[, "X"]
-    x <- new.magpie(cells_and_regions = isoCountry1, years = seq(1995, 2100, by = 5), names = "pumpingcost", fill = 2000)
-    
+    x <- new.magpie(cells_and_regions = isoCountry1, years = seq(1995, 2100, by = 5), names = "pumpingcost", fill = 0.02)
+
 
   return(list(x            = x,
               weight       = NULL,

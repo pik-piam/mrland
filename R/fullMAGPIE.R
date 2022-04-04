@@ -159,11 +159,11 @@ fullMAGPIE <- function(rev = 0.1) {
                aggregate = superregion)
     calcOutput("TradeTariff", type_tariff = "import",    round = 4, file = "f21_trade_tariff_import.cs3",
                aggregate = superregion)
-    
+
     # 31 Past
     calcOutput("GrasslandBiomass",  round = 3, file = "f31_grass_bio_hist.cs3")
     calcOutput("PastureYield", range_pastr = TRUE, round = 3, file = "f31_grassl_yld_hist.cs3")
-    
+
     # 32 forestry
     calcOutput("AfforestCosts", years = 2001,        round = 0, file = "f32_fac_req_ha.csv")
     calcOutput("TimberHarvestCost", file = "f32_harvestingcost.cs4")
@@ -194,10 +194,10 @@ fullMAGPIE <- function(rev = 0.1) {
     # 41 Area Equipped for Irrigation
     # f41_irrig(j) should be read out of calcAreaEquippedForIrrigation()
     calcOutput("IrrigationInvCosts", years = shortYears, round = 0, file = "f41_c_irrig.csv")
-    
+
     # 42_water_demand
-    calcOutput("PumpingCosts",       round = 4, file = "f42_pumping_cost.csv", aggregate = superregion)
-    
+    calcOutput("PumpingCosts", round = 2, file = "f42_pumping_cost.csv", aggregate = superregion)
+
 
     # 50 n soil budget
     calcOutput("SNUpE", years = magYears, round = 4, file = "f50_snupe.cs4", rev = rev)
@@ -218,9 +218,9 @@ fullMAGPIE <- function(rev = 0.1) {
     calcOutput("EF3confinement", round = 4, file = "f51_ef3_confinement.cs4")
     calcOutput("EF3prp", round = 4, file = "f51_ef3_prp.cs4")
 
-    # 52 carbon 
+    # 52 carbon
     calcOutput("AdjustGrassi2021", aggregate = TRUE, file = "f52_land_carbon_sink_adjust_grassi.cs3")
-    
+
     # 53 methane
     calcOutput("EFch4Rice", years = magYears, round = 4, file = "f53_EFch4Rice.cs4")
     calcOutput("EFch4AWMS", years = magYears, round = 4, file = "f53_EFch4AWMS.cs4")

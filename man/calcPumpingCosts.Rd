@@ -7,7 +7,7 @@
 calcPumpingCosts()
 }
 \value{
-A magpie object for all magpiecells for all years with information on pumping costs
+A magpie object at iso level for all years with information on pumping costs
 }
 \description{
 provides costs of pumping irrigation water
