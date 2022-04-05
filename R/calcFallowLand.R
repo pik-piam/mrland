@@ -30,6 +30,10 @@ calcFallowLand <- function() {
 
   fallowLand <- toolConditionalReplace(fallowLand, conditions = c("<0"), replaceby = 0)
 
-  return(fallowLand)
+  return(list(x = fallowLand,
+              weight = NULL,
+              description = "Fallow land on grid cell level",
+              unit = "ha",
+              isocountries = FALSE))
 
 }

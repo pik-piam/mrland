@@ -13,7 +13,7 @@ correctLanduseToolbox(x)
 corrected magpie object
 }
 \description{
-correct Landuse Toolbox output data
+correct Landuse Toolbox output data. Convert unit from ha to mio ha
 }
 \examples{
 \dontrun{
