@@ -19,11 +19,9 @@
     names(isoCountry1) <- isoCountry[, "X"]
     x <- new.magpie(cells_and_regions = isoCountry1, years = seq(1995, 2100, by = 5), names = "pumpingcost", fill = 0.02)
 
-    weight <- x
-    weight[,,] <- 1
 
   return(list(x            = x,
-              weight       = weight,
+              weight       = NULL,
               unit         = "USD per million cubic meters",
               description  = "costs of pumping irrigation water from Cornish et.al., 2004"))
 
