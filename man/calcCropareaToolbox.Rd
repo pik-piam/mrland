@@ -4,16 +4,13 @@
 \alias{calcCropareaToolbox}
 \title{calcCropareaToolbox}
 \usage{
-calcCropareaToolbox(physical = TRUE, cells = "magpiecell", irrigation = FALSE)
+calcCropareaToolbox(physical = TRUE, cells = "magpiecell")
 }
 \arguments{
 \item{physical}{if TRUE the sum over all crops agrees with the cropland area per country
 (not yet completly true, WIP)}
 
 \item{cells}{Switch between "magpiecell" (59199) and "lpjcell" (67420)}
-
-\item{irrigation}{If true: cellular areas are returned separated
-into irrigated and rainfed}
 }
 \value{
 Magpie object with cropareas

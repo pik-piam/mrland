@@ -6,16 +6,13 @@
 #' @param physical   if TRUE the sum over all crops agrees with the cropland area per country
 #' (not yet completly true, WIP)
 #' @param cells      Switch between "magpiecell" (59199) and "lpjcell" (67420)
-#' @param irrigation If true: cellular areas are returned separated
-#'                   into irrigated and rainfed
 #'
 #' @return Magpie object with cropareas
 #'
 #' @author David Hötten
 #'
 calcCropareaToolbox <- function(physical = TRUE,
-                                cells = "magpiecell",
-                                irrigation = FALSE) {
+                                cells = "magpiecell") {
 
   harvestedArea <- readSource("LanduseToolbox", subtype = "harvestedArea")
 
@@ -30,7 +27,7 @@ calcCropareaToolbox <- function(physical = TRUE,
 
     # for the following crops we know that no multicropping is happening, so physical area = harvested area
     perenials <- c("sugr_cane", "oilpalm")
-    nonper <- allRealCrops[!(allCrops %in% perenials)] # nonper means nonperenials
+    nonper <- allRealCrops[!(allRealCrops %in% perenials)] # nonper means nonperenials
 
     perenialHarvestedA <-  dimSums(harvestedArea[, , perenials], c("crop"))
     nonperHarvestedA <- dimSums(harvestedArea[, , nonper], c("crop"))
@@ -49,10 +46,6 @@ calcCropareaToolbox <- function(physical = TRUE,
     physicalAreaCrop[, , nonper] <- harvestedArea[, , nonper] * scaling
 
     output <- physicalAreaCrop
-  }
-
-  if (!irrigation) {
-    output <- dimSums(output, "irrigation")
   }
 
   if (cells == "magpiecell") {
