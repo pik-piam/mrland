@@ -76,4 +76,3 @@ return(list(x=data.out,
             description=description)
 )
 }
-

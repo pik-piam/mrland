@@ -62,4 +62,3 @@ calcEFch4Rice<-function(physical=TRUE){
               max=200)
   )                   
 }
-

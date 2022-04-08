@@ -21,5 +21,3 @@ calcLossShare<-function(){
   
   return(list(x=wasteshr,weight=weight,unit="DM share, weight: domestic supply",description="Share of domestic supply wasted"))
 }
-
-

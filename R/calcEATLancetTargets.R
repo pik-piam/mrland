@@ -61,4 +61,3 @@ calcEATLancetTargets <- function(attributes="kcal/d"){
               description="Minimum and maximum targets for healthy food intake according to the EAT-Lancet Commission")
   )
 }
-

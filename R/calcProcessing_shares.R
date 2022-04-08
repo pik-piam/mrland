@@ -56,4 +56,3 @@ calcProcessing_shares<-function(){
   
   return(list(x=out$x,weight=out$weight,unit="share",description="Share of processed products coming from different primary products"))
 }
-

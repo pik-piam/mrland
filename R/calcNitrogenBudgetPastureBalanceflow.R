@@ -11,6 +11,3 @@ calcNitrogenBudgetPastureBalanceflow<-function(){
     unit="Mt Nr",
     description="Balancelfow to account for unrealistically high NUEs on pastures"))
 }
-
-
-

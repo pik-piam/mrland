@@ -40,5 +40,3 @@ convertFRA2015Doc <- function(x,subtype) {
    x <- toolCountryFill(x, fill=0, verbosity = 2)
   } else {return(x)}
 }
-
-
