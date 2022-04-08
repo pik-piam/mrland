@@ -20,4 +20,3 @@ readForestryProductionRatio<-function(){
   
   return(x)
 }
-

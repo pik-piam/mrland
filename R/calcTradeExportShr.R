@@ -48,4 +48,3 @@ calcTradeExportShr <- function() {
               description="share of export of individual counties in total global exports")
   )
 }
-

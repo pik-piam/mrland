@@ -15,5 +15,3 @@ readWHObmi <- function() {
   bmi<-as.magpie(bmi,spatial=0,temporal=0)    
   return(bmi)
 }  
-
-

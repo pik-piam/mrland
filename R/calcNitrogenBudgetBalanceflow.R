@@ -11,6 +11,3 @@ calcNitrogenBudgetBalanceflow<-function(){
     unit="Mt Nr",
     description="Balancelfow to account for unrealistically high SNUpEs."))
 }
-
-
-
