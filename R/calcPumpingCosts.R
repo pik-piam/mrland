@@ -17,7 +17,7 @@
     isoCountry  <- toolGetMapping("iso_country.csv")
     isoCountry1 <- as.vector(isoCountry[, "x"])
     names(isoCountry1) <- isoCountry[, "X"]
-    x <- new.magpie(cells_and_regions = isoCountry1, years = seq(1995, 2100, by = 5), names = "pumpingcosts", fill = 0.02)
+    x <- new.magpie(cells_and_regions = isoCountry1, years = seq(1995, 2100, by = 5), names = NULL, fill = 0.02)
 
     weight <- x
     weight[,,] <- 1

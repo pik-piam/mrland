@@ -198,7 +198,7 @@ fullMAGPIE <- function(rev = 0.1, dev = "") {
 
     # 42_water_demand
     if (grepl("indiaYields", dev)) {
-    calcOutput("PumpingCosts", round = 2, file = "f42_pumping_cost.csv", aggregate = TRUE)
+    calcOutput("PumpingCosts", round = 2, file = "f42_pumping_cost.cs4", aggregate = TRUE)
     }
 
     # 50 n soil budget
