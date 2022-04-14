@@ -43,7 +43,7 @@ calcProtectedAreaBaseline <- function(magpie_input = TRUE, nclasses = "seven", c
     tot_PAUrban <- dimSums(mbind(PABaseline, LUH2v2[, , "urban"]), dim = 3)
     tot_land <- dimSums(LUH2v2, dim = 3)
     # compute mismatch factor
-    landMismatch <- setNames(tot_land, NULL) / setNames(tot_PAUrban, NULL)
+    landMismatch <- 1 - (setNames(tot_PAUrban, NULL) - setNames(tot_land, NULL)) / setNames(tot_land, NULL)
     landMismatch <- toolConditionalReplace(landMismatch, c(">1", "is.na()"), 1)
     # correct WDPA data
     PABaseline <- PABaseline * landMismatch
