@@ -39,6 +39,15 @@ calcProtectedAreaBaseline <- function(magpie_input = TRUE, nclasses = "seven", c
       setYears(LUH2v2[, "y2015", ], "y2020")
     )
 
+    # make sure that protected area plus urban land is not greater than total area
+    tot_PAUrban <- dimSums(mbind(PABaseline, LUH2v2[, , "urban"]), dim = 3)
+    tot_land <- dimSums(LUH2v2, dim = 3)
+    # compute mismatch factor
+    landMismatch <- setNames(tot_land, NULL) / setNames(tot_PAUrban, NULL)
+    landMismatch <- toolConditionalReplace(landMismatch, ">1", 1)
+    # correct WDPA data
+    PABaseline <- PABaseline * landMismatch
+
     # differentiate primary and secondary forest based on LUH2v2 data
     totforest_luh <- dimSums(LUH2v2[, , c("primf", "secdf")], dim = 3)
     primforest_shr <- LUH2v2[, , "primf"] / setNames(totforest_luh + 1e-10, NULL)
@@ -67,9 +76,9 @@ calcProtectedAreaBaseline <- function(magpie_input = TRUE, nclasses = "seven", c
       past_shr <- LUH2v2[, , "pastr"] / setNames(totgrass_luh + 1e-10, NULL)
       range_shr <- LUH2v2[, , "range"] / setNames(totgrass_luh + 1e-10, NULL)
       # where luh2 does not report grassland, but we find grassland in
-      # protected area data, set share of secondary other land to 1
+      # protected area data, set share of rangeland to 1
       range_shr[past_shr == 0 & range_shr == 0] <- 1
-      # multiply shares of primary and secondary non-forest veg with corrected other land
+      # multiply shares of pasture and rangeland with pasture in protected area data
       past <- setCells(past_shr, getCells(PABaseline)) * setNames(PABaseline[, , "past"], NULL)
       range <- setCells(range_shr, getCells(PABaseline)) * setNames(PABaseline[, , "past"], NULL)
 
@@ -80,14 +89,14 @@ calcProtectedAreaBaseline <- function(magpie_input = TRUE, nclasses = "seven", c
       # where luh2 does not report other land, but we find other land in
       # protected area data, set share of secondary other land to 1
       secdother_shr[secdother_shr == 0 & primother_shr == 0] <- 1
-      # multiply shares of primary and secondary non-forest veg with corrected other land
+      # multiply shares of primary and secondary non-forest veg with other land
       primother <- setCells(primother_shr, getCells(PABaseline)) * setNames(PABaseline[, , "other"], NULL)
       secdother <- setCells(secdother_shr, getCells(PABaseline)) * setNames(PABaseline[, , "other"], NULL)
 
       out <- mbind(
         out[, , "crop"],
-        setNames(primother, "past"),
-        setNames(secdother, "range"),
+        setNames(past, "past"),
+        setNames(range, "range"),
         out[, , c("forestry", "primforest", "secdforest", "urban")],
         setNames(primother, "primother"),
         setNames(secdother, "secdother")
