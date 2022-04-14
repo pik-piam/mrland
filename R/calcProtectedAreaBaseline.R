@@ -39,11 +39,11 @@ calcProtectedAreaBaseline <- function(magpie_input = TRUE, nclasses = "seven", c
       setYears(LUH2v2[, "y2015", ], "y2020")
     ), getCells(PABaseline))
 
-    # make sure that protected area plus urban land is not greater than total area
-    tot_PAUrban <- dimSums(mbind(PABaseline, LUH2v2[, , "urban"]), dim = 3)
-    tot_land <- dimSums(LUH2v2, dim = 3)
+    # make sure that protected area is not greater than total area minus urban area
+    tot_PABase <- dimSums(PABaseline, dim = 3)
+    tot_noUrban <- dimSums(LUH2v2[, , "urban", invert = TRUE], dim = 3)
     # compute mismatch factor
-    landMismatch <- 1 - (setNames(tot_PAUrban, NULL) - setNames(tot_land, NULL)) / setNames(tot_land, NULL)
+    landMismatch <- setNames(tot_noUrban, NULL) / setNames(tot_PABase, NULL)
     landMismatch <- toolConditionalReplace(landMismatch, c(">1", "is.na()"), 1)
     # correct WDPA data
     PABaseline <- PABaseline * landMismatch
