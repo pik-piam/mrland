@@ -34,10 +34,10 @@ calcProtectedAreaBaseline <- function(magpie_input = TRUE, nclasses = "seven", c
 
     # extend the data set to all time steps provided in the protected area data
     # i.e. use the data from the year 2015 for the year 2020.
-    LUH2v2 <- mbind(
+    LUH2v2 <- setCells(mbind(
       LUH2v2,
       setYears(LUH2v2[, "y2015", ], "y2020")
-    )
+    ), getCells(PABaseline))
 
     # make sure that protected area plus urban land is not greater than total area
     tot_PAUrban <- dimSums(mbind(PABaseline, LUH2v2[, , "urban"]), dim = 3)
@@ -57,8 +57,8 @@ calcProtectedAreaBaseline <- function(magpie_input = TRUE, nclasses = "seven", c
     secdforest_shr[secdforest_shr == 0 & primforest_shr == 0] <- 1
     # multiply shares of primary and secondary non-forest veg with
     # land pools in protected area data set
-    primforest <- setCells(primforest_shr, getCells(PABaseline)) * setNames(PABaseline[, , "forest"], NULL)
-    secdforest <- setCells(secdforest_shr, getCells(PABaseline)) * setNames(PABaseline[, , "forest"], NULL)
+    primforest <- primforest_shr * setNames(PABaseline[, , "forest"], NULL)
+    secdforest <- secdforest_shr * setNames(PABaseline[, , "forest"], NULL)
 
     out <- mbind(
       PABaseline[, , c("crop", "past")],
@@ -79,8 +79,8 @@ calcProtectedAreaBaseline <- function(magpie_input = TRUE, nclasses = "seven", c
       # protected area data, set share of rangeland to 1
       range_shr[past_shr == 0 & range_shr == 0] <- 1
       # multiply shares of pasture and rangeland with pasture in protected area data
-      past <- setCells(past_shr, getCells(PABaseline)) * setNames(PABaseline[, , "past"], NULL)
-      range <- setCells(range_shr, getCells(PABaseline)) * setNames(PABaseline[, , "past"], NULL)
+      past <- past_shr * setNames(PABaseline[, , "past"], NULL)
+      range <- range_shr * setNames(PABaseline[, , "past"], NULL)
 
       # separate other land into primary and secondary
       totother_luh <- dimSums(LUH2v2[, , c("primn", "secdn")], dim = 3)
@@ -90,8 +90,8 @@ calcProtectedAreaBaseline <- function(magpie_input = TRUE, nclasses = "seven", c
       # protected area data, set share of secondary other land to 1
       secdother_shr[secdother_shr == 0 & primother_shr == 0] <- 1
       # multiply shares of primary and secondary non-forest veg with other land
-      primother <- setCells(primother_shr, getCells(PABaseline)) * setNames(PABaseline[, , "other"], NULL)
-      secdother <- setCells(secdother_shr, getCells(PABaseline)) * setNames(PABaseline[, , "other"], NULL)
+      primother <- primother_shr * setNames(PABaseline[, , "other"], NULL)
+      secdother <- secdother_shr * setNames(PABaseline[, , "other"], NULL)
 
       out <- mbind(
         out[, , "crop"],
