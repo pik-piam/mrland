@@ -26,7 +26,7 @@
 #' }
 #'
 #' @importFrom terra rast classify extract aggregate terraOptions
-#' @importFrom withr local_tempdir
+#' @importFrom withr local_tempdir defer
 #' @importFrom mrcommons toolGetMappingCoord2Country
 #'
 
@@ -37,7 +37,7 @@ readZabel2014 <- function(subtype = "all_marginal") {
   terraOptions(tempdir = local_tempdir(tmpdir = "../../"), todisk = TRUE, memfrac = 0.5)
   cropsuitZabel <- rast(paste0("./cropsuitability_rainfed_and_irrigated/1981-2010/",
                                "overall_cropsuit_i_1981-2010/overall_cropsuit_i_1981-2010.tif"))
-  terraOptions(tempdir = tempdir())
+  defer(terraOptions(tempdir = tempdir()))
 
   # define suitability threshold for crop suitability in MAgPIE at original resolution of 30 arc seconds
   # In Zabel et al. (2014) marginal land is defined by a suitability index <= 0.33

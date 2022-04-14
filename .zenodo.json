@@ -1,6 +1,6 @@
 {
   "title": "mrland: MadRaT land data package",
-  "version": "0.24.10",
+  "version": "0.24.11",
   "description": "<p>The package provides land related data via the madrat framework.<\/p>",
   "creators": [
     {
