@@ -32,8 +32,9 @@
 
 readZabel2014 <- function(subtype = "all_marginal") {
 
-  # set terra options and temporary directory
-  terraOptions(tempdir = local_tempdir(tmpdir = "."), todisk = TRUE, memfrac = 0.5)
+  # "../../" needs to be replaced with "." once madrat update
+  # for tmp files has been implemented
+  terraOptions(tempdir = local_tempdir(tmpdir = "../../"), todisk = TRUE, memfrac = 0.5)
   # read data
   cropsuitZabel <- rast(paste0("./cropsuitability_rainfed_and_irrigated/1981-2010/",
                                "overall_cropsuit_i_1981-2010/overall_cropsuit_i_1981-2010.tif"))
