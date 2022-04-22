@@ -20,7 +20,7 @@
     x <- new.magpie(cells_and_regions = isoCountry1, years = seq(1995, 2100, by = 5), names = NULL, fill = 0.005)
 
     weight <- x
-    weight[,,] <- 1
+    weight[, ,] <- 1
 
   return(list(x            = x,
               weight       = weight,
