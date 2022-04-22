@@ -19,10 +19,16 @@
 #'                      be unsuitable for multiple cropping
 #'                      Unit of the threshold is gC/m^2.
 #'                      Default: 50 gC/m^2
-#' @param suitability   "endogenous": suitability for multiple cropping determined
-#'                                    by rules based on grass and crop productivity
-#'                      "exogenous": suitability for multiple cropping given by
-#'                                   GAEZ data set
+#' @param areaMask      Multicropping area mask to be used
+#'                      "none": no mask applied (only for development purposes)
+#'                      "actual:total": currently multicropped areas calculated from total harvested areas
+#'                                      and total physical areas per cell from readLanduseToolbox
+#'                      "actual:crop" (crop-specific), "actual:irrigation" (irrigation-specific),
+#'                      "actual:irrig_crop" (crop- and irrigation-specific) "total"
+#'                      "potential:endogenous": potentially multicropped areas given
+#'                                              temperature and productivity limits
+#'                      "potential:exogenous": potentially multicropped areas given
+#'                                             GAEZ suitability classification
 #' @param crops         standard: default crops,
 #'                      proxy: proxy crops for LPJmL to MAgPIE mapping and treatment of perennials
 #'
@@ -40,7 +46,7 @@
 
 calcMulticroppingYieldIncrease <- function(selectyears, lpjml, climatetype,
                                            fallowFactor = 0.75, minThreshold = 50,
-                                           suitability = "endogenous",
+                                           areaMask = "potential:endogenous",
                                            crops = "standard") {
   ####################
   ### Definitions  ###
@@ -50,7 +56,6 @@ calcMulticroppingYieldIncrease <- function(selectyears, lpjml, climatetype,
 
   # Minimum threshold in tDM/ha
   minThreshold   <- minThreshold * yieldTransform
-
 
   ####################
   ### Read in data ###
@@ -77,14 +82,21 @@ calcMulticroppingYieldIncrease <- function(selectyears, lpjml, climatetype,
   getSets(cropYields)["d3.2"] <- "irrigation"
 
   # Multiple cropping suitability
-  suitMC <- calcOutput("MulticroppingSuitability", suitability = suitability,
-                       lpjml = lpjml, climatetype = climatetype,
-                       selectyears = selectyears, aggregate = FALSE)[, , croplist]
+  if (areaMask == "none") {
+    suitMC <- calcOutput("MulticroppingCells",
+                          scenario = "potential:exogenous", lpjml = lpjml, climatetype = climatetype,
+                          selectyears = selectyears, aggregate = FALSE)[, , croplist]
+    # multiple cropping is allowed everywhere
+    suitMC[, , ] <- 1
+  } else {
+    suitMC <- calcOutput("MulticroppingCells", scenario = areaMask,
+                          lpjml = lpjml, climatetype = climatetype,
+                          selectyears = selectyears, aggregate = FALSE)[, , croplist]
+  }
 
   ####################
   ### Calculations ###
   ####################
-
 
   # Exclude cells with grass yields (in growing period of crop) below minimum threshold
   # (Note: for numerical reasons)

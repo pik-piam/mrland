@@ -10,7 +10,7 @@ calcMulticroppingYieldIncrease(
   climatetype,
   fallowFactor = 0.75,
   minThreshold = 50,
-  suitability = "endogenous",
+  areaMask = "potential:endogenous",
   crops = "standard"
 )
 }
@@ -31,10 +31,16 @@ be unsuitable for multiple cropping
 Unit of the threshold is gC/m^2.
 Default: 50 gC/m^2}
 
-\item{suitability}{"endogenous": suitability for multiple cropping determined
-              by rules based on grass and crop productivity
-"exogenous": suitability for multiple cropping given by
-             GAEZ data set}
+\item{areaMask}{Multicropping area mask to be used
+"none": no mask applied (only for development purposes)
+"actual:total": currently multicropped areas calculated from total harvested areas
+                and total physical areas per cell from readLanduseToolbox
+"actual:crop" (crop-specific), "actual:irrigation" (irrigation-specific),
+"actual:irrig_crop" (crop- and irrigation-specific) "total"
+"potential:endogenous": potentially multicropped areas given
+                        temperature and productivity limits
+"potential:exogenous": potentially multicropped areas given
+                       GAEZ suitability classification}
 
 \item{crops}{standard: default crops,
 proxy: proxy crops for LPJmL to MAgPIE mapping and treatment of perennials}

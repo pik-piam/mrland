@@ -13,12 +13,17 @@
 #'                                            avlCropland, avlCropland+avlPasture)
 #' @param multicropping Multicropping activated (TRUE) or not (FALSE) and
 #'                      Multiple Cropping Suitability mask selected
-#'                      ("endogenous": suitability for multiple cropping determined
-#'                                    by rules based on grass and crop productivity
-#'                      "exogenous": suitability for multiple cropping given by
-#'                                   GAEZ data set),
-#'                      separated by ":"
-#'                      (e.g. TRUE:endogenous; TRUE:exogenous; FALSE)
+#'                      (can be:
+#'                      "none": no mask applied (only for development purposes)
+#'                      "actual:total": currently multicropped areas calculated from total harvested areas
+#'                                      and total physical areas per cell from readLanduseToolbox
+#'                      "actual:crop" (crop-specific), "actual:irrigation" (irrigation-specific),
+#'                      "actual:cropIrrig" (crop- and irrigation-specific) "total"
+#'                      "potential:endogenous": potentially multicropped areas given
+#'                                              temperature and productivity limits
+#'                      "potential:exogenous": potentially multicropped areas given
+#'                                             GAEZ suitability classification)
+#'                      (e.g. TRUE:actual:total; TRUE:none; FALSE)
 #' @param indiaYields   if TRUE returns scaled yields for rainfed crops in India
 #' @param scaleFactor   integer value by which indiaYields will be scaled
 #'
@@ -44,7 +49,7 @@ calcYields <- function(source = c(lpjml = "ggcmi_phase3_nchecks_9ca735cb", isimi
 
   # Extract argument information
   cfg           <- toolLPJmLVersion(version = source["lpjml"], climatetype = climatetype)
-  suitability   <- str_split(multicropping, ":")[[1]][2]
+  areaMask      <- paste(str_split(multicropping, ":")[[1]][2], str_split(multicropping, ":")[[1]][3], sep = ":")
   multicropping <- as.logical(str_split(multicropping, ":")[[1]][1])
 
   sizelimit <- getOption("magclass_sizeLimit")
@@ -76,7 +81,7 @@ calcYields <- function(source = c(lpjml = "ggcmi_phase3_nchecks_9ca735cb", isimi
     yields         <- yields[, selectyears, ]
     ### TEMPORARY (UNTIL LPJML RUNS READY)###
     increaseFactor <- calcOutput("MulticroppingYieldIncrease",
-                                 suitability = suitability,
+                                 areaMask = areaMask,
                                  lpjml = "ggcmi_phase3_nchecks_9ca735cb",  ### ToDo: Switch to flexible lpjml argument (once LPJmL runs are ready)
                                  climatetype = "GSWP3-W5E5:historical", ### ToDo: Switch to flexible climatetype argument (once LPJmL runs are ready)
                                  selectyears = selectyears, #### ToDo: replace with all years (once LPJmL runs are ready)
@@ -86,7 +91,7 @@ calcYields <- function(source = c(lpjml = "ggcmi_phase3_nchecks_9ca735cb", isimi
     # are proxied by maize and groundnut and require special treatment in mapping
     proxyYields   <- yields[, , c("groundnut", "maize")]
     proxyIncrease <- calcOutput("MulticroppingYieldIncrease", crops = "proxy",
-                                 suitability = suitability,
+                                 areaMask = areaMask,
                                  lpjml = "ggcmi_phase3_nchecks_9ca735cb",  ### ToDo: Switch to flexible lpjml argument (once LPJmL runs are ready)
                                  climatetype = "GSWP3-W5E5:historical", ### ToDo: Switch to flexible climatetype argument (once LPJmL runs are ready)
                                  selectyears = selectyears, #### ToDo: replace with all years (once LPJmL runs are ready)
@@ -99,7 +104,8 @@ calcYields <- function(source = c(lpjml = "ggcmi_phase3_nchecks_9ca735cb", isimi
   }
 
   # LPJmL to MAgPIE crops
-  yields <- toolAggregate(yields, LPJ2MAG, from = "LPJmL", to = "MAgPIE", dim = 3.1, partrel = TRUE)
+  yields <- toolAggregate(yields, LPJ2MAG, from = "LPJmL",
+                          to = "MAgPIE", dim = 3.1, partrel = TRUE)
 
   # Check for NAs
   if (any(is.na(yields))) {
