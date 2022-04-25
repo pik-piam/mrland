@@ -13,7 +13,7 @@
 #'                                            avlCropland, avlCropland+avlPasture)
 #' @param multicropping Multicropping activated (TRUE) or not (FALSE) and
 #'                      Multiple Cropping Suitability mask selected
-#'                      (can be:
+#'                      (mask can be:
 #'                      "none": no mask applied (only for development purposes)
 #'                      "actual:total": currently multicropped areas calculated from total harvested areas
 #'                                      and total physical areas per cell from readLanduseToolbox
@@ -49,7 +49,8 @@ calcYields <- function(source = c(lpjml = "ggcmi_phase3_nchecks_9ca735cb", isimi
 
   # Extract argument information
   cfg           <- toolLPJmLVersion(version = source["lpjml"], climatetype = climatetype)
-  areaMask      <- paste(str_split(multicropping, ":")[[1]][2], str_split(multicropping, ":")[[1]][3], sep = ":")
+  areaMask      <- paste(str_split(multicropping, ":")[[1]][2],
+                         str_split(multicropping, ":")[[1]][3], sep = ":")
   multicropping <- as.logical(str_split(multicropping, ":")[[1]][1])
 
   sizelimit <- getOption("magclass_sizeLimit")

@@ -9,8 +9,19 @@
 #' @param refYear       reference year for calibration
 #' @param cells         number of cells "magpiecell" for 59199 cells or
 #'                      "lpjcell" for 67420 cells
-#' @param multicropping if TRUE: multiple cropping is allowed
-#'                      if FALSE: only single cropping in the main growing period of LPJmL possible
+#' @param multicropping Multicropping activated (TRUE) or not (FALSE) and
+#'                      Multiple Cropping Suitability mask selected
+#'                      (mask can be:
+#'                      "none": no mask applied (only for development purposes)
+#'                      "actual:total": currently multicropped areas calculated from total harvested areas
+#'                                      and total physical areas per cell from readLanduseToolbox
+#'                      "actual:crop" (crop-specific), "actual:irrigation" (irrigation-specific),
+#'                      "actual:cropIrrig" (crop- and irrigation-specific) "total"
+#'                      "potential:endogenous": potentially multicropped areas given
+#'                                              temperature and productivity limits
+#'                      "potential:exogenous": potentially multicropped areas given
+#'                                             GAEZ suitability classification)
+#'                      (e.g. TRUE:actual:total; TRUE:none; FALSE)
 #'
 #' @return magpie object in cellular resolution from reference year onwards
 #'

@@ -28,7 +28,7 @@ avlCropland, avlCropland+avlPasture)}
 
 \item{multicropping}{Multicropping activated (TRUE) or not (FALSE) and
 Multiple Cropping Suitability mask selected
-(can be: 
+(mask can be:
 "none": no mask applied (only for development purposes)
 "actual:total": currently multicropped areas calculated from total harvested areas
                 and total physical areas per cell from readLanduseToolbox

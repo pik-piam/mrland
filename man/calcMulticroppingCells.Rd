@@ -14,9 +14,9 @@ calcMulticroppingCells(selectyears, lpjml, climatetype, scenario)
 \item{climatetype}{Switch between different climate scenarios or
 historical baseline "GSWP3-W5E5:historical"}
 
-\item{scenario}{"actual:total": currently multicropped areas calculated from total harvested areas 
+\item{scenario}{"actual:total": currently multicropped areas calculated from total harvested areas
                 and total physical areas per cell from readLanduseToolbox
-"actual:crop" (crop-specific), "actual:irrigation" (irrigation-specific), 
+"actual:crop" (crop-specific), "actual:irrigation" (irrigation-specific),
 "actual:irrig_crop" (crop- and irrigation-specific) "total"
 "potential:endogenous": potentially multicropped areas given
                         temperature and productivity limits

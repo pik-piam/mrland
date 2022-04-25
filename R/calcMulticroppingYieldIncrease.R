@@ -15,10 +15,9 @@
 #'                      fallow period between harvest of first (main) season and
 #'                      sowing of second (off) season
 #' @param minThreshold  Minimum threshold of grass GPP in crop growing period
-#'                      and crop yield to exclude low yielding cells that would
-#'                      be unsuitable for multiple cropping
+#'                      and crop yield to exclude low yielding cells
 #'                      Unit of the threshold is gC/m^2.
-#'                      Default: 50 gC/m^2
+#'                      Default: 100 gC/m^2
 #' @param areaMask      Multicropping area mask to be used
 #'                      "none": no mask applied (only for development purposes)
 #'                      "actual:total": currently multicropped areas calculated from total harvested areas
@@ -45,7 +44,7 @@
 #'
 
 calcMulticroppingYieldIncrease <- function(selectyears, lpjml, climatetype,
-                                           fallowFactor = 0.75, minThreshold = 50,
+                                           fallowFactor = 0.75, minThreshold = 100,
                                            areaMask = "potential:endogenous",
                                            crops = "standard") {
   ####################
