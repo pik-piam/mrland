@@ -34,11 +34,14 @@ readZabel2014 <- function(subtype = "all_marginal") {
 
   # "../../" needs to be replaced with "." once madrat update
   # for tmp files has been implemented
-  terraOptions(tempdir = local_tempdir(tmpdir = "../../"), todisk = TRUE, memfrac = 0.5)
-  # read data
-  cropsuitZabel <- rast(paste0("./cropsuitability_rainfed_and_irrigated/1981-2010/",
-                               "overall_cropsuit_i_1981-2010/overall_cropsuit_i_1981-2010.tif"))
+  terraOptions(tempdir = local_tempdir(tmpdir = getConfig("tmpfolder")), todisk = TRUE, memfrac = 0.5)
   defer(terraOptions(tempdir = tempdir()))
+
+  # read data
+  cropsuitZabel <- rast(paste0(
+    "./cropsuitability_rainfed_and_irrigated/1981-2010/",
+    "overall_cropsuit_i_1981-2010/overall_cropsuit_i_1981-2010.tif"
+  ))
 
   # define suitability threshold for crop suitability in MAgPIE at original resolution of 30 arc seconds
   # In Zabel et al. (2014) marginal land is defined by a suitability index <= 0.33

@@ -9,15 +9,14 @@
 #' }
 #' @importFrom terra aggregate cellSize classify extract rast segregate terraOptions tmpFiles
 #' @importFrom mrcommons toolGetMappingCoord2Country
+#' @importFrom withr local_tempdir defer
 #'
 
 readProtectedAreaBaseline <- function() {
 
   # Set up 'terra' options
-  if (!dir.exists("./tmp")) {
-    dir.create("./tmp")
-  }
-  terraOptions(tempdir = "./tmp", todisk = TRUE, memfrac = 0.5)
+  terraOptions(tempdir = local_tempdir(tmpdir = getConfig("tmpfolder")), todisk = TRUE, memfrac = 0.5)
+  defer(terraOptions(tempdir = tempdir()))
 
   # Historic reference years
   refyears <- c(1995, 2000, 2005, 2010, 2015, 2020)
@@ -26,7 +25,6 @@ readProtectedAreaBaseline <- function() {
   out <- NULL
 
   for (yr in refyears) {
-
     message(paste("Beginning year", yr))
 
     # Read raster file: The file contains land cover information for all legally
@@ -70,9 +68,11 @@ readProtectedAreaBaseline <- function() {
       as.magpie(extract(luWDPA_area_0.5[["other"]], map[c("lon", "lat")])[, "other"], spatial = 1)
     )
     # set dimension names
-    dimnames(luWDPA_lpj0.5) <- list("x.y.iso" = paste(map$coords, map$iso, sep = "."),
-                                    "t" = paste0("y", yr),
-                                    "data" = c("crop", "past", "forest", "other"))
+    dimnames(luWDPA_lpj0.5) <- list(
+      "x.y.iso" = paste(map$coords, map$iso, sep = "."),
+      "t" = paste0("y", yr),
+      "data" = c("crop", "past", "forest", "other")
+    )
 
     # bind to output
     out <- mbind(out, luWDPA_lpj0.5)
@@ -83,9 +83,6 @@ readProtectedAreaBaseline <- function() {
     tmpFiles(current = TRUE, orphan = TRUE, remove = FALSE)
     gc()
   }
-
-  # Remove temporary files
-  tmpFiles(current = TRUE, remove = TRUE)
 
   return(out)
 }
