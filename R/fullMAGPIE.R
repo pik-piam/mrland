@@ -275,6 +275,10 @@ fullMAGPIE <- function(rev = 0.1, dev = "") {
     calcOutput("LivestockProductivity", years = magYears,  round = 4, file = "f70_livestock_productivity.cs3")
     calcOutput("SlaughterFeedShare",    years = magYears,  round = 4, file = "f70_slaughter_feed_share.cs4")
     calcOutput("PYieldSlope",                             round = 2, file = "f70_pyld_slope_reg.cs4")
+    calcOutput("AgCapLabourShare", round = 2, aggregate = TRUE, years = c(1995, 2000, 2005, 2010),
+               file = "f70_hist_cap_share.csv")
+    calcOutput("RegFactorShare", datasource = "USDA", factor = "cap", round = 4, aggregate = FALSE,
+               file = "f70_cap_share_reg.csv")
 
     # 73 timber -- Always needed on iso country level so no need to aggregate
     calcOutput("EndUseTimber", aggregate = FALSE, round = 4, file = "f73_prod_specific_timber.csv")
