@@ -32,8 +32,7 @@
 
 readZabel2014 <- function(subtype = "all_marginal") {
 
-  # "../../" needs to be replaced with "." once madrat update
-  # for tmp files has been implemented
+  # set terra options and temporary directory
   terraOptions(tempdir = local_tempdir(tmpdir = getConfig("tmpfolder")), todisk = TRUE, memfrac = 0.5)
   defer(terraOptions(tempdir = tempdir()))
 
@@ -52,62 +51,62 @@ readZabel2014 <- function(subtype = "all_marginal") {
     # (suitability index below 0.1) that was applied to the previous
     # data set by Ramankutty et al. (2002)
     rclassMatrx <- matrix(c(
-      0, 0.10, 0,
+      0, 0.10, NA,
       0.10, 1, 1
     ),
     ncol = 3, byrow = TRUE
     )
-    cropsuitZabel <- classify(cropsuitZabel, rclassMatrx)
+    cropsuitZabel <- classify(cropsuitZabel, rclassMatrx, include.lowest = TRUE)
   } else if (subtype == "q33_marginal") {
 
     # The bottom tertile (suitability index below 0.13) of the marginal land area is excluded
     rclassMatrx <- matrix(c(
-      0, 0.13, 0,
+      0, 0.13, NA,
       0.13, 1, 1
     ),
     ncol = 3, byrow = TRUE
     )
-    cropsuitZabel <- classify(cropsuitZabel, rclassMatrx)
+    cropsuitZabel <- classify(cropsuitZabel, rclassMatrx, include.lowest = TRUE)
   } else if (subtype == "q50_marginal") {
 
     # The bottom  half (suitability index below 0.18) of the marginal land area is excluded
     rclassMatrx <- matrix(c(
-      0, 0.18, 0,
+      0, 0.18, NA,
       0.18, 1, 1
     ),
     ncol = 3, byrow = TRUE
     )
-    cropsuitZabel <- classify(cropsuitZabel, rclassMatrx)
+    cropsuitZabel <- classify(cropsuitZabel, rclassMatrx, include.lowest = TRUE)
   } else if (subtype == "q66_marginal") {
 
     # The first and second tertile (suitability index below 0.23) of the marginal land area are excluded
     rclassMatrx <- matrix(c(
-      0, 0.23, 0,
+      0, 0.23, NA,
       0.23, 1, 1
     ),
     ncol = 3, byrow = TRUE
     )
-    cropsuitZabel <- classify(cropsuitZabel, rclassMatrx)
+    cropsuitZabel <- classify(cropsuitZabel, rclassMatrx, include.lowest = TRUE)
   } else if (subtype == "q75_marginal") {
 
     # The first, second and third quartiles (suitability index below 0.25) of the marginal land are are excluded
     rclassMatrx <- matrix(c(
-      0, 0.25, 0,
+      0, 0.25, NA,
       0.25, 1, 1
     ),
     ncol = 3, byrow = TRUE
     )
-    cropsuitZabel <- classify(cropsuitZabel, rclassMatrx)
+    cropsuitZabel <- classify(cropsuitZabel, rclassMatrx, include.lowest = TRUE)
   } else if (subtype == "no_marginal") {
 
     # marginal land (suitability index below 0.33) is fully excluded
     rclassMatrx <- matrix(c(
-      0, 0.33, 0,
+      0, 0.33, NA,
       0.33, 1, 1
     ),
     ncol = 3, byrow = TRUE
     )
-    cropsuitZabel <- classify(cropsuitZabel, rclassMatrx)
+    cropsuitZabel <- classify(cropsuitZabel, rclassMatrx, include.lowest = TRUE)
   }
 
   # aggregate and sum up area (Mha) of suitable pixels (1) per 0.5 degree grid cell
@@ -122,7 +121,7 @@ readZabel2014 <- function(subtype = "all_marginal") {
   # transform raster to magpie object
   out <- as.magpie(extract(cropsuitZabel05, map[c("lon", "lat")])[, 2], spatial = 1)
   # set dimension names
-  dimnames(out) <- list("x.y.iso" = paste(map$coords, map$iso, sep = "."), "t" = NULL, "data" = paste0("si0_", subtype))
+  dimnames(out) <- list("x.y.iso" = paste(map$coords, map$iso, sep = "."), "t" = NULL, "data" = subtype)
 
   return(out)
 }
