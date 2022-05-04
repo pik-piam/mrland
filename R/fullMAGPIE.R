@@ -185,7 +185,7 @@ fullMAGPIE <- function(rev = 0.1, dev = "") {
 
     # 38 factor costs
     calcOutput("FAOYield", cut = 0.98, years = 1995, round = 2, file = "f38_region_yield.csv")
-    calcOutput("FacReqGLO", round = 2, aggregate = FALSE, file = "f38_fac_req_fao.csv")
+    calcOutput("FacReq", round = 2, aggregate = "GLO", years = 2005, file = "f38_fac_req_fao.csv")
     calcOutput("AgCapLabourShare", round = 2, aggregate = TRUE, years = c(1995, 2000, 2005, 2010),
                file = "f38_historical_share.csv")
     calcOutput("RegFactorShare", datasource = "USDA", factor = "cap", round = 4, aggregate = FALSE,
