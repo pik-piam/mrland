@@ -19,8 +19,6 @@
 
 
 
-
-
 calcTradeMargin <- function(gtap_version ="GTAP7", bilateral = FALSE,producer_price ="FAO"){
   stopifnot(gtap_version %in% c("GTAP7","GTAP8")) 
   viws <- calcOutput(type = "GTAPTrade",subtype = paste(gtap_version,"VIWS",sep="_"),bilateral = bilateral,aggregate = FALSE)
@@ -29,7 +27,7 @@ calcTradeMargin <- function(gtap_version ="GTAP7", bilateral = FALSE,producer_pr
   
   vtwr[vtwr < 0] <- 0
   
-
+  
   vxmd <- calcOutput(type ="GTAPTrade",subtype = paste(gtap_version,"VXMD",sep="_"),bilateral = bilateral,aggregate = FALSE)
   vom <- calcOutput(type ="GTAPTrade",subtype = paste(gtap_version,"VOM",sep="_"),bilateral = bilateral,aggregate = FALSE)
   voa <- calcOutput(type ="GTAPTrade",subtype = paste(gtap_version,"VOA",sep="_"),bilateral = bilateral,aggregate = FALSE)
@@ -43,7 +41,7 @@ calcTradeMargin <- function(gtap_version ="GTAP7", bilateral = FALSE,producer_pr
       mean <- mean(x[,,k],na.rm = TRUE)
       x[,,k][is.na(x[,,k])] <- mean
     }
-   return(x)
+    return(x)
   }
   
   y <- fillMean(y)
@@ -56,20 +54,32 @@ calcTradeMargin <- function(gtap_version ="GTAP7", bilateral = FALSE,producer_pr
   } else (stop("Valid food price is required"))
   
   k_trade <- findset("k_trade")
-  k_trade <- intersect(intersect(getNames(p),getNames(y)),k_trade)
+  if (!bilateral) {
+    k_trade <- intersect(intersect(getNames(p),getNames(y)),k_trade)
+  } else {  
+    k_trade <- intersect(intersect(getNames(p), getNames(y, dim = 2)),k_trade)
+  }
   out <- y[,,k_trade]*p[,,k_trade]
   out <- toolCountryFill(out,0)
-  out <- add_columns(x = out,addnm = findset("kforestry"),dim = 3.1)
+  if (!bilateral) {
+    out <- add_columns(x = out,addnm = findset("kforestry"),dim = 3.1) 
+  } else {
+    out <- add_columns(x = out,addnm = findset("kforestry"),dim = 3.2)
+  }
   out[,,findset("kforestry")] <- out[,,"others"]
   
   weight <- setYears(vxmd *voa,NULL)[,,k_trade]
   weight <- toolCountryFill(weight,0)
-  weight <- add_columns(x = weight,addnm = findset("kforestry"),dim = 3.1)
+  if (!bilateral) {
+    weight <- add_columns(x = weight,addnm = findset("kforestry"),dim = 3.1)
+  } else {
+    weight <- add_columns(x = weight,addnm = findset("kforestry"),dim = 3.2)
+  }
   weight[,,"wood"] <- weight[,,"tece"] * 0.5
   weight[,,"woodfuel"] <- weight[,,"wood"] * 0.5
   unit <- "US$05"
   description <- "Trade margins"
- 
+  
   return(list(x=out,
               weight = weight,
               unit = unit,
