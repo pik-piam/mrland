@@ -4,7 +4,6 @@
 #' MAgPIE model.
 #'
 #' @param rev data revision which should be used as input (positive numeric).
-#' @param dev development suffix to distinguish development versions for the same data revision.
 #' @author Jan Philipp Dietrich, Benjamin Leon Bodirsky, Florian Humpenoeder, Edna J. Molina Bacca
 #' @seealso
 #' \code{\link{readSource}}, \code{\link{getCalculations}}, \code{\link{calcOutput}}
@@ -13,7 +12,7 @@
 #' fullMAgPIE(revision = 12, mainfolder = "pathtowhereallfilesarestored")
 #' }
 #'
-fullMAGPIE <- function(rev = 0.1, dev = "") {
+fullMAGPIE <- function(rev = 0.1) {
 
    if (rev < 4.66) stop("mrland(>= 0.15.0) does not support revision below 4.63 anymore.
                        Please use a older snapshot/version of the library, if you need older revisions.")
@@ -197,9 +196,7 @@ fullMAGPIE <- function(rev = 0.1, dev = "") {
     calcOutput("IrrigationInvCosts", years = shortYears, round = 0, file = "f41_c_irrig.csv")
 
     # 42_water_demand
-    if (grepl("indiaYields", dev)) {
     calcOutput("PumpingCosts", round = 4, file = "f42_pumping_cost.cs4", aggregate = TRUE)
-    }
 
     # 50 n soil budget
     calcOutput("SNUpE", years = magYears, round = 4, file = "f50_snupe.cs4", rev = rev)

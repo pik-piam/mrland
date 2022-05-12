@@ -20,10 +20,10 @@
     x <- new.magpie(cells_and_regions = isoCountry1, years = seq(1995, 2100, by = 5), names = NULL, fill = 0)
 
     #Assigning a value of 0.005 cents for India
-    x["IND",,] <- 0.005
+    x["IND", , ] <- 0.005
 
     weight <- x
-    weight[, ,] <- 1
+    weight[, , ] <- 1
 
   return(list(x            = x,
               weight       = weight,
