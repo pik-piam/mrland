@@ -29,15 +29,25 @@ calcGrasslandBiomass <- function() {
   grasslLand["IND", , "pastr"] <- grasslLand["IND", , "pastr"] + setNames(dimSums(land["IND",,c("primother","secdother")], dim = 3), "pastr")
   grasslLand["BGD", , "pastr"] <- grasslLand["BGD", , "pastr"] + setNames(dimSums(land["BGD",,c("primother","secdother")], dim = 3), "pastr")
   grasslLand["PAK", , "pastr"] <- grasslLand["PAK", , "pastr"] + setNames(dimSums(land["PAK",,c("primother","secdother")], dim = 3), "pastr")
+  
+  grassYld <- calcOutput("GrasslandsYields", lpjml = "lpjml5p2_pasture", climatetype = paste0("MRI-ESM2-0",":","ssp245"),
+             subtype = "/co2/Nreturn0p5", # nolint
+             lsu_levels = c(seq(0, 2.2, 0.2), 2.5), past_mngmt = "mdef", aggregate = F)[,,"rainfed"]
+  grassYld <- collapseNames(grassYld)   
+  grassYld[grassYld == 0.00088]  <- 0
 
-  grasslShares <- setNames(grasslLand[, , "pastr"] / dimSums(grasslLand, dim = 3), "pastr")
-  grasslShares <- add_columns(grasslShares, addnm = "range", dim = 3.1)
-  grasslShares[is.nan(grasslShares) | is.infinite(grasslShares)] <- 0
-  grasslShares[, , "range"] <- 1 - grasslShares[, , "pastr"]
+  potBioMass <- grasslLand * grassYld[,getYears(grasslLand),]
+
+  potBioMassShare <- setNames(potBioMass[, , "pastr"] / dimSums(potBioMass, dim = 3), "pastr")
+  potBioMassShare <- add_columns(potBioMassShare, addnm = "range", dim = 3.1)
+  potBioMassShare[,,"range"] <- potBioMass[, , "range"] / dimSums(potBioMass, dim = 3)
+  potBioMassShare[is.nan(potBioMassShare)] <- 0
+  potBioMassShare[is.infinite(potBioMassShare)]  <- 1
 
   mapping <- toolGetMapping("CountryToCellMapping.rds", where = "mrcommons")
 
-  livestock <- setNames(toolCell2isoCell(readSource("GLW3")), "liv_numb")
+  livestock <- setNames(toolCell2isoCell(readSource("GLW3", subtype = "Aw")), "liv_numb")
+  livestock[livestock<1] <- 0
 
   # I am working with the assumption that in most places, the proportional distribution of
   # livestock heads was kept the same between 1965 and 2010. One notable exception is Brasil,
@@ -46,26 +56,7 @@ calcGrasslandBiomass <- function() {
   # of livestock being in rangelands and managed pastures, and avoid distortions on the amount
   # of grass biomass production assigned to each system.
 
-
-  livstSplit <- livestock * grasslShares
-
-  # Fader calculation
-  fader <- livstSplit
-  fader[,,] <- 1
-  start_pastr <- 1.8
-  end_pastr <- 1
-  start_range <- 0.2
-  end_range <- 1
-  range_values <- seq(start_range,end_range,(end_range-start_range)/(length(getItems(fader, dim = 2))-1))
-  pastr_values <- seq(start_pastr,end_pastr,(end_pastr-start_pastr)/(length(getItems(fader, dim = 2))-1))
-  for (i in 1:length(range_values)) {
-    fader["BRA",i,"range"] <-  range_values[i]
-  }
-  for (i in 1:length(pastr_values)) {
-    fader["BRA",i,"pastr"] <-  pastr_values[i]
-  }
-  livstSplit <-  livstSplit * fader
-
+  livstSplit <- livestock * potBioMassShare 
   livstSplit <- collapseNames(livstSplit)
   livstSplitCtry <- toolAggregate(livstSplit, rel = mapping, to = "iso", from = "celliso")
   livstShareCtry <- livstSplitCtry[, , "pastr"] / dimSums(livstSplitCtry, dim = 3)
@@ -82,11 +73,14 @@ calcGrasslandBiomass <- function() {
   biomassSplit <- biomass * livstShareCtry
   biomassSplit <- toolCountryFill(biomassSplit, fill = 0)
 
+  # OBS: we could add a diet correction factor for animals bening reared in different system (as to say: even thought the LSUs number might be the same, animais on 
+  # rangelands might eat less grass than animals on managed pastures)
+
   return(list(
     x = biomassSplit,
     weight = NULL,
     isocountries = FALSE,
-    unit = "ton DM per ha",
+    unit = "tDM",
     description = "Pasture biomass demand"
   ))
 }

@@ -1,8 +1,8 @@
 Package: mrland
 Type: Package
 Title: MadRaT land data package
-Version: 0.27.1
-Date: 2022-05-12
+Version: 0.27.2
+Date: 2022-05-23
 Authors@R: c(person("Jan Philipp", "Dietrich", email = "dietrich@pik-potsdam.de", role = c("aut","cre")),
              person("Abhijeet", "Mishra", role = "aut"),
              person("Isabelle", "Weindl", role = "aut"),
@@ -40,7 +40,7 @@ Imports:
 License: LGPL-3 | file LICENSE
 LazyData: no
 Encoding: UTF-8
-RoxygenNote: 7.1.2
+RoxygenNote: 7.2.0
 Suggests:
     knitr,
     testthat,
@@ -50,3 +50,4 @@ Suggests:
 URL: https://github.com/pik-piam/mrland, https://doi.org/10.5281/zenodo.3822083
 BugReports: https://github.com/pik-piam/mrland/issues
 VignetteBuilder: knitr
+ValidationKey: 5204720
