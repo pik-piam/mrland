@@ -161,7 +161,6 @@ fullMAGPIE <- function(rev = 0.1) {
                aggregate = superregion)
 
     # 31 Past
-    calcOutput("GrasslandBiomass",  round = 3, file = "f31_grass_bio_hist.cs3")
     calcOutput("PastureYield", range_pastr = TRUE, round = 3, file = "f31_grassl_yld_hist.cs3")
 
     # 32 forestry
