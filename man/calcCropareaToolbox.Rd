@@ -4,13 +4,31 @@
 \alias{calcCropareaToolbox}
 \title{calcCropareaToolbox}
 \usage{
-calcCropareaToolbox(physical = TRUE, cells = "magpiecell")
+calcCropareaToolbox(
+  sectoral = "kcr",
+  physical = TRUE,
+  cellular = FALSE,
+  cells = "magpiecell",
+  irrigation = FALSE,
+  selectyears = c("y1965", "y1970", "y1975", "y1980", "y1985", "y1990", "y1995",
+    "y2000", "y2005", "y2010")
+)
 }
 \arguments{
-\item{physical}{if TRUE the sum over all crops agrees with the cropland area per country
-(not yet completly true, WIP)}
+\item{sectoral}{"kcr" MAgPIE items, and "lpj" LPJmL items}
+
+\item{physical}{if TRUE the sum over all crops plus fallow land (of calcFallowLand)
+agrees with the physical cropland of readLanduseToolbox(subtype = physical)}
+
+\item{cellular}{if TRUE: calculates cellular crop area for all magpie croptypes.
+Option FALSE is not (yet) available.}
 
 \item{cells}{Switch between "magpiecell" (59199) and "lpjcell" (67420)}
+
+\item{irrigation}{If true: cellular areas are returned separated
+into irrigated and rainfed}
+
+\item{selectyears}{extract certain years from the data, y1950 - 2017 is available}
 }
 \value{
 Magpie object with cropareas
@@ -18,8 +36,7 @@ Magpie object with cropareas
 \description{
 This function uses the data from the LPJmL io Toolbox
 to calculate cropareas in various formats.
-!!This is still a WIP!!
 }
 \author{
-David Hötten
+David Hoetten
 }
