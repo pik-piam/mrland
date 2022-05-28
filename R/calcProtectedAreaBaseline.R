@@ -39,9 +39,29 @@ calcProtectedAreaBaseline <- function(magpie_input = TRUE, nclasses = "seven", c
       setYears(LUH2v2[, "y2015", ], "y2020")
     ), getCells(PABaseline))
 
-    # make sure that protected area is not greater than total area minus urban area
+    # calculate total land area
+    landArea <- dimSums(LUH2v2[, "y1995", ], dim = 3)
+
+    # urban land
+    urbanLand <- calcOutput("UrbanLandFuture", subtype = "LUH2v2", aggregate = FALSE, timestep = "5year")
+    tmp <- collapseDim(addLocation(urbanLand), dim = c("country", "cell"))
+    urbanLand <- new.magpie(
+      cells_and_regions = getCells(collapseDim(PABaseline, dim = "iso")),
+      years = getYears(tmp),
+      names = getNames(tmp), fill = 0,
+      sets = c("x.y.iso", "year", "data")
+    )
+    urbanLand[getCells(tmp), , ] <- tmp
+    map <- toolGetMappingCoord2Country()
+    if (any(getCells(urbanLand) != map$coords)) {
+      stop("Wrong cell ordering in calcProtectedAreaBaseline")
+    }
+    getCells(urbanLand) <- paste(map$coords, map$iso, sep = ".")
+
+    # make sure that protected area is not greater than total land area minus urban area
     tot_PABase <- dimSums(PABaseline, dim = 3)
-    tot_noUrban <- dimSums(LUH2v2[, , "urban", invert = TRUE], dim = 3)
+    tot_noUrban <- landArea - urbanLand[, getYears(PABaseline), "SSP2"]
+    getYears(tot_noUrban) <- getYears(PABaseline)
     # compute mismatch factor
     landMismatch <- setNames(tot_noUrban, NULL) / setNames(tot_PABase, NULL)
     landMismatch <- toolConditionalReplace(landMismatch, c(">1", "is.na()"), 1)

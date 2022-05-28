@@ -24,9 +24,11 @@
 calcConservationPriority <- function(cells = "magpiecell", nclasses = "seven") {
 
   # Land area (in Mha):
-  LUini <- calcOutput("LanduseInitialisation", cellular = TRUE, cells = cells,
-                         nclasses = nclasses, fao_corr = TRUE, input_magpie = TRUE,
-                         years = "y1995", aggregate = FALSE)
+  LUini <- calcOutput("LanduseInitialisation",
+    cellular = TRUE, cells = cells,
+    nclasses = nclasses, fao_corr = TRUE, input_magpie = TRUE,
+    years = "y1995", aggregate = FALSE
+  )
   landArea <- dimSums(LUini, dim = 3)
 
   # Protection Area mz file (conservation priority area in Mha)
@@ -38,42 +40,37 @@ calcConservationPriority <- function(cells = "magpiecell", nclasses = "seven") {
   getNames(x) <- gsub("WDPA", "None", getNames(x))
 
   # Create dummy
-  x[,,"None"] <- 0
+  x[, , "None"] <- 0
 
   # Add BH_IFL scenario (combination of biodiversity hotspots and intact forestry landscapes)
   # (Note: should only be applied to forests (for other land, use BH))
   bhifl <- setNames(pmax(x[, , "BH"], x[, , "IFL"]), nm = "BH_IFL")
-  x     <- mbind(x, bhifl)
+  x <- mbind(x, bhifl)
 
   # Half Earth Protection Share
-  HalfEarthShr           <- readSource("HalfEarth", convert = "onlycorrect")
+  HalfEarthShr <- readSource("HalfEarth", convert = "onlycorrect")
   getNames(HalfEarthShr) <- "HalfEarth"
-  getSets(HalfEarthShr)  <- c("x", "y", "iso", "year",  "data")
+  getSets(HalfEarthShr) <- c("x", "y", "iso", "year", "data")
 
   if (cells == "magpiecell") {
-
     HalfEarthShr <- toolCoord2Isocell(HalfEarthShr, cells = cells)
-
   } else if (cells == "lpjcell") {
-
     landArea <- collapseDim(addLocation(landArea), dim = c("N", "region"))
-
     tmp <- collapseDim(addLocation(x), dim = c("region", "cell"))
-
-    x   <- new.magpie(cells_and_regions = getCells(collapseDim(HalfEarthShr, dim = "iso")),
-                      years = getYears(tmp),
-                      names = getNames(tmp), fill = 0,
-                      sets = c("x.y.iso", "year", "data"))
+    x <- new.magpie(
+      cells_and_regions = getCells(collapseDim(HalfEarthShr, dim = "iso")),
+      years = getYears(tmp),
+      names = getNames(tmp), fill = 0,
+      sets = c("x.y.iso", "year", "data")
+    )
     x[getCells(tmp), , ] <- tmp
-
-    map         <- toolGetMappingCoord2Country()
+    map <- toolGetMappingCoord2Country()
     if (any(getCells(x) != map$coords)) {
       stop("Wrong cell ordering in calcConservationPriority")
     }
     getCells(x) <- paste(map$coords, map$iso, sep = ".")
-
   } else {
-    stop("Please select magpiecell or lpjcell in cells argument of calcProtectArea")
+    stop("Please select magpiecell or lpjcell in cells argument of calcConservationPriority")
   }
 
   # Land area to be protected by 2050 (in Mha)
@@ -81,6 +78,44 @@ calcConservationPriority <- function(cells = "magpiecell", nclasses = "seven") {
 
   # Add HalfEarth scenario to Protection area data
   x <- mbind(x, HalfEarthArea)
+
+  # get WDPA baseline data (1995 - 2020)
+  wdpaBase <- calcOutput("ProtectedAreaBaseline",
+    aggregate = FALSE, cells = cells,
+    nclasses = nclasses, magpie_input = TRUE
+  )
+
+
+  if (cells == "magpiecell") {
+    urbanLand <- calcOutput("UrbanLandFuture", subtype = "LUH2v2", aggregate = FALSE, timestep = "5year")
+  } else if (cells == "lpjcell") {
+    urbanLand <- calcOutput("UrbanLandFuture", subtype = "LUH2v2", aggregate = FALSE, timestep = "5year")
+    tmp <- collapseDim(addLocation(urbanLand), dim = c("country", "cell"))
+    urbanLand <- new.magpie(
+      cells_and_regions = getCells(collapseDim(x, dim = "iso")),
+      years = getYears(tmp),
+      names = getNames(tmp), fill = 0,
+      sets = c("x.y.iso", "year", "data")
+    )
+    urbanLand[getCells(tmp), , ] <- tmp
+    map <- toolGetMappingCoord2Country()
+    if (any(getCells(urbanLand) != map$coords)) {
+      stop("Wrong cell ordering in calcConservationPriority")
+    }
+    getCells(urbanLand) <- paste(map$coords, map$iso, sep = ".")
+  }
+
+  # Conservation potential after 2020
+  consvPot <- landArea - dimSums(wdpaBase[, "y2020", ], dim = 3) - urbanLand[, "y2020", "SSP2"]
+  consvPot <- toolConditionalReplace(consvPot, "<0", 0)
+
+  # Where conservation priority area is smaller than conservation potential
+  # replace by conservation potential
+  for (c in getNames(x)) {
+    tmp <- x[, , c]
+    tmp[tmp > consvPot] <- consvPot[tmp > consvPot]
+    x[, , c] <- tmp
+  }
 
   if (nclasses == "seven") {
     # calulate share of respective natveg classes
@@ -111,10 +146,14 @@ calcConservationPriority <- function(cells = "magpiecell", nclasses = "seven") {
 
   # compute land area reserved for conservation
   x <- x * setCells(LandShr, getCells(x))
+  # correct for small negative values
+  x <- toolConditionalReplace(x, "<0", 0)
 
-  return(list(x            = x,
-              weight       = NULL,
-              unit         = "Mha",
-              description  = "Land conservation priority area (BH, IFL, CPD, LW & BH_IFL) in each land type",
-              isocountries = FALSE))
+  return(list(
+    x = x,
+    weight = NULL,
+    unit = "Mha",
+    description = "Land conservation priority area (BH, IFL, CPD, LW & BH_IFL) in each land type",
+    isocountries = FALSE
+  ))
 }
