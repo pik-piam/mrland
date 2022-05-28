@@ -85,6 +85,10 @@ calcConservationPriority <- function(cells = "magpiecell", nclasses = "seven") {
     nclasses = nclasses, magpie_input = TRUE
   )
 
+  # make sure that current WDPA protected areas
+  # are not part of conservation priority targets
+  x <- x - dimSums(wdpaBase[, "y2020", ], dim = 3)
+  x <- toolConditionalReplace(x, "<0", 0)
 
   if (cells == "magpiecell") {
     urbanLand <- calcOutput("UrbanLandFuture", subtype = "LUH2v2", aggregate = FALSE, timestep = "5year")
@@ -146,8 +150,6 @@ calcConservationPriority <- function(cells = "magpiecell", nclasses = "seven") {
 
   # compute land area reserved for conservation
   x <- x * setCells(LandShr, getCells(x))
-  # correct for small negative values
-  x <- toolConditionalReplace(x, "<0", 0)
 
   return(list(
     x = x,
