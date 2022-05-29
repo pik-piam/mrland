@@ -48,7 +48,7 @@ calcProtectedAreaBaseline <- function(magpie_input = TRUE, nclasses = "seven", c
 
     # make sure that protected area is not greater than total land area minus urban area
     tot_PABase <- dimSums(PABaseline, dim = 3)
-    tot_noUrban <- landArea - urbanLand[, getYears(PABaseline), "SSP2"]
+    tot_noUrban <- landArea - setCells(urbanLand[, getYears(PABaseline), "SSP2"], getCells(PABaseline))
     getYears(tot_noUrban) <- getYears(PABaseline)
     # compute mismatch factor
     landMismatch <- setNames(tot_noUrban, NULL) / setNames(tot_PABase, NULL)

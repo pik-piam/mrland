@@ -50,7 +50,9 @@ readLUH2UrbanFuture <- function() {
   }
 
   # convert from km^2 to Mha
-  out <- out / 10000
+  urbanMag <- urbanMag / 10000
+
+  out <- urbanMag
 
   return(out)
 }

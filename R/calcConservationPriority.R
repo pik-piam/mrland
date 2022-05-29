@@ -94,7 +94,7 @@ calcConservationPriority <- function(cells = "magpiecell", nclasses = "seven") {
                           timestep = "5year", cells = cells)
 
   # Conservation potential after 2020
-  consvPot <- landArea - dimSums(wdpaBase[, "y2020", ], dim = 3) - urbanLand[, "y2020", "SSP2"]
+  consvPot <- landArea - dimSums(wdpaBase[, "y2020", ], dim = 3) - setCells(urbanLand[, "y2020", "SSP2"], getCells(wdpaBase))
   consvPot <- toolConditionalReplace(consvPot, "<0", 0)
 
   # Where conservation priority area is smaller than conservation potential
