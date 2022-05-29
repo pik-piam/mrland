@@ -87,7 +87,7 @@ calcConservationPriority <- function(cells = "magpiecell", nclasses = "seven") {
 
   # make sure that current WDPA protected areas
   # are not part of conservation priority targets
-  x <- x - dimSums(wdpaBase[, "y2020", ], dim = 3)
+  x <- x - setYears(dimSums(wdpaBase[, "y2020", ], dim = 3), NULL)
   x <- toolConditionalReplace(x, "<0", 0)
 
   urbanLand <- calcOutput("UrbanLandFuture", subtype = "LUH2v2", aggregate = FALSE,
