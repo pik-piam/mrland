@@ -2,17 +2,18 @@
 #' @description Urban land in Mha on 0.5deg grid
 #' @param cellular TRUE for results on 0.5 degree grid.
 #' @param timestep 5year or yearly
+#' @param cells magpiecell (59199 cells) or lpjcell (67420 cells). Currently only implemented for subtype "LUH2v2".
 #' @param subtype where the data source comes from ("LUH2v2" or "Gao")
 #' @return List of magpie objects with results on 0.5deg grid level, weights NULL, unit and description.
-#' @author David Chen
+#' @author David Chen, Patrick v. Jeetze
 #' @importFrom magpiesets findset
 #' @importFrom mstools toolHoldConstant
 #' @importFrom magclass nregions
 
-calcUrbanLandFuture <- function(timestep = "5year", subtype = "LUH2v2", cellular = TRUE) {
+calcUrbanLandFuture <- function(timestep = "5year", subtype = "LUH2v2", cells="magpiecell", cellular = TRUE) {
   if (subtype == "LUH2v2") {
     past <- calcOutput("LanduseInitialisation",
-      cellular = TRUE, nclasses = "seven", fao_corr = TRUE,
+      cellular = TRUE, nclasses = "seven", fao_corr = TRUE, cells = "lpjcell",
       selectyears = "past", input_magpie = FALSE, aggregate = FALSE
     )
     past <- past[, c("y1995", "y2000", "y2005", "y2010"), "urban"]
@@ -23,15 +24,23 @@ calcUrbanLandFuture <- function(timestep = "5year", subtype = "LUH2v2", cellular
     out <- readSource("LUH2UrbanFuture", convert = FALSE)
 
     if (timestep == "5year") {
-      out <- out[, seq(2015, 2100, 5), ]
-      out <- toolHoldConstant(out, seq(2105, 2150, 5))
+      out <- out[, paste0("y",seq(2015, 2100, 5)), ]
+      out <- toolHoldConstant(out, paste0("y",seq(2105, 2150, 5)))
       out <- mbind(past, out)
     } else if (timestep == "yearly") {
-      out <- toolHoldConstant(out, c(2101:2150))
+      out <- toolHoldConstant(out, paste0("y",c(2101:2150)))
       past <- time_interpolate(past, interpolated_year = 1995:2010)
       out <- mbind(past, out)
-      names(dimnames(out)) <- c("iso.cell", "t", "data")
+      names(dimnames(out)) <- c("x.y.iso", "t", "data")
     }
+
+    if (cells == "magpiecell") {
+      out <- toolCoord2Isocell(out)
+    } else if (cells != "lpjcell") {
+      stop("Please specify cells argument")
+    }
+
+
   } else if (subtype == "Gao") {
     out <- readSource("UrbanLandGao", convert = FALSE)
 
@@ -45,6 +54,11 @@ calcUrbanLandFuture <- function(timestep = "5year", subtype = "LUH2v2", cellular
       # set any interpolated values to 0
       out[out < 0] <- 0
     }
+
+    if (cells == "lpjcell") {
+      stop("lpjcell currently not implemented for subtype 'Gao'")
+    }
+
   } else {
     stop("Not a Valid Subtype")
   }

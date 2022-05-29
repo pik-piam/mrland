@@ -43,20 +43,8 @@ calcProtectedAreaBaseline <- function(magpie_input = TRUE, nclasses = "seven", c
     landArea <- dimSums(LUH2v2[, "y1995", ], dim = 3)
 
     # urban land
-    urbanLand <- calcOutput("UrbanLandFuture", subtype = "LUH2v2", aggregate = FALSE, timestep = "5year")
-    tmp <- collapseDim(addLocation(urbanLand), dim = c("country", "cell"))
-    urbanLand <- new.magpie(
-      cells_and_regions = getCells(collapseDim(PABaseline, dim = "iso")),
-      years = getYears(tmp),
-      names = getNames(tmp), fill = 0,
-      sets = c("x.y.iso", "year", "data")
-    )
-    urbanLand[getCells(tmp), , ] <- tmp
-    map <- toolGetMappingCoord2Country()
-    if (any(getCells(urbanLand) != map$coords)) {
-      stop("Wrong cell ordering in calcProtectedAreaBaseline")
-    }
-    getCells(urbanLand) <- paste(map$coords, map$iso, sep = ".")
+    urbanLand <- calcOutput("UrbanLandFuture", subtype = "LUH2v2", aggregate = FALSE,
+                            timestep = "5year", cells = "lpjcell")
 
     # make sure that protected area is not greater than total land area minus urban area
     tot_PABase <- dimSums(PABaseline, dim = 3)

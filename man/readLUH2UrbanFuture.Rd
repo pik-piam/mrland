@@ -16,5 +16,5 @@ read in gridded future urban land use datasets, from LUH2 Hurtt data
 \code{\link{readSource}}
 }
 \author{
-David Chen
+David Chen, Patrick v. Jeetze
 }

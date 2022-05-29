@@ -90,24 +90,8 @@ calcConservationPriority <- function(cells = "magpiecell", nclasses = "seven") {
   x <- x - dimSums(wdpaBase[, "y2020", ], dim = 3)
   x <- toolConditionalReplace(x, "<0", 0)
 
-  if (cells == "magpiecell") {
-    urbanLand <- calcOutput("UrbanLandFuture", subtype = "LUH2v2", aggregate = FALSE, timestep = "5year")
-  } else if (cells == "lpjcell") {
-    urbanLand <- calcOutput("UrbanLandFuture", subtype = "LUH2v2", aggregate = FALSE, timestep = "5year")
-    tmp <- collapseDim(addLocation(urbanLand), dim = c("country", "cell"))
-    urbanLand <- new.magpie(
-      cells_and_regions = getCells(collapseDim(x, dim = "iso")),
-      years = getYears(tmp),
-      names = getNames(tmp), fill = 0,
-      sets = c("x.y.iso", "year", "data")
-    )
-    urbanLand[getCells(tmp), , ] <- tmp
-    map <- toolGetMappingCoord2Country()
-    if (any(getCells(urbanLand) != map$coords)) {
-      stop("Wrong cell ordering in calcConservationPriority")
-    }
-    getCells(urbanLand) <- paste(map$coords, map$iso, sep = ".")
-  }
+  urbanLand <- calcOutput("UrbanLandFuture", subtype = "LUH2v2", aggregate = FALSE,
+                          timestep = "5year", cells = cells)
 
   # Conservation potential after 2020
   consvPot <- landArea - dimSums(wdpaBase[, "y2020", ], dim = 3) - urbanLand[, "y2020", "SSP2"]
