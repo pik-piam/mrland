@@ -18,7 +18,7 @@ readLUH2UrbanFuture <- function() {
   timesteps <- 1
   offset <- 2015 # year 2016=1, y2100=86
 
-  map <- toolGetMappingCoord2Country(pretty = FALSE)
+  map <- toolGetMappingCoord2Country(pretty = TRUE)
 
   # land area
   carea <- rast("staticData_quarterdeg.nc")[["carea"]]
