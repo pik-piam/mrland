@@ -49,9 +49,6 @@ readLUH2UrbanFuture <- function() {
     urbanMag <- mbind(urbanMag, tmpMag)
   }
 
-  # remove NAs
-  out <- toolConditionalReplace(urbanMag, "is.na()", 0)
-
   # convert from km^2 to Mha
   out <- out / 10000
 

@@ -8,7 +8,7 @@
 #' @author David Chen, Patrick v. Jeetze
 #' @importFrom magpiesets findset
 #' @importFrom mstools toolHoldConstant
-#' @importFrom magclass nregions
+#' @importFrom magclass nregions setCells getCells
 
 calcUrbanLandFuture <- function(timestep = "5year", subtype = "LUH2v2", cells="magpiecell", cellular = TRUE) {
   if (subtype == "LUH2v2") {
@@ -21,16 +21,17 @@ calcUrbanLandFuture <- function(timestep = "5year", subtype = "LUH2v2", cells="m
     past[, , 2:5] <- past[, , 1]
     getNames(past)[1] <- "SSP1"
 
-    out <- readSource("LUH2UrbanFuture", convert = FALSE)
+    out <- readSource("LUH2UrbanFuture", convert = "onlycorrect")
 
     if (timestep == "5year") {
       out <- out[, paste0("y",seq(2015, 2100, 5)), ]
       out <- toolHoldConstant(out, paste0("y",seq(2105, 2150, 5)))
-      out <- mbind(past, out)
+      out <- mbind(setCells(past, getCells(out)), out)
+      names(dimnames(out)) <- c("x.y.iso", "t", "data")
     } else if (timestep == "yearly") {
       out <- toolHoldConstant(out, paste0("y",c(2101:2150)))
       past <- time_interpolate(past, interpolated_year = 1995:2010)
-      out <- mbind(past, out)
+      out <- mbind(setCells(past, getCells(out)), out)
       names(dimnames(out)) <- c("x.y.iso", "t", "data")
     }
 
@@ -39,7 +40,6 @@ calcUrbanLandFuture <- function(timestep = "5year", subtype = "LUH2v2", cells="m
     } else if (cells != "lpjcell") {
       stop("Please specify cells argument")
     }
-
 
   } else if (subtype == "Gao") {
     out <- readSource("UrbanLandGao", convert = FALSE)
