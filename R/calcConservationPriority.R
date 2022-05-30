@@ -34,13 +34,12 @@ calcConservationPriority <- function(cells = "magpiecell", nclasses = "seven") {
   # Protection Area mz file (conservation priority area in Mha)
   x <- readSource("ProtectArea", convert = "onlycorrect")
 
+  # omit old WDPA data
+  x <- x[, , "WDPA", invert = TRUE]
+
   ### Rename items:
   # In this data set, FF stands for intact forest landscapes (IFL)
   getNames(x) <- gsub("FF", "IFL", getNames(x))
-  getNames(x) <- gsub("WDPA", "None", getNames(x))
-
-  # Create dummy
-  x[, , "None"] <- 0
 
   # Add BH_IFL scenario (combination of biodiversity hotspots and intact forestry landscapes)
   # (Note: should only be applied to forests (for other land, use BH))
@@ -90,14 +89,16 @@ calcConservationPriority <- function(cells = "magpiecell", nclasses = "seven") {
   x <- x - setYears(dimSums(wdpaBase[, "y2020", ], dim = 3), NULL)
   x <- toolConditionalReplace(x, "<0", 0)
 
-  urbanLand <- calcOutput("UrbanLandFuture", subtype = "LUH2v2", aggregate = FALSE,
-                          timestep = "5year", cells = cells)
+  urbanLand <- calcOutput("UrbanLandFuture",
+    subtype = "LUH2v2", aggregate = FALSE,
+    timestep = "5year", cells = cells
+  )
 
   # Conservation potential after 2020
   consvPot <- landArea - dimSums(wdpaBase[, "y2020", ], dim = 3) - setCells(urbanLand[, "y2020", "SSP2"], getCells(wdpaBase))
   consvPot <- toolConditionalReplace(consvPot, "<0", 0)
 
-  # Where conservation priority area is smaller than conservation potential
+  # Where conservation priority area is larger than conservation potential
   # replace by conservation potential
   for (c in getNames(x)) {
     tmp <- x[, , c]
