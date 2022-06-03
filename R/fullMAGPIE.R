@@ -181,15 +181,32 @@ fullMAGPIE <- function(rev = 0.1) {
     calcOutput("GrowingStockNatVegAbsolute", aggregate = TRUE, round = 0, file = "f35_gs_absolutetarget.cs4")
     calcOutput("GrowingStockNRF", aggregate = TRUE, round = 0, file = "f35_gs_relativetarget.cs4")
 
+    # 36 employment
+    calcOutput("WeeklyHoursILO", projections = TRUE, aggregate = TRUE, years = seq(1965, 2150, 5),
+               round = 2, file = "f36_weekly_hours.csv")
+    calcOutput("WeeklyHoursILO", projections = TRUE, aggregate = FALSE, years = seq(1965, 2150, 5),
+               round = 2, file = "f36_weekly_hours_iso.csv")
+    calcOutput("HourlyLaborCosts", projection = "SSP2", aggregate = FALSE, years = seq(1965, 2015, 5),
+               round = 4, file = "f36_historic_hourly_labor_costs.csv")
+    calcOutput("AgEmplILO", aggregate = FALSE, subsectors = FALSE, years = seq(1995, 2015, 5),
+               round = 4, file = "f36_historic_ag_employment.csv")
+    calcOutput("NonMAgPIEFactorCosts", subtype = "subsidies", aggSubsidies = TRUE, years = seq(1965, 2150, 5),
+               round = 4, file = "f36_unspecified_subsidies.csv")
+    calcOutput("NonMAgPIEFactorCosts", subtype = "missingVoP", years = seq(1965, 2150, 5),
+               round = 4, file = "f36_nonmagpie_factor_costs.csv")
+    calcOutput("AgCapLabourShare", round = 2, aggregate = TRUE, years = c(1995, 2000, 2005, 2010),
+               file = "f36_historical_share.csv")
+    calcOutput("RegFactorShare", datasource = "USDA", factor = "cap", round = 4, aggregate = FALSE,
+               file = "f36_regression_cap_share.csv")
+
     # 38 factor costs
     calcOutput("FAOYield", cut = 0.98, years = 1995, round = 2, file = "f38_region_yield.csv")
     calcOutput("FacReq", round = 2, aggregate = "GLO", years = 2005, file = "f38_fac_req_fao.csv")
-    calcOutput("FacReq", round = 2, aggregate = TRUE, years = 2005, file = "f38_fac_req_fao_regional.cs4")
+    calcOutput("FacReq", round = 2, aggregate = TRUE, file = "f38_fac_req_fao_regional.cs4")
     calcOutput("AgCapLabourShare", round = 2, aggregate = TRUE, years = c(1995, 2000, 2005, 2010),
                file = "f38_historical_share.csv")
     calcOutput("RegFactorShare", datasource = "USDA", factor = "cap", round = 4, aggregate = FALSE,
                file = "f38_regression_cap_share.csv")
-
 
     # 41 Area Equipped for Irrigation
     # f41_irrig(j) should be read out of calcAreaEquippedForIrrigation()
