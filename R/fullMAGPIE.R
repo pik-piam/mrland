@@ -139,6 +139,8 @@ fullMAGPIE <- function(rev = 0.1, dev = "") {
     if (grepl("india", dev)){
       calcOutput("NINDiets",  aggregate = TRUE, round = 4, file = "f15_intake_NIN.cs3",
                  attributes = "kcal", calib = TRUE, FAOcountr = FALSE)
+      calcOutput("NINDiets",  aggregate = FALSE, round = 1, file = "f15_intake_NIN_iso.cs3",
+                 attributes = "kcal", calib = TRUE, FAOcountr = FALSE)
     }
 
     # 16 demand
