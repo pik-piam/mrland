@@ -112,15 +112,27 @@ fullMAGPIE <- function(rev = 0.1) {
 
     calcOutput("EATLancetDiets",  aggregate = TRUE, round = 4, file = "f15_intake_EATLancet.cs3",
                attributes = "kcal", calib = TRUE, FAOcountr = FALSE)
+    calcOutput("EATLancetDiets",  aggregate = FALSE, round = 1, file = "f15_intake_EATLancet_iso.cs3",
+               attributes = "kcal", calib = TRUE, FAOcountr = FALSE)
     calcOutput("EATLancetWaste",  aggregate = TRUE, round = 4, file = "f15_supply2intake_ratio_bottomup.cs3",
+               out_type = "ratio_detailed")
+    calcOutput("EATLancetWaste",  aggregate = FALSE, round = 4, file = "f15_supply2intake_ratio_bottomup_iso.cs3",
                out_type = "ratio_detailed")
     calcOutput("EATLancetWaste",  aggregate = TRUE, round = 4, file = "f15_calib_factor_FAOfsupply.cs4",
                out_type = "calib")
+    calcOutput("EATLancetWaste",  aggregate = FALSE, round = 4, file = "f15_calib_factor_FAOfsupply_iso.cs4",
+               out_type = "calib")
     calcOutput("FAOLossesWaste",  aggregate = TRUE, round = 4, file = "f15_supply2intake_ratio_FAO.cs3",
+               out_type = "waste")
+    calcOutput("FAOLossesWaste",  aggregate = FALSE, round = 4, file = "f15_supply2intake_ratio_FAO_iso.cs3",
                out_type = "waste")
     calcOutput("EATLancetTargets", aggregate = TRUE, round = 4, file = "f15_targets_EATLancet.cs3",
                attributes = "kcal/d")
+    calcOutput("EATLancetTargets", aggregate = FALSE, round = 4, file = "f15_targets_EATLancet_iso.cs3",
+               attributes = "kcal/d")
     calcOutput("EATFruitvegRatio", aggregate = TRUE, round = 4, file = "f15_fruitveg2others_kcal_ratio.csv",
+               populationweight = "PopulationPast")
+    calcOutput("EATFruitvegRatio", aggregate = FALSE, round = 4, file = "f15_fruitveg2others_kcal_ratio_iso.csv",
                populationweight = "PopulationPast")
 
     # 16 demand
@@ -293,6 +305,10 @@ fullMAGPIE <- function(rev = 0.1) {
                file = "f70_hist_cap_share.csv")
     calcOutput("RegFactorShare", datasource = "USDA", factor = "cap", round = 4, aggregate = FALSE,
                file = "f70_cap_share_reg.csv")
+    calcOutput("Production", round = 4, products = "kli", aggregate = TRUE, years = 2005,
+               file = "f70_hist_prod_livst.cs3")
+    calcOutput("FactorCostsLivst", round = 4, aggregate = TRUE, years = 2005,
+               file = "f70_hist_factor_costs_livst.csv")
 
     # 73 timber -- Always needed on iso country level so no need to aggregate
     calcOutput("EndUseTimber", aggregate = FALSE, round = 4, file = "f73_prod_specific_timber.csv")
