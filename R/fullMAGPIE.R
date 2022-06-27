@@ -4,6 +4,7 @@
 #' MAgPIE model.
 #'
 #' @param rev data revision which should be used as input (positive numeric).
+#' @param dev For developing purposes, apply changes as per dev flag
 #' @author Jan Philipp Dietrich, Benjamin Leon Bodirsky, Florian Humpenoeder, Edna J. Molina Bacca
 #' @seealso
 #' \code{\link{readSource}}, \code{\link{getCalculations}}, \code{\link{calcOutput}}
@@ -12,7 +13,7 @@
 #' fullMAgPIE(revision = 12, mainfolder = "pathtowhereallfilesarestored")
 #' }
 #'
-fullMAGPIE <- function(rev = 0.1) {
+fullMAGPIE <- function(rev = 0.1, dev = "") {
 
    if (rev < 4.66) stop("mrland(>= 0.15.0) does not support revision below 4.63 anymore.
                        Please use a older snapshot/version of the library, if you need older revisions.")
@@ -134,6 +135,11 @@ fullMAGPIE <- function(rev = 0.1) {
                populationweight = "PopulationPast")
     calcOutput("EATFruitvegRatio", aggregate = FALSE, round = 4, file = "f15_fruitveg2others_kcal_ratio_iso.csv",
                populationweight = "PopulationPast")
+
+    if (grepl("india", dev)){
+      calcOutput("NINDiets",  aggregate = TRUE, round = 4, file = "f15_intake_NIN.cs3",
+                 attributes = "kcal", calib = TRUE, FAOcountr = FALSE)
+    }
 
     # 16 demand
     calcOutput("Attributes", round = 4, aggregate = FALSE,        file = "fm_attributes.cs3")

@@ -1,16 +1,10 @@
 #' Read in data from the NIN recommendations
 #'
-#' Read in data from:
-#' Food in the Anthropocene: the NIN Commission on healthy diets from sustainable food systems
-#' https:
-#'
-#'
 #' @param subtype Type of NIN data that should be read. Available types are:
 #' \itemize{
 #' \item \code{cons_data}: Consumption analysis ("NIN_cons_data.csv")
-#' \item \code{recommend}: Food recommendations ("NIN_recommendations.csv")
 #' }
-#' @return magpie object containing NIN Commission data
+#' @return magpie object containing NIN  data
 #' @importFrom data.table fread
 #' @importFrom magclass complete_magpie
 #' @author Isabelle Weindl, Jan Philipp Dietrich
@@ -24,7 +18,7 @@ readNIN <- function(subtype) {
 
   if (subtype == "cons_data") {
 
-    data <- fread("/p/projects/rd3mod/inputdata/sources/NIN/NIN_cons_data.csv")
+    data <- fread("NIN_cons_data.csv")
     data$SSP_scn <- NULL # remove irrelevant column
     data <- data[!(data$region %in% c("all-r","HIC","UMC","LMC","LIC")),] #remove aggregated regions
 

@@ -16,7 +16,7 @@ List of magpie objects with results on country level, weight on country level, u
 \description{
 Calculates the share of fruits and vegetables in the calorie supply from the others MAgPIE commodity for the past.
 Information on the calorie supply from fruits and vegetables is relevant in the context of dietary recommendations,
-e.g. as proposed by the NIN-Lancet Commission on healthy diets from sustainable food systems.
+e.g. as proposed by the NIN.
 }
 \examples{
 \dontrun{

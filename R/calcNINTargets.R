@@ -1,7 +1,7 @@
 #' @title calcNINTargets
 #' @description
 #' Calculates minimum and maximum targets for healthy food intake according to reference
-#' recommendations proposed by the NIN-Lancet Commission on healthy diets from sustainable
+#' recommendations proposed by the NIN on healthy diets from sustainable
 #' food systems, specified for different MAgPIE commodities.
 #'
 #' @param  attributes Attributes of food commodities (available: kcal/d and g/d)
@@ -26,7 +26,7 @@ calcNINTargets <- function(attributes="kcal/d"){
 
   #### Mapping to MAgPIE
 
-  # mapping of NIN Lancet food categories to MAgPIE food commodities
+  # mapping of NIN  food categories to MAgPIE food commodities
   NIN_food <-    c("legumes","soybeans","fish","poultry","eggs","milk","sugar","oil_palm","oil_veg")
   NIN_tfood15 <- c("t_puls_pro","t_soybean","t_fish","t_livst_chick","t_livst_egg","t_livst_milk","t_sugar","t_oils","t_oils")
 
@@ -35,7 +35,7 @@ calcNINTargets <- function(attributes="kcal/d"){
   NIN_rtargets_food <- toolAggregate(NIN_rtargets,rel = rel_matrix_food,
                   dim = 3.1,from = "NIN_food",to = "NIN_tfood15", partrel=TRUE)
 
-  # mapping of NIN Lancet food groups to MAgPIE diet target groups
+  # mapping of NIN  food groups to MAgPIE diet target groups
   NIN_group <-    c("nuts_seeds","vegetables","fruits","roots","fg_redmNIN")
   NIN_tgroup15 <-    c("t_nutseeds","t_fruitveg","t_fruitveg","t_roots","t_redmNIN")
 

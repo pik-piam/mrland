@@ -14,7 +14,7 @@ List of magpie objects with results on country level, weight on country level, u
 }
 \description{
 Calculates minimum and maximum targets for healthy food intake according to reference
-recommendations proposed by the NIN-Lancet Commission on healthy diets from sustainable
+recommendations proposed by the NIN on healthy diets from sustainable
 food systems, specified for different MAgPIE commodities.
 }
 \examples{

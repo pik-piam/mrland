@@ -344,6 +344,6 @@ calcNINDiets <- function(attributes = c("wm","kcal"), calib = TRUE, FAOcountr = 
   return(list(x=data.out,
               weight=weight.pop,
               unit=unit,
-              description="Daily per capita food intake for MAgPIE commodities consistent with NIN Lancet diet scenarios")
+              description="Daily per capita food intake for MAgPIE commodities as per NIN recommendations")
   )
 }

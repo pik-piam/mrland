@@ -13,7 +13,7 @@ resolution}
 \item{subtype}{Type of NIN Lancet data that should be read. Available types are:
 \itemize{
 \item \code{cons_data}: Consumption analysis ("NIN_Lancet_cons_data.csv")
-\item \code{recommend}: Food recommendations ("NIN_Lancet_recommendations.csv")
+\item \code{recommend}: Food recommendations ("NIN_recommendations.csv")
 }}
 }
 \value{

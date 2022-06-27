@@ -2,24 +2,21 @@
 % Please edit documentation in R/readNIN.R
 \name{readNIN}
 \alias{readNIN}
-\title{Read in data from the NIN-Lancet Comission}
+\title{Read in data from the NIN recommendations}
 \usage{
 readNIN(subtype)
 }
 \arguments{
-\item{subtype}{Type of NIN-Lancet data that should be read. Available types are:
+\item{subtype}{Type of NIN data that should be read. Available types are:
 \itemize{
-\item \code{cons_data}: Consumption analysis ("NIN_Lancet_cons_data.csv")
-\item \code{recommend}: Food recommendations ("NIN_Lancet_recommendations.csv")
+\item \code{cons_data}: Consumption analysis ("NIN_cons_data.csv")
 }}
 }
 \value{
-magpie object containing NIN-Lancet Comission data
+magpie object containing NIN  data
 }
 \description{
-Read in data from:
-Food in the Anthropocene: the NIN-Lancet Commission on healthy diets from sustainable food systems, Lancet 2019
-https://doi.org/10.1016/S0140-6736(18)31788-4
+Read in data from the NIN recommendations
 }
 \examples{
 

@@ -17,8 +17,8 @@ List of magpie objects with results on country level, weight on country level, u
 }
 \description{
 Calculates the ratio between food supply at household level and food intake for different MAgPIE commodities
-accounting for food-specific estimates of baseline intake of quantification of NIN Lancet diets by the
-NIN-Lancet comission, as well as for FAO food waste shares.
+accounting for food-specific estimates of baseline intake of quantification of NIN diets by the
+NIN comission, as well as for FAO food waste shares.
 }
 \examples{
 
