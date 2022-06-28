@@ -12,15 +12,24 @@ calcAvlCropland(
 )
 }
 \arguments{
-\item{marginal_land}{different options are
+\item{marginal_land}{Defines which share of marginal land should be included (see options below) and
+               whether suitable land under irrigated conditions ("irrigated"), under rainfed conditions ("rainfed")
+               or suitability under rainfed conditions including currently irrigated land (rainfed_and_irrigated)
+               should be used. Options combined via ":"
+               The different marginal land options are:
 \itemize{
-\item \code{"all_marginal"}: Include all marginal land
-\item \code{"q33_marginal"}: The bottom tertile of the marginal land area is excluded
-\item \code{"q50_marginal"}: The bottom  half of the marginal land area is excluded
-\item \code{"q66_marginal"}: The first and second tertile of the marginal land area are excluded
-\item \code{"q75_marginal"}: The first, second and third quartiles of the marginal land are are excluded
-\item \code{"no_marginal"}: Marginal land is fully excluded
-\item \code{"magpie"}: Returns "all_marginal", "q33_marginal" and "no_marginal" in a magclass object to be used as magpie input.
+\item \code{"all_marginal"}: Of the total marginal land (suitability index = 0.0 - 0.33),
+areas with an index of 0.1 and lower are excluded.
+\item \code{"q33_marginal"}: The bottom tertile (suitability index below 0.13) of the
+marginal land area is excluded.
+\item \code{"q50_marginal"}: The bottom  half (suitability index below 0.18) of the
+marginal land area is excluded.
+\item \code{"q66_marginal"}: The first and second tertile (suitability index below 0.23) of
+the marginal land area are excluded.
+\item \code{"q75_marginal"}: The first, second and third quartiles (suitability index below 0.25)
+of the marginal land are are excluded
+\item \code{"no_marginal"}: Areas with a suitability index of 0.33 and lower are excluded.
+\item \code{"magpie"}: Returns "all_marginal:rainfed_and_irrigated", "q33_marginal:rainfed_and_irrigated" and "no_marginal:rainfed_and_irrigated" in a magclass object to be used as magpie input.
 }}
 
 \item{cell_upper_bound}{Upper bound for cropland at the grid cell level.

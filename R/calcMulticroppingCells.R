@@ -113,9 +113,8 @@ calcMulticroppingCells <- function(selectyears, lpjml, climatetype, scenario) {
 
     # crop aggregation
     map <- toolGetMapping("MAgPIE_LPJmL.csv",
-      type = "sectoral",
-      where = "mappingfolder"
-    ) # ToDo: when calc function is ready: select required crop-type through argument before
+                          type = "sectoral",
+                          where = "mappingfolder") # ToDo: when calc function is ready: select required crop-type through argument before
 
     harv <- toolAggregate(harv, map,
                              from = "MAgPIE", to = "LPJmL",

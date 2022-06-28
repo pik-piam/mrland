@@ -7,7 +7,7 @@
 readZabel2014(subtype = "all_marginal:rainfed_and_irrigated")
 }
 \arguments{
-\item{subtype}{Define which marginal land should be included (see options below) and 
+\item{subtype}{Defines which share of marginal land should be included (see options below) and
                whether suitable land under irrigated conditions ("irrigated"), under rainfed conditions ("rainfed")
                or suitability under rainfed conditions including currently irrigated land (rainfed_and_irrigated)
                should be used. Options combined via ":"
@@ -37,7 +37,7 @@ and extracts the share of suitable cropland per grid cell, depending on differen
 }
 \examples{
 \dontrun{
-readSource("Zabel2014", subtype = "all_marginal", convert = "onlycorrect")
+readSource("Zabel2014", subtype = "all_marginal:rainfed_and_irrigated", convert = "onlycorrect")
 }
 
 }

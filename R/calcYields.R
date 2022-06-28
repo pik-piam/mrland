@@ -9,8 +9,9 @@
 #'                      "yields:EPIC-IIASA:ukesm1-0-ll:ssp585:default:3b"
 #' @param climatetype   Switch between different climate scenarios
 #' @param cells         if cellular is TRUE: "magpiecell" for 59199 cells or "lpjcell" for 67420 cells
-#' @param weighting     use of different weights (totalCrop (default), totalLUspecific, cropSpecific, crop+irrigSpecific,
-#'                                            avlCropland, avlCropland+avlPasture)
+#' @param weighting     use of different weights (totalCrop (default),
+#'                      totalLUspecific, cropSpecific, crop+irrigSpecific,
+#'                      avlCropland, avlCropland+avlPasture)
 #' @param multicropping Multicropping activated (TRUE) or not (FALSE) and
 #'                      Multiple Cropping Suitability mask selected
 #'                      (mask can be:
@@ -26,6 +27,27 @@
 #'                      (e.g. TRUE:actual:total; TRUE:none; FALSE)
 #' @param indiaYields   if TRUE returns scaled yields for rainfed crops in India
 #' @param scaleFactor   integer value by which indiaYields will be scaled
+#' @param marginal_land  Defines which share of marginal land should be included (see options below) and
+#'                whether suitable land under irrigated conditions ("irrigated"), under rainfed conditions ("rainfed")
+#'                or suitability under rainfed conditions including currently irrigated land (rainfed_and_irrigated)
+#'                should be used. Options combined via ":"
+#'                The different marginal land options are:
+#' \itemize{
+#' \item \code{"all_marginal"}: Of the total marginal land (suitability index = 0.0 - 0.33),
+#' areas with an index of 0.1 and lower are excluded.
+#' \item \code{"q33_marginal"}: The bottom tertile (suitability index below 0.13) of the
+#' marginal land area is excluded.
+#' \item \code{"q50_marginal"}: The bottom  half (suitability index below 0.18) of the
+#' marginal land area is excluded.
+#' \item \code{"q66_marginal"}: The first and second tertile (suitability index below 0.23) of
+#' the marginal land area are excluded.
+#' \item \code{"q75_marginal"}: The first, second and third quartiles (suitability index below 0.25)
+#' of the marginal land are are excluded
+#' \item \code{"no_marginal"}: Areas with a suitability index of 0.33 and lower are excluded.
+#' \item \code{"magpie"}: Returns "all_marginal:rainfed_and_irrigated",
+#'                        "q33_marginal:rainfed_and_irrigated" and
+#'                        "no_marginal:rainfed_and_irrigated" in a magclass object to be used as magpie input.
+#' }
 #'
 #' @return magpie object in cellular resolution
 #'
@@ -45,7 +67,7 @@
 calcYields <- function(source = c(lpjml = "ggcmi_phase3_nchecks_9ca735cb", isimip = NULL),
                        climatetype = "GSWP3-W5E5:historical", cells = "magpiecell",
                        weighting = "totalCrop", multicropping = FALSE,
-                       indiaYields = FALSE, scaleFactor = 0.3) {
+                       indiaYields = FALSE, scaleFactor = 0.3, marginal_land = "magpie") {
 
   # Extract argument information
   cfg           <- toolLPJmLVersion(version = source["lpjml"], climatetype = climatetype)
@@ -219,13 +241,13 @@ calcYields <- function(source = c(lpjml = "ggcmi_phase3_nchecks_9ca735cb", isimi
 
   } else if (weighting == "avlCropland") {
 
-    cropAreaWeight <- setNames(calcOutput("AvlCropland", marginal_land = "all_marginal", cells = cells,
+    cropAreaWeight <- setNames(calcOutput("AvlCropland", marginal_land = marginal_land, cells = cells,
                                             country_level = FALSE, aggregate = FALSE),
                                NULL)
 
   } else if (weighting == "avlCropland+avlPasture") {
 
-    avlCrop <- setNames(calcOutput("AvlCropland", marginal_land = "all_marginal", cells = cells,
+    avlCrop <- setNames(calcOutput("AvlCropland", marginal_land = marginal_land, cells = cells,
                                    country_level = FALSE, aggregate = FALSE), "avlCrop")
 
     lu1995  <- setYears(calcOutput("LanduseInitialisation", aggregate = FALSE, cellular = TRUE, nclasses = "seven",
