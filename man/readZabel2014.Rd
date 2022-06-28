@@ -4,10 +4,14 @@
 \alias{readZabel2014}
 \title{readZabel2014}
 \usage{
-readZabel2014(subtype = "all_marginal")
+readZabel2014(subtype = "all_marginal:rainfed_and_irrigated")
 }
 \arguments{
-\item{subtype}{The different options are:
+\item{subtype}{Define which marginal land should be included (see options below) and 
+               whether suitable land under irrigated conditions ("irrigated"), under rainfed conditions ("rainfed")
+               or suitability under rainfed conditions including currently irrigated land (rainfed_and_irrigated)
+               should be used. Options combined via ":"
+               The different marginal land options are:
 \itemize{
 \item \code{"all_marginal"}: Of the total marginal land (suitability index = 0.0 - 0.33),
 areas with an index of 0.1 and lower are excluded.
@@ -38,5 +42,5 @@ readSource("Zabel2014", subtype = "all_marginal", convert = "onlycorrect")
 
 }
 \author{
-Patrick v. Jeetze
+Patrick v. Jeetze, Felicitas Beier
 }
