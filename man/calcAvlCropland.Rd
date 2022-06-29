@@ -57,5 +57,5 @@ calcOutput("AvlCropland", marginal_land = "magpie", cells = "magpiecell",
 
 }
 \author{
-Patrick v. Jeetze
+Patrick v. Jeetze, Felicitas Beier
 }
