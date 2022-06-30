@@ -29,7 +29,10 @@ the marginal land area are excluded.
 \item \code{"q75_marginal"}: The first, second and third quartiles (suitability index below 0.25)
 of the marginal land are are excluded
 \item \code{"no_marginal"}: Areas with a suitability index of 0.33 and lower are excluded.
-\item \code{"magpie"}: Returns "all_marginal:rainfed_and_irrigated", "q33_marginal:rainfed_and_irrigated" and "no_marginal:rainfed_and_irrigated" in a magclass object to be used as magpie input.
+\item \code{"magpie"}: Returns "all_marginal:rainfed_and_irrigated",
+                       "q33_marginal:rainfed_and_irrigated" and
+                       "no_marginal:rainfed_and_irrigated"
+                       in a magclass object to be used as magpie input.
 }}
 
 \item{cell_upper_bound}{Upper bound for cropland at the grid cell level.

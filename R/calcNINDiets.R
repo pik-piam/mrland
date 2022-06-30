@@ -21,6 +21,7 @@
 #' }
 #' @export
 #' @importFrom magclass getSets<- new.magpie add_dimension dimSums where
+#' @importFrom magpiesets findset
 #' @importFrom madrat toolNAreplace
 
 calcNINDiets <- function(attributes = c("wm","kcal"), calib = TRUE, FAOcountr = FALSE){
@@ -97,7 +98,7 @@ calcNINDiets <- function(attributes = c("wm","kcal"), calib = TRUE, FAOcountr = 
 
   ###temperate and tropical cereals
   crls_Mag <- c("tece","trce")
-  crls_NIN <- c("whNIN","othr_grains")
+  crls_NIN <- c("wheat","othr_grains")
   #estimate waste share for cereals based on 2010 food demand (FAO) and 2010 BMK intake from NIN Lancet
   waste_shr_crls <- 1-setYears(dimSums(NIN_diets[,,"BMK"][,,"2100kcal"][,"y2010",crls_NIN],dim=3.4)/dimSums(fsupply.hist[,"y2010",crls_Mag],dim=3.1),NULL)
   if(any(!is.finite(waste_shr_crls)) ) {
@@ -124,7 +125,7 @@ calcNINDiets <- function(attributes = c("wm","kcal"), calib = TRUE, FAOcountr = 
   balance.post.crls[which(balance.post.crls<0)]=0
 
   Mag_NIN_diets[,,"trce"] <- NIN_diets[,,"othr_grains"] - balance.post.crls
-  Mag_NIN_diets[,,"tece"] <- NIN_diets[,,"whNIN"] + balance.post.crls
+  Mag_NIN_diets[,,"tece"] <- NIN_diets[,,"wheat"] + balance.post.crls
 
 
   ###vegetables, fruits and nuts/seeds
