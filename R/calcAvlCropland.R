@@ -225,8 +225,6 @@ calcAvlCropland <- function(marginal_land = "magpie", cell_upper_bound = 0.9,
   return(list(x            = out,
               weight       = NULL,
               unit         = "Mha",
-              description  = "Cropland suitability based on Zabel et al. (2014)
-              with different suitability thresholds
-              ('all_marginal', 'q33_marginal', 'no_marginal').",
+              description  = "Cropland suitability based on Zabel et al. (2014) with different suitability thresholds ('all_marginal', 'q33_marginal', 'no_marginal').",
               isocountries = FALSE))
 }
