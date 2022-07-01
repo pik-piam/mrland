@@ -105,8 +105,8 @@ fullMAGPIE <- function(rev = 0.1, dev = "") {
     calcOutput("Household_balanceflow",    years = magYears, round = 4, file = "f15_household_balanceflow.cs3")
     calcOutput("NutritionAttributes",      years = magYears, round = 4, file = "f15_nutrition_attributes.cs3",
                aggregate = FALSE)
-    calcOutput("IniFoodPrice", datasource = "FAO", years = NULL, round = 4, file = "f15_prices_initial.csv",
-               aggregate = FALSE, year = "y2005")
+    calcOutput("IniFoodPrice", datasource = "FAO", years = NULL, round = 4,
+               products = "kall", file = "f15_prices_initial.csv", aggregate = FALSE, year = "y2005")
     calcOutput("BMIshr", convert = TRUE, years = magYearsPast, round = 4, file = "f15_bmi_shr_past.cs3",
                aggregate = FALSE)
     calcOutput("BMI", file = "f15_bmi.cs3", aggregate = FALSE)
