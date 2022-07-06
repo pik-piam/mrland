@@ -287,6 +287,11 @@ fullMAGPIE <- function(rev = 0.1, dev = "") {
                round = 4, file = "f57_maccs_n2o_2019.cs3")
     calcOutput("MACCsCH4", sector = "landuse", source = "PBL_MACC_2019", years = shortYearsFrom2010,
                round = 4, file = "f57_maccs_ch4_2019.cs3")
+    calcOutput("MACCsN2O", sector = "landuse", source = "PBL_MACC_2022", years = shortYearsFrom2010,
+               round = 4, file = "f57_maccs_n2o_2022.cs3")
+    calcOutput("MACCsCH4", sector = "landuse", source = "PBL_MACC_2022", years = shortYearsFrom2010,
+               round = 4, file = "f57_maccs_ch4_2022.cs3")
+
 
     # 59 som
     calcOutput("SOMexogenous", years = magYears, round = 4, file = "f59_som_exogenous.cs3")
