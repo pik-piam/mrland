@@ -10,8 +10,7 @@
 #'                should be used. Options combined via ":"
 #'                The different marginal land options are:
 #' \itemize{
-#' \item \code{"all_marginal"}: Of the total marginal land (suitability index = 0.0 - 0.33),
-#' areas with an index of 0.1 and lower are excluded.
+#' \item \code{"all_marginal"}: All marginal land (suitability index between 0-0.33) is included as suitable
 #' \item \code{"q33_marginal"}: The bottom tertile (suitability index below 0.13) of the
 #' marginal land area is excluded.
 #' \item \code{"q50_marginal"}: The bottom  half (suitability index below 0.18) of the
@@ -225,6 +224,8 @@ calcAvlCropland <- function(marginal_land = "magpie", cell_upper_bound = 0.9,
   return(list(x            = out,
               weight       = NULL,
               unit         = "Mha",
-              description  = "Cropland suitability based on Zabel et al. (2014) with different suitability thresholds ('all_marginal', 'q33_marginal', 'no_marginal').",
+              description  = "Cropland suitability based on Zabel et al. (2014)
+                              with different suitability thresholds
+                              ('all_marginal', 'q33_marginal', 'no_marginal').",
               isocountries = FALSE))
 }
