@@ -307,6 +307,9 @@ fullMAGPIE <- function(rev = 0.1, dev = "") {
 
     # 62 Material
     calcOutput("DemMaterial", years = magYearsPast, round = 4, file = "f62_dem_material.cs3")
+    calcOutput("BioplasticToBiomass", aggregate = FALSE, round = 4, file = "f62_bioplastic2biomass.csv")
+    calcOutput("HistBioplasticProd", aggregate = FALSE, years = c(2010, 2015, 2020), round = 3,
+               file = "f62_hist_dem_bioplastic.csv")
 
     # 70 livestock
     calcOutput("FeedBaskets",           years = magYears,  round = 4, file = "f70_feed_baskets.cs3")
