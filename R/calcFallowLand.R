@@ -25,7 +25,7 @@ calcFallowLand <- function() {
 
   harvestedArea <- readSource("LanduseToolbox", subtype = "harvestedArea")
 
-  harvestedAreaCrops <- harvestedArea[, , c(1:17, 21:37)]
+  harvestedAreaCrops <- harvestedArea[, , c("pasture"), invert = TRUE]
 
   physicalArea <- readSource("LanduseToolbox", subtype = "physicalArea")
 
