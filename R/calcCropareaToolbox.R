@@ -26,6 +26,9 @@ calcCropareaToolbox <- function(sectoral = "kcr", physical = TRUE, cellular = FA
                                                 "y1980", "y1985", "y1990",
                                                 "y1995", "y2000", "y2005",
                                                 "y2010")) {
+  if (is.numeric(selectyears)) {
+    selectyears <- paste0("y", selectyears)
+  }
 
   if (!cellular) {
     stop("Non-cellular output is not available for calcCropareaToolbox.")
@@ -125,7 +128,7 @@ calcCropareaToolbox <- function(sectoral = "kcr", physical = TRUE, cellular = FA
   if (all(selectyears %in% getItems(cropArea, dim = "year"))) {
     cropArea <- cropArea[, selectyears, ]
   } else {
-    stop("The selected years are not supported (0nly 1950 - 2017). In addition please use the format \"y1950\" ")
+    stop("The selected years are not supported (0nly 1950 - 2017).")
   }
 
   return(list(x = cropArea,
