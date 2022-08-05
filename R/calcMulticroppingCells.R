@@ -49,23 +49,25 @@ calcMulticroppingCells <- function(selectyears, lpjml, climatetype, scenario) {
     # (maybe with calcFunction it can even be crop-specific...)
 
     # areas where multicropping takes place currently (crop- and irrigation-specific)
-    phys <- calcOutput("CropareaToolbox", physical = TRUE,
-                       cells = "lpjcell", aggregate = FALSE)[, selectyears, ]
-    harv <- calcOutput("CropareaToolbox", physical = FALSE,
-                       cells = "lpjcell", aggregate = FALSE)[, selectyears, ]
+    phys <- calcOutput("CropareaToolbox", physical = TRUE, sectoral = "kcr",
+                       cellular = TRUE, cells = "lpjcell", irrigation = TRUE,
+                       selectyears = selectyears, aggregate = FALSE)
+    harv <- calcOutput("CropareaToolbox", physical = FALSE, sectoral = "kcr",
+                       cellular = TRUE, cells = "lpjcell", irrigation = TRUE,
+                       selectyears = selectyears, aggregate = FALSE)
     # keep for dimensionality
     phys[, , ] <- NA
     harv[, , ] <- NA
 
     if (grepl(subscenario, "total")) {
 
-      # total actual multicropping area (some crop, irrigated or rainfed)
-      tempPhys <- dimSums(readSource("LanduseToolbox", subtype = "physicalArea")[, selectyears, ],
-                          dim = "irrigation")
-      tempHarv <- dimSums(readSource("LanduseToolbox", subtype = "harvestedArea")[, selectyears, ],
-                          dim = "irrigation")
-      tempHarv <- dimSums(tempHarv[, , "pasture", invert = TRUE],
-                          dim = "crop")
+      # total actual multicropping area
+      tempPhys <- dimSums(calcOutput("CropareaToolbox", physical = TRUE, sectoral = "kcr",
+                         cellular = TRUE, cells = "lpjcell", irrigation = FALSE,
+                         selectyears = selectyears, aggregate = FALSE), dim = "crop")
+      tempHarv <- dimSums(calcOutput("CropareaToolbox", physical = FALSE, sectoral = "kcr",
+                         cellular = TRUE, cells = "lpjcell", irrigation = FALSE,
+                         selectyears = selectyears, aggregate = FALSE), dim = "crop")
 
       # expand dimension
       phys[, , ] <- tempPhys
@@ -73,11 +75,13 @@ calcMulticroppingCells <- function(selectyears, lpjml, climatetype, scenario) {
 
     } else if (grepl(subscenario, "irrig")) {
 
-      # total actual multicropping area (some crop, irrigation-specific)
-      tempPhys <- readSource("LanduseToolbox", subtype = "physicalArea")[, selectyears, ]
-      tempHarv <- readSource("LanduseToolbox", subtype = "harvestedArea")[, selectyears, ]
-      tempHarv <- dimSums(tempHarv[, , "pasture", invert = TRUE],
-                          dim = "crop")
+      # total actual multicropping area (irrigation-specific)
+      tempPhys <- dimSums(calcOutput("CropareaToolbox", physical = TRUE, sectoral = "kcr",
+                                 cellular = TRUE, cells = "lpjcell", irrigation = TRUE,
+                                 selectyears = selectyears, aggregate = FALSE), dim = "crop")
+      tempHarv <- dimSums(calcOutput("CropareaToolbox", physical = FALSE, sectoral = "kcr",
+                                 cellular = TRUE, cells = "lpjcell", irrigation = TRUE,
+                                 selectyears = selectyears, aggregate = FALSE), dim = "crop")
 
       # expand dimension
       phys[, , ] <- tempPhys
@@ -85,13 +89,13 @@ calcMulticroppingCells <- function(selectyears, lpjml, climatetype, scenario) {
 
     } else if (grepl(subscenario, "crop")) {
 
-      # areas where multicropping takes place currently (crop- and irrigation-specific)
-      tempPhys <- dimSums(calcOutput("CropareaToolbox", physical = TRUE,
-                                 cells = "lpjcell", aggregate = FALSE)[, selectyears, ],
-                          dim = "irrigation")
-      tempHarv <- dimSums(calcOutput("CropareaToolbox", physical = FALSE,
-                                  cells = "lpjcell", aggregate = FALSE)[, selectyears, ],
-                          dim = "irrigation")
+      # areas where multicropping takes place currently (crop-specific)
+      tempPhys <- calcOutput("CropareaToolbox", physical = TRUE, sectoral = "lpj",
+                                 cellular = TRUE, cells = "lpjcell", irrigation = FALSE,
+                                 selectyears = selectyears, aggregate = FALSE)
+      tempHarv <- calcOutput("CropareaToolbox", physical = FALSE, sectoral = "lpj",
+                                 cellular = TRUE, cells = "lpjcell", irrigation = FALSE,
+                                 selectyears = selectyears, aggregate = FALSE)
 
       # expand dimension
       phys[, , ] <- tempPhys
@@ -100,30 +104,18 @@ calcMulticroppingCells <- function(selectyears, lpjml, climatetype, scenario) {
     } else if (grepl(subscenario, "irrig_crop")) {
 
       # areas where multicropping takes place currently (crop- and irrigation-specific)
-      phys <- calcOutput("CropareaToolbox", physical = TRUE, cells = "lpjcell",
-                          aggregate = FALSE)[, selectyears, ]
-      harv <- calcOutput("CropareaToolbox", physical = FALSE, cells = "lpjcell",
-                          aggregate = FALSE)[, selectyears, ]
+      phys <- calcOutput("CropareaToolbox", physical = TRUE, sectoral = "lpj",
+                         cellular = TRUE, cells = "lpjcell", irrigation = TRUE,
+                         selectyears = selectyears, aggregate = FALSE)
+      harv <- calcOutput("CropareaToolbox", physical = FALSE, sectoral = "lpj",
+                         cellular = TRUE, cells = "lpjcell", irrigation = TRUE,
+                         selectyears = selectyears, aggregate = FALSE)
 
     } else {
       stop("Please select whether total, irrigation-specific (irrig), crop-specific (crop),
       or irrigation- and crop-specific (irrig_crop) currently multicropped areas shall be
       returned through extension of scenario argument separated by :")
     }
-
-    # crop aggregation
-    map <- toolGetMapping("MAgPIE_LPJmL.csv",
-                          type = "sectoral",
-                          where = "mappingfolder") # ToDo: when calc function is ready: select required crop-type through argument before
-
-    harv <- toolAggregate(harv, map,
-                             from = "MAgPIE", to = "LPJmL",
-                             dim = 3.2, partrel = TRUE)
-    harv <- dimOrder(harv, c(1, 2), dim = 3)
-    phys <- toolAggregate(phys, map,
-                          from = "MAgPIE", to = "LPJmL",
-                          dim = 3.2, partrel = TRUE)
-    phys <- dimOrder(phys, c(1, 2), dim = 3)
 
     # cropping intensity factor
     currMC <- ifelse(phys > 0, harv / phys, NA)
