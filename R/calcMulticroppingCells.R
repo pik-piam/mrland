@@ -49,10 +49,10 @@ calcMulticroppingCells <- function(selectyears, lpjml, climatetype, scenario) {
     # (maybe with calcFunction it can even be crop-specific...)
 
     # areas where multicropping takes place currently (crop- and irrigation-specific)
-    phys <- calcOutput("CropareaToolbox", physical = TRUE, sectoral = "kcr",
+    phys <- calcOutput("CropareaToolbox", physical = TRUE, sectoral = "lpj",
                        cellular = TRUE, cells = "lpjcell", irrigation = TRUE,
                        selectyears = selectyears, aggregate = FALSE)
-    harv <- calcOutput("CropareaToolbox", physical = FALSE, sectoral = "kcr",
+    harv <- calcOutput("CropareaToolbox", physical = FALSE, sectoral = "lpj",
                        cellular = TRUE, cells = "lpjcell", irrigation = TRUE,
                        selectyears = selectyears, aggregate = FALSE)
     # keep for dimensionality
@@ -62,10 +62,10 @@ calcMulticroppingCells <- function(selectyears, lpjml, climatetype, scenario) {
     if (grepl(subscenario, "total")) {
 
       # total actual multicropping area
-      tempPhys <- dimSums(calcOutput("CropareaToolbox", physical = TRUE, sectoral = "kcr",
+      tempPhys <- dimSums(calcOutput("CropareaToolbox", physical = TRUE, sectoral = "lpj",
                          cellular = TRUE, cells = "lpjcell", irrigation = FALSE,
                          selectyears = selectyears, aggregate = FALSE), dim = "crop")
-      tempHarv <- dimSums(calcOutput("CropareaToolbox", physical = FALSE, sectoral = "kcr",
+      tempHarv <- dimSums(calcOutput("CropareaToolbox", physical = FALSE, sectoral = "lpj",
                          cellular = TRUE, cells = "lpjcell", irrigation = FALSE,
                          selectyears = selectyears, aggregate = FALSE), dim = "crop")
 
@@ -76,10 +76,10 @@ calcMulticroppingCells <- function(selectyears, lpjml, climatetype, scenario) {
     } else if (grepl(subscenario, "irrig")) {
 
       # total actual multicropping area (irrigation-specific)
-      tempPhys <- dimSums(calcOutput("CropareaToolbox", physical = TRUE, sectoral = "kcr",
+      tempPhys <- dimSums(calcOutput("CropareaToolbox", physical = TRUE, sectoral = "lpj",
                                  cellular = TRUE, cells = "lpjcell", irrigation = TRUE,
                                  selectyears = selectyears, aggregate = FALSE), dim = "crop")
-      tempHarv <- dimSums(calcOutput("CropareaToolbox", physical = FALSE, sectoral = "kcr",
+      tempHarv <- dimSums(calcOutput("CropareaToolbox", physical = FALSE, sectoral = "lpj",
                                  cellular = TRUE, cells = "lpjcell", irrigation = TRUE,
                                  selectyears = selectyears, aggregate = FALSE), dim = "crop")
 
