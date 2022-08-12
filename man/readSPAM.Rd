@@ -22,7 +22,7 @@ All data is in ha.
 }
 \examples{
 \dontrun{
-A <- readSource("SPAM", subtype = "harvestedArea", aggregate = FALSE)
+A <- readSource("SPAM", subtype = "harvestedArea")
 }
 
 }

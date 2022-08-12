@@ -20,7 +20,7 @@
 #' @seealso \code{\link{readSource}}
 #' @examples
 #' \dontrun{
-#' A <- readSource("SPAM", subtype = "harvestedArea", aggregate = FALSE)
+#' A <- readSource("SPAM", subtype = "harvestedArea")
 #' }
 #'
 readSPAM <- function(subtype) {
