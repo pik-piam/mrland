@@ -63,39 +63,75 @@ if (grepl("historical", subtype)) {
     x <- setNames(x, gsub("wwh","winterwheat",getNames(x)))
   }
 
+#change names uniformly
+  getNames(x, dim = 1)[getNames(x, dim = 1) == "soy"] <- "soybean"
+  getNames(x, dim = 1)[getNames(x, dim = 1) == "maize"] <- "maiz"
+  getNames(x, dim = 2)[getNames(x, dim = 2) == "fullyirrigated"] <- "irrigated"
+  getNames(x, dim = 2)[getNames(x, dim = 2) == "noirrigation"] <- "rainfed"
+  getNames(x, dim = 2)[getNames(x, dim = 2) == "firr"] <- "irrigated"
+  getNames(x, dim = 2)[getNames(x, dim = 2) == "noirr"] <- "rainfed"
+
   x[is.na(x)] <- 0
 
+#read in mask
+  harvArea <- readSource("GGCMIHarvestAreaMask", convert = FALSE)
+  getNames(harvArea, dim = 1)[getNames(harvArea, dim = 1) == "ri1"] <- "ricea"
+  getNames(harvArea, dim = 1)[getNames(harvArea, dim = 1) == "ri2"] <- "riceb"
+  getNames(harvArea, dim = 1)[getNames(harvArea, dim = 1) == "swh"] <- "springwheat"
+  getNames(harvArea, dim = 1)[getNames(harvArea, dim = 1) == "wwh"] <- "winterwheat"
+  getNames(harvArea, dim = 2)[getNames(harvArea, dim = 2) == "ir"] <- "irrigated"
+  getNames(harvArea, dim = 2)[getNames(harvArea, dim = 2) == "rf"] <- "rainfed"  
 
-  # take higher yielding variety  based on highest mean yield between 1981 and 2011
+
+
+  # for wheat take higher yielding variety  based on highest mean yield between 1981 and 2011
   if (st$model == "CYGMA1p74") { # CYGMA has no winter wheat
           getNames(x, dim = 1)[getNames(x, dim = 1) == "springwheat"] <- "tece"
   } else {
+
+#use mask to select between spring and winter wheat yields
+tece <- collapseNames(x[,,"springwheat"]*harvArea[,,"springwheat"] + x[,,"winterwheat"]*harvArea[,,"winterwheat"])
+#tece mask does not cover all cells, only current harv area. Fill in other areas with higher yielding variety, based on historical 30 year averages
   higherw <- magpply(x[, 1981:2011, "springwheat", ],
                      FUN = mean, MARGIN = c(1, 3)) > magpply(x[, 1981:2011, "winterwheat", ],
                                                              FUN = mean, MARGIN = c(1, 3))
   higherw <- time_interpolate(setYears(higherw, 1961),
                               interpolated_year = getYears(x),
                               integrate_interpolated_years = TRUE)
-  wheat <- ifelse(higherw == 1, x[, , "springwheat", ], x[, , "winterwheat", ])
-  wheat <- add_dimension(collapseNames(wheat), dim = 3.1, nm = "tece")
+  higherw <- collapseNames(ifelse(higherw == 1, x[, , "springwheat", ], x[, , "winterwheat", ]))
+
+tece <- ifelse(tece == 0, higherw, tece)
+
+tece <- add_dimension(collapseNames(tece), dim = 3.1, nm = "tece")
+
+  tece <- add_dimension(collapseNames(tece), dim = 3.1, nm = "tece")
   x <- x[, , c("springwheat", "winterwheat"), inv = TRUE]
-  x <- mbind(x, wheat)
+  x <- mbind(x, tece)
   }
 
   if(st$model=="CROVER"){
     # CROVER doesn't have ri2 data
     getNames(x, dim = 1)[getNames(x, dim = 1) == "ricea"] <- "rice_pro"
   } else {
-    higherr <- magpply(x[, 1981:2011, "ricea", ],
-                       FUN = mean, MARGIN = c(1, 3)) > magpply(x[, 1981:2011, "riceb", ],
-                                                               FUN = mean, MARGIN = c(1, 3))
-    higherr <- time_interpolate(setYears(higherr, 1961),
-                                interpolated_year = getYears(x),
-                                integrate_interpolated_years = TRUE)
-    rice <- ifelse(higherr == 1, x[, , "ricea", ], x[, , "riceb", ])
-    rice <- add_dimension(collapseNames(rice), dim = 3.1, nm = "rice_pro")
-    x <- x[, , c("ricea", "riceb"), inv = TRUE]
-    x <- mbind(x, rice)
+
+  ### take weighted average of rice yields by crop area, multiply by two in cells where there is both (to get multicropped yield per year instead of yield per harvest)
+ multiMask  <- collapseNames(harvArea[,,"riceb"])
+multiMask <- collapseNames(ifelse(harvArea[,,"riceb"] > 0, 2, 1))
+
+rice <- multiMask * collapseNames(x[,,"ricea"]*harvArea[,,"ricea"] + x[,,"riceb"]*harvArea[,,"riceb"])
+rice <- add_dimension(collapseNames(rice), dim = 3.1, nm = "rice_pro")
+
+    #higherr <- magpply(x[, 1981:2011, "ricea", ],
+     #                  FUN = mean, MARGIN = c(1, 3)) > magpply(x[, 1981:2011, "riceb", ],
+      #                                                         FUN = mean, MARGIN = c(1, 3))
+    #higherr <- time_interpolate(setYears(higherr, 1961),
+    #                            interpolated_year = getYears(x),
+    #                            integrate_interpolated_years = TRUE)
+    #rice <- ifelse(higherr == 1, x[, , "ricea", ], x[, , "riceb", ])
+    #rice <- add_dimension(collapseNames(rice), dim = 3.1, nm = "rice_pro")
+    
+  x <- x[, , c("ricea", "riceb"), inv = TRUE]
+   x <- mbind(x, rice)
   }
 
   if (smooth == TRUE) {
@@ -103,18 +139,10 @@ if (grepl("historical", subtype)) {
   x <- toolSmooth(x)
 }
   # set very small yields from smoothing to 0
-
+  x[x < 0.001] <- 0
   ### here interpolate 2014 and hold 2100 constant (after smoothing)
-  x <- time_interpolate(x, interpolated_year = 2014, integrate_interpolated_years = TRUE)
-  x <- toolHoldConstant(x, 2100)
-
-
-  getNames(x, dim = 1)[getNames(x, dim = 1) == "soy"] <- "soybean"
-  getNames(x, dim = 1)[getNames(x, dim = 1) == "maize"] <- "maiz"
-  getNames(x, dim = 2)[getNames(x, dim = 2) == "fullyirrigated"] <- "irrigated"
-  getNames(x, dim = 2)[getNames(x, dim = 2) == "noirrigation"] <- "rainfed"
-  getNames(x, dim = 2)[getNames(x, dim = 2) == "firr"] <- "irrigated"
-  getNames(x, dim = 2)[getNames(x, dim = 2) == "noirr"] <- "rainfed"
+  x <- time_interpolate(x , interpolated_year = 2014, integrate_interpolated_years = TRUE)
+  x <- toolHoldConstant(x , 2100)
 
   cropAreaWeight <- dimSums(calcOutput("Croparea", sectoral = "kcr", physical = TRUE, irrigation = FALSE,
                                         cellular = TRUE, cells = cells, aggregate = FALSE, years = "y1995",
