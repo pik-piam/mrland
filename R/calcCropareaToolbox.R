@@ -14,7 +14,7 @@
 #'
 #' @return Magpie object with cropareas
 #'
-#' @author David Hoetten
+#' @author David Hoetten, Felicitas Beier
 #'
 #' @importFrom madrat readSource
 #' @importFrom mrcommons toolCoord2Isocell
@@ -31,29 +31,34 @@ calcCropareaToolbox <- function(sectoral = "kcr", physical = TRUE, cellular = FA
   }
 
   if (!cellular) {
-    stop("Non-cellular output is not available for calcCropareaToolbox.")
+    cropArea <- calcOutput("CropareaToolbox", sectoral = sectoral, physical = physical,
+                           irrigation = irrigation, selectyears = selectyears,
+                           cellular = TRUE, cells = "lpjcell", aggregate = FALSE)
+    cropArea <- dimSums(cropArea, dim = c("x", "y"))
+    cropArea <- toolConditionalReplace(x = toolCountryFill(cropArea),
+                                       conditions = "is.na()", replaceby = 0)
   }
 
   harvestedArea <- readSource("LanduseToolbox", subtype = "harvestedArea")
-  nonCrops <- c("pasture")
+  nonCrops      <- c("pasture")
   harvestedArea <- harvestedArea[, , nonCrops, invert = TRUE]
 
   if (!physical) {
     cropArea <- harvestedArea
 
   } else {
-    physicalArea <- readSource("LanduseToolbox", subtype = "physicalArea")
+    physicalArea    <- readSource("LanduseToolbox", subtype = "physicalArea")
     physicalAreaSum <- dimSums(physicalArea, dim = "irrigation")
 
     # for the following crops we know that no multicropping is happening, so physical area = harvested area
     perennials <- c("sugr_cane", "oilpalm")
-    crops <- getItems(harvestedArea, dim = "crop")
-    annuals <- crops[!crops %in% perennials]
+    crops      <- getItems(harvestedArea, dim = "crop")
+    annuals    <- crops[!crops %in% perennials]
 
     # calculate the harvestedAreas for  different cropgroups
     perennialHarvestedA <-  dimSums(harvestedArea[, , perennials], dim = c("crop", "irrigation"))
-    annualsHarvestedA <- dimSums(harvestedArea[, , annuals], dim = c("crop", "irrigation"))
-    totalHarvestedA <- perennialHarvestedA + annualsHarvestedA
+    annualsHarvestedA   <- dimSums(harvestedArea[, , annuals], dim = c("crop", "irrigation"))
+    totalHarvestedA     <- perennialHarvestedA + annualsHarvestedA
 
     # check how  much physical area is remaining for the annuals after substracting the perennial physical area
     annualsPhysicalA <- physicalAreaSum - perennialHarvestedA # we can do that since for perennial physical=harvested
@@ -69,7 +74,7 @@ calcCropareaToolbox <- function(sectoral = "kcr", physical = TRUE, cellular = FA
                                 1)
 
     # only scale crops down not up (i.e. keep fallow land)
-    factorAnnuals[factorAnnuals > 1] <- 1
+    factorAnnuals[factorAnnuals > 1]       <- 1
     factorMismatches[factorMismatches > 1] <- 1
 
     # apply the factors
@@ -91,8 +96,8 @@ calcCropareaToolbox <- function(sectoral = "kcr", physical = TRUE, cellular = FA
   if (sectoral == "kcr") {
     # this is already the format of cropArea
   } else if (sectoral == "lpj") {
-    mapMagToLpj    <- toolGetMapping(type = "sectoral", name = "MAgPIE_LPJmL.csv")
-    mapMagToLpj    <- mapMagToLpj[!(mapMagToLpj$MAgPIE %in% nonCrops), ]
+    mapMagToLpj <- toolGetMapping(type = "sectoral", name = "MAgPIE_LPJmL.csv")
+    mapMagToLpj <- mapMagToLpj[!(mapMagToLpj$MAgPIE %in% nonCrops), ]
     cropArea    <- toolAggregate(cropArea, rel = mapMagToLpj, from = "MAgPIE", to = "LPJmL", dim = "crop")
   } else {
     stop("This sectoral aggregation is not availiable in calcCropareaToolbox")
@@ -101,7 +106,7 @@ calcCropareaToolbox <- function(sectoral = "kcr", physical = TRUE, cellular = FA
   if (irrigation == TRUE) {
     # this is already the format of cropArea
   } else {
-    years <- getItems(cropArea, dim = "year")
+    years        <- getItems(cropArea, dim = "year")
     cropAreaList <- vector(mode = "list", length = length(years))
     for (y in seq(1, length(years))) {
       cropAreaList[[y]] <- dimSums(cropArea[, years[y], ], dim = "irrigation")

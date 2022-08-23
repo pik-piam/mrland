@@ -10,6 +10,7 @@ calcYieldsCalibrated(
   refYear = "y1995",
   cells = "magpiecell",
   multicropping = FALSE,
+  areaSource = "FAO",
   marginal_land = "magpie"
 )
 }
@@ -32,18 +33,21 @@ Multiple Cropping Suitability mask selected
 "actual:total": currently multicropped areas calculated from total harvested areas
                 and total physical areas per cell from readLanduseToolbox
 "actual:crop" (crop-specific), "actual:irrigation" (irrigation-specific),
-"actual:cropIrrig" (crop- and irrigation-specific) "total"
+"actual:irrig_crop" (crop- and irrigation-specific),
 "potential:endogenous": potentially multicropped areas given
                         temperature and productivity limits
 "potential:exogenous": potentially multicropped areas given
                        GAEZ suitability classification)
 (e.g. TRUE:actual:total; TRUE:none; FALSE)}
 
+\item{areaSource}{data source for croparea used in calculation: FAO or Toolbox
+Note: when calibrating multicropped yields, Toolbox croparea should be used}
+
 \item{marginal_land}{Defines which share of marginal land should be included (see options below) and
-               whether suitable land under irrigated conditions ("irrigated"), under rainfed conditions ("rainfed")
-               or suitability under rainfed conditions including currently irrigated land (rainfed_and_irrigated)
-               should be used. Options combined via ":"
-               The different marginal land options are:
+                     whether suitable land under irrigated conditions ("irrigated"), under rainfed conditions ("rainfed")
+                     or suitability under rainfed conditions including currently irrigated land (rainfed_and_irrigated)
+                     should be used. Options combined via ":"
+                     The different marginal land options are:
 \itemize{
 \item \code{"all_marginal"}: All marginal land (suitability index between 0-0.33) is included as suitable
 \item \code{"q33_marginal"}: The bottom tertile (suitability index below 0.13) of the
