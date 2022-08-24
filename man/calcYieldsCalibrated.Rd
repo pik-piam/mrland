@@ -44,8 +44,10 @@ Multiple Cropping Suitability mask selected
 Note: when calibrating multicropped yields, Toolbox croparea should be used}
 
 \item{marginal_land}{Defines which share of marginal land should be included (see options below) and
-                     whether suitable land under irrigated conditions ("irrigated"), under rainfed conditions ("rainfed")
-                     or suitability under rainfed conditions including currently irrigated land (rainfed_and_irrigated)
+                     whether suitable land under irrigated conditions ("irrigated"),
+                     under rainfed conditions ("rainfed")
+                     or suitability under rainfed conditions
+                     including currently irrigated land (rainfed_and_irrigated)
                      should be used. Options combined via ":"
                      The different marginal land options are:
 \itemize{

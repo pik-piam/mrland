@@ -30,5 +30,5 @@ calcOutput("ISIMIP3bYields", aggregate = FALSE)
 
 }
 \author{
-David Meng-Chuen Chen
+David Meng-Chuen Chen, Edna Molina Bacca
 }
