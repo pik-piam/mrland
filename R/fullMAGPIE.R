@@ -236,13 +236,15 @@ fullMAGPIE <- function(rev = 0.1, dev = "") {
     calcOutput("PumpingCosts", round = 4, file = "f42_pumping_cost.cs4", aggregate = TRUE)
 
     # 50 n soil budget
-    calcOutput("SNUpE", years = magYears, round = 4, file = "f50_snupe.cs4", rev = rev)
+    calcOutput("SNUpE", years = magYears, round = 4, file = "f50_snupe.cs4", rev = rev, maccbase = FALSE)
+    calcOutput("SNUpE", years = magYears, round = 4, file = "f50_snupe_base.cs4", rev = rev, maccbase = TRUE)
     calcOutput("NitrogenBudgetBalanceflow", years = magYears, round = 4, file = "f50_nitrogen_balanceflow.cs4")
     calcOutput("NitrogenFixationNdfa", years = magYears, round = 4, file = "f50_ndfa.cs4")
     calcOutput("NitrogenFixationFreeliving", round = 4, file = "f50_fixation_freeliving.cs4", aggregate = FALSE)
     calcOutput("AtmosphericDepositionRates", round = 4, file = "f50_atmospheric_deposition_rates.cs4")
 
-    calcOutput("NuePasture", years = magYears, round = 4, file = "f50_nue_pasture.cs4")
+    calcOutput("NuePasture", years = magYears, round = 4, file = "f50_nue_pasture.cs4", maccbase = FALSE)
+    calcOutput("NuePasture", years = magYears, round = 4, file = "f50_nue_base_pasture.cs4", maccbase = TRUE)
     calcOutput("NitrogenBudgetPastureBalanceflow", years = magYears, round = 4,
                file = "f50_nitrogen_balanceflow_pasture.cs4")
     calcOutput("NitrogenFixationRatePasture", years = magYears, round = 5,
