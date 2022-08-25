@@ -162,7 +162,7 @@ calcYieldsCalibrated <- function(source = c(lpjml = "ggcmi_phase3_nchecks_9ca735
       out           <- collapseDim(addLocation(out), dim = c("cell", "N"))
       mapping       <- toolGetMappingCoord2Country()
       out           <- out[mapping$coords, , ]
-      getCells(out) <- paste(mapping$coords, mapping$iso)
+      getCells(out) <- paste(mapping$coords, mapping$iso, sep = ".")
     }
 
     return(list(x            = out,
