@@ -122,7 +122,6 @@ calcYieldsCalibrated <- function(source = c(lpjml = "ggcmi_phase3_nchecks_9ca735
 
     # adjust cell naming
     if (cells == "lpjcell") {
-      isoCoords       <- getItems(cropareaMAGgrid, dim = 1)
       yieldLPJmLbase  <- toolCoord2Isocell(yieldLPJmLbase, cells = cells)
       yieldLPJmLgrid  <- toolCoord2Isocell(yieldLPJmLgrid, cells = cells)
       otherYields     <- toolCoord2Isocell(otherYields, cells = cells)
@@ -160,7 +159,10 @@ calcYieldsCalibrated <- function(source = c(lpjml = "ggcmi_phase3_nchecks_9ca735
     out           <- mbind(out, otherYields)
 
     if (cells == "lpjcell") {
-      getItems(out, dim = 1) <- isoCoords
+      out           <- collapseDim(addLocation(out), dim = c("cell", "N"))
+      mapping       <- toolGetMappingCoord2Country()
+      out           <- out[mapping$coords, , ]
+      getCells(out) <- paste(mapping$coords, mapping$iso)
     }
 
     return(list(x            = out,
