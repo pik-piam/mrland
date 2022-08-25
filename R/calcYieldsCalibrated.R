@@ -124,8 +124,9 @@ calcYieldsCalibrated <- function(source = c(lpjml = "ggcmi_phase3_nchecks_9ca735
     if (cells == "lpjcell") {
       yieldLPJmLbase  <- toolCoord2Isocell(yieldLPJmLbase, cells = cells)
       yieldLPJmLgrid  <- toolCoord2Isocell(yieldLPJmLgrid, cells = cells)
-      cropareaMAGgrid <- toolCoord2Isocell(cropareaMAGgrid, cells = cells)
       otherYields     <- toolCoord2Isocell(otherYields, cells = cells)
+      cropareaMAGgrid <- toolCoord2Isocell(cropareaMAGgrid, cells = cells)
+      proxyMAGgrid    <- toolCoord2Isocell(proxyMAGgrid, cells = cells)
     }
 
     # Aggregate to country values
