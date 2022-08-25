@@ -74,7 +74,7 @@ calcISIMIP3bYields <- function(subtype = "yields:EPIC-IIASA:ukesm1-0-ll:ssp585:d
   x[is.na(x)] <- 0
 
   #read in mask
-  harvArea <- readSource("GGCMIHarvestAreaMask", convert = FALSE)
+  harvArea <- collapseNames(readSource("GGCMICropCalendar",subtype="fraction_of_harvested_area", convert = FALSE))
   getNames(harvArea, dim = 1)[getNames(harvArea, dim = 1) == "ri1"] <- "ricea"
   getNames(harvArea, dim = 1)[getNames(harvArea, dim = 1) == "ri2"] <- "riceb"
   getNames(harvArea, dim = 1)[getNames(harvArea, dim = 1) == "swh"] <- "springwheat"
