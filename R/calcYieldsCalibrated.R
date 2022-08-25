@@ -83,7 +83,7 @@ calcYieldsCalibrated <- function(source = c(lpjml = "ggcmi_phase3_nchecks_9ca735
     yieldLPJmLgrid <- calcOutput("Yields", source = source, climatetype = climatetype,
                                  multicropping = multicropping, marginal_land = marginal_land,
                                  aggregate = FALSE, supplementary = TRUE, cells = cells)
-    if (!multicropping) {
+    if (multicropping == FALSE) {
       m <- FALSE
     } else {
       # reference LPJmL yield calculated using currently multicropped areas according to Toolbox
