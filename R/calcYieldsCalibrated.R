@@ -99,6 +99,7 @@ calcYieldsCalibrated <- function(source = c(lpjml = "ggcmi_phase3_nchecks_9ca735
 
     otherYields    <- yieldLPJmLgrid$x[, years, setdiff(getNames(yieldLPJmLgrid$x, dim = 1), crops)]
     yieldLPJmLgrid <- yieldLPJmLgrid$x[, years, crops]
+    yieldLPJmLbase <- yieldLPJmLbase[, years, crops]
 
     # crop-specific cropland area split by irrigation and rainfed
     if (areaSource == "FAO") {
