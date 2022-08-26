@@ -18,9 +18,9 @@ calcGTAPTrade <- function(subtype = NULL, bilateral = FALSE) {
   }
   
   weight <- NULL
-  if(grep("GTAP7", subtype)){
+  if(grepl("GTAP7", subtype)){
   unit <- "Mio.US$04"
-  } else if (grep("GTAP8", subtype)){
+  } else if (grepl("GTAP8", subtype)){
    unit <- "Mio.US$07"
   }
   description <- subtype
