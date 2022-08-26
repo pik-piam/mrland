@@ -99,10 +99,13 @@ convertGTAP <- function(x, subtype) {
   }
 
 #fill with global average
+if(ndim(out, dim = 1) == 2){
 
-gloAvg <- dimSums(out, dim = 1)/length(getItems(out, dim = 1))
-out <- toolCountryFillBilateral(out, fill = NA) 
-out <- ifelse(is.na(out), gloAvg, out)
+   gloAvg <- dimSums(out, dim = 1)/length(getItems(out, dim = 1))
+   out <- toolCountryFillBilateral(out, fill = NA) 
+   out <- ifelse(is.na(out), gloAvg, out)
+
+} else if (ndim(out, dim = 1) == 1) {out <- toolCountryFill(out)}
 
   return(out)
 }

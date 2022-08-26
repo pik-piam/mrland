@@ -13,11 +13,16 @@
 
 calcGTAPTrade <- function(subtype = NULL, bilateral = FALSE) {
   out <- readSource(type = "GTAP", subtype = subtype)
-  if (!bilateral && (ndim(out, dim = 3) > 1)) {
-     out <- dimSums(out, dim = 3.1)
+  if (!bilateral && (ndim(out, dim = 1) > 1)) {
+     out <- dimSums(out, dim = 1.2)
   }
+  
   weight <- NULL
+  if(grep("GTAP7", subtype)){
   unit <- "Mio.US$04"
+  } else if (grep("GTAP8", subtype)){
+   unit <- "Mio.US$07"
+  }
   description <- subtype
   return(list(x = out,
               weight = weight,
