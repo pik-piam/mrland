@@ -40,41 +40,16 @@ calcISIMIP3bYields <- function(subtype = "yields:EPIC-IIASA:ukesm1-0-ll:ssp585:d
   x <- mbind(past[,2:length(getYears(past)),], scen)
 
   #Interpolation of y2015 after mbind of past and scen (NA due to harvest year correction)
-  nameClean <- function(x, subtype, order = FALSE) {
+  nameClean <- function(x, subtype) {
 
-    if ((grepl("pDSSAT", subtype) | grepl("LPJmL", subtype)) & order == TRUE) {
-      x <- collapseNames(x)
-      x <- dimOrder(x = x, perm = c(2, 1))
-    } else {
-
-      getNames(x, dim = 1)[getNames(x, dim = 1) == "mai"   |
-                             getNames(x, dim = 1) == "maize" |
-                             getNames(x, dim = 1) == "Maize"] <- "maiz"
-
-      getNames(x, dim = 1)[getNames(x, dim = 1) == "soy" |
-                             getNames(x, dim = 1) == "Soybean"] <- "soybean"
-
-      getNames(x, dim = 1)[getNames(x, dim = 1) == "ri1" |
-                             getNames(x, dim = 1) == "riceA"] <- "ricea"
-
-      getNames(x, dim = 1)[getNames(x, dim = 1) == "ri2" |
-                             getNames(x, dim = 1) == "riceB"] <- "riceb"
-
-      getNames(x, dim = 1)[getNames(x, dim = 1) == "swh" |
-                             getNames(x, dim = 1) == "Springwheat"] <- "springwheat"
-
-      getNames(x, dim = 1)[getNames(x, dim = 1) == "wwh" |
-                             getNames(x, dim = 1) == "Winterwheat"] <- "winterwheat"
-
-      getNames(x, dim = 2)[getNames(x, dim = 2) == "fullyirrigated" |
-                             getNames(x, dim = 2) == "firr" |
-                             getNames(x, dim = 2) == "ir"] <- "irrigated"
-
-      getNames(x, dim = 2)[getNames(x, dim = 2) == "noirrigation" |
-                             getNames(x, dim = 2) == "noirr" |
-                             getNames(x, dim = 2) == "rf"] <- "rainfed"
-
-    }
+      getNames(x, dim = 1)[getNames(x, dim = 1) == "mai"] <- "maiz"
+      getNames(x, dim = 1)[getNames(x, dim = 1) == "soy"] <- "soybean"
+      getNames(x, dim = 1)[getNames(x, dim = 1) == "ri1"] <- "ricea"
+      getNames(x, dim = 1)[getNames(x, dim = 1) == "ri2"] <- "riceb"
+      getNames(x, dim = 1)[getNames(x, dim = 1) == "swh"] <- "springwheat"
+      getNames(x, dim = 1)[getNames(x, dim = 1) == "wwh"] <- "winterwheat"
+      getNames(x, dim = 2)[getNames(x, dim = 2) == "ir"] <- "irrigated"
+      getNames(x, dim = 2)[getNames(x, dim = 2) == "rf"] <- "rainfed"
 
     return(x)
   }
@@ -87,7 +62,7 @@ calcISIMIP3bYields <- function(subtype = "yields:EPIC-IIASA:ukesm1-0-ll:ssp585:d
                                                                           "swh", "soy", "mai")][, , c("rf", "ir")])
 
   diff <- maturityDay - plantDay
-  diff <- nameClean(diff, subtype, order = FALSE)
+  diff <- nameClean(diff, subtype)
 
   for (n in getNames(x)) {
     cellsCorr <- where(diff[, , n] < 0)$true$regions
@@ -98,13 +73,7 @@ calcISIMIP3bYields <- function(subtype = "yields:EPIC-IIASA:ukesm1-0-ll:ssp585:d
 
   #read in mask
   harvArea <- collapseNames(readSource("GGCMICropCalendar",subtype="fraction_of_harvested_area", convert = FALSE))
-  getNames(harvArea, dim = 1)[getNames(harvArea, dim = 1) == "ri1"] <- "ricea"
-  getNames(harvArea, dim = 1)[getNames(harvArea, dim = 1) == "ri2"] <- "riceb"
-  getNames(harvArea, dim = 1)[getNames(harvArea, dim = 1) == "swh"] <- "springwheat"
-  getNames(harvArea, dim = 1)[getNames(harvArea, dim = 1) == "wwh"] <- "winterwheat"
-  getNames(harvArea, dim = 2)[getNames(harvArea, dim = 2) == "ir"] <- "irrigated"
-  getNames(harvArea, dim = 2)[getNames(harvArea, dim = 2) == "rf"] <- "rainfed"
-
+  harvArea <- nameClean(harvArea)
   harvArea <- toolCoord2Isocell(harvArea, cells = cells)
 
   # for wheat take higher yielding variety  based on highest mean yield between 1981 and 2011
