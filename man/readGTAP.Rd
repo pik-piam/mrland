@@ -14,7 +14,7 @@ readGTAP(subtype = NULL)
   \item \code{GTAP7_VIWS}: Trade - Bilateral Imports at World Prices
   \item \code{GTAP7_VIMS}: Trade - Bilateral Imports at Market Prices
   \item \code{GTAP7_VXWD}: Trade - Bilateral Exports at World Prices
-  \item \code{GTAP7_VXMS}: Trade - Bilateral Exports at Market Prices
+  \item \code{GTAP7_VXMD}: Trade - Bilateral Exports at Market Prices
   \item \code{GTAP7_VDFM}: Intermediates - Firms' Domestic Purchases at Market Prices
   \item \code{GTAP7_VIFM}: Intermediates - Firms' Imports at Market Prices
   \item \code{GTAP7_VFM}: Endowments - Firms' Purchases at Market Prices
@@ -26,7 +26,7 @@ readGTAP(subtype = NULL)
   \item \code{GTAP8_VIWS}: Trade - Bilateral Imports at World Prices
   \item \code{GTAP8_VIMS}: Trade - Bilateral Imports at Market Prices
   \item \code{GTAP8_VXWD}: Trade - Bilateral Exports at World Prices
-  \item \code{GTAP8_VXMS}: Trade - Bilateral Exports at Market Prices
+  \item \code{GTAP8_VXMD}: Trade - Bilateral Exports at Market Prices
   \item \code{GTAP8_VDFM}: Intermediates - Firms' Domestic Purchases at Market Prices
   \item \code{GTAP8_VIFM}: Intermediates - Firms' Imports at Market Prices
   \item \code{GTAP8_VFM}: Endowments - Firms' Purchases at Market Prices

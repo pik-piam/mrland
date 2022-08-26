@@ -9,7 +9,7 @@
 #'        \item \code{GTAP7_VIWS}: Trade - Bilateral Imports at World Prices
 #'        \item \code{GTAP7_VIMS}: Trade - Bilateral Imports at Market Prices
 #'        \item \code{GTAP7_VXWD}: Trade - Bilateral Exports at World Prices
-#'        \item \code{GTAP7_VXMS}: Trade - Bilateral Exports at Market Prices
+#'        \item \code{GTAP7_VXMD}: Trade - Bilateral Exports at Market Prices
 #'        \item \code{GTAP7_VDFM}: Intermediates - Firms' Domestic Purchases at Market Prices
 #'        \item \code{GTAP7_VIFM}: Intermediates - Firms' Imports at Market Prices
 #'        \item \code{GTAP7_VFM}: Endowments - Firms' Purchases at Market Prices
@@ -21,7 +21,7 @@
 #'        \item \code{GTAP8_VIWS}: Trade - Bilateral Imports at World Prices
 #'        \item \code{GTAP8_VIMS}: Trade - Bilateral Imports at Market Prices
 #'        \item \code{GTAP8_VXWD}: Trade - Bilateral Exports at World Prices
-#'        \item \code{GTAP8_VXMS}: Trade - Bilateral Exports at Market Prices
+#'        \item \code{GTAP8_VXMD}: Trade - Bilateral Exports at Market Prices
 #'        \item \code{GTAP8_VDFM}: Intermediates - Firms' Domestic Purchases at Market Prices
 #'        \item \code{GTAP8_VIFM}: Intermediates - Firms' Imports at Market Prices
 #'        \item \code{GTAP8_VFM}: Endowments - Firms' Purchases at Market Prices
@@ -109,14 +109,22 @@ readGTAP <- function(subtype = NULL) {
     colnames(x)[c(1, grep("Regions", colnames(x)))] <-
       colnames(x)[c(grep("Regions", colnames(x)), 1)]
   }
+
+#if still a region column exists
+if("REG" %in% colnames(x)) {
+x[, c(2, grep("REG", colnames(x)))] <-
+      x[, c(grep("REG", colnames(x)), 2)]
+    colnames(x)[c(2, grep("REG", colnames(x)))] <-
+      colnames(x)[c(grep("REG", colnames(x)), 2)]
+
+}
+
   x$Value <- as.numeric(x$Value)
-  out <- as.magpie(x, spatial = 1, tidy = TRUE)
+
   if ("REG" %in% colnames(x)) {
-    x <- unwrap(out)
-    x <- aperm(x, c(1, 2, 4, 3))
-    x <- as.magpie(x, spatial = 1, temporal = 2)
+  x <- as.magpie(x, spatial = c(1, 2), tidy = TRUE)
   } else {
-    x <- out
+    x <-  as.magpie(x, spatial = 1, tidy = TRUE)
   }
   # is GTAP released every 3 years?
   if (grepl("GTAP7", subtype)) {

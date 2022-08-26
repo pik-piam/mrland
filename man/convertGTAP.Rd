@@ -16,7 +16,7 @@ Converted GTAP Data
 }
 \description{
 Converts GTAP data to fit to the common country list. Weighting is done by using the Imports and
-Exports from FAO
+Exports from FAO. NOW NEW WEIGHTING
 }
 \examples{
 \dontrun{
