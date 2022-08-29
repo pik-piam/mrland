@@ -10,6 +10,7 @@ calcYieldsCalibrated(
   refYear = "y1995",
   cells = "magpiecell",
   multicropping = FALSE,
+  refYields = FALSE,
   areaSource = "FAO",
   marginal_land = "magpie"
 )
@@ -39,6 +40,11 @@ Multiple Cropping Suitability mask selected
 "potential:exogenous": potentially multicropped areas given
                        GAEZ suitability classification)
 (e.g. TRUE:actual:total; TRUE:none; FALSE)}
+
+\item{refYields}{assumption for baseline yields with respect to multiple cropping (e.g.,
+FALSE: single-cropped LPJmL yields used as baseline to calculate country-level yields,
+"TRUE:actual:irrig_crop": multicropped yields
+                          where Toolbox reports current multiple cropping (irrigation- and crop-specific))}
 
 \item{areaSource}{data source for croparea used in calculation: FAO or Toolbox
 Note: when calibrating multicropped yields, Toolbox croparea should be used}
