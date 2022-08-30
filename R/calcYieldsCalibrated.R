@@ -7,6 +7,11 @@
 #'                      "yields:EPIC-IIASA:ukesm1-0-ll:ssp585:default:3b"
 #' @param climatetype   switch between different climate scenarios
 #' @param refYear       reference year for calibration
+#' @param refYields     assumption for baseline yields with respect to multiple cropping (e.g.,
+#'                      FALSE: single-cropped LPJmL yields used as baseline to calculate country-level yields,
+#'                      "TRUE:actual:irrig_crop": multicropped yields
+#'                                                where Toolbox reports current multiple cropping
+#'                                                (irrigation- and crop-specific))
 #' @param cells         number of cells "magpiecell" for 59199 cells or
 #'                      "lpjcell" for 67420 cells
 #' @param multicropping Multicropping activated (TRUE) or not (FALSE) and
@@ -63,7 +68,8 @@
 
 calcYieldsCalibrated <- function(source = c(lpjml = "ggcmi_phase3_nchecks_9ca735cb", isimip = NULL),
                                  climatetype = "GSWP3-W5E5:historical", refYear = "y1995", cells = "magpiecell",
-                                 multicropping = FALSE, areaSource = "FAO", marginal_land = "magpie") {
+                                 multicropping = FALSE, refYields = FALSE,
+                                 areaSource = "FAO", marginal_land = "magpie") {
 
     sizelimit <- getOption("magclass_sizeLimit")
     options(magclass_sizeLimit = 1e+12)
@@ -83,14 +89,8 @@ calcYieldsCalibrated <- function(source = c(lpjml = "ggcmi_phase3_nchecks_9ca735
     yieldLPJmLgrid <- calcOutput("Yields", source = source, climatetype = climatetype,
                                  multicropping = multicropping, marginal_land = marginal_land,
                                  aggregate = FALSE, supplementary = TRUE, cells = cells)
-    if (multicropping == FALSE) {
-      m <- FALSE
-    } else {
-      # reference LPJmL yield calculated using currently multicropped areas according to Toolbox
-      m <- "TRUE:actual:irrig_crop"
-    }
     yieldLPJmLbase <- calcOutput("Yields", source = source, climatetype = climatetype,
-                                 multicropping = m, marginal_land = marginal_land,
+                                 multicropping = refYields, marginal_land = marginal_land,
                                  aggregate = FALSE, supplementary = FALSE, cells = cells)
 
     years          <- getYears(yieldLPJmLgrid$x, as.integer = TRUE)

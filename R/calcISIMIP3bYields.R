@@ -37,52 +37,44 @@ calcISIMIP3bYields <- function(subtype = "yields:EPIC-IIASA:ukesm1-0-ll:ssp585:d
   past <- readSource("ISIMIP", subtype = pastSubtype, convert = FALSE)
   scen <- readSource("ISIMIP", subtype = subtype, convert = FALSE)
 
-  ### last year of both are chopped off due to GGCMI processing, dont use and rather interpolate 2014 and hold 2100 constant
-  past <- past[, 2014, inv = TRUE]
-  scen <- scen[, 2100, inv = TRUE]
+  x <- mbind(past[,2:length(getYears(past)),], scen)
 
-  x <- mbind(past, scen)
+  #Interpolation of y2015 after mbind of past and scen (NA due to harvest year correction)
+  nameClean <- function(x, subtype) {
+
+      getNames(x, dim = 1)[getNames(x, dim = 1) == "mai"] <- "maiz"
+      getNames(x, dim = 1)[getNames(x, dim = 1) == "soy"] <- "soybean"
+      getNames(x, dim = 1)[getNames(x, dim = 1) == "ri1"] <- "ricea"
+      getNames(x, dim = 1)[getNames(x, dim = 1) == "ri2"] <- "riceb"
+      getNames(x, dim = 1)[getNames(x, dim = 1) == "swh"] <- "springwheat"
+      getNames(x, dim = 1)[getNames(x, dim = 1) == "wwh"] <- "winterwheat"
+      getNames(x, dim = 2)[getNames(x, dim = 2) == "ir"] <- "irrigated"
+      getNames(x, dim = 2)[getNames(x, dim = 2) == "rf"] <- "rainfed"
+
+    return(x)
+  }
+
+  plantDay <- collapseNames(readSource("GGCMICropCalendar",
+                                       subtype = "planting_day")[, , c("ri1", "ri2", "wwh",
+                                                                       "swh", "soy", "mai")][, , c("rf", "ir")])
+  maturityDay <- collapseNames(readSource("GGCMICropCalendar",
+                                          subtype = "maturity_day")[, , c("ri1", "ri2", "wwh",
+                                                                          "swh", "soy", "mai")][, , c("rf", "ir")])
+
+  diff <- maturityDay - plantDay
+  diff <- nameClean(diff, subtype)
+
+  for (n in getNames(x)) {
+    cellsCorr <- where(diff[, , n] < 0)$true$regions
+    x[cellsCorr,"y2015",n]<-setYears((x[cellsCorr,"y2016",n]+x[cellsCorr,"y2014",n])/2,"y2015")
+  }
+
   x <- toolCoord2Isocell(x, cells = cells)
-
-  # pdssat has reverse naming and extra yields name ## These special cases need to be cleaned up
-  if (st$model == "pDSSAT") {
-    x <- collapseNames(x)
-    x <- dimOrder(x = x, perm = c(2, 1))
-  }
-  if (st$model == "LPJmL") {
-    x <- collapseNames(x)
-    x <- dimOrder(x = x, perm = c(2, 1))
-  }
-
-  if(st$model=="PROMET" | st$model=="LDNDC"){
-    x <- setNames(x, gsub("mai","maize",getNames(x)))
-    x <- setNames(x, gsub("ri1","ricea",getNames(x)))
-    x <- setNames(x, gsub("ri2","riceb",getNames(x)))
-    x <- setNames(x, gsub("soy","soy",getNames(x)))
-    x <- setNames(x, gsub("swh","springwheat",getNames(x)))
-    x <- setNames(x, gsub("wwh","winterwheat",getNames(x)))
-  }
-
-  #change names uniformly
-  getNames(x, dim = 1)[getNames(x, dim = 1) == "soy"] <- "soybean"
-  getNames(x, dim = 1)[getNames(x, dim = 1) == "maize"] <- "maiz"
-  getNames(x, dim = 2)[getNames(x, dim = 2) == "fullyirrigated"] <- "irrigated"
-  getNames(x, dim = 2)[getNames(x, dim = 2) == "noirrigation"] <- "rainfed"
-  getNames(x, dim = 2)[getNames(x, dim = 2) == "firr"] <- "irrigated"
-  getNames(x, dim = 2)[getNames(x, dim = 2) == "noirr"] <- "rainfed"
-
-  x[is.na(x)] <- 0
 
   #read in mask
   harvArea <- collapseNames(readSource("GGCMICropCalendar",subtype="fraction_of_harvested_area", convert = FALSE))
-  getNames(harvArea, dim = 1)[getNames(harvArea, dim = 1) == "ri1"] <- "ricea"
-  getNames(harvArea, dim = 1)[getNames(harvArea, dim = 1) == "ri2"] <- "riceb"
-  getNames(harvArea, dim = 1)[getNames(harvArea, dim = 1) == "swh"] <- "springwheat"
-  getNames(harvArea, dim = 1)[getNames(harvArea, dim = 1) == "wwh"] <- "winterwheat"
-  getNames(harvArea, dim = 2)[getNames(harvArea, dim = 2) == "ir"] <- "irrigated"
-  getNames(harvArea, dim = 2)[getNames(harvArea, dim = 2) == "rf"] <- "rainfed"
-
-
+  harvArea <- nameClean(harvArea)
+  harvArea <- toolCoord2Isocell(harvArea, cells = cells)
 
   # for wheat take higher yielding variety  based on highest mean yield between 1981 and 2011
   if (st$model == "CYGMA1p74") { # CYGMA has no winter wheat
@@ -116,8 +108,6 @@ calcISIMIP3bYields <- function(subtype = "yields:EPIC-IIASA:ukesm1-0-ll:ssp585:d
 
     ### take weighted average of rice yields by crop area, multiply by two in cells where there is both (to get multicropped yield per year instead of yield per harvest)
     multiMask  <- collapseNames(harvArea[,,"riceb"])
-    multiMask <- collapseNames(ifelse(harvArea[,,"riceb"] > 0, 2, 1))
-
     rice <- multiMask * collapseNames(x[,,"ricea"]*harvArea[,,"ricea"] + x[,,"riceb"]*harvArea[,,"riceb"])
     rice <- add_dimension(collapseNames(rice), dim = 3.1, nm = "rice_pro")
 
@@ -140,9 +130,7 @@ calcISIMIP3bYields <- function(subtype = "yields:EPIC-IIASA:ukesm1-0-ll:ssp585:d
   }
   # set very small yields from smoothing to 0
   x[x < 0.001] <- 0
-  ### here interpolate 2014 and hold 2100 constant (after smoothing)
-  x <- time_interpolate(x , interpolated_year = 2014, integrate_interpolated_years = TRUE)
-  x <- toolHoldConstant(x , 2100)
+
 
   cropAreaWeight <- dimSums(calcOutput("Croparea", sectoral = "kcr", physical = TRUE, irrigation = FALSE,
                                        cellular = TRUE, cells = cells, aggregate = FALSE, years = "y1995",

@@ -83,6 +83,7 @@ fullMAGPIE <- function(rev = 0.1, dev = "") {
     calcOutput("CalibrationDummy", round = 0, file = "f14_yld_calib.csv")
     calcOutput("PastureYield", round = 3, file = "f14_pasture_yields_hist.csv")
     calcOutput("FAOYield", cut = 0.98, years = magYearsPast, round = 2, file = "f14_region_yields.cs3")
+    calcOutput("Ir2RfYieldRatio", round = 2, file = "f14_ir2rf_ratio.csv")
 
     # 15 food
     calcOutput("BodyHeight", aggregate = FALSE, years = magYearsPast, round = 2, file = "f15_bodyheight_historical.cs3")
@@ -136,7 +137,7 @@ fullMAGPIE <- function(rev = 0.1, dev = "") {
     calcOutput("EATFruitvegRatio", aggregate = FALSE, round = 4, file = "f15_fruitveg2others_kcal_ratio_iso.csv",
                populationweight = "PopulationPast")
 
-    if (grepl("india", dev)){
+    if (grepl("india", dev)) {
       calcOutput("NINDiets",  aggregate = TRUE, round = 4, file = "f15_intake_NIN.cs3",
                  attributes = "kcal", calib = TRUE, FAOcountr = FALSE)
       calcOutput("NINDiets",  aggregate = FALSE, round = 1, file = "f15_intake_NIN_iso.cs3",

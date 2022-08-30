@@ -56,7 +56,7 @@ calcMulticroppingCells <- function(selectyears, lpjml, climatetype, scenario) {
     phys[, , ] <- NA
     harv[, , ] <- NA
 
-    if (grepl(pattern = "total", x = subscenario)) {
+    if (subscenario == "total") {
 
       # total actual multicropping area
       tempPhys <- dimSums(calcOutput("CropareaToolbox", physical = TRUE, sectoral = "lpj",
@@ -70,7 +70,7 @@ calcMulticroppingCells <- function(selectyears, lpjml, climatetype, scenario) {
       phys[, , ] <- tempPhys
       harv[, , ] <- tempHarv
 
-    } else if (grepl(pattern = "irrig", x = subscenario)) {
+    } else if (subscenario == "irrig") {
 
       # total actual multicropping area (irrigation-specific)
       tempPhys <- dimSums(calcOutput("CropareaToolbox", physical = TRUE, sectoral = "lpj",
@@ -84,7 +84,7 @@ calcMulticroppingCells <- function(selectyears, lpjml, climatetype, scenario) {
       phys[, , ] <- tempPhys
       harv[, , ] <- tempHarv
 
-    } else if (grepl(pattern = "crop", x = subscenario)) {
+    } else if (subscenario == "crop") {
 
       # areas where multicropping takes place currently (crop-specific)
       tempPhys <- calcOutput("CropareaToolbox", physical = TRUE, sectoral = "lpj",
@@ -98,7 +98,7 @@ calcMulticroppingCells <- function(selectyears, lpjml, climatetype, scenario) {
       phys[, , ] <- tempPhys
       harv[, , ] <- tempHarv
 
-    } else if (grepl(pattern = "irrig_crop", x = subscenario)) {
+    } else if (subscenario == "irrig_crop") {
 
       # areas where multicropping takes place currently (crop- and irrigation-specific)
       phys <- calcOutput("CropareaToolbox", physical = TRUE, sectoral = "lpj",
