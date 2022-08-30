@@ -24,6 +24,7 @@
 #'
 
 calcTradeTariff<- function(gtap_version = "GTAP7", type_tariff = "total"){
+  
   stopifnot(gtap_version %in% c("GTAP7","GTAP8"))
   vom  <- calcOutput(type ="GTAPTrade",subtype = paste(gtap_version,"VOM", sep ="_"),aggregate = FALSE, bilateral = F)
   voa  <- calcOutput(type ="GTAPTrade",subtype = paste(gtap_version,"VOA", sep ="_"),aggregate = FALSE, bilateral = F)

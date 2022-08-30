@@ -17,13 +17,11 @@
 #' @importFrom magpiesets findset
 #' @importFrom magclass is.magpie
 
-
-
 calcTradeMargin <- function(gtap_version ="GTAP7", bilateral = FALSE,producer_price ="FAO"){
   stopifnot(gtap_version %in% c("GTAP7","GTAP8")) 
   viws <- calcOutput(type = "GTAPTrade",subtype = paste(gtap_version,"VIWS",sep="_"),bilateral = bilateral,aggregate = FALSE)
   vxwd <- calcOutput(type = "GTAPTrade",subtype = paste(gtap_version,"VXWD",sep="_"),bilateral = bilateral,aggregate = FALSE)
-  vtwr <- viws - vxwd
+  vtwr <- viws - vxwd #imports - exports 
   
   vtwr[vtwr < 0] <- 0
   
@@ -32,7 +30,7 @@ calcTradeMargin <- function(gtap_version ="GTAP7", bilateral = FALSE,producer_pr
   vom <- calcOutput(type ="GTAPTrade",subtype = paste(gtap_version,"VOM",sep="_"),bilateral = bilateral,aggregate = FALSE)
   voa <- calcOutput(type ="GTAPTrade",subtype = paste(gtap_version,"VOA",sep="_"),bilateral = bilateral,aggregate = FALSE)
   
-  y <- setYears(vtwr/vxmd* (vom/voa),NULL)
+  y <- setYears(vtwr/vxmd* (vom/voa),NULL) #difference imports exports/exports at mkt price * (value of output mkt prices/payment received at fgate)
   y[is.infinite(y)] <- NA
   
   fillMean <- function(x){
@@ -54,27 +52,33 @@ calcTradeMargin <- function(gtap_version ="GTAP7", bilateral = FALSE,producer_pr
   } else (stop("Valid food price is required"))
   
   k_trade <- findset("k_trade")
-  if (!bilateral) {
-    k_trade <- intersect(intersect(getNames(p),getNames(y)),k_trade)
-  } else {  
-    k_trade <- intersect(intersect(getNames(p), getNames(y, dim = 2)),k_trade)
-  }
+  k_trade <- intersect(intersect(getNames(p),getNames(y)),k_trade)
+
+if(bilateral){
+#make a dummy bilateral price object so magclass doesn't get confused
+   p1 <- p
+   p1[] <- 1 
+   getItems(p1, dim = 1) <- paste0(getItems(p1, dim = 1), "b")
+   p <- p * p1
+   getItems(p, dim = 1.2) <- substr(getItems(p, dim = 1.2), 1,3)
+ }
   out <- y[,,k_trade]*p[,,k_trade]
-  out <- toolCountryFill(out,0)
-  if (!bilateral) {
-    out <- add_columns(x = out,addnm = findset("kforestry"),dim = 3.1) 
-  } else {
-    out <- add_columns(x = out,addnm = findset("kforestry"),dim = 3.2)
-  }
+ 
+ if(bilateral){
+  out <- toolCountryFillBilateral(out,0)
+ } else {out <- toolCountryFill(out, 0)}
+
+  out <- add_columns(x = out,addnm = findset("kforestry"),dim = 3.1) 
+
   out[,,findset("kforestry")] <- out[,,"others"]
   
   weight <- setYears(vxmd *voa,NULL)[,,k_trade]
-  weight <- toolCountryFill(weight,0)
-  if (!bilateral) {
-    weight <- add_columns(x = weight,addnm = findset("kforestry"),dim = 3.1)
-  } else {
-    weight <- add_columns(x = weight,addnm = findset("kforestry"),dim = 3.2)
-  }
+  if(bilateral){
+  weight <- toolCountryFillBilateral(weight,0)}
+  else{weight <- toolCountryFill(weight, 0)}
+
+  weight <- add_columns(x = weight,addnm = findset("kforestry"),dim = 3.1)
+
   weight[,,"wood"] <- weight[,,"tece"] * 0.5
   weight[,,"woodfuel"] <- weight[,,"wood"] * 0.5
   unit <- "US$05"

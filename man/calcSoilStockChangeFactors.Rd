@@ -13,9 +13,9 @@ MAgPIE object of yields
 calculates and merges information on stock change factors
 }
 \examples{
-  \dontrun{
-    calcOutput("SoilStockChangeFactors")
-  }
+\dontrun{
+calcOutput("SoilStockChangeFactors")
+}
 
 }
 \seealso{

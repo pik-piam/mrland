@@ -105,7 +105,7 @@ if(ndim(out, dim = 1) == 2){
    out <- toolCountryFillBilateral(out, fill = NA) 
    out <- ifelse(is.na(out), gloAvg, out)
 
-} else if (ndim(out, dim = 1) == 1) {out <- toolCountryFill(out)}
+} else if (ndim(out, dim = 1) == 1) {out <- toolCountryFill(out, 0)}
 
   return(out)
 }
