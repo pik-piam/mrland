@@ -44,7 +44,8 @@ Multiple Cropping Suitability mask selected
 \item{refYields}{assumption for baseline yields with respect to multiple cropping (e.g.,
 FALSE: single-cropped LPJmL yields used as baseline to calculate country-level yields,
 "TRUE:actual:irrig_crop": multicropped yields
-                          where Toolbox reports current multiple cropping (irrigation- and crop-specific))}
+                          where Toolbox reports current multiple cropping
+                          (irrigation- and crop-specific))}
 
 \item{areaSource}{data source for croparea used in calculation: FAO or Toolbox
 Note: when calibrating multicropped yields, Toolbox croparea should be used}
