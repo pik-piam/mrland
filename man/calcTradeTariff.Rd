@@ -4,7 +4,11 @@
 \alias{calcTradeTariff}
 \title{calcTradeTariff}
 \usage{
-calcTradeTariff(gtap_version = "GTAP7", type_tariff = "total")
+calcTradeTariff(
+  gtap_version = "GTAP7",
+  type_tariff = "total",
+  bilateral = FALSE
+)
 }
 \arguments{
 \item{gtap_version}{type of GTAP data version
@@ -17,6 +21,8 @@ calcTradeTariff(gtap_version = "GTAP7", type_tariff = "total")
 \itemize{
 \item \code{type_tariff}
 }}
+
+\item{bilateral}{calculates whether tariffs should be bilateral}
 }
 \value{
 Trade tariffs as an MAgPIE object

@@ -175,7 +175,7 @@ fullMAGPIE <- function(rev = 0.1, dev = "") {
 
     if (grepl("bilat", dev)){
     calcOutput("TradeMargin", years = 2005, bilateral = TRUE, round = 4,
-                file = "f21_trade_margin.cs5", aggregate = region)
+                file = "f21_trade_margin.cs5", aggregate = TRUE)
     calcOutput("TradeTariff", years = 2005, bilateral = TRUE, round = 4, file = "f21_trade_tariff.cs5",
                aggregate = superregion)
     calcOutput("TradeTariff", type_tariff = "export",  bilateral = TRUE, round = 4, file = "f21_trade_tariff_export.cs5",
@@ -222,7 +222,7 @@ fullMAGPIE <- function(rev = 0.1, dev = "") {
                round = 4, file = "f36_historic_hourly_labor_costs.csv")
     calcOutput("AgEmplILO", aggregate = FALSE, subsectors = FALSE, years = seq(1995, 2015, 5),
                round = 4, file = "f36_historic_ag_employment.csv")
-    calcOutput("NonMAgPIEFactorCosts", subtype = :"subsidies", aggSubsidies = TRUE, years = seq(1965, 2150, 5),
+    calcOutput("NonMAgPIEFactorCosts", subtype = "subsidies", aggSubsidies = TRUE, years = seq(1965, 2150, 5),
                round = 4, file = "f36_unspecified_subsidies.csv")
     calcOutput("NonMAgPIEFactorCosts", subtype = "missingVoP", years = seq(1965, 2150, 5),
                round = 4, file = "f36_nonmagpie_factor_costs.csv")

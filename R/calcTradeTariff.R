@@ -11,6 +11,8 @@
 #' \item \code{type_tariff}
 #' }
 #'
+#'@param bilateral calculates whether tariffs should be bilateral 
+#'
 #' @return Trade tariffs as an MAgPIE object
 #' @author Xiaoxi Wang
 #' @examples
