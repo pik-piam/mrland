@@ -13,6 +13,8 @@
 #' @importFrom dplyr left_join
 
 readGLW3 <- function(subtype = "Da") {
+   if (!requireNamespace("rgdal")) stop("rgdal is required by raster to be able to read in the data!")
+
     strName <- toolSubtypeSelect(subtype, c(Da = "5_Ct_2010_Da.tif",
                                             Aw = "6_Ct_2010_Aw.tif"))
     x <- raster(strName)

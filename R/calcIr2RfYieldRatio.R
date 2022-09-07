@@ -16,7 +16,7 @@ calcIr2RfYieldRatio <- function() {
 
   x      <- collapseDim(
               readSource("AQUASTAT", subtype = "rf2irRatio", convert = TRUE),
-              dim = 2)
+              dim = c(2, 3))
   weight <- calcOutput("Production", products = "kcr", attributes = "dm",
                        aggregate = FALSE)[, "y1995", ]
   weight <- dimSums(weight, dim = 3)
