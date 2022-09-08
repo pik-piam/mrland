@@ -172,17 +172,6 @@ fullMAGPIE <- function(rev = 0.1, dev = "") {
                aggregate = FALSE)
     calcOutput("TradeBalance", years = magYears, round = 2, file = "f21_trade_balance.cs3",
                aggregate = superregion)
-
-    if (grepl("bilat", dev)){
-    calcOutput("TradeMargin", years = 2005, bilateral = TRUE, round = 4,
-                file = "f21_trade_margin.cs5", aggregate = TRUE)
-    calcOutput("TradeTariff", years = 2005, bilateral = TRUE, round = 4, file = "f21_trade_tariff.cs5",
-               aggregate = superregion)
-    calcOutput("TradeTariff", type_tariff = "export",  bilateral = TRUE, round = 4, file = "f21_trade_tariff_export.cs5",
-               aggregate = superregion)
-    calcOutput("TradeTariff", type_tariff = "import", bilateral = TRUE, round = 4, file = "f21_trade_tariff_import.cs5",
-               aggregate = superregion)
-                } else{
     calcOutput("TradeMargin",      years = 2005,      round = 4, file = "f21_trade_margin.cs3",
                aggregate = superregion)
     calcOutput("TradeTariff",      years = 2005,      round = 4, file = "f21_trade_tariff.cs3",
@@ -190,7 +179,16 @@ fullMAGPIE <- function(rev = 0.1, dev = "") {
     calcOutput("TradeTariff", type_tariff = "export",    round = 4, file = "f21_trade_tariff_export.cs3",
                aggregate = superregion)
     calcOutput("TradeTariff", type_tariff = "import",    round = 4, file = "f21_trade_tariff_import.cs3",
-               aggregate = superregion) }
+               aggregate = superregion) 
+    
+    calcOutput("TradeMargin", years = 2005, bilateral = TRUE, round = 4,
+                file = "f21_trade_margin_bilat.cs5", aggregate = TRUE)
+    calcOutput("TradeTariff", years = 2005, bilateral = TRUE, round = 4, file = "f21_trade_tariff_bilat.cs5",
+               aggregate = superregion)
+    calcOutput("TradeTariff", type_tariff = "export",  bilateral = TRUE, round = 4, file = "f21_trade_tariff_export_bilat.cs5",
+               aggregate = superregion)
+    calcOutput("TradeTariff", type_tariff = "import", bilateral = TRUE, round = 4, file = "f21_trade_tariff_import_bilat.cs5",
+               aggregate = superregion)
 
     # 31 Past
     calcOutput("PastureYield", range_pastr = TRUE, round = 3, file = "f31_grassl_yld_hist.cs3")
