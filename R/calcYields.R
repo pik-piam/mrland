@@ -62,11 +62,13 @@
 #' @importFrom madrat toolFillYears toolGetMapping toolTimeAverage
 #' @importFrom mrcommons toolLPJmLVersion toolHarmonize2Baseline
 #' @importFrom stringr str_split
+#' @importFrom withr local_options
 
 calcYields <- function(source = c(lpjml = "ggcmi_phase3_nchecks_9ca735cb", isimip = NULL),
                        climatetype = "GSWP3-W5E5:historical", cells = "magpiecell",
                        weighting = "totalCrop", multicropping = FALSE,
-                       indiaYields = FALSE, scaleFactor = 0.3, marginal_land = "magpie") {
+                       indiaYields = FALSE, scaleFactor = 0.3,
+                       marginal_land = "magpie") { # nolint
 
   # Extract argument information
   cfg           <- toolLPJmLVersion(version = source["lpjml"], climatetype = climatetype)
@@ -74,9 +76,7 @@ calcYields <- function(source = c(lpjml = "ggcmi_phase3_nchecks_9ca735cb", isimi
                          str_split(multicropping, ":")[[1]][3], sep = ":")
   multicropping <- as.logical(str_split(multicropping, ":")[[1]][1])
 
-  sizelimit <- getOption("magclass_sizeLimit")
-  options(magclass_sizeLimit = 1e+12)
-  on.exit(options(magclass_sizeLimit = sizelimit))
+  local_options(magclass_sizeLimit = 1e+12)
 
   if (grepl("GSWP3-W5E5", climatetype)) {
     stage       <- "smoothed"
@@ -85,13 +85,13 @@ calcYields <- function(source = c(lpjml = "ggcmi_phase3_nchecks_9ca735cb", isimi
     stage <- "harmonized2020"
   }
 
-  LPJ2MAG      <- toolGetMapping("MAgPIE_LPJmL.csv", type = "sectoral", where = "mappingfolder")
-  lpjml_crops  <- unique(LPJ2MAG$LPJmL)
-  irrig_types  <- c("irrigated", "rainfed")
-  yields       <- list()
+  lpj2mag     <- toolGetMapping("MAgPIE_LPJmL.csv", type = "sectoral", where = "mappingfolder")
+  cropsLPJmL  <- unique(lpj2mag$LPJmL)
+  irrigTypes  <- c("irrigated", "rainfed")
+  yields      <- list()
 
-  for (crop in lpjml_crops) {
-    subdata        <- as.vector(outer(crop, irrig_types, paste, sep = "."))
+  for (crop in cropsLPJmL) {
+    subdata        <- as.vector(outer(crop, irrigTypes, paste, sep = "."))
     yields[[crop]] <- calcOutput("LPJmL_new", version = source[["lpjml"]], climatetype = climatetype,
                                  subtype = "harvest", subdata = subdata, stage = stage, aggregate = FALSE)
   }
@@ -126,7 +126,7 @@ calcYields <- function(source = c(lpjml = "ggcmi_phase3_nchecks_9ca735cb", isimi
   }
 
   # LPJmL to MAgPIE crops
-  yields <- toolAggregate(yields, LPJ2MAG, from = "LPJmL",
+  yields <- toolAggregate(yields, lpj2mag, from = "LPJmL",
                           to = "MAgPIE", dim = 3.1, partrel = TRUE)
 
   # Check for NAs
@@ -178,18 +178,17 @@ calcYields <- function(source = c(lpjml = "ggcmi_phase3_nchecks_9ca735cb", isimi
     commonYears <- intersect(getYears(yields), getYears(to_rep))
 
     #  harmonize to LPJml
-    cfg      <- toolLPJmLVersion(version = source["lpjml"], climatetype = climatetype)
-    harm_rep <- toolHarmonize2Baseline(x = to_rep[, commonYears, commonVars],
+    cfg       <- toolLPJmLVersion(version = source["lpjml"], climatetype = climatetype)
+    repHarmon <- toolHarmonize2Baseline(x = to_rep[, commonYears, commonVars],
                                        base = yields[, commonYears, commonVars],
                                        ref_year = cfg$ref_year_gcm)
     gc()
     # convert to array for memory
-    yields   <- as.array(yields)
-    harm_rep <- as.array(harm_rep)
-    # yields[,commonYears,commonVars] <- ifelse(to_rep[,commonYears,commonVars] >0, to_rep[,commonYears,commonVars], yields[,commonYears, commonVars])
-    yields[, commonYears, commonVars] <- harm_rep[, commonYears, commonVars]
-    yields   <- as.magpie(yields)
-    harm_rep <- as.magpie(harm_rep)
+    yields    <- as.array(yields)
+    repHarmon <- as.array(repHarmon)
+    yields[, commonYears, commonVars] <- repHarmon[, commonYears, commonVars]
+    yields    <- as.magpie(yields)
+    repHarmon <- as.magpie(repHarmon)
 
   }
 
