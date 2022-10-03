@@ -1,54 +1,59 @@
-Package: mrland
 Type: Package
+Package: mrland
 Title: MadRaT land data package
 Version: 0.39.8
 Date: 2022-09-12
-Authors@R: c(person("Jan Philipp", "Dietrich", email = "dietrich@pik-potsdam.de", role = c("aut","cre")),
-             person("Abhijeet", "Mishra", role = "aut"),
-             person("Isabelle", "Weindl", role = "aut"),
-             person("Benjamin Leon", "Bodirsky", role = "aut"),
-             person("Xiaoxi", "Wang", role = "aut"),
-             person("Lavinia", "Baumstark", role = "aut"),
-             person("Ulrich", "Kreidenweis", role = "aut"),
-             person("David", "Klein", role = "aut"),
-             person("Nele", "Steinmetz", role = "aut"),
-             person("David", "Chen", role = "aut"),
-             person("Florian", "Humpenoeder", role = "aut"),
-             person("Patrick", "von Jeetze", role = "aut"),
-             person("Stephen", "Wirth", role = "aut"),
-             person("Felicitas", "Beier", role = "aut"),
-             person("David", "Hoetten", role = "aut"))
-Description: The package provides land related data via the madrat framework.
+Authors@R: c(
+    person("Jan Philipp", "Dietrich", , "dietrich@pik-potsdam.de", role = c("aut", "cre")),
+    person("Abhijeet", "Mishra", role = "aut"),
+    person("Isabelle", "Weindl", role = "aut"),
+    person("Benjamin Leon", "Bodirsky", role = "aut"),
+    person("Xiaoxi", "Wang", role = "aut"),
+    person("Lavinia", "Baumstark", role = "aut"),
+    person("Ulrich", "Kreidenweis", role = "aut"),
+    person("David", "Klein", role = "aut"),
+    person("Nele", "Steinmetz", role = "aut"),
+    person("David", "Chen", role = "aut"),
+    person("Florian", "Humpenoeder", role = "aut"),
+    person("Patrick", "von Jeetze", role = "aut"),
+    person("Stephen", "Wirth", role = "aut"),
+    person("Felicitas", "Beier", role = "aut"),
+    person("David", "Hoetten", role = "aut")
+  )
+Description: The package provides land related data via the madrat
+    framework.
+License: LGPL-3 | file LICENSE
+URL: https://github.com/pik-piam/mrland,
+    https://doi.org/10.5281/zenodo.3822083
+BugReports: https://github.com/pik-piam/mrland/issues
 Depends:
-    R(>= 2.10.0),
-    magclass(>= 3.17),
-    madrat(>= 1.30),
-    mrcommons(>= 1.4.0)
+    R (>= 2.10.0),
+    madrat (>= 1.30),
+    magclass (>= 3.17),
+    mrcommons (>= 1.4.0)
 Imports:
+    SPEI,
     countrycode,
     data.table,
+    dplyr,
     magpiesets,
     mstools,
-    readxl,
-    reshape2,
-    SPEI,
-    stringr,
     ncdf4,
     raster,
+    readxl,
+    reshape2,
     rgdal,
+    stringr,
     terra,
-    dplyr,
     withr
-License: LGPL-3 | file LICENSE
-LazyData: no
-Encoding: UTF-8
-RoxygenNote: 7.2.1
 Suggests:
-    knitr,
-    testthat,
-    rmarkdown,
+    covr,
     ggplot2,
-    covr
-URL: https://github.com/pik-piam/mrland, https://doi.org/10.5281/zenodo.3822083
-BugReports: https://github.com/pik-piam/mrland/issues
-VignetteBuilder: knitr
+    knitr,
+    rmarkdown,
+    testthat
+VignetteBuilder: 
+    knitr
+Encoding: UTF-8
+LazyData: no
+RoxygenNote: 7.2.1
