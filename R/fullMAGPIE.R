@@ -80,7 +80,7 @@ fullMAGPIE <- function(rev = 0.1, dev = "") {
     calcOutput("TauHistorical",    round = 2, file = "f13_tau_historical.csv", aggregate = superregion)
 
     # 14 yields
-    calcOutput("CalibrationDummy", round = 0, file = "f14_yld_calib.csv")
+    #calcOutput("CalibrationDummy", round = 0, file = "f14_yld_calib.csv")
     calcOutput("PastureYield", round = 3, file = "f14_pasture_yields_hist.csv")
     calcOutput("FAOYield", cut = 0.98, years = magYearsPast, round = 2, file = "f14_region_yields.cs3")
     calcOutput("Ir2RfYieldRatio", round = 2, file = "f14_ir2rf_ratio.cs4")

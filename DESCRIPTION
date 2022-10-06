@@ -1,8 +1,8 @@
 Package: mrland
 Type: Package
 Title: MadRaT land data package
-Version: 0.39.8
-Date: 2022-09-12
+Version: 0.39.9
+Date: 2022-10-06
 Authors@R: c(person("Jan Philipp", "Dietrich", email = "dietrich@pik-potsdam.de", role = c("aut","cre")),
              person("Abhijeet", "Mishra", role = "aut"),
              person("Isabelle", "Weindl", role = "aut"),
@@ -35,7 +35,6 @@ Imports:
     stringr,
     ncdf4,
     raster,
-    rgdal,
     terra,
     dplyr,
     withr
@@ -48,6 +47,7 @@ Suggests:
     testthat,
     rmarkdown,
     ggplot2,
+    rgdal,
     covr
 URL: https://github.com/pik-piam/mrland, https://doi.org/10.5281/zenodo.3822083
 BugReports: https://github.com/pik-piam/mrland/issues
