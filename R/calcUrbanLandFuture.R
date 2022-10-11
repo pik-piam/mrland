@@ -13,7 +13,7 @@
 calcUrbanLandFuture <- function(timestep = "5year", subtype = "LUH2v2", cells="magpiecell", cellular = TRUE) {
   if (subtype == "LUH2v2") {
     past <- calcOutput("LanduseInitialisation",
-      cellular = TRUE, nclasses = "seven", fao_corr = TRUE, cells = "lpjcell",
+      cellular = TRUE, nclasses = "seven", cells = "lpjcell",
       selectyears = "past", input_magpie = FALSE, aggregate = FALSE
     )
     past <- past[, c("y1995", "y2000", "y2005", "y2010"), "urban"]

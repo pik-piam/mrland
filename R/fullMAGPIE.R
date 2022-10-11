@@ -179,8 +179,8 @@ fullMAGPIE <- function(rev = 0.1, dev = "") {
     calcOutput("TradeTariff", type_tariff = "export",    round = 4, file = "f21_trade_tariff_export.cs3",
                aggregate = superregion)
     calcOutput("TradeTariff", type_tariff = "import",    round = 4, file = "f21_trade_tariff_import.cs3",
-               aggregate = superregion) 
-    
+               aggregate = superregion)
+
     calcOutput("TradeMargin", years = 2005, bilateral = TRUE, round = 4,
                 file = "f21_trade_margin_bilat.cs5", aggregate = TRUE)
     calcOutput("TradeTariff", years = 2005, bilateral = TRUE, round = 4, file = "f21_trade_tariff_bilat.cs5",
@@ -195,7 +195,6 @@ fullMAGPIE <- function(rev = 0.1, dev = "") {
 
     # 32 forestry
     calcOutput("AfforestCosts", years = 2001,        round = 0, file = "f32_fac_req_ha.csv")
-    calcOutput("TimberHarvestCost", file = "f32_harvestingcost.cs4")
     calcOutput("GrowingStockPlantations", aggregate = TRUE, round = 0, file = "f32_gs_target.cs4")
     calcOutput("GrowingStockPlantAbsolute", aggregate = TRUE, round = 0, file = "f32_gs_absolutetarget.cs4")
     calcOutput("GrowingStockpha", aggregate = TRUE, round = 0, file = "f32_gs_relativetarget.cs4")

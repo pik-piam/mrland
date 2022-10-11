@@ -22,7 +22,7 @@ calcProtectArea <- function(cells = "magpiecell", bhifl = TRUE) {
 
   # Land area (in Mha):
   landArea <- calcOutput("LanduseInitialisation", cellular = TRUE, cells = cells,
-                         nclasses = "seven", fao_corr = TRUE, input_magpie = TRUE,
+                         nclasses = "seven", input_magpie = TRUE,
                          years = "y1995", aggregate = FALSE)
   landArea <- dimSums(landArea, dim = 3)
 

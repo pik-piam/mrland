@@ -26,7 +26,7 @@ calcConservationPriority <- function(cells = "magpiecell", nclasses = "seven") {
   # Land area (in Mha):
   LUini <- calcOutput("LanduseInitialisation",
     cellular = TRUE, cells = cells,
-    nclasses = nclasses, fao_corr = TRUE, input_magpie = TRUE,
+    nclasses = nclasses, input_magpie = TRUE,
     years = "y1995", aggregate = FALSE
   )
   landArea <- dimSums(LUini, dim = 3)

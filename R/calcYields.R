@@ -203,7 +203,7 @@ calcYields <- function(source = c(lpjml = "ggcmi_phase3_nchecks_9ca735cb", isimi
     crop <- calcOutput("Croparea", sectoral = "kcr", physical = TRUE, irrigation = TRUE,
                        cellular = TRUE, cells = cells, aggregate = FALSE, years = "y1995", round = 6)
 
-    past <- calcOutput("LanduseInitialisation", aggregate = FALSE, cellular = TRUE, nclasses = "seven", fao_corr = TRUE,
+    past <- calcOutput("LanduseInitialisation", aggregate = FALSE, cellular = TRUE, nclasses = "seven",
                        input_magpie = TRUE, cells = cells, years = "y1995", round = 6)[, , "past"]
 
     if (weighting == "crop+irrigSpecific") {
@@ -249,8 +249,7 @@ calcYields <- function(source = c(lpjml = "ggcmi_phase3_nchecks_9ca735cb", isimi
                                    country_level = FALSE, aggregate = FALSE), "avlCrop")
 
     lu1995  <- setYears(calcOutput("LanduseInitialisation", aggregate = FALSE, cellular = TRUE, nclasses = "seven",
-                                   fao_corr = TRUE, input_magpie = TRUE, cells = cells,
-                                   years = "y1995", round = 6), NULL)
+                                   input_magpie = TRUE, cells = cells, years = "y1995", round = 6), NULL)
 
     cropAreaWeight <- new.magpie(cells_and_regions = getCells(yields),
                                  years = NULL,
