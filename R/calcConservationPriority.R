@@ -4,8 +4,11 @@
 #' @param cells number of cells of landmask (select "magpiecell" for 59199 cells or "lpjcell" for 67420 cells)
 #' @param nclasses Options are either "seven" or "nine".
 #' \itemize{
-#' \item "seven" separates primary and secondary forest and includes "crop", "past", "forestry", "primforest", "secdforest", "urban" and "other"
-#' \item "nine" adds the separation of pasture and rangelands, as well as a differentiation of primary and secondary non-forest vegetation and therefore returns "crop", "past", "range", "forestry", "primforest", "secdforest", "urban", "primother" and "secdother"
+#' \item "seven" separates primary and secondary forest and includes "crop", "past", "forestry",
+#' "primforest", "secdforest", "urban" and "other"
+#' \item "nine" adds the separation of pasture and rangelands, as well as a differentiation of
+#' primary and secondary non-forest vegetation and therefore returns "crop", "past", "range",
+#' "forestry", "primforest", "secdforest", "urban", "primother" and "secdother"
 #' }
 #'
 #' @return magpie object in cellular resolution with different protection options in conservation priority areas
@@ -24,12 +27,12 @@
 calcConservationPriority <- function(cells = "magpiecell", nclasses = "seven") {
 
   # Land area (in Mha):
-  LUini <- calcOutput("LanduseInitialisation",
+  iniLU <- calcOutput("LanduseInitialisation",
     cellular = TRUE, cells = cells,
     nclasses = nclasses, input_magpie = TRUE,
     years = "y1995", aggregate = FALSE
   )
-  landArea <- dimSums(LUini, dim = 3)
+  landArea <- dimSums(iniLU, dim = 3)
 
   # Protection Area mz file (conservation priority area in Mha)
   x <- readSource("ProtectArea", convert = "onlycorrect")
@@ -47,17 +50,17 @@ calcConservationPriority <- function(cells = "magpiecell", nclasses = "seven") {
   x <- mbind(x, bhifl)
 
   # Half Earth Protection Share
-  HalfEarthShr <- readSource("HalfEarth", convert = "onlycorrect")
-  getNames(HalfEarthShr) <- "HalfEarth"
-  getSets(HalfEarthShr) <- c("x", "y", "iso", "year", "data")
+  halfEarthShr <- readSource("HalfEarth", convert = "onlycorrect")
+  getNames(halfEarthShr) <- "HalfEarth"
+  getSets(halfEarthShr) <- c("x", "y", "iso", "year", "data")
 
   if (cells == "magpiecell") {
-    HalfEarthShr <- toolCoord2Isocell(HalfEarthShr, cells = cells)
+    halfEarthShr <- toolCoord2Isocell(halfEarthShr, cells = cells)
   } else if (cells == "lpjcell") {
     landArea <- collapseDim(addLocation(landArea), dim = c("N", "region"))
     tmp <- collapseDim(addLocation(x), dim = c("region", "cell"))
     x <- new.magpie(
-      cells_and_regions = getCells(collapseDim(HalfEarthShr, dim = "iso")),
+      cells_and_regions = getCells(collapseDim(halfEarthShr, dim = "iso")),
       years = getYears(tmp),
       names = getNames(tmp), fill = 0,
       sets = c("x.y.iso", "year", "data")
@@ -73,10 +76,10 @@ calcConservationPriority <- function(cells = "magpiecell", nclasses = "seven") {
   }
 
   # Land area to be protected by 2050 (in Mha)
-  HalfEarthArea <- HalfEarthShr * landArea
+  halfEarthArea <- halfEarthShr * landArea
 
   # Add HalfEarth scenario to Protection area data
-  x <- mbind(x, HalfEarthArea)
+  x <- mbind(x, halfEarthArea)
 
   # get WDPA baseline data (1995 - 2020)
   wdpaBase <- calcOutput("ProtectedAreaBaseline",
@@ -95,7 +98,8 @@ calcConservationPriority <- function(cells = "magpiecell", nclasses = "seven") {
   )
 
   # Conservation potential after 2020
-  consvPot <- landArea - dimSums(wdpaBase[, "y2020", ], dim = 3) - setCells(urbanLand[, "y2020", "SSP2"], getCells(wdpaBase))
+  consvPot <- landArea - dimSums(wdpaBase[, "y2020", ], dim = 3) -
+                setCells(urbanLand[, "y2020", "SSP2"], getCells(wdpaBase))
   consvPot <- toolConditionalReplace(consvPot, "<0", 0)
 
   # Where conservation priority area is larger than conservation potential
@@ -108,33 +112,35 @@ calcConservationPriority <- function(cells = "magpiecell", nclasses = "seven") {
 
   if (nclasses == "seven") {
     # calulate share of respective natveg classes
-    NatvegShr <- LUini[, , c("primforest", "secdforest", "other")] / dimSums(LUini[, , c("primforest", "secdforest", "other")], dim = 3)
-    NatvegShr <- toolConditionalReplace(NatvegShr, "is.na()", 0)
+    natvegShr <- iniLU[, , c("primforest", "secdforest", "other")] /
+                   dimSums(iniLU[, , c("primforest", "secdforest", "other")], dim = 3)
+    natvegShr <- toolConditionalReplace(natvegShr, "is.na()", 0)
 
     # magpie object containing all land classes and their conservation land shares
-    LandShr <- mbind(
-      new.magpie(getCells(NatvegShr), NULL, c("crop", "past", "forestry"), fill = 0),
-      NatvegShr[, , c("primforest", "secdforest")],
-      new.magpie(getCells(NatvegShr), NULL, "urban", fill = 0),
-      NatvegShr[, , "other"]
+    landShr <- mbind(
+      new.magpie(getCells(natvegShr), NULL, c("crop", "past", "forestry"), fill = 0),
+      natvegShr[, , c("primforest", "secdforest")],
+      new.magpie(getCells(natvegShr), NULL, "urban", fill = 0),
+      natvegShr[, , "other"]
     )
   } else if (nclasses == "nine") {
     # calulate share of respective natveg classes
-    NatvegShr <- LUini[, , c("primforest", "secdforest", "primother", "secdother")] / dimSums(LUini[, , c("primforest", "secdforest", "primother", "secdother")], dim = 3)
-    NatvegShr <- toolConditionalReplace(NatvegShr, "is.na()", 0)
+    natvegShr <- iniLU[, , c("primforest", "secdforest", "primother", "secdother")] /
+                   dimSums(iniLU[, , c("primforest", "secdforest", "primother", "secdother")], dim = 3)
+    natvegShr <- toolConditionalReplace(natvegShr, "is.na()", 0)
 
     # magpie object containing all land classes and their conservation land shares
-    LandShr <- mbind(
-      new.magpie(getCells(NatvegShr), NULL, c("crop", "past", "forestry"), fill = 0),
-      NatvegShr[, , c("primforest", "secdforest")],
-      new.magpie(getCells(NatvegShr), NULL, "urban", fill = 0),
-      NatvegShr[, , "primother"],
-      NatvegShr[, , "secdother"]
+    landShr <- mbind(
+      new.magpie(getCells(natvegShr), NULL, c("crop", "past", "forestry"), fill = 0),
+      natvegShr[, , c("primforest", "secdforest")],
+      new.magpie(getCells(natvegShr), NULL, "urban", fill = 0),
+      natvegShr[, , "primother"],
+      natvegShr[, , "secdother"]
     )
   }
 
   # compute land area reserved for conservation
-  x <- x * setCells(LandShr, getCells(x))
+  x <- x * setCells(landShr, getCells(x))
 
   return(list(
     x = x,

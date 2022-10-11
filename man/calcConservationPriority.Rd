@@ -11,8 +11,11 @@ calcConservationPriority(cells = "magpiecell", nclasses = "seven")
 
 \item{nclasses}{Options are either "seven" or "nine".
 \itemize{
-\item "seven" separates primary and secondary forest and includes "crop", "past", "forestry", "primforest", "secdforest", "urban" and "other"
-\item "nine" adds the separation of pasture and rangelands, as well as a differentiation of primary and secondary non-forest vegetation and therefore returns "crop", "past", "range", "forestry", "primforest", "secdforest", "urban", "primother" and "secdother"
+\item "seven" separates primary and secondary forest and includes "crop", "past", "forestry",
+"primforest", "secdforest", "urban" and "other"
+\item "nine" adds the separation of pasture and rangelands, as well as a differentiation of
+primary and secondary non-forest vegetation and therefore returns "crop", "past", "range",
+"forestry", "primforest", "secdforest", "urban", "primother" and "secdother"
 }}
 }
 \value{
