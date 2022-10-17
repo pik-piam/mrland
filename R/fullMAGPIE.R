@@ -136,12 +136,10 @@ fullMAGPIE <- function(rev = 0.1, dev = "") {
     calcOutput("EATFruitvegRatio", aggregate = FALSE, round = 4, file = "f15_fruitveg2others_kcal_ratio_iso.csv",
                populationweight = "PopulationPast")
 
-    if (grepl("india", dev)) {
-      calcOutput("NINDiets",  aggregate = TRUE, round = 4, file = "f15_intake_NIN.cs3",
+    calcOutput("NINDiets",  aggregate = TRUE, round = 4, file = "f15_intake_NIN.cs3",
                  attributes = "kcal", calib = TRUE, FAOcountr = FALSE)
-      calcOutput("NINDiets",  aggregate = FALSE, round = 1, file = "f15_intake_NIN_iso.cs3",
+    calcOutput("NINDiets",  aggregate = FALSE, round = 1, file = "f15_intake_NIN_iso.cs3",
                  attributes = "kcal", calib = TRUE, FAOcountr = FALSE)
-    }
 
     # 16 demand
     calcOutput("Attributes", round = 4, aggregate = FALSE,        file = "fm_attributes.cs3")
