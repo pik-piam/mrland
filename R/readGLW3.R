@@ -11,12 +11,15 @@
 #' @import madrat
 #' @importFrom raster aggregate raster rasterToPoints
 #' @importFrom dplyr left_join
+#' @importFrom rgdal GDAL.open
 
 readGLW3 <- function(subtype = "Da") {
-   if (!requireNamespace("rgdal")) stop("rgdal is required by raster to be able to read in the data!")
 
     strName <- toolSubtypeSelect(subtype, c(Da = "5_Ct_2010_Da.tif",
                                             Aw = "6_Ct_2010_Aw.tif"))
+    # NOTE: GDAL.open is imported from rgdal as it is used in the following
+    #       raster command. Making this import explicit is required for renv
+    #       so that dependencies are properly detected.
     x <- raster(strName)
     x <- raster::aggregate(x, fact = 6, fun = sum)
     x <- rasterToPoints(x)
