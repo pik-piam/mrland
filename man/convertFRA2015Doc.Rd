@@ -18,8 +18,9 @@ Data as MAgPIE object
 Convert FRA2015Doc data
 }
 \examples{
-
-\dontrun{ a <- readSource("FRA2015Doc","forest_area", convert=TRUE)}
+\dontrun{
+a <- readSource("FRA2015Doc", "forest_area", convert = TRUE)
+}
 }
 \seealso{
 \code{\link{readFRA2015Doc}}, \code{\link{readSource}},

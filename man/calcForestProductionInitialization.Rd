@@ -10,11 +10,11 @@ calcForestProductionInitialization()
 List of magpie objects with results on country level, weight on country level, unit and description.
 }
 \description{
-Calculates the management factor(s) needed to upscale the yield of forest plantations as compared to natural vegetation based on FAO data.
+Calculates the management factor(s) needed to upscale the yield of forest plantations as compared to
+natural vegetation based on FAO data.
 }
 \examples{
-
-\dontrun{ 
+\dontrun{
 calcOutput("ForestProductionInitialization")
 }
 }
