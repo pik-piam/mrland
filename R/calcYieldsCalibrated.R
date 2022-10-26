@@ -65,15 +65,14 @@
 #' @importFrom magclass getYears getNames dimSums mbind
 #' @importFrom madrat calcOutput toolConditionalReplace
 #' @importFrom mrcommons toolCoord2Isocell
+#' @importFrom withr local_options
 
 calcYieldsCalibrated <- function(source = c(lpjml = "ggcmi_phase3_nchecks_9ca735cb", isimip = NULL),
                                  climatetype = "GSWP3-W5E5:historical", refYear = "y1995", cells = "magpiecell",
                                  multicropping = FALSE, refYields = FALSE,
-                                 areaSource = "FAO", marginal_land = "magpie") {
+                                 areaSource = "FAO", marginal_land = "magpie") { # nolint
 
-    sizelimit <- getOption("magclass_sizeLimit")
-    options(magclass_sizeLimit = 1e+12)
-    on.exit(options(magclass_sizeLimit = sizelimit))
+    local_options(magclass_sizeLimit = 1e+12)
 
     # correct ref year format
     if (!grepl("y", refYear)) {
@@ -86,10 +85,10 @@ calcYieldsCalibrated <- function(source = c(lpjml = "ggcmi_phase3_nchecks_9ca735
     # read FAO and LPJmL yields
     yieldFAOiso    <- calcOutput("FAOYield", cut = 0.98, areaSource = areaSource,
                                  aggregate = FALSE)[, refYear, crops]
-    yieldLPJmLgrid <- calcOutput("Yields", source = source, climatetype = climatetype,
+    yieldLPJmLgrid <- calcOutput("Yields", source = source, climatetype = climatetype, # nolint
                                  multicropping = multicropping, marginal_land = marginal_land,
                                  aggregate = FALSE, supplementary = TRUE, cells = cells)
-    yieldLPJmLbase <- calcOutput("Yields", source = source, climatetype = climatetype,
+    yieldLPJmLbase <- calcOutput("Yields", source = source, climatetype = climatetype, # nolint
                                  multicropping = refYields, marginal_land = marginal_land,
                                  aggregate = FALSE, supplementary = FALSE, cells = cells)
 
@@ -152,7 +151,7 @@ calcYieldsCalibrated <- function(source = c(lpjml = "ggcmi_phase3_nchecks_9ca735
     yieldFAOiso   <- yieldFAOiso[intersect(getCells(yieldLPJmLiso), getCells(yieldFAOiso)), , ]
 
     # Yield calibration of LPJmL yields to FAO country yield levels
-    out <- toolPatternScaling(yieldLPJmLgrid, yieldLPJmLiso, yieldFAOiso, ref_year = refYear)
+    out <- toolPatternScaling(yieldLPJmLgrid, yieldLPJmLiso, yieldFAOiso, refYear = refYear)
 
     # Combine with pasture, betr, begr yields that were not calibrated
     getCells(out) <- getCells(otherYields)

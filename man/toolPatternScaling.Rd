@@ -6,20 +6,20 @@
 \usage{
 toolPatternScaling(
   scen,
-  scen_mean,
-  ref_mean,
-  ref_year = "y2010",
+  scenMean,
+  refMean,
+  refYear = "y2010",
   variation = "yieldCalibMAG"
 )
 }
 \arguments{
 \item{scen}{time series of the scenario}
 
-\item{scen_mean}{mean of scenario time series}
+\item{scenMean}{mean of scenario time series}
 
-\item{ref_mean}{mean of reference time series}
+\item{refMean}{mean of reference time series}
 
-\item{ref_year}{Reference year}
+\item{refYear}{Reference year}
 
 \item{variation}{'yieldCalibMAG' (default); to be implemented: 'jensPaper'}
 }
