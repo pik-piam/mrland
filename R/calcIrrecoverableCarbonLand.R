@@ -20,13 +20,14 @@
 calcIrrecoverableCarbonLand <- function(cells = "magpiecell") {
   ic <- readSource("Noon2022", convert = "onlycorrect")
 
-  landIni <- calcOutput("LanduseInitialisation",
-    cellular = TRUE, nclasses = "seven", cells = "lpjcell",
-    selectyears = "y1995", input_magpie = FALSE, aggregate = FALSE
+  luh2v2 <- calcOutput("LUH2v2",
+    landuse_types = "LUH2v2", aggregate = FALSE,
+    cellular = TRUE, cells = "lpjcell", irrigation = FALSE,
+    selectyears = "y1995"
   )
 
   # calculate total land area
-  landArea <- dimSums(landIni, dim = 3)
+  landArea <- dimSums(luh2v2, dim = 3)
   getCells(landArea) <- getCells(ic)
 
   # urban land
@@ -36,13 +37,13 @@ calcIrrecoverableCarbonLand <- function(cells = "magpiecell") {
   )
 
   # make sure that irrecoverable carbon land is not greater than total land area minus urban area
-  totNoUrban <- setYears(landArea, "y2020") - setCells(urbanLand[, "y2020", "SSP2"], getCells(landArea))
-  getYears(totNoUrban) <- getYears(ic)
+  landNoUrban <- setYears(landArea, "y2020") - setCells(urbanLand[, "y2020", "SSP2"], getCells(landArea))
+  getYears(landNoUrban) <- getYears(ic)
   # compute mismatch factor
-  landMismatch <- setNames(totNoUrban, NULL) / ic
+  landMismatch <- setNames(landNoUrban, NULL) / ic
   landMismatch <- toolConditionalReplace(landMismatch, c(">1", "is.na()"), 1)
   # correct irrecoverable carbon data
-  ic <- ic * landMismatch
+  out <- ic * landMismatch
 
   if (cells == "magpiecell") {
     out <- toolCoord2Isocell(out)
