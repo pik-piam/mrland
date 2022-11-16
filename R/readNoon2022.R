@@ -54,8 +54,6 @@ readNoon2022 <- function() {
   # convert to Mha
   icLayers05 <- icLayers05 / 1e6
 
-  plot(icLayers05)
-
   names(icLayers05) <- c("IC_50perc", "IC_75perc", "IC_all")
 
   # get spatial mapping
