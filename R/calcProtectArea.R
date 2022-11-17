@@ -50,7 +50,7 @@ calcProtectArea <- function(cells = "magpiecell", bhifl = TRUE) {
 
   } else if (cells == "lpjcell") {
 
-    landArea <- collapseDim(addLocation(landArea), dim = c("N", "region"))
+    landArea <- collapseDim(addLocation(landArea), dim = c("N", "cell"))
 
     tmp <- collapseDim(addLocation(x), dim = c("region", "cell"))
 

@@ -33,7 +33,6 @@
 
 calcMulticroppingSuitability <- function(selectyears, lpjml, climatetype,
                                          minThreshold = 100, suitability = "endogenous") {
-
   ####################
   ### Read in data ###
   ####################
@@ -53,7 +52,6 @@ calcMulticroppingSuitability <- function(selectyears, lpjml, climatetype,
 
   # Choose how multiple cropping suitability is determined
   if (suitability == "endogenous") {
-
     ####################
     ### Definitions  ###
     ####################
@@ -91,19 +89,16 @@ calcMulticroppingSuitability <- function(selectyears, lpjml, climatetype,
     rule1 <- lgp > 8
 
     ## Rule 2: Multicropping must lead to at least one full additional harvest
-    rule2        <- (grassGPPannual / grassGPPgrper) > 2
+    rule2 <- (grassGPPannual / grassGPPgrper) > 2
 
     ### Cells suitable for multiple cropping given grass GPP & specified rules
     suitMC[rule1 & rule2] <- 1
 
   } else if (suitability == "exogenous") {
-
     ####################
     ### Read in data ###
     ####################
     suitMC[, , ] <- calcOutput("MultipleCroppingZones", layers = 2, aggregate = FALSE)
-
-    # ToDo: remove exogenous option once our endogenous calculation is good enough to use
 
   } else {
     stop("Please select whether endogenously calculated multiple cropping suitability
