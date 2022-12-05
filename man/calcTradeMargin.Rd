@@ -28,9 +28,9 @@ Trade margins as an MAgPIE object
 calculate total value of trade margins from GTAP dataset
 }
 \examples{
-    \dontrun{
-    x <- calcTradeMargin("GTAP7")
-    }
+\dontrun{
+x <- calcTradeMargin("GTAP7")
+}
 }
 \author{
 Xiaoxi Wang
