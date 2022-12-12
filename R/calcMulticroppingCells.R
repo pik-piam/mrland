@@ -38,8 +38,8 @@ calcMulticroppingCells <- function(selectyears, lpjml, climatetype, scenario) {
 
     # Cells that can potentially be multi-cropped (irrigation- and crop-specific)
     mcCells <- calcOutput("MulticroppingSuitability", selectyears = selectyears,
-                          lpjml = "ggcmi_phase3_nchecks_9ca735cb",  ### ToDo: Switch to flexible lpjml argument (once LPJmL runs are ready)
-                          climatetype = "GSWP3-W5E5:historical", ### ToDo: Switch to flexible climatetype argument (once LPJmL runs are ready)
+                          lpjml = lpjml,
+                          climatetype = climatetype,
                           minThreshold = 100, suitability = subscenario,
                           aggregate = FALSE)
 
@@ -74,11 +74,13 @@ calcMulticroppingCells <- function(selectyears, lpjml, climatetype, scenario) {
 
       # total actual multicropping area (irrigation-specific)
       tempPhys <- dimSums(calcOutput("CropareaToolbox", physical = TRUE, sectoral = "lpj",
-                                 cellular = TRUE, cells = "lpjcell", irrigation = TRUE,
-                                 selectyears = selectyears, aggregate = FALSE), dim = "crop")
+                                     cellular = TRUE, cells = "lpjcell", irrigation = TRUE,
+                                     selectyears = selectyears, aggregate = FALSE),
+                          dim = "crop")
       tempHarv <- dimSums(calcOutput("CropareaToolbox", physical = FALSE, sectoral = "lpj",
-                                 cellular = TRUE, cells = "lpjcell", irrigation = TRUE,
-                                 selectyears = selectyears, aggregate = FALSE), dim = "crop")
+                                     cellular = TRUE, cells = "lpjcell", irrigation = TRUE,
+                                     selectyears = selectyears, aggregate = FALSE),
+                          dim = "crop")
 
       # expand dimension
       phys[, , ] <- tempPhys
@@ -88,11 +90,11 @@ calcMulticroppingCells <- function(selectyears, lpjml, climatetype, scenario) {
 
       # areas where multicropping takes place currently (crop-specific)
       tempPhys <- calcOutput("CropareaToolbox", physical = TRUE, sectoral = "lpj",
-                                 cellular = TRUE, cells = "lpjcell", irrigation = FALSE,
-                                 selectyears = selectyears, aggregate = FALSE)
+                             cellular = TRUE, cells = "lpjcell", irrigation = FALSE,
+                             selectyears = selectyears, aggregate = FALSE)
       tempHarv <- calcOutput("CropareaToolbox", physical = FALSE, sectoral = "lpj",
-                                 cellular = TRUE, cells = "lpjcell", irrigation = FALSE,
-                                 selectyears = selectyears, aggregate = FALSE)
+                             cellular = TRUE, cells = "lpjcell", irrigation = FALSE,
+                             selectyears = selectyears, aggregate = FALSE)
 
       # expand dimension
       phys[, , ] <- tempPhys

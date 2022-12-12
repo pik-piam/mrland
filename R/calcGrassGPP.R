@@ -32,27 +32,26 @@ calcGrassGPP <- function(selectyears, lpjml, climatetype, season) {
   monthlyIrrigated <- calcOutput("LPJmL_new", subtype = "mgpp_grass_ir",
                               years = selectyears,
                               stage = "smoothed", ### @KRISTINE: Should this be smoothed or harmonized or flexible?
-                              version = lpjml, climatetype = climatetype, ### ToDo: set lpjml argument to lpjml["crop"] (once LPJmL runs are ready)
+                              version = lpjml[["crop"]], climatetype = climatetype,
                               aggregate = FALSE)
   # monthly irrigated grass GPP
   monthlyRainfed <- calcOutput("LPJmL_new", subtype = "mgpp_grass_rf",
                               years = selectyears,
                               stage = "smoothed", ### @KRISTINE: Should this be smoothed or harmonized or flexible?
-                              version = lpjml, climatetype = climatetype, ### ToDo: set lpjml argument to lpjml["crop"] (once LPJmL runs are ready)
+                              version = lpjml[["crop"]], climatetype = climatetype,
                               aggregate = FALSE)
-
 
   # irrigated grass GPP in irrigated growing period of crop
   grperIrrigated <- calcOutput("LPJmL_new", subtype = "cft_gpp_grass_ir",
                               years = selectyears,
                               stage = "smoothed", ### @KRISTINE: Should this be smoothed or harmonized or flexible?
-                              version = lpjml, climatetype = climatetype, ### ToDo: set lpjml argument to lpjml["crop"] (once LPJmL runs are ready)
+                              version = lpjml[["crop"]], climatetype = climatetype,
                               aggregate = FALSE)
   # rainfed grass GPP in rainfed growing period of crop
   grperRainfed <- calcOutput("LPJmL_new", subtype = "cft_gpp_grass_rf",
                               years = selectyears,
                               stage = "smoothed", ### @KRISTINE: Should this be smoothed or harmonized or flexible?
-                              version = lpjml, climatetype = climatetype, ### ToDo: set lpjml argument to lpjml["crop"] (once LPJmL runs are ready)
+                              version = lpjml[["crop"]], climatetype = climatetype,
                               aggregate = FALSE)
 
 

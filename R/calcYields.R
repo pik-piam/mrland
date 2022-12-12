@@ -98,14 +98,11 @@ calcYields <- function(source = c(lpjml = "ggcmi_phase3_nchecks_9ca735cb", isimi
   yields  <- mbind(yields)
 
   if (multicropping) {
-    ### TEMPORARY (UNTIL LPJML RUNS READY)###
-    selectyears    <- 2010 #### replace with all years (once LPJmL runs are ready)
-    yields         <- yields[, selectyears, ]
-    ### TEMPORARY (UNTIL LPJML RUNS READY)###
+    selectyears    <- getItems(yields, dim = 2)
     increaseFactor <- calcOutput("MulticroppingYieldIncrease",
                                  areaMask = areaMask,
-                                 lpjml = "ggcmi_phase3_nchecks_9ca735cb",
-                                 climatetype = "GSWP3-W5E5:historical",
+                                 lpjml = source[["lpjml"]], # nolint
+                                 climatetype = climatetype,
                                  selectyears = selectyears,
                                  aggregate = FALSE)
 
@@ -114,8 +111,8 @@ calcYields <- function(source = c(lpjml = "ggcmi_phase3_nchecks_9ca735cb", isimi
     proxyYields   <- yields[, , c("groundnut", "maize")]
     proxyIncrease <- calcOutput("MulticroppingYieldIncrease", crops = "proxy",
                                  areaMask = areaMask,
-                                 lpjml = "ggcmi_phase3_nchecks_9ca735cb",
-                                 climatetype = "GSWP3-W5E5:historical",
+                                 lpjml = source[["lpjml"]], # nolint
+                                 climatetype = climatetype,
                                  selectyears = selectyears,
                                  aggregate = FALSE)
     # Whole year yields for proxy crops (main-season yield + off-season yield)
@@ -135,23 +132,23 @@ calcYields <- function(source = c(lpjml = "ggcmi_phase3_nchecks_9ca735cb", isimi
   }
 
   # Use FAO data to scale proxy crops to reasonable levels (global, static factor)
-  prodFAO <- collapseNames(calcOutput("FAOmassbalance_pre", aggregate = FALSE)[, , "production"][, , "dm"])
-  areaMAg       <- calcOutput("Croparea", sectoral = "kcr", physical = TRUE, aggregate = FALSE)
-  faoyears      <- intersect(getYears(prodFAO), getYears(areaMAg))
+  prodFAO  <- collapseNames(calcOutput("FAOmassbalance_pre", aggregate = FALSE)[, , "production"][, , "dm"])
+  areaMAg  <- calcOutput("Croparea", sectoral = "kcr", physical = TRUE, aggregate = FALSE)
+  faoyears <- intersect(getYears(prodFAO), getYears(areaMAg))
 
-  cropsMAg  <- findset("kcr")
-  missing       <- c("betr", "begr")
-  cropsMAg  <- setdiff(cropsMAg, missing)
-  prodFAO <- add_columns(prodFAO[, , cropsMAg], addnm = missing, dim = 3.1)
+  cropsMAg <- findset("kcr")
+  missing  <- c("betr", "begr")
+  cropsMAg <- setdiff(cropsMAg, missing)
+  prodFAO  <- add_columns(prodFAO[, , cropsMAg], addnm = missing, dim = 3.1)
   prodFAO[, , missing] <- 0
 
-  yieldsFAO     <- dimSums(prodFAO[, faoyears, ], dim = 1) / dimSums(areaMAg[, faoyears, ], dim = 1)
-  yieldsFAO     <- setYears(toolTimeAverage(yieldsFAO[, 1993:1997, ], 5))
-  calib         <- new.magpie(cells_and_regions = "GLO",
-                              years = NULL,
-                              names = c(getNames(yieldsFAO), "pasture"),
-                              fill = 1,
-                              sets = c("iso", "year", "data"))
+  yieldsFAO <- dimSums(prodFAO[, faoyears, ], dim = 1) / dimSums(areaMAg[, faoyears, ], dim = 1)
+  yieldsFAO <- setYears(toolTimeAverage(yieldsFAO[, 1993:1997, ], 5))
+  calib     <- new.magpie(cells_and_regions = "GLO",
+                          years = NULL,
+                          names = c(getNames(yieldsFAO), "pasture"),
+                          fill = 1,
+                          sets = c("iso", "year", "data"))
   calib[, , "oilpalm"]   <- yieldsFAO[, , "oilpalm"] / yieldsFAO[, , "groundnut"]   # LPJmL proxy is groundnut
   calib[, , "cottn_pro"] <- yieldsFAO[, , "cottn_pro"] / yieldsFAO[, , "groundnut"] # LPJmL proxy is groundnut
   calib[, , "foddr"]     <- yieldsFAO[, , "foddr"] / yieldsFAO[, , "maiz"]          # LPJmL proxy is maize
