@@ -38,7 +38,7 @@ calcMulticroppingCells <- function(selectyears, lpjml, climatetype, scenario) {
 
     # Cells that can potentially be multi-cropped (irrigation- and crop-specific)
     mcCells <- calcOutput("MulticroppingSuitability", selectyears = selectyears,
-                          lpjml = lpjml,
+                          lpjml = lpjml[["crop"]],
                           climatetype = climatetype,
                           minThreshold = 100, suitability = subscenario,
                           aggregate = FALSE)
