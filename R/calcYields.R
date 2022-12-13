@@ -98,7 +98,10 @@ calcYields <- function(source = c(lpjml = "ggcmi_phase3_nchecks_9ca735cb", isimi
   yields  <- mbind(yields)
 
   if (multicropping) {
-    selectyears    <- getItems(yields, dim = 2)
+    ### TEMPORARY (UNTIL LPJML RUNS READY)###
+    selectyears    <- 2010 #### replace with all years (once LPJmL runs are ready)
+    yields         <- yields[, selectyears, ]
+    ### TEMPORARY (UNTIL LPJML RUNS READY)###
     increaseFactor <- calcOutput("MulticroppingYieldIncrease",
                                  areaMask = areaMask,
                                  lpjml = source[["lpjml"]], # nolint
