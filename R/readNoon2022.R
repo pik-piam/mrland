@@ -4,8 +4,19 @@
 #' Gonzalez-Roglich, M., Hole, D. G., Rockström, J., & Turner, W. R. (2022). Mapping the
 #' irrecoverable carbon in Earth’s ecosystems. Nature Sustainability, 5(1),
 #' Article 1. https://doi.org/10.1038/s41893-021-00803-6
+#' @param subtype Defines whether carbon data or land area and related subtypes should be returned (see options below).
+#' Carbon or land subtypes need to be specified via ":"
+#' The different subtypes for land are:
+#' \itemize{
+#' \item \code{"IrrecovCarbon50"}: Unprotected land (specified for different land types) that covers the
+#' highest 50 % of all irrecoverable carbon stocks, as defined in Noon et al. (2022).
+#' \item \code{"IrrecovCarbon75"}: Unprotected land (specified for different land types) that covers the
+#' highest 75 % of all irrecoverable carbon stocks.
+#' \item \code{"IrrecovCarbonAll"}: Unprotected land (specified for different land types) that covers
+#' all irrecoverable carbon stocks.
+#' }
 
-#' @return Returns magpie objects with the area of irrecoverable carbon land per grid cell
+#' @return Returns magpie objects with the area of unprotected irrecoverable carbon land per grid cell
 #' @author Patrick v. Jeetze
 #'
 #' @examples
@@ -18,58 +29,55 @@
 #' @importFrom mrcommons toolGetMappingCoord2Country
 #'
 
-readNoon2022 <- function() {
+readNoon2022 <- function(subtype = "land:IrrecovCarbon50") {
+
+  # extract subtype
+  datatype <- unlist(strsplit(subtype, split = ":"))[1]
+  subtype <- unlist(strsplit(subtype, split = ":"))[2]
 
   # Set up 'terra' options
   terraOptions(tempdir = local_tempdir(tmpdir = getConfig("tmpfolder")), todisk = TRUE, memfrac = 0.5)
   defer(terraOptions(tempdir = tempdir()))
 
-  # read data
-  icStocks <- rast("./Irrecoverable_C_Stocks_Total_2018_10s.tif")
+  if (datatype == "land") {
 
-  # Reclassify pixels that make up the top 50 % of global irrecoverable carbon
-  # The threshold is 642 MgC
-  icStocksHalf <- classify(icStocks, cbind(0, 642, NA), include.lowest = TRUE)
+    # read data
+    if (subtype == "IrrecovCarbon50") {
+      unprotectedICLand <- rast(paste0(
+        "./unprotected_irrecoverable_C_land",
+        "/Irrecoverable_C_50perc_unprotected_land_area_0.5deg.tif"
+      ))
+    } else if (subtype == "IrrecovCarbon75") {
+      unprotectedICLand <- rast(paste0(
+        "./unprotected_irrecoverable_C_land",
+        "/Irrecoverable_C_75perc_unprotected_land_area_0.5deg.tif"
+      ))
+    } else if (subtype == "IrrecovCarbonAll") {
+      unprotectedICLand <- rast(paste0(
+        "./unprotected_irrecoverable_C_land",
+        "/Irrecoverable_C_all_unprotected_land_area_0.5deg.tif"
+      ))
+    } else {
+      stop("Please select an existing subtype")
+    }
 
-  # Reclassify pixels that make up the top 75 % of global irrecoverable carbon
-  # The threshold is 362 MgC
-  icStocks3Q <- classify(icStocks, cbind(0, 362, NA), include.lowest = TRUE)
+    # get spatial mapping
+    map <- toolGetMappingCoord2Country(pretty = TRUE)
+    # transform raster to magpie object
+    out <- mbind(
+      as.magpie(extract(unprotectedICLand[["crop"]], map[c("lon", "lat")])[, "crop"], spatial = 1),
+      as.magpie(extract(unprotectedICLand[["past"]], map[c("lon", "lat")])[, "past"], spatial = 1),
+      as.magpie(extract(unprotectedICLand[["forest"]], map[c("lon", "lat")])[, "forest"], spatial = 1),
+      as.magpie(extract(unprotectedICLand[["other"]], map[c("lon", "lat")])[, "other"], spatial = 1)
+    )
 
-  # Reclassify pixels that make up the top 100 % of global irrecoverable carbon
-  # Therefore exclude all pixels that are zero
-  icStocksAll <- classify(icStocks, cbind(0, NA), include.lowest = TRUE)
+    # set dimension names
+    dimnames(out) <- list(
+      "x.y.iso" = paste(map$coords, map$iso, sep = "."),
+      "t" = NULL,
+      "data" = paste(subtype, c("crop", "past", "forest", "other"), sep = ".")
+    )
 
-  gc()
-
-  # divide into separate layers
-  icLayers <- c(icStocksHalf, icStocks3Q, icStocksAll)
-
-  # compute cell size for each LULC layer
-  icLayers <- cellSize(icLayers, mask = TRUE, unit = "ha")
-
-  # sum cell area to 0.5 degree
-  # aggregation factor from 10 arc sec to 0.5 degree: 180
-  icLayers05 <- aggregate(icLayers, fact = 180, fun = sum, na.rm = TRUE)
-  gc()
-  # convert to Mha
-  icLayers05 <- icLayers05 / 1e6
-
-  names(icLayers05) <- c("IC_50perc", "IC_75perc", "IC_all")
-
-  # get spatial mapping
-  map <- toolGetMappingCoord2Country(pretty = TRUE)
-  # transform raster to magpie object
-  out <- mbind(
-    as.magpie(extract(icLayers05[["IC_50perc"]], map[c("lon", "lat")])[, "IC_50perc"], spatial = 1),
-    as.magpie(extract(icLayers05[["IC_75perc"]], map[c("lon", "lat")])[, "IC_75perc"], spatial = 1),
-    as.magpie(extract(icLayers05[["IC_all"]], map[c("lon", "lat")])[, "IC_all"], spatial = 1)
-  )
-  # set dimension names
-  dimnames(out) <- list(
-    "x.y.iso" = paste(map$coords, map$iso, sep = "."),
-    "t" = NULL,
-    "data" = c("IC_50perc", "IC_75perc", "IC_all")
-  )
-
-  return(out)
+    return(out)
+  }
 }

@@ -4,10 +4,23 @@
 \alias{readNoon2022}
 \title{readNoon2022}
 \usage{
-readNoon2022()
+readNoon2022(subtype = "land:IrrecovCarbon50")
+}
+\arguments{
+\item{subtype}{Defines whether carbon data or land area and related subtypes should be returned (see options below).
+Carbon or land subtypes need to be specified via ":"
+The different subtypes for land are:
+\itemize{
+\item \code{"IrrecovCarbon50"}: Unprotected land (specified for different land types) that covers the
+highest 50 % of all irrecoverable carbon stocks, as defined in Noon et al. (2022).
+\item \code{"IrrecovCarbon75"}: Unprotected land (specified for different land types) that covers the
+highest 75 % of all irrecoverable carbon stocks.
+\item \code{"IrrecovCarbonAll"}: Unprotected land (specified for different land types) that covers
+all irrecoverable carbon stocks.
+}}
 }
 \value{
-Returns magpie objects with the area of irrecoverable carbon land per grid cell
+Returns magpie objects with the area of unprotected irrecoverable carbon land per grid cell
 }
 \description{
 Reads irrecoverble carbon data set published by Noon, M. L., Goldstein, A.,
