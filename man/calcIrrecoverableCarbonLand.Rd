@@ -4,16 +4,32 @@
 \alias{calcIrrecoverableCarbonLand}
 \title{calcIrrecoverableCarbonLand}
 \usage{
-calcIrrecoverableCarbonLand(cells = "magpiecell")
+calcIrrecoverableCarbonLand(
+  maginput = TRUE,
+  nclasses = "seven",
+  cells = "magpiecell"
+)
 }
 \arguments{
+\item{maginput}{Whether data should be transformed (based on LUH2v2 data) to match land use types used in MAgPIE.}
+
+\item{nclasses}{If \code{magpie_input = TRUE}. Options are either "seven" or "nine". Note that by default,
+the protected area is reported for urban land and forestry is zero.
+\itemize{
+\item "seven" separates primary and secondary forest and includes
+"crop", "past", "forestry", "primforest", "secdforest", "urban" and "other"
+\item "nine" adds the separation of pasture and rangelands, as well as a
+differentiation of primary and secondary non-forest vegetation and therefore returns
+"crop", "past", "range", "forestry", "primforest", "secdforest", "urban", "primother" and "secdother"
+}}
+
 \item{cells}{magpiecell (59199 cells) or lpjcell (67420 cells)}
 }
 \value{
 List with a magpie object
 }
 \description{
-Returns land area (Mha) that contains 50 %, 75% and
+Returns unprotected land area (Mha) that covers 50 %, 75% and
 100% of irrecoverable carbon as defined in Noon et al (2022).
 }
 \examples{

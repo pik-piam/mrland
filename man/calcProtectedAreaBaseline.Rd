@@ -13,10 +13,14 @@ calcProtectedAreaBaseline(
 \arguments{
 \item{magpie_input}{Whether data should be transformed (based on LUH2v2 data) to match land use types used in MAgPIE.}
 
-\item{nclasses}{If \code{magpie_input = TRUE}. Options are either "seven" or "nine". Note that by default, the protected area is reported for urban land and forestry is zero.
+\item{nclasses}{If \code{magpie_input = TRUE}. Options are either "seven" or "nine". Note that by default,
+the protected area is reported for urban land and forestry is zero.
 \itemize{
-\item "seven" separates primary and secondary forest and includes "crop", "past", "forestry", "primforest", "secdforest", "urban" and "other"
-\item "nine" adds the separation of pasture and rangelands, as well as a differentiation of primary and secondary non-forest vegetation and therefore returns "crop", "past", "range", "forestry", "primforest", "secdforest", "urban", "primother" and "secdother"
+\item "seven" separates primary and secondary forest and includes
+"crop", "past", "forestry", "primforest", "secdforest", "urban" and "other"
+\item "nine" adds the separation of pasture and rangelands, as well as a
+differentiation of primary and secondary non-forest vegetation and therefore returns
+"crop", "past", "range", "forestry", "primforest", "secdforest", "urban", "primother" and "secdother"
 }}
 
 \item{cells}{magpiecell (59199 cells) or lpjcell (67420 cells)}
@@ -25,7 +29,8 @@ calcProtectedAreaBaseline(
 List with a magpie object
 }
 \description{
-Returns protected land area (Mha) in terms of cropland, pasture, forest and other land between 1995 and 2020.
+Returns protected land area (Mha) in terms of cropland, pasture, forest and other
+land between 1995 and 2020.
 }
 \examples{
 \dontrun{
