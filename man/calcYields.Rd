@@ -8,6 +8,7 @@ calcYields(
   source = c(lpjml = "ggcmi_phase3_nchecks_9ca735cb", isimip = NULL),
   climatetype = "GSWP3-W5E5:historical",
   cells = "magpiecell",
+  selectyears = seq(1965, 2100, by = 5),
   weighting = "totalCrop",
   multicropping = FALSE,
   indiaYields = FALSE,
@@ -23,6 +24,8 @@ For isimip choose crop model/gcm/rcp/co2 combination formatted like this:
 \item{climatetype}{Switch between different climate scenarios}
 
 \item{cells}{if cellular is TRUE: "magpiecell" for 59199 cells or "lpjcell" for 67420 cells}
+
+\item{selectyears}{Years to be returned}
 
 \item{weighting}{use of different weights (totalCrop (default),
 totalLUspecific, cropSpecific, crop+irrigSpecific,

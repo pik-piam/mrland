@@ -9,7 +9,7 @@
 #'              in the growing period of the respective crop and annual grass GPP.
 #'
 #' @param selectyears   Years to be returned
-#' @param lpjml         LPJmL version required for respective inputs: natveg or crop
+#' @param lpjml         LPJmL version required for respective inputs as single string: "crop" version
 #' @param climatetype   Switch between different climate scenarios or historical baseline "GSWP3-W5E5:historical"
 #' @param fallowFactor  Factor determining yield reduction in off season due to
 #'                      fallow period between harvest of first (main) season and
@@ -47,6 +47,12 @@ calcMulticroppingYieldIncrease <- function(selectyears, lpjml, climatetype,
                                            fallowFactor = 0.75, minThreshold = 100,
                                            areaMask = "potential:endogenous",
                                            crops = "standard") {
+
+  # Function requires lpjml argument in standard format
+  if (length(lpjml) == 1) {
+    lpjml <- c(natveg = "NULL", crop = lpjml)
+  }
+
   ####################
   ### Definitions  ###
   ####################
@@ -70,11 +76,11 @@ calcMulticroppingYieldIncrease <- function(selectyears, lpjml, climatetype,
                                         selectyears = selectyears, aggregate = FALSE),
                              selectyears)
   # crop yields in main season provided by LPJmL for LPJmL crop types (in tDM/ha)
-  cropYields <- setYears(calcOutput("LPJmL_new", years = selectyears,
-                                     version = lpjml, climatetype = climatetype,
-                                    subtype = "harvest", stage = "smoothed", # @KRISTINE: To confirm: Should this be harmonized or smoothed or flexible?
-                                    aggregate = FALSE),
-                         selectyears)
+  cropYields  <- calcOutput("YieldsLPJmL", source = lpjml,
+                            climatetype = climatetype,
+                            years = selectyears,
+                            cells = "lpjcell", aggregate = FALSE)
+
   croplist   <- getItems(grassGPPannual, dim = "crop")
   cropYields <- cropYields[, , croplist]
   getSets(cropYields)["d3.1"] <- "crop"

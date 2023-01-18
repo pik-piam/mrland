@@ -24,6 +24,15 @@
 
 calcGrassGPP <- function(selectyears, lpjml, climatetype, season) {
 
+  # Extract arguments
+  cfg <- toolLPJmLVersion(version = lpjml[["crop"]], climatetype = climatetype)
+  if (grepl("GSWP3-W5E5", climatetype)) {
+    stage       <- "smoothed"
+    climatetype <- cfg$baseline_hist
+  } else {
+    stage <- "harmonized2020"
+  }
+
   ####################
   ### Read in data ###
   ####################
@@ -31,27 +40,27 @@ calcGrassGPP <- function(selectyears, lpjml, climatetype, season) {
   # monthly irrigated grass GPP
   monthlyIrrigated <- calcOutput("LPJmL_new", subtype = "mgpp_grass_ir",
                               years = selectyears,
-                              stage = "smoothed", ### @KRISTINE: Should this be smoothed or harmonized or flexible?
-                              version = lpjml, climatetype = climatetype,
+                              stage = stage,
+                              version = lpjml[["crop"]], climatetype = climatetype,
                               aggregate = FALSE)
   # monthly irrigated grass GPP
   monthlyRainfed <- calcOutput("LPJmL_new", subtype = "mgpp_grass_rf",
                               years = selectyears,
-                              stage = "smoothed", ### @KRISTINE: Should this be smoothed or harmonized or flexible?
-                              version = lpjml, climatetype = climatetype,
+                              stage = stage,
+                              version = lpjml[["crop"]], climatetype = climatetype,
                               aggregate = FALSE)
 
   # irrigated grass GPP in irrigated growing period of crop
   grperIrrigated <- calcOutput("LPJmL_new", subtype = "cft_gpp_grass_ir",
                               years = selectyears,
-                              stage = "smoothed", ### @KRISTINE: Should this be smoothed or harmonized or flexible?
-                              version = lpjml, climatetype = climatetype,
+                              stage = stage,
+                              version = lpjml[["crop"]], climatetype = climatetype,
                               aggregate = FALSE)
   # rainfed grass GPP in rainfed growing period of crop
   grperRainfed <- calcOutput("LPJmL_new", subtype = "cft_gpp_grass_rf",
                               years = selectyears,
-                              stage = "smoothed", ### @KRISTINE: Should this be smoothed or harmonized or flexible?
-                              version = lpjml, climatetype = climatetype,
+                              stage = stage,
+                              version = lpjml[["crop"]], climatetype = climatetype,
                               aggregate = FALSE)
 
 

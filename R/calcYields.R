@@ -9,6 +9,7 @@
 #'                      "yields:EPIC-IIASA:ukesm1-0-ll:ssp585:default:3b"
 #' @param climatetype   Switch between different climate scenarios
 #' @param cells         if cellular is TRUE: "magpiecell" for 59199 cells or "lpjcell" for 67420 cells
+#' @param selectyears   Years to be returned
 #' @param weighting     use of different weights (totalCrop (default),
 #'                      totalLUspecific, cropSpecific, crop+irrigSpecific,
 #'                      avlCropland, avlCropland+avlPasture)
@@ -64,44 +65,29 @@
 #' @importFrom stringr str_split
 #' @importFrom withr local_options
 
-calcYields <- function(source = c(lpjml = "ggcmi_phase3_nchecks_9ca735cb", isimip = NULL),
+calcYields <- function(source = c(lpjml = "ggcmi_phase3_nchecks_9ca735cb", isimip = NULL), # nolint
                        climatetype = "GSWP3-W5E5:historical", cells = "magpiecell",
+                       selectyears = seq(1965, 2100, by = 5),
                        weighting = "totalCrop", multicropping = FALSE,
                        indiaYields = FALSE, scaleFactor = 0.3,
                        marginal_land = "magpie") { # nolint
 
   # Extract argument information
-  cfg           <- toolLPJmLVersion(version = source["lpjml"], climatetype = climatetype) # nolint
   areaMask      <- paste(str_split(multicropping, ":")[[1]][2],
                          str_split(multicropping, ":")[[1]][3], sep = ":")
   multicropping <- as.logical(str_split(multicropping, ":")[[1]][1])
 
+  # Set up size limit
   local_options(magclass_sizeLimit = 1e+12)
 
-  if (grepl("GSWP3-W5E5", climatetype)) {
-    stage       <- "smoothed"
-    climatetype <- cfg$baseline_hist
-  } else {
-    stage <- "harmonized2020"
-  }
-
-  lpj2mag     <- toolGetMapping("MAgPIE_LPJmL.csv", type = "sectoral", where = "mappingfolder")
-  cropsLPJmL  <- unique(lpj2mag$LPJmL)
-  irrigTypes  <- c("irrigated", "rainfed")
-  yields      <- list()
-
-  for (crop in cropsLPJmL) {
-    subdata        <- as.vector(outer(crop, irrigTypes, paste, sep = "."))
-    yields[[crop]] <- calcOutput("LPJmL_new", version = source[["lpjml"]], climatetype = climatetype, # nolint
-                                 subtype = "harvest", subdata = subdata, stage = stage, aggregate = FALSE)
-  }
-  yields  <- mbind(yields)
+  # LPJmL yields
+  yields  <- calcOutput("YieldsLPJmL", lpjml = source[["lpjml"]], # nolint
+                        climatetype = climatetype,
+                        years = selectyears,
+                        cells = cells, aggregate = FALSE)
 
   if (multicropping) {
-    ### TEMPORARY (UNTIL LPJML RUNS READY)###
-    selectyears    <- 2010 #### replace with all years (once LPJmL runs are ready)
-    yields         <- yields[, selectyears, ]
-    ### TEMPORARY (UNTIL LPJML RUNS READY)###
+
     increaseFactor <- calcOutput("MulticroppingYieldIncrease",
                                  areaMask = areaMask,
                                  lpjml = source[["lpjml"]], # nolint
@@ -118,6 +104,12 @@ calcYields <- function(source = c(lpjml = "ggcmi_phase3_nchecks_9ca735cb", isimi
                                  climatetype = climatetype,
                                  selectyears = selectyears,
                                  aggregate = FALSE)
+
+    if (cells == "magpiecell") {
+      increaseFactor <- toolCoord2Isocell(increaseFactor)
+      proxyIncrease <- toolCoord2Isocell(proxyIncrease)
+    }
+
     # Whole year yields for proxy crops (main-season yield + off-season yield)
     proxyYields <- proxyYields + proxyYields * proxyIncrease
 
@@ -126,7 +118,8 @@ calcYields <- function(source = c(lpjml = "ggcmi_phase3_nchecks_9ca735cb", isimi
   }
 
   # LPJmL to MAgPIE crops
-  yields <- toolAggregate(yields, lpj2mag, from = "LPJmL",
+  lpj2mag <- toolGetMapping("MAgPIE_LPJmL.csv", type = "sectoral", where = "mappingfolder")
+  yields  <- toolAggregate(yields, lpj2mag, from = "LPJmL",
                           to = "MAgPIE", dim = 3.1, partrel = TRUE)
 
   # Check for NAs
@@ -168,18 +161,14 @@ calcYields <- function(source = c(lpjml = "ggcmi_phase3_nchecks_9ca735cb", isimi
     yields[, , "cottn_pro"] <- proxyYields[, , "groundnut"] * calib[, , "cottn_pro"]
   }
 
-  if (cells == "magpiecell") {
-    yields <- toolCoord2Isocell(yields)
-  }
-
   if (!is.na(source["isimip"])) { # nolint
-    to_rep <- calcOutput("ISIMIP3bYields", subtype = source[["isimip"]], cells = cells, aggregate = FALSE) # nolint
-    commonVars  <- intersect(getNames(yields), getNames(to_rep))
-    commonYears <- intersect(getYears(yields), getYears(to_rep))
+    isimipYields <- calcOutput("ISIMIP3bYields", subtype = source[["isimip"]], cells = cells, aggregate = FALSE) # nolint
+    commonVars  <- intersect(getNames(yields), getNames(isimipYields))
+    commonYears <- intersect(getYears(yields), getYears(isimipYields))
 
     #  harmonize to LPJml
     cfg       <- toolLPJmLVersion(version = source["lpjml"], climatetype = climatetype) # nolint
-    repHarmon <- toolHarmonize2Baseline(x = to_rep[, commonYears, commonVars],
+    repHarmon <- toolHarmonize2Baseline(x = isimipYields[, commonYears, commonVars],
                                        base = yields[, commonYears, commonVars],
                                        ref_year = cfg$ref_year_gcm)
     gc()
@@ -192,6 +181,7 @@ calcYields <- function(source = c(lpjml = "ggcmi_phase3_nchecks_9ca735cb", isimi
 
   }
 
+  # Weight for spatial aggregation
   if (weighting == "totalCrop") {
 
     cropAreaWeight <- dimSums(calcOutput("Croparea", sectoral = "kcr", physical = TRUE, irrigation = FALSE,
@@ -268,13 +258,15 @@ calcYields <- function(source = c(lpjml = "ggcmi_phase3_nchecks_9ca735cb", isimi
   if (any(is.na(cropAreaWeight))) stop("NAs in weights.")
 
   if (cells == "lpjcell") {
-    cropAreaWeight <- addLocation(cropAreaWeight)
+    cropAreaWeight <- collapseDim(addLocation(cropAreaWeight), dim = "cell")
+    cropAreaWeight <- dimOrder(cropAreaWeight, perm = c(2, 3, 1), dim = 1)
+    getSets(cropAreaWeight)["d1.3"] <- "iso"
   }
 
+  # Special case for India case study
   if (indiaYields) {
     yields["IND", , "rainfed"] <- yields["IND", , "rainfed"] * scaleFactor
   }
-
 
   return(list(x            = yields,
               weight       = cropAreaWeight,
