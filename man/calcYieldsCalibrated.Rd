@@ -8,6 +8,7 @@ calcYieldsCalibrated(
   source = c(lpjml = "ggcmi_phase3_nchecks_9ca735cb", isimip = NULL),
   climatetype = "GSWP3-W5E5:historical",
   refYear = "y1995",
+  selectyears = seq(1965, 2100, by = 5),
   cells = "magpiecell",
   multicropping = FALSE,
   refYields = FALSE,
@@ -23,6 +24,8 @@ For isimip choose crop model/gcm/rcp/co2 combination formatted like this:
 \item{climatetype}{switch between different climate scenarios}
 
 \item{refYear}{reference year for calibration}
+
+\item{selectyears}{Years to be returned (for memory reasons)}
 
 \item{cells}{number of cells "magpiecell" for 59199 cells or
 "lpjcell" for 67420 cells}

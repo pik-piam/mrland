@@ -107,7 +107,7 @@ calcYields <- function(source = c(lpjml = "ggcmi_phase3_nchecks_9ca735cb", isimi
 
     if (cells == "magpiecell") {
       increaseFactor <- toolCoord2Isocell(increaseFactor)
-      proxyIncrease <- toolCoord2Isocell(proxyIncrease)
+      proxyIncrease  <- toolCoord2Isocell(proxyIncrease)
     }
 
     # Whole year yields for proxy crops (main-season yield + off-season yield)

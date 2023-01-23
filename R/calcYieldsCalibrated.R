@@ -6,6 +6,7 @@
 #'                      For isimip choose crop model/gcm/rcp/co2 combination formatted like this:
 #'                      "yields:EPIC-IIASA:ukesm1-0-ll:ssp585:default:3b"
 #' @param climatetype   switch between different climate scenarios
+#' @param selectyears   Years to be returned (for memory reasons)
 #' @param refYear       reference year for calibration
 #' @param refYields     assumption for baseline yields with respect to multiple cropping (e.g.,
 #'                      FALSE: single-cropped LPJmL yields used as baseline to calculate country-level yields,
@@ -68,7 +69,9 @@
 #' @importFrom withr local_options
 
 calcYieldsCalibrated <- function(source = c(lpjml = "ggcmi_phase3_nchecks_9ca735cb", isimip = NULL),
-                                 climatetype = "GSWP3-W5E5:historical", refYear = "y1995", cells = "magpiecell",
+                                 climatetype = "GSWP3-W5E5:historical",
+                                 refYear = "y1995", selectyears = seq(1965, 2100, by = 5),
+                                 cells = "magpiecell",
                                  multicropping = FALSE, refYields = FALSE,
                                  areaSource = "FAO", marginal_land = "magpie") { # nolint
 
@@ -86,9 +89,11 @@ calcYieldsCalibrated <- function(source = c(lpjml = "ggcmi_phase3_nchecks_9ca735
     yieldFAOiso    <- calcOutput("FAOYield", cut = 0.98, areaSource = areaSource,
                                  aggregate = FALSE)[, refYear, crops]
     yieldLPJmLgrid <- calcOutput("Yields", source = source, climatetype = climatetype, # nolint
+                                 selectyears = selectyears,
                                  multicropping = multicropping, marginal_land = marginal_land,
                                  aggregate = FALSE, supplementary = TRUE, cells = cells)
     yieldLPJmLbase <- calcOutput("Yields", source = source, climatetype = climatetype, # nolint
+                                 selectyears = selectyears,
                                  multicropping = refYields, marginal_land = marginal_land,
                                  aggregate = FALSE, supplementary = FALSE, cells = cells)
 
