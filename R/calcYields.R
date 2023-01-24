@@ -81,10 +81,11 @@ calcYields <- function(source = c(lpjml = "ggcmi_phase3_nchecks_9ca735cb", isimi
   local_options(magclass_sizeLimit = 1e+12)
 
   # LPJmL yields
-  yields  <- calcOutput("YieldsLPJmL", lpjml = source[["lpjml"]], # nolint
-                        climatetype = climatetype,
-                        years = selectyears,
-                        cells = cells, aggregate = FALSE)
+  yields  <- setYears(calcOutput("YieldsLPJmL", lpjml = source[["lpjml"]], # nolint
+                                 climatetype = climatetype,
+                                 years = selectyears,
+                                 cells = cells, aggregate = FALSE),
+                      selectyears)
 
   if (multicropping) {
 
