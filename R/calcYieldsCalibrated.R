@@ -88,16 +88,14 @@ calcYieldsCalibrated <- function(source = c(lpjml = "ggcmi_phase3_nchecks_9ca735
     # read FAO and LPJmL yields
     yieldFAOiso    <- calcOutput("FAOYield", cut = 0.98, areaSource = areaSource,
                                  aggregate = FALSE)[, refYear, crops]
-    yieldLPJmLgrid <- setYears(calcOutput("Yields", source = source, climatetype = climatetype, # nolint
-                                         selectyears = selectyears,
-                                         multicropping = multicropping, marginal_land = marginal_land,
-                                         aggregate = FALSE, supplementary = TRUE, cells = cells),
-                               selectyears)
-    yieldLPJmLbase <- setYears(calcOutput("Yields", source = source, climatetype = climatetype, # nolint
-                                          selectyears = selectyears,
-                                          multicropping = refYields, marginal_land = marginal_land,
-                                          aggregate = FALSE, supplementary = FALSE, cells = cells),
-                               selectyears)
+    yieldLPJmLgrid <- calcOutput("Yields", source = source, climatetype = climatetype, # nolint
+                                  selectyears = selectyears,
+                                  multicropping = multicropping, marginal_land = marginal_land,
+                                  aggregate = FALSE, supplementary = TRUE, cells = cells)
+    yieldLPJmLbase <- calcOutput("Yields", source = source, climatetype = climatetype, # nolint
+                                  selectyears = selectyears,
+                                  multicropping = refYields, marginal_land = marginal_land,
+                                  aggregate = FALSE, supplementary = FALSE, cells = cells)
 
     years          <- getYears(yieldLPJmLgrid$x, as.integer = TRUE)
     years          <- years[years >= as.integer(gsub("y", "", refYear))]
@@ -113,15 +111,16 @@ calcYieldsCalibrated <- function(source = c(lpjml = "ggcmi_phase3_nchecks_9ca735
       cropareaMAGgrid <- calcOutput("Croparea", sectoral = "kcr", physical = TRUE,
                                     cellular = TRUE,  cells = cells,
                                     irrigation = TRUE, aggregate = FALSE)[, refYear, crops]
-      # total irrigated & rainfed cropland (for correction of 0 cropland areas)
-      proxyMAGgrid    <- dimSums(cropareaMAGgrid, dim = "MAG")
 
       if (cells == "lpjcell") {
-        cropareaMAGgrid           <- collapseDim(addLocation(cropareaMAGgrid), dim = c("cell", "N"))
-        mapping                   <- toolGetMappingCoord2Country()
-        cropareaMAGgrid           <- cropareaMAGgrid[mapping$coords, , ]
+        mapping <- toolGetMappingCoord2Country()
+        cropareaMAGgrid <- collapseDim(addLocation(cropareaMAGgrid), dim = c("cell", "N"))
+        cropareaMAGgrid <- cropareaMAGgrid[mapping$coords, , ]
         getCells(cropareaMAGgrid) <- paste(mapping$coords, mapping$iso, sep = ".")
       }
+
+      # total irrigated & rainfed cropland (for correction of 0 cropland areas)
+      proxyMAGgrid    <- dimSums(cropareaMAGgrid, dim = "MAG")
 
     } else if (areaSource == "Toolbox") {
 
@@ -134,7 +133,7 @@ calcYieldsCalibrated <- function(source = c(lpjml = "ggcmi_phase3_nchecks_9ca735
     }
 
     # Aggregate to country values
-    if (cells == "lpjcell") {
+    if (cells == "magpiecell") {
 
       # Crop-specific total cropland area per country
       cropareaMAGiso <- dimSums(cropareaMAGgrid, dim = c("cell", "irrigation"))
@@ -150,7 +149,7 @@ calcYieldsCalibrated <- function(source = c(lpjml = "ggcmi_phase3_nchecks_9ca735
                                                      dim = "cell") / dimSums(cropareaMAGiso,
                                                                              dim = 3))[cropareaMAGiso == 0]
 
-    } else if (cells == "magpiecell") {
+    } else if (cells == "lpjcell") {
 
       # Crop-specific total cropland area per country
       cropareaMAGiso <- dimSums(cropareaMAGgrid, dim = c("x", "y", "irrigation"))
