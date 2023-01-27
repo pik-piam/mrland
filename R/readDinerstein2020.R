@@ -43,22 +43,27 @@ readDinerstein2020 <- function(subtype = "GSN:distinct_species_assemblages") {
     unprotectedGSNLand <- rast(paste0(
       "./GSN_distinct_species_assemblages_unprotected_land_0.5.tif"
     ))
+    id <- "DSA"
   } else if (subtype == "rare_phenomena") {
     unprotectedGSNLand <- rast(paste0(
       "./GSN_rare_phenomena_unprotected_land_0.5.tif"
     ))
+    id <- "RarePhen"
   } else if (subtype == "areas_of_intactness") {
     unprotectedGSNLand <- rast(paste0(
       "./GSN_areas_of_intactness_unprotected_land_0.5.tif"
     ))
+    id <- "AreaIntct"
   } else if (subtype == "climate_stabilisation_tier1") {
     unprotectedGSNLand <- rast(paste0(
       "./GSN_climate_stabilisation_tier1_unprotected_land_0.5.tif"
     ))
+    id <- "ClimTier1"
   } else if (subtype == "climate_stabilisation_tier2") {
     unprotectedGSNLand <- rast(paste0(
       "./GSN_climate_stabilisation_tier2_unprotected_land_0.5.tif"
     ))
+    id <- "ClimTier2"
   } else {
     stop("Please select an existing subtype")
   }
@@ -77,7 +82,7 @@ readDinerstein2020 <- function(subtype = "GSN:distinct_species_assemblages") {
   dimnames(out) <- list(
     "x.y.iso" = paste(map$coords, map$iso, sep = "."),
     "t" = NULL,
-    "data" = paste(paste0("GSN_", subtype), c("crop", "past", "forest", "other"), sep = ".")
+    "data" = paste(paste0("GSN_", id), c("crop", "past", "forest", "other"), sep = ".")
   )
 
   return(out)

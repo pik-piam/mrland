@@ -28,11 +28,16 @@
 #' @importFrom mrcommons toolCoord2Isocell
 #'
 calcIrrecoverableCarbonLand <- function(maginput = TRUE, nclasses = "seven", cells = "magpiecell") {
-  ic50 <- readSource("Noon2022", subtype = "land:IrrecovCarbon50", convert = "onlycorrect")
-  ic75 <- readSource("Noon2022", subtype = "land:IrrecovCarbon75", convert = "onlycorrect")
-  icAll <- readSource("Noon2022", subtype = "land:IrrecovCarbonAll", convert = "onlycorrect")
-
-  ic <- mbind(ic50, ic75, icAll)
+  ic <- mbind(
+    readSource("Noon2022", subtype = "land:IrrC_30pc", convert = "onlycorrect"),
+    readSource("Noon2022", subtype = "land:IrrC_40pc", convert = "onlycorrect"),
+    readSource("Noon2022", subtype = "land:IrrC_50pc", convert = "onlycorrect"),
+    readSource("Noon2022", subtype = "land:IrrC_60pc", convert = "onlycorrect"),
+    readSource("Noon2022", subtype = "land:IrrC_70pc", convert = "onlycorrect"),
+    readSource("Noon2022", subtype = "land:IrrC_80pc", convert = "onlycorrect"),
+    readSource("Noon2022", subtype = "land:IrrC_90pc", convert = "onlycorrect"),
+    readSource("Noon2022", subtype = "land:IrrC_100pc", convert = "onlycorrect")
+  )
 
   if (maginput == TRUE) {
     luh2v2 <- calcOutput("LUH2v2",
@@ -57,16 +62,26 @@ calcIrrecoverableCarbonLand <- function(maginput = TRUE, nclasses = "seven", cel
     getYears(landNoUrban) <- getYears(ic)
     # compute mismatch factor
     icTotalLand <- mbind(
-      dimSums(ic[, , "IrrecovCarbon50"], dim = 3.2),
-      dimSums(ic[, , "IrrecovCarbon75"], dim = 3.2),
-      dimSums(ic[, , "IrrecovCarbonAll"], dim = 3.2)
+      dimSums(ic[, , "IrrC_30pc"], dim = 3.2),
+      dimSums(ic[, , "IrrC_40pc"], dim = 3.2),
+      dimSums(ic[, , "IrrC_50pc"], dim = 3.2),
+      dimSums(ic[, , "IrrC_60pc"], dim = 3.2),
+      dimSums(ic[, , "IrrC_70pc"], dim = 3.2),
+      dimSums(ic[, , "IrrC_80pc"], dim = 3.2),
+      dimSums(ic[, , "IrrC_90pc"], dim = 3.2),
+      dimSums(ic[, , "IrrC_100pc"], dim = 3.2)
     )
     landMismatch <- setNames(landNoUrban, NULL) / icTotalLand
     landMismatch <- toolConditionalReplace(landMismatch, c(">1", "is.na()"), 1)
     # correct irrecoverable carbon data
-    ic[, , "IrrecovCarbon50"] <- ic[, , "IrrecovCarbon50"] * landMismatch[, , "IrrecovCarbon50"]
-    ic[, , "IrrecovCarbon75"] <- ic[, , "IrrecovCarbon75"] * landMismatch[, , "IrrecovCarbon75"]
-    ic[, , "IrrecovCarbonAll"] <- ic[, , "IrrecovCarbonAll"] * landMismatch[, , "IrrecovCarbonAll"]
+    ic[, , "IrrC_30pc"] <- ic[, , "IrrC_30pc"] * landMismatch[, , "IrrC_30pc"]
+    ic[, , "IrrC_40pc"] <- ic[, , "IrrC_40pc"] * landMismatch[, , "IrrC_40pc"]
+    ic[, , "IrrC_50pc"] <- ic[, , "IrrC_50pc"] * landMismatch[, , "IrrC_50pc"]
+    ic[, , "IrrC_60pc"] <- ic[, , "IrrC_60pc"] * landMismatch[, , "IrrC_60pc"]
+    ic[, , "IrrC_70pc"] <- ic[, , "IrrC_70pc"] * landMismatch[, , "IrrC_70pc"]
+    ic[, , "IrrC_80pc"] <- ic[, , "IrrC_80pc"] * landMismatch[, , "IrrC_80pc"]
+    ic[, , "IrrC_90pc"] <- ic[, , "IrrC_90pc"] * landMismatch[, , "IrrC_90pc"]
+    ic[, , "IrrC_100pc"] <- ic[, , "IrrC_100pc"] * landMismatch[, , "IrrC_100pc"]
 
     if (nclasses %in% c("seven", "nine")) {
 
@@ -127,7 +142,6 @@ calcIrrecoverableCarbonLand <- function(maginput = TRUE, nclasses = "seven", cel
         setNames(secdother, paste(getNames(ic, dim = 1), "secdother", sep = "."))
       )
     }
-
   } else {
     out <- ic
   }
@@ -143,7 +157,8 @@ calcIrrecoverableCarbonLand <- function(maginput = TRUE, nclasses = "seven", cel
     weight = NULL,
     unit = "Mha",
     description = paste(
-      "Unprotected land area that contains 50 %, 75% and 100%",
+      "Unprotected land area that contains",
+      "30 %, 40 %, 50 %, 60 %, 70 %, 80%, 90 % and 100%",
       "of irrecoverable carbon as defined in Noon et al (2022)."
     ),
     isocountries = FALSE

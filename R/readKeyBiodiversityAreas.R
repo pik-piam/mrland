@@ -39,7 +39,7 @@ readKeyBiodiversityAreas <- function() {
   dimnames(out) <- list(
     "x.y.iso" = paste(map$coords, map$iso, sep = "."),
     "t" = NULL,
-    "data" = c("crop", "past", "forest", "other")
+    "data" = paste("KBA", c("crop", "past", "forest", "other"), sep = ".")
   )
 
   return(out)
