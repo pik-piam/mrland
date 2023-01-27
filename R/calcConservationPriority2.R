@@ -31,7 +31,7 @@ calcConservationPriority2 <- function(cells = "magpiecell", nclasses = "seven") 
   # ------------------------------
   kba <- calcOutput("KeyBiodiversityAreas",
     maginput = TRUE, nclasses = nclasses,
-    cells = "lpjcell", aggregate = FALSE
+    cells = cells, aggregate = FALSE
   )
 
   # ---------------------------
@@ -39,7 +39,7 @@ calcConservationPriority2 <- function(cells = "magpiecell", nclasses = "seven") 
   # ---------------------------
   gsn <- calcOutput("GlobalSafetyNet",
     maginput = TRUE, nclasses = nclasses,
-    cells = "lpjcell", aggregate = FALSE
+    cells = cells, aggregate = FALSE
   )
 
   # ----------------------------------
@@ -47,7 +47,7 @@ calcConservationPriority2 <- function(cells = "magpiecell", nclasses = "seven") 
   # ----------------------------------
   cca <- calcOutput("CriticalConnectivityAreas",
     maginput = TRUE, nclasses = nclasses,
-    cells = "lpjcell", aggregate = FALSE
+    cells = cells, aggregate = FALSE
   )
 
   # ------------------------------
@@ -55,7 +55,7 @@ calcConservationPriority2 <- function(cells = "magpiecell", nclasses = "seven") 
   # ------------------------------
   irrC <- calcOutput("IrrecoverableCarbonLand",
     maginput = TRUE, nclasses = nclasses,
-    cells = "lpjcell", aggregate = FALSE
+    cells = cells, aggregate = FALSE
   )
 
   # -------------------------------------------------
@@ -63,7 +63,7 @@ calcConservationPriority2 <- function(cells = "magpiecell", nclasses = "seven") 
   # -------------------------------------------------
   bhifl <- calcOutput("BHIFL",
     nclasses = nclasses,
-    cells = "lpjcell", aggregate = FALSE
+    cells = cells, aggregate = FALSE
   )
 
   # -------------------------------------------------
@@ -71,7 +71,7 @@ calcConservationPriority2 <- function(cells = "magpiecell", nclasses = "seven") 
   # -------------------------------------------------
   pblHalfEarth <- calcOutput("HalfEarth",
     nclasses = nclasses,
-    cells = "lpjcell", aggregate = FALSE
+    cells = cells, aggregate = FALSE
   )
 
   getNames(pblHalfEarth) <- paste0("PBL_", getNames(pblHalfEarth))
@@ -95,7 +95,7 @@ calcConservationPriority2 <- function(cells = "magpiecell", nclasses = "seven") 
 
   # Land area (in Mha):
   luIni <- calcOutput("LanduseInitialisation",
-    cellular = TRUE, cells = "lpjcell",
+    cellular = TRUE, cells = cells,
     nclasses = nclasses, input_magpie = TRUE,
     years = "y1995", aggregate = FALSE
   )
@@ -106,7 +106,7 @@ calcConservationPriority2 <- function(cells = "magpiecell", nclasses = "seven") 
   thirtySum <- dimSums(thirty, c(1, 3))
   scalingFactor <- target / thirtySum
 
-  # KBAs, DSAs and CCAs are rescaled from 16 to 15 %
+  # KBAs, DSAs and CCAs are rescaled from ~16 % to 15 %
   thirty <- thirty * scalingFactor
 
   # --------------------------------------------------
