@@ -4,21 +4,21 @@
 #' Gonzalez-Roglich, M., Hole, D. G., Rockström, J., & Turner, W. R. (2022). Mapping the
 #' irrecoverable carbon in Earth’s ecosystems. Nature Sustainability, 5(1),
 #' Article 1. https://doi.org/10.1038/s41893-021-00803-6
-#' @param subtype Defines whether carbon data or land area and related subtypes should be returned (see options below).
+#' Protected areas were masked at a spatial resolution of 10 arc seconds
+#' before aggregating the data to 0.5°.
+
+#' @param subtype Defines whether carbon data or land area and related subtypes should be
+#' returned (see options below).
 #' Carbon or land subtypes need to be specified via ":"
-#' The different subtypes for land are:
-#' \itemize{
-#' \item \code{"IrrecovCarbon50"}: Unprotected land (specified for different land types) that covers the
-#' highest 50 % of all irrecoverable carbon stocks, as defined in Noon et al. (2022).
-#' \item \code{"IrrecovCarbon75"}: Unprotected land (specified for different land types) that covers the
-#' highest 75 % of all irrecoverable carbon stocks.
-#' \item \code{"IrrecovCarbonAll"}: Unprotected land (specified for different land types) that covers
-#' all irrecoverable carbon stocks.
-#' }
+#' The different subtypes for land are: "IrrC_30pc", "IrrC_40pc", "IrrC_50pc",
+#' "IrrC_60pc", "IrrC_70pc", "IrrC_80pc", "IrrC_90pc", "IrrC_100pc"
+#' which corresponds to the land area that was unprotected in 2020 and is covered by the respective
+#' percentile of all irrecoverable carbon. \code{IrrC_50pc} e.g. returns all unprotected land that
+#' contains the top 50\,\% of global irrecoverable carbon.
 
 #' @return Returns magpie objects with the area of unprotected irrecoverable carbon land per grid cell
 #' @author Patrick v. Jeetze
-#'
+
 #' @examples
 #' \dontrun{
 #' readSource("Noon2022", convert = "onlycorrect")
@@ -29,7 +29,7 @@
 #' @importFrom mrcommons toolGetMappingCoord2Country
 #'
 
-readNoon2022 <- function(subtype = "land:IrrecovCarbon50") {
+readNoon2022 <- function(subtype = "land:IrrC_50pc") {
 
   # extract subtype
   datatype <- unlist(strsplit(subtype, split = ":"))[1]
@@ -42,20 +42,45 @@ readNoon2022 <- function(subtype = "land:IrrecovCarbon50") {
   if (datatype == "land") {
 
     # read data
-    if (subtype == "IrrecovCarbon50") {
+    if (subtype == "IrrC_30pc") {
       unprotectedICLand <- rast(paste0(
         "./unprotected_irrecoverable_C_land",
-        "/Irrecoverable_C_50perc_unprotected_land_area_0.5deg.tif"
+        "/Irrecoverable_C_30pc_unprotected_land_area_0.5deg.tif"
       ))
-    } else if (subtype == "IrrecovCarbon75") {
+    } else if (subtype == "IrrC_40pc") {
       unprotectedICLand <- rast(paste0(
         "./unprotected_irrecoverable_C_land",
-        "/Irrecoverable_C_75perc_unprotected_land_area_0.5deg.tif"
+        "/Irrecoverable_C_40pc_unprotected_land_area_0.5deg.tif"
       ))
-    } else if (subtype == "IrrecovCarbonAll") {
+    } else if (subtype == "IrrC_50pc") {
       unprotectedICLand <- rast(paste0(
         "./unprotected_irrecoverable_C_land",
-        "/Irrecoverable_C_all_unprotected_land_area_0.5deg.tif"
+        "/Irrecoverable_C_50pc_unprotected_land_area_0.5deg.tif"
+      ))
+    } else if (subtype == "IrrC_60pc") {
+      unprotectedICLand <- rast(paste0(
+        "./unprotected_irrecoverable_C_land",
+        "/Irrecoverable_C_60pc_unprotected_land_area_0.5deg.tif"
+      ))
+    } else if (subtype == "IrrC_70pc") {
+      unprotectedICLand <- rast(paste0(
+        "./unprotected_irrecoverable_C_land",
+        "/Irrecoverable_C_70pc_unprotected_land_area_0.5deg.tif"
+      ))
+    } else if (subtype == "IrrC_80pc") {
+      unprotectedICLand <- rast(paste0(
+        "./unprotected_irrecoverable_C_land",
+        "/Irrecoverable_C_80pc_unprotected_land_area_0.5deg.tif"
+      ))
+    } else if (subtype == "IrrC_90pc") {
+      unprotectedICLand <- rast(paste0(
+        "./unprotected_irrecoverable_C_land",
+        "/Irrecoverable_C_90pc_unprotected_land_area_0.5deg.tif"
+      ))
+    } else if (subtype == "IrrC_100pc") {
+      unprotectedICLand <- rast(paste0(
+        "./unprotected_irrecoverable_C_land",
+        "/Irrecoverable_C_100pc_unprotected_land_area_0.5deg.tif"
       ))
     } else {
       stop("Please select an existing subtype")
