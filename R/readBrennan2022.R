@@ -29,9 +29,6 @@
 
 readBrennan2022 <- function(subtype = "KBA_GSN_masked") {
 
-  # extract subtype
-  subtype <- unlist(strsplit(subtype, split = ":"))[2]
-
   # Set up 'terra' options
   terraOptions(tempdir = local_tempdir(tmpdir = getConfig("tmpfolder")), todisk = TRUE, memfrac = 0.5)
   defer(terraOptions(tempdir = tempdir()))

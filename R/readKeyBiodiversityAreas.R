@@ -23,11 +23,7 @@ readKeyBiodiversityAreas <- function() {
   terraOptions(tempdir = local_tempdir(tmpdir = getConfig("tmpfolder")), todisk = TRUE, memfrac = 0.5)
   defer(terraOptions(tempdir = tempdir()))
 
-
-  unprotectedKBALand <- rast(paste0(
-    "./unprotected_irrecoverable_C_land",
-    "/Irrecoverable_C_100pc_unprotected_land_area_0.5deg.tif"
-  ))
+  unprotectedKBALand <- rast("./kba_land_unprotected_0.5.tif")
 
   # get spatial mapping
   map <- toolGetMappingCoord2Country(pretty = TRUE)
