@@ -140,7 +140,7 @@ calcCriticalConnectivityAreas <- function(maginput = TRUE, nclasses = "seven", c
     weight = NULL,
     unit = "Mha",
     description = paste(
-      "Unprotected land area of the Global Safety Net (Dinerstein et al. 2020)."
+      "Unprotected land area in Critical Connectivity Areas (Brennan et al. 2022)."
     ),
     isocountries = FALSE
   ))

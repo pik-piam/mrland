@@ -131,7 +131,7 @@ calcKeyBiodiversityAreas <- function(maginput = TRUE, nclasses = "seven", cells 
     weight = NULL,
     unit = "Mha",
     description = paste(
-      "Unprotected land area of the Global Safety Net (Dinerstein et al. 2020)."
+      "Unprotected land area in Key Biodiversity Areas"
     ),
     isocountries = FALSE
   ))
