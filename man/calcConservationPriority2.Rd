@@ -22,7 +22,7 @@ primary and secondary non-forest vegetation and therefore returns "crop", "past"
 magpie object in cellular resolution with different protection options in conservation priority areas
 }
 \description{
-Function calculates land area in conservation priority areas
+Function calculates land area in conservation priority areas that was unprotected in 2020 (WDPA).
 }
 \examples{
 \dontrun{
