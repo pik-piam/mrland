@@ -12,6 +12,7 @@
 #' differentiation of primary and secondary non-forest vegetation and therefore returns
 #' "crop", "past", "range", "forestry", "primforest", "secdforest", "urban", "primother" and "secdother"
 #' }
+#' @param unprotected if TRUE only KBA land that is currently unprotected is returned
 #' @param cells magpiecell (59199 cells) or lpjcell (67420 cells)
 #'
 #' @return List with a magpie object
@@ -26,10 +27,15 @@
 #'
 #' @importFrom mrcommons toolCoord2Isocell
 #'
-calcKeyBiodiversityAreas <- function(maginput = TRUE, nclasses = "seven", cells = "magpiecell") {
-  kba <- readSource("KeyBiodiversityAreas", convert = "onlycorrect")
+calcKeyBiodiversityAreas <- function(maginput = TRUE, unprotected = TRUE,
+                                     nclasses = "seven", cells = "magpiecell") {
+  if (unprotected) {
+    kba <- readSource("KeyBiodiversityAreas", subtype = "unprotected", convert = "onlycorrect")
+  } else {
+    kba <- readSource("KeyBiodiversityAreas", subtype = "all", convert = "onlycorrect")
+  }
 
-  if (maginput == TRUE) {
+  if (maginput) {
     luh2v2 <- calcOutput("LUH2v2",
       landuse_types = "LUH2v2", aggregate = FALSE,
       cellular = TRUE, cells = "lpjcell", irrigation = FALSE,

@@ -4,7 +4,10 @@
 \alias{readKeyBiodiversityAreas}
 \title{readKeyBiodiversityAreas}
 \usage{
-readKeyBiodiversityAreas()
+readKeyBiodiversityAreas(subtype = "unprotected")
+}
+\arguments{
+\item{subtype}{"unprotected" or "all"}
 }
 \value{
 Returns magpie objects with the area covered by unprotected Key Biodiversity Areas per grid cell

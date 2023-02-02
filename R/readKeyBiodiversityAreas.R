@@ -3,6 +3,8 @@
 #' (https://www.keybiodiversityareas.org/) that was unprotected in 2020.
 #' Protected areas were masked at a spatial resolution of 10 arc seconds
 #' before aggregating the data to 0.5°.
+
+#' @param subtype "unprotected" or "all"
 #'
 #' @return Returns magpie objects with the area covered by unprotected Key Biodiversity Areas per grid cell
 #' @author Patrick v. Jeetze
@@ -17,22 +19,26 @@
 #' @importFrom mrcommons toolGetMappingCoord2Country
 #'
 
-readKeyBiodiversityAreas <- function() {
+readKeyBiodiversityAreas <- function(subtype = "unprotected") {
 
   # Set up 'terra' options
   terraOptions(tempdir = local_tempdir(tmpdir = getConfig("tmpfolder")), todisk = TRUE, memfrac = 0.5)
   defer(terraOptions(tempdir = tempdir()))
 
-  unprotectedKBALand <- rast("./kba_land_unprotected_0.5.tif")
+  if (subtype == "unprotected") {
+    kbaLand <- rast("./kba_land_unprotected_0.5.tif")
+  } else if (subtype == "all") {
+    kbaLand <- rast("./kba_land_0.5.tif")
+  }
 
   # get spatial mapping
   map <- toolGetMappingCoord2Country(pretty = TRUE)
   # transform raster to magpie object
   out <- mbind(
-    as.magpie(extract(unprotectedKBALand[["crop"]], map[c("lon", "lat")])[, "crop"], spatial = 1),
-    as.magpie(extract(unprotectedKBALand[["past"]], map[c("lon", "lat")])[, "past"], spatial = 1),
-    as.magpie(extract(unprotectedKBALand[["forest"]], map[c("lon", "lat")])[, "forest"], spatial = 1),
-    as.magpie(extract(unprotectedKBALand[["other"]], map[c("lon", "lat")])[, "other"], spatial = 1)
+    as.magpie(extract(kbaLand[["crop"]], map[c("lon", "lat")])[, "crop"], spatial = 1),
+    as.magpie(extract(kbaLand[["past"]], map[c("lon", "lat")])[, "past"], spatial = 1),
+    as.magpie(extract(kbaLand[["forest"]], map[c("lon", "lat")])[, "forest"], spatial = 1),
+    as.magpie(extract(kbaLand[["other"]], map[c("lon", "lat")])[, "other"], spatial = 1)
   )
 
   # set dimension names

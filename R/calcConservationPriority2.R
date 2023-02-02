@@ -1,6 +1,13 @@
 #' @title calcConservationPriority2
 #' @description Function calculates land area in conservation priority areas that was unprotected in 2020 (WDPA).
 #'
+#' @param consvBaseYear Reference year for land conservation. Chosing "y1750", for instance, means that
+#' the reference land use is based on the year 1750 ('pre-industrial') so
+#' land use can be restored to the pre-industrial state in conservation priority areas.
+#' Any year available in the LUH2v2 data set can be chosen. Historic land use in the LUH2v2 data
+#' is based on the HYDE data base.
+#' The choice "y2020" provides a special case, in which reference land use is based on the 2020 ESA CCI LULC map,
+#' derived at a spatial resolution of 300 x 300 Meter.
 #' @param cells number of cells of landmask (select "magpiecell" for 59199 cells or "lpjcell" for 67420 cells)
 #' @param nclasses Options are either "seven" or "nine".
 #' \itemize{
@@ -24,7 +31,11 @@
 #' @importFrom mrcommons toolCoord2Isocell
 #'
 
-calcConservationPriority2 <- function(cells = "magpiecell", nclasses = "seven") {
+calcConservationPriority2 <- function(consvBaseYear = "y1750", cells = "magpiecell", nclasses = "seven") {
+
+  # ===============================
+  # Get conservation templates
+  # ===============================
 
   # ------------------------------
   # Key Biodiversity Areas (KBAs)
@@ -35,7 +46,7 @@ calcConservationPriority2 <- function(cells = "magpiecell", nclasses = "seven") 
   # https://www.iucn.org/resources/conservation-tool/key-biodiversity-areas
 
   kba <- calcOutput("KeyBiodiversityAreas",
-    maginput = TRUE, nclasses = nclasses,
+    maginput = TRUE, unprotected = TRUE,  nclasses = nclasses,
     cells = cells, aggregate = FALSE
   )
 
@@ -191,17 +202,92 @@ calcConservationPriority2 <- function(cells = "magpiecell", nclasses = "seven") 
   gsnHalfEarth <- dimSums(gsnHalfEarth, dim = 3.1)
   getNames(gsnHalfEarth) <- paste("GSN_HalfEarth", getNames(gsnHalfEarth), sep = ".")
 
-  # ---------------------------------------
-  # Bind all conservation priority areas
-  # ---------------------------------------
+  # ======================================
+  # Prepare output
+  # ======================================
   # Combine all templates for the output
-  cp <- mbind(thirty, kba, gsn, bhifl, irrC, cca, gsnHalfEarth, pblHalfEarth)
+  consvPrio <- mbind(thirty, kba, gsn, bhifl, irrC, cca, gsnHalfEarth, pblHalfEarth)
+
+  # ----------------------------
+  # Correct data
+  # ----------------------------
+  # Due to small mismatches conservation priority land
+  # in the additive options can be larger than total
+  # land in a grid cell. This is corrected in the following.
+
+  luh2v2 <- readSource("LUH2v2", subtype = paste0("states_", gsub("y", "", consvBaseYear), "to2015"),
+                       convert = "onlycorrect")[, consvBaseYear, ]
+  luh2v2 <- toolCoord2Isocell(luh2v2, cells = cells)
+  getYears(luh2v2) <- NULL
+  getCells(luh2v2) <- getCells(consvPrio)
+
+  # get total land area
+  totLand <- dimSums(luh2v2, dim = 3)
+
+  # urban land
+  urbanLand <- calcOutput("UrbanLandFuture",
+    subtype = "LUH2v2", aggregate = FALSE,
+    timestep = "5year", cells = cells
+  )
+
+  # make sure that conservation priority land is not greater than total land area minus urban area
+  landNoUrban <- setYears(totLand, "y2020") - setCells(urbanLand[, "y2020", "SSP2"], getCells(totLand))
+  getYears(landNoUrban) <- getYears(consvPrio)
+  # compute mismatch factor
+  landMismatch <- setNames(landNoUrban, NULL) / dimSums(consvPrio, dim = 3.2)
+  landMismatch <- toolConditionalReplace(landMismatch, c(">1", "is.na()"), 1)
+  # correct conservation priority data
+  consvPrio <- consvPrio * landMismatch
+
+  # -------------------------------
+  # Define conservation base year
+  # -------------------------------
+  # Historic land use is derived from the LUH2v2 data.
+  # Based on historic land use, shares of the different
+  # land types are extracted and applied proportionally
+  # in conservation priority areas.
+
+  if (consvBaseYear != "y2020") {
+    # Reclassify LUH classes to MAgPIE classes
+    if (nclasses == "seven") {
+      consvBaseLand <- mbind(
+        setNames(dimSums(luh2v2[, , c("c3ann", "c4ann", "c3per", "c4per", "c3nfx")], dim = 3), "crop"),
+        setNames(dimSums(luh2v2[, , c("pastr", "range")], dim = 3), "past"),
+        setNames(luh2v2[, , c("primf", "secdf")], c("primforest", "secdforest")),
+        setNames(new.magpie(getCells(luh2v2), fill = 0), "forestry"),
+        luh2v2[, , c("urban")],
+        setNames(dimSums(luh2v2[, , c("primn", "secdn")], dim = 3), "other")
+      )
+    } else if (nclasses == "nine") {
+      consvBaseLand <- mbind(
+        setNames(dimSums(luh2v2[, , c("c3ann", "c4ann", "c3per", "c4per", "c3nfx")], dim = 3), "crop"),
+        setNames(luh2v2[, , "pastr"], "past"),
+        setNames(luh2v2[, , "range"], "range"),
+        setNames(luh2v2[, , c("primf", "secdf")], c("primforest", "secdforest")),
+        setNames(new.magpie(getCells(luh2v2), fill = 0), "forestry"),
+        luh2v2[, , c("urban")],
+        setNames(luh2v2[, , "primn"], "primother"),
+        setNames(luh2v2[, , "secdn"], "secdother")
+      )
+    }
+
+    # calculate share of land types in conservation base year
+    consvBaseLandShr <- consvBaseLand / totLand
+    consvBaseLandShr <- toolConditionalReplace(consvBaseLandShr, conditions = "is.na()", 0)
+
+    # Multiply total conservation priority land with
+    # share of land types in conservation base year
+    consvPrio <- dimSums(consvPrio, dim = 3.2) * consvBaseLandShr
+  }
 
   return(list(
-    x = cp,
+    x = consvPrio,
     weight = NULL,
     unit = "Mha",
-    description = "Land conservation priority targets in each land type",
+    description = paste0("Land conservation priority targets in each land type. ",
+                        "Land use in conservation priority areas is based on the ",
+                        "reference year ", consvBaseYear,
+                        ifelse(gsub("y", "", consvBaseYear) <= 1800, " (pre-industrial)", "")),
     isocountries = FALSE
   ))
 }
