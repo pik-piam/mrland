@@ -10,6 +10,10 @@
 #' @param lpjml         LPJmL version required for respective inputs: natveg or crop
 #' @param climatetype   Switch between different climate scenarios or
 #'                      historical baseline "GSWP3-W5E5:historical"
+#' @param temperatureGCM GCM Climate data for temperature.
+#'                       Specify data source, climate scenario, ssp, years
+#'                       in the following format:
+#'                       "ISIMIP3b:IPSL-CM6A-LR:ssp126:1850-2100"
 #' @param minThreshold  Threshold of monthly grass GPP to be classified as
 #'                      growing period month
 #'                      Unit of the threshold is gC/m^2.
@@ -32,6 +36,7 @@
 #'
 
 calcMulticroppingSuitability <- function(selectyears, lpjml, climatetype,
+                                         temperatureGCM = "ISIMIP3b:IPSL-CM6A-LR:ssp126:1850-2100",
                                          minThreshold = 100, suitability = "endogenous") {
   ####################
   ### Read in data ###
@@ -76,6 +81,23 @@ calcMulticroppingSuitability <- function(selectyears, lpjml, climatetype,
     ### Calculations ###
     ####################
 
+    # Crop-specific max/min photosynthesis temperatures
+    temp <- calcOutput("PhotosynthesisTemperature", aggregate = FALSE)
+    meanMonthTemp <- calcOutput("GCMClimate_new",
+                                subtype = paste0(temperatureGCM, ":tas:monthly_mean"),
+                                smooth = 0, # KRISTINE: Or should I smooth them?
+                                cells = "lpjcell", aggregate = FALSE)[, selectyears, ]
+    monthTempLimit <- meanMonthTemp
+    monthTempLimit <- add_dimension(monthTempLimit, dim = 3.1,
+                                    add = "crop", nm = getItems(temp, dim = "crop"))
+
+    minTemp <- (monthTempLimit >= collapseNames(temp[, , "min"]))
+    maxTemp <- (monthTempLimit <= collapseNames(temp[, , "max"]))
+
+    monthTempLimit[, , ] <- 0
+    monthTempLimit[minTemp & maxTemp] <- 1
+    monthTempLimit <- dimSums(monthTempLimit, dim = 3.2) # dim "day" or "month"
+
     # Calculate length of growing period
     lgp       <- grassGPPmonth
     lgp[, , ] <- 0
@@ -85,14 +107,17 @@ calcMulticroppingSuitability <- function(selectyears, lpjml, climatetype,
     lgp <- dimSums(lgp, dim = "month")
 
     ### Multicropping Mask  ###
-    ## Rule 1: Minimum length of growing period of 8 months
-    rule1 <- lgp > 8
+    ## Rule 1: Temperature range reached in at least 9 months
+    rule1 <- monthTempLimit > 8
 
-    ## Rule 2: Multicropping must lead to at least one full additional harvest
-    rule2 <- (grassGPPannual / grassGPPgrper) > 2
+    ## Rule 2: Minimum length of growing period of 9 months
+    rule2 <- lgp > 8
+
+    ## Rule 3: Multicropping must lead to at least one full additional harvest
+    rule3 <- (grassGPPannual / grassGPPgrper) > 2
 
     ### Cells suitable for multiple cropping given grass GPP & specified rules
-    suitMC[rule1 & rule2] <- 1
+    suitMC[rule1 & rule2 & rule3] <- 1
 
   } else if (suitability == "exogenous") {
     ####################

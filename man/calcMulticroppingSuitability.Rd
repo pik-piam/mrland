@@ -8,6 +8,7 @@ calcMulticroppingSuitability(
   selectyears,
   lpjml,
   climatetype,
+  temperatureGCM = "ISIMIP3b:IPSL-CM6A-LR:ssp126:1850-2100",
   minThreshold = 100,
   suitability = "endogenous"
 )
@@ -19,6 +20,11 @@ calcMulticroppingSuitability(
 
 \item{climatetype}{Switch between different climate scenarios or
 historical baseline "GSWP3-W5E5:historical"}
+
+\item{temperatureGCM}{GCM Climate data for temperature.
+Specify data source, climate scenario, ssp, years
+in the following format:
+"ISIMIP3b:IPSL-CM6A-LR:ssp126:1850-2100"}
 
 \item{minThreshold}{Threshold of monthly grass GPP to be classified as
 growing period month

@@ -81,7 +81,7 @@ calcYields <- function(source = c(lpjml = "ggcmi_phase3_nchecks_9ca735cb", isimi
   local_options(magclass_sizeLimit = 1e+12)
 
   # LPJmL yields
-  yields  <- setYears(calcOutput("YieldsLPJmL", lpjml = source[["lpjml"]], # nolint
+  yields  <- setYears(calcOutput("YieldsLPJmL", lpjml = source[["lpjml"]], # nolint: undesirable_function_linter.
                                  climatetype = climatetype,
                                  years = selectyears,
                                  cells = cells, aggregate = FALSE),
@@ -91,7 +91,7 @@ calcYields <- function(source = c(lpjml = "ggcmi_phase3_nchecks_9ca735cb", isimi
 
     increaseFactor <- calcOutput("MulticroppingYieldIncrease",
                                  areaMask = areaMask,
-                                 lpjml = source[["lpjml"]], # nolint
+                                 lpjml = source[["lpjml"]], # nolint: undesirable_function_linter.
                                  climatetype = climatetype,
                                  selectyears = selectyears,
                                  aggregate = FALSE)
@@ -101,7 +101,7 @@ calcYields <- function(source = c(lpjml = "ggcmi_phase3_nchecks_9ca735cb", isimi
     proxyYields   <- yields[, , c("groundnut", "maize")]
     proxyIncrease <- calcOutput("MulticroppingYieldIncrease", crops = "proxy",
                                  areaMask = areaMask,
-                                 lpjml = source[["lpjml"]], # nolint
+                                 lpjml = source[["lpjml"]], # nolint: undesirable_function_linter.
                                  climatetype = climatetype,
                                  selectyears = selectyears,
                                  aggregate = FALSE)
@@ -162,13 +162,15 @@ calcYields <- function(source = c(lpjml = "ggcmi_phase3_nchecks_9ca735cb", isimi
     yields[, , "cottn_pro"] <- proxyYields[, , "groundnut"] * calib[, , "cottn_pro"]
   }
 
-  if (!is.na(source["isimip"])) { # nolint
-    isimipYields <- calcOutput("ISIMIP3bYields", subtype = source[["isimip"]], cells = cells, aggregate = FALSE) # nolint
+  if (!is.na(source["isimip"])) { # nolint: undesirable_function_linter.
+    isimipYields <- calcOutput("ISIMIP3bYields", subtype = source[["isimip"]], # nolint: undesirable_function_linter.
+                               cells = cells, aggregate = FALSE)
     commonVars  <- intersect(getNames(yields), getNames(isimipYields))
     commonYears <- intersect(getYears(yields), getYears(isimipYields))
 
     #  harmonize to LPJml
-    cfg       <- toolLPJmLVersion(version = source["lpjml"], climatetype = climatetype) # nolint
+    cfg       <- toolLPJmLVersion(version = source["lpjml"], # nolint: undesirable_function_linter.
+                                  climatetype = climatetype)
     repHarmon <- toolHarmonize2Baseline(x = isimipYields[, commonYears, commonVars],
                                        base = yields[, commonYears, commonVars],
                                        ref_year = cfg$ref_year_gcm)
