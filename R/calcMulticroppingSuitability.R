@@ -83,10 +83,10 @@ calcMulticroppingSuitability <- function(selectyears, lpjml, climatetype,
 
     # Crop-specific max/min photosynthesis temperatures
     temp <- calcOutput("PhotosynthesisTemperature", aggregate = FALSE)
-    meanMonthTemp <- calcOutput("GCMClimate_new",
-                                subtype = paste0(temperatureGCM, ":tas:monthly_mean"),
-                                smooth = 0, # KRISTINE: Or should I smooth them?
-                                cells = "lpjcell", aggregate = FALSE)[, selectyears, ]
+    meanMonthTemp <- collapseNames(calcOutput("GCMClimate_new",
+                                              subtype = paste0(temperatureGCM, ":tas:monthly_mean"),
+                                              smooth = 0, # KRISTINE: Or should I smooth them?
+                                              cells = "lpjcell", aggregate = FALSE))[, selectyears, ]
     monthTempLimit <- meanMonthTemp
     monthTempLimit <- add_dimension(monthTempLimit, dim = 3.1,
                                     add = "crop", nm = getItems(temp, dim = "crop"))
@@ -96,7 +96,7 @@ calcMulticroppingSuitability <- function(selectyears, lpjml, climatetype,
 
     monthTempLimit[, , ] <- 0
     monthTempLimit[minTemp & maxTemp] <- 1
-    monthTempLimit <- dimSums(monthTempLimit, dim = 3.2) # dim "day" or "month"
+    monthTempLimit <- dimSums(monthTempLimit, dim = "month")
 
     # Calculate length of growing period
     lgp       <- grassGPPmonth

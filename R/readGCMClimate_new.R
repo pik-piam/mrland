@@ -36,15 +36,15 @@ readGCMClimate_new <- function(subtype = "ISIMIP3b:IPSL-CM6A-LR:historical:1850-
 
   .prepareLPJinput <- function(subset = NULL) {
 
-    filename   <- Sys.glob(c("*.bin", "*.clm"))
-    filetype   <- tail(unlist(strsplit(filename, "\\.")), 1)
+    filename <- Sys.glob(c("*.bin", "*.clm"))
+    filetype <- tail(unlist(strsplit(filename, "\\.")), 1)
 
     if (filetype == "clm") {
 
       filedata     <- file(description = filename, open = "rb",
                            blocking = TRUE, encoding = getOption("encoding"))
       seek(filedata, where = 15, origin = "start")
-      inHeader    <- as.numeric(readBin(filedata, what = integer(), size = 4,
+      inHeader     <- as.numeric(readBin(filedata, what = integer(), size = 4,
                                          n = 5, endian = .Platform$endian))
       startyear    <- inHeader[1]
       nyear        <- inHeader[2]
@@ -53,7 +53,6 @@ readGCMClimate_new <- function(subtype = "ISIMIP3b:IPSL-CM6A-LR:historical:1850-
       close(filedata)
 
     } else {
-
       stop("File format of GCMClimate data unknown. Please provide .clm file format.")
     }
 
@@ -97,16 +96,17 @@ readGCMClimate_new <- function(subtype = "ISIMIP3b:IPSL-CM6A-LR:historical:1850-
       yearsets    <- split(years, ceiling(seq_along(years) / bunchLength))
 
       # define month mapping
-      monthLength  <- c(jan = 31, feb = 28, mar = 31, apr = 30,
+      monthLength <- c(jan = 31, feb = 28, mar = 31, apr = 30,
                         may = 31, jun = 30, jul = 31, aug = 31,
                         sep = 30, oct = 31, nov = 30, dec = 31)
-      daysMonth    <- NULL
+      daysMonth   <- NULL
       for (m in 1:12) {
         daysMonth <- c(daysMonth, rep(names(monthLength[m]),
                                       monthLength[m]))
       }
-      month2day    <- cbind(day   = 1:sum(monthLength),
-                            month = daysMonth)
+      month2day   <- cbind(day   = 1:sum(monthLength),
+                           month = daysMonth)
+      monthLength <- as.magpie(monthLength)
 
       # create output object
       x <- NULL
@@ -129,17 +129,18 @@ readGCMClimate_new <- function(subtype = "ISIMIP3b:IPSL-CM6A-LR:historical:1850-
         getNames(tmp) <- as.character(seq(1, 365, 1))
 
         # aggregate days to month
-        tmp      <- toolAggregate(tmp,
-                                  rel  = month2day,
-                                  from = "day",
-                                  to   = "month",
-                                  dim  = 3)
+        tmp <- toolAggregate(tmp,
+                             rel  = month2day,
+                             from = "day",
+                             to   = "month",
+                             dim  = 3)
 
         if (subset == "monthly_mean") {
-          tmp <- tmp / as.magpie(monthLength)
+          tmp <- tmp / monthLength
         }
 
         x <- mbind(x, tmp)
+        getSets(x) <- c("fake", "year", "month")
       }
 
     } else if (grepl("\\d{4}:\\d{4}", subset)) {
@@ -168,13 +169,22 @@ readGCMClimate_new <- function(subtype = "ISIMIP3b:IPSL-CM6A-LR:historical:1850-
     return(x)
   }
 
-  x           <- .prepareLPJinput(subset) # maybe add conditionals on
+  x <- .prepareLPJinput(subset)
+  # maybe add conditionals on
   # which subtype subset combinations
   # should be allowed
-  getNames(x) <- paste(subtype$variable, subset, sep = "_")
+
+  # add variable name to third dimension
+  if (is.null(getItems(x, dim = 3))) {
+    getNames(x)          <- paste(subtype$variable, subset, sep = "_")
+    getSets(x)[["d3.1"]] <- "data"
+  } else {
+    x <- add_dimension(x, dim = 3.1, add = "data",
+                       nm = paste(subtype$variable, subset, sep = "_"))
+  }
   # Add location based on LPJmL cell ordering where fist cell is FJI, second RUS, etc
-  x           <- collapseDim(addLocation(x), dim = c("N", "region"))
-  x           <- clean_magpie(x)
+  x <- collapseDim(addLocation(x), dim = c("N", "region"))
+  x <- clean_magpie(x)
 
   return(x)
 }
