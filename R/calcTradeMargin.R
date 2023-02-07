@@ -65,14 +65,14 @@ calcTradeMargin <- function(gtap_version = "GTAP7", bilateral = FALSE, producer_
   kTrade <- findset("k_trade")
   kTrade <- intersect(intersect(getNames(p), getNames(y)), kTrade)
 
-if (bilateral) {
+if (bilateral && !("GLO" %in% getItems(p, dim = 1))) {
 # make a dummy bilateral price object so magclass doesn't get confused
    p1 <- p
    p1[] <- 1
    getItems(p1, dim = 1) <- paste0(getItems(p1, dim = 1), "b")
    p <- p * p1
    getItems(p, dim = 1.2) <- substr(getItems(p, dim = 1.2), 1, 3)
- }
+}
   out <- y[, , kTrade] * p[, , kTrade]
 
  if (bilateral) {
