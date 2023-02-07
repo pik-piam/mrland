@@ -43,7 +43,7 @@ convertGTAP <- function(x, subtype) {
       w2 <- toolAggregate(w2, rel = sectorMapping, from = "magpie", to = "gtap", dim = 3, partrel = TRUE)
 
       w3 <- toolAggregate(faoExport, rel = sectorMapping, from = "magpie", to = "gtap", dim = 3, partrel = TRUE)
-      #make w3 bilateral for later
+      # make w3 bilateral for later
       w4 <- w3
       w4[] <- 1
       getItems(w4, 1) <- paste0(getItems(w4, 1), "a")
@@ -66,21 +66,21 @@ convertGTAP <- function(x, subtype) {
       w2 <- toolAggregate(w2, rel = sectorMapping, from = "magpie", to = "gtap", dim = 3, partrel = TRUE)
 
       w3 <- toolAggregate(faoImport, rel = sectorMapping, from = "magpie", to = "gtap", dim = 3, partrel = TRUE)
-      #make w3 bilateral for later
+      # make w3 bilateral for later
       w4 <- w3
       w4[] <- 1
       getItems(w4, 1) <- paste0(getItems(w4, 1), "a")
       w3 <- w3 * w4
       getItems(w3, dim = 1.2) <- substr(getItems(w3, dim = 1.2), 1, 3)
-      #aggregate first region dim based on import weight
+      # aggregate first region dim based on import weight
       out <- toolAggregate(x[, , getNames(w1)], rel = regMapping, from = "Region.code", to = "Country.code",
                            dim = 1.1, weight = w1)
-      #aggregate second region dim based on export weight
+      # aggregate second region dim based on export weight
       out <- toolAggregate(out[, , getNames(w2)], rel = regMapping, from = "Region.code", to = "Country.code",
                            dim = 1.2, weight = w2)
-      #aggregate sector based on imports?
+      # aggregate sector based on imports?
       out <- toolAggregate(out, rel = sectorMapping, from = "gtap", to = "magpie", dim = 3,
-                           weight = w3[getItems(out, dim =1),,], partrel = TRUE)
+                           weight = w3[getItems(out, dim = 1), , ], partrel = TRUE)
     }
   } else if (subtype %in% c("VOM", "VOA")) {
     faoProduction <- collapseNames(fao[, , "production"])
@@ -98,14 +98,14 @@ convertGTAP <- function(x, subtype) {
     (stop("Not supported by current convertGTAP funtion, please set convert to FALSE!"))
   }
 
-#fill with global average
-if(ndim(out, dim = 1) == 2){
+# fill with global average
+if (ndim(out, dim = 1) == 2) {
 
-   gloAvg <- dimSums(out, dim = 1)/length(getItems(out, dim = 1))
-   out <- toolCountryFillBilateral(out, fill = NA) 
-   out <- ifelse(is.na(out), gloAvg, out)
+   out <- toolCountryFillBilateral(out, fill = 0)
 
-} else if (ndim(out, dim = 1) == 1) {out <- toolCountryFill(out, 0)}
+} else if (ndim(out, dim = 1) == 1) {
+out <- toolCountryFill(out, 0)
+}
 
   return(out)
 }
