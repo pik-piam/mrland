@@ -101,12 +101,12 @@ tmp[which(tmp == 0)]  <- quantile(tmp, .75)
 out[, , i] <- tmp
 }
 
+  weight <- setYears(vxmd * voa, NULL)[, , kTrade]
  if (!any(c("wood", "woodfuel") %in% getNames(weight))) {
   out <- add_columns(x = out, addnm = findset("kforestry"), dim = 3.1)
   out[, , findset("kforestry")] <- out[, , "others"]
  }
 
-  weight <- setYears(vxmd * voa, NULL)[, , kTrade]
   if (bilateral) {
   weight <- toolCountryFillBilateral(weight, 0)
 } else {
