@@ -7,7 +7,7 @@
 calcTradeMargin(
   gtap_version = "GTAP7",
   bilateral = FALSE,
-  producer_price = "FAO"
+  producer_price = "FAOini"
 )
 }
 \arguments{
