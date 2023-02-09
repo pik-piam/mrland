@@ -136,6 +136,8 @@ out[, , i] <- tmp
 
   unit <- "US$05"
   description <- "Trade margins"
+  out <- setYears(out, 2005)
+  weight <- setYears(weight, 2005)
 
   return(list(x = out,
               weight = weight,
