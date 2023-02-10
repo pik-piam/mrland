@@ -145,10 +145,14 @@ calcMulticroppingSuitability <- function(selectyears, lpjml, climatetype,
                              fill = 0)
   suitMC       <- mbind(suitMC, missingCrops)
 
+  # If multiple cropping is possible under rainfed conditions,
+  # it's also possible under irrigated conditions
+  rfMC <- collapseNames(suitMC[, , "rainfed"])
+  suitMC[, , "irrigated"][rfMC == 1] <- 1
+
   ##############
   ### Checks ###
   ##############
-
   if (any(is.na(suitMC))) {
     stop("calcMulticroppingSuitability produced NA values")
   }

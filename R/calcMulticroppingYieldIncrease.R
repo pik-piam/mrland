@@ -97,6 +97,7 @@ calcMulticroppingYieldIncrease <- function(selectyears, lpjml, climatetype,
     suitMC <- calcOutput("MulticroppingCells", scenario = areaMask,
                           lpjml = lpjml, climatetype = climatetype,
                           selectyears = selectyears, aggregate = FALSE)[, , croplist]
+
   }
 
   ####################
@@ -118,7 +119,7 @@ calcMulticroppingYieldIncrease <- function(selectyears, lpjml, climatetype,
   grassGPPoffseason[grassGPPoffseason < 0] <- 0
 
   increaseFACTOR <- ifelse(rule1 & rule2,
-                           grassGPPoffseason / grassGPPgrper,
+                             grassGPPoffseason / grassGPPgrper,
                            0) * fallowFactor * suitMC
 
   # Add missing crops (betr, begr, mgrass)
@@ -144,12 +145,12 @@ calcMulticroppingYieldIncrease <- function(selectyears, lpjml, climatetype,
                                         "maize.irrigated", "maize.rainfed"),
                               fill = NA)
   proxyIncrease[, , "groundnut"] <- ifelse(grassGPPgrper[, , "groundnut"] > 0,
-                                          grassGPPoffseason[, , "groundnut"] / grassGPPgrper[, , "groundnut"],
-                                        0)
+                                             grassGPPoffseason[, , "groundnut"] / grassGPPgrper[, , "groundnut"],
+                                           0)
   proxyIncrease[, , "maize"]     <- ifelse(grassGPPgrper[, , "maize"] > 0,
-                                          grassGPPoffseason[, , "maize"] / grassGPPgrper[, , "maize"],
-                                         0)
-  getSets(proxyIncrease)       <- getSets(increaseFACTOR)
+                                             grassGPPoffseason[, , "maize"] / grassGPPgrper[, , "maize"],
+                                           0)
+  getSets(proxyIncrease) <- getSets(increaseFACTOR)
   # @KRISTINE, JENS: Check whether that makes sense
 
   ##############
