@@ -83,7 +83,7 @@ calcMulticroppingSuitability <- function(selectyears, lpjml, climatetype,
 
     # Crop-specific max/min photosynthesis temperatures
     temp <- calcOutput("PhotosynthesisTemperature", aggregate = FALSE)
-    meanMonthTemp <- collapseNames(calcOutput("GCMClimate_new",
+    meanMonthTemp <- collapseNames(calcOutput("GCMClimate",
                                               subtype = paste0(temperatureGCM, ":tas:monthly_mean"),
                                               smooth = 0, # KRISTINE: Or should I smooth them?
                                               cells = "lpjcell", aggregate = FALSE))[, selectyears, ]

@@ -1,4 +1,4 @@
-#' @title calcGCMClimate_new
+#' @title calcGCMClimate
 #' @description Disaggregate CO2 global atmospheric concentration to cellular level
 #' @param subtype type of climate data to collect,
 #'                consisting of data source, GDM, RCP, time period, variable and time resolution
@@ -11,7 +11,7 @@
 #'
 #' @examples
 #' \dontrun{
-#' calcOutput("GCMClimate_new", subtype = "ISIMIP3b:IPSL-CM6A-LR:ssp126:1850-2100:tas:annual_mean")
+#' calcOutput("GCMClimate", subtype = "ISIMIP3b:IPSL-CM6A-LR:ssp126:1850-2100:tas:annual_mean")
 #' }
 #'
 #' @importFrom madrat toolSplitSubtype toolTimeAverage
@@ -20,7 +20,7 @@
 #' @importFrom mstools toolHoldConstant
 #'
 
-calcGCMClimate_new <- function(subtype = "ISIMIP3b:IPSL-CM6A-LR:ssp126:1850-2100:tas:annual_mean", # nolint
+calcGCMClimate <- function(subtype = "ISIMIP3b:IPSL-CM6A-LR:ssp126:1850-2100:tas:annual_mean",
                                smooth = 0,
                                cells = "magpiecell") {
   ###### CONFIG ######
@@ -44,9 +44,9 @@ calcGCMClimate_new <- function(subtype = "ISIMIP3b:IPSL-CM6A-LR:ssp126:1850-2100
                          paste((splittingYear + 1), period[2], sep = "-"),
                          x$variable, sep = ":")
 
-  y <- mbind(readSource("GCMClimate_new", subtype = .subtypeHist,
+  y <- mbind(readSource("GCMClimate", subtype = .subtypeHist,
                           subset = x$timeres, convert = "onlycorrect"),
-             readSource("GCMClimate_new", subtype = .subtypeScen,
+             readSource("GCMClimate", subtype = .subtypeScen,
                           subset = x$timeres, convert = "onlycorrect"))
 
   getNames(y) <- gsub("-", "_",

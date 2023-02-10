@@ -1,4 +1,4 @@
-#' @title readGCMClimate_new
+#' @title readGCMClimate
 #' @description Read Climate data used as LPJmL inputs into MAgPIE objects
 #' @param subtype Switch between different inputs,
 #'                e.g. "ISIMIP3b:IPSL-CM6A-LR:historical:1850-2014:tas"
@@ -11,10 +11,10 @@
 #' @return MAgPIE objects with results on cellular level.
 #' @author Marcos Alves, Kristine Karstens, Felicitas Beier
 #' @seealso
-#' \code{\link{readGCMClimate_new}}
+#' \code{\link{readGCMClimate}}
 #' @examples
 #' \dontrun{
-#' readSource("GCMClimate_new", subtype, convert = "onlycorrect")
+#' readSource("GCMClimate", subtype, convert = "onlycorrect")
 #' }
 #'
 #' @importFrom lpjclass read.LPJ_input
@@ -24,7 +24,7 @@
 #' @importFrom abind adrop
 #' @export
 
-readGCMClimate_new <- function(subtype = "ISIMIP3b:IPSL-CM6A-LR:historical:1850-2014:tas", # nolint
+readGCMClimate <- function(subtype = "ISIMIP3b:IPSL-CM6A-LR:historical:1850-2014:tas", # nolint
                                subset  = "annual_mean") {
 
   subtype <- toolSplitSubtype(subtype,

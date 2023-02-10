@@ -1,4 +1,4 @@
-#' @title downloadGCMClimate_new
+#' @title downloadGCMClimate
 #' @description Download GCM climate input used for Lpjml runs
 #' @param subtype Switch between different inputs (e.g. "ISIMIP3b:IPSL-CM6A-LR:historical:1850-2014:tas")
 #'                Argument consists of GCM version, climate model, scenario and variable,
@@ -7,10 +7,10 @@
 #' @author Marcos Alves
 #' @examples
 #' \dontrun{
-#' readSource("GCMClimate_new", convert = "onlycorrect")
+#' readSource("GCMClimate", convert = "onlycorrect")
 #' }
 #'
-downloadGCMClimate_new <- function(subtype = "ISIMIP3b:IPSL-CM6A-LR:ssp126:2015-2100:tas") { # nolint
+downloadGCMClimate <- function(subtype = "ISIMIP3b:IPSL-CM6A-LR:ssp126:2015-2100:tas") { # nolint
 
   x <- toolSplitSubtype(subtype, list(version = NULL,  climatemodel = NULL,
                                       scenario = NULL, period = NULL,
