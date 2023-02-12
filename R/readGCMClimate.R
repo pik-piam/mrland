@@ -24,7 +24,7 @@
 #' @importFrom abind adrop
 #' @export
 
-readGCMClimate <- function(subtype = "ISIMIP3b:IPSL-CM6A-LR:historical:1850-2014:tas", # nolint
+readGCMClimate <- function(subtype = "ISIMIP3bv2:IPSL-CM6A-LR:historical:1850-2014:tas", # nolint
                                subset  = "annual_mean") {
 
   subtype <- toolSplitSubtype(subtype,

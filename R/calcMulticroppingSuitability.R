@@ -36,7 +36,7 @@
 #'
 
 calcMulticroppingSuitability <- function(selectyears, lpjml, climatetype,
-                                         temperatureGCM = "ISIMIP3b:IPSL-CM6A-LR:ssp126:1850-2100",
+                                         temperatureGCM = "ISIMIP3bv2:IPSL-CM6A-LR:ssp126:1850-2100",
                                          minThreshold = 100, suitability = "endogenous") {
   ####################
   ### Read in data ###

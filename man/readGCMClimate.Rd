@@ -5,7 +5,7 @@
 \title{readGCMClimate}
 \usage{
 readGCMClimate(
-  subtype = "ISIMIP3b:IPSL-CM6A-LR:historical:1850-2014:tas",
+  subtype = "ISIMIP3bv2:IPSL-CM6A-LR:historical:1850-2014:tas",
   subset = "annual_mean"
 )
 }

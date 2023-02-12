@@ -20,7 +20,7 @@
 #' @importFrom mstools toolHoldConstant
 #'
 
-calcGCMClimate <- function(subtype = "ISIMIP3b:IPSL-CM6A-LR:ssp126:1850-2100:tas:annual_mean",
+calcGCMClimate <- function(subtype = "ISIMIP3bv2:IPSL-CM6A-LR:ssp126:1850-2100:tas:annual_mean",
                                smooth = 0,
                                cells = "magpiecell") {
   ###### CONFIG ######
@@ -49,9 +49,11 @@ calcGCMClimate <- function(subtype = "ISIMIP3b:IPSL-CM6A-LR:ssp126:1850-2100:tas
              readSource("GCMClimate", subtype = .subtypeScen,
                           subset = x$timeres, convert = "onlycorrect"))
 
-  getNames(y) <- gsub("-", "_",
-                      paste(x$timeres, x$variable, x$version, x$climatemodel, x$scenario,
-                            sep = "_"))
+  if (length(getItems(y, dim = 3)) > 1) {
+    getNames(y) <- gsub("-", "_",
+                        paste(x$timeres, x$variable, x$version, x$climatemodel, x$scenario,
+                              sep = "_"))
+  }
 
   if (smooth > 1) {
     y <- toolTimeAverage(y, averaging_range = smooth)

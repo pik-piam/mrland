@@ -5,7 +5,7 @@
 \title{calcGCMClimate}
 \usage{
 calcGCMClimate(
-  subtype = "ISIMIP3b:IPSL-CM6A-LR:ssp126:1850-2100:tas:annual_mean",
+  subtype = "ISIMIP3bv2:IPSL-CM6A-LR:ssp126:1850-2100:tas:annual_mean",
   smooth = 0,
   cells = "magpiecell"
 )
