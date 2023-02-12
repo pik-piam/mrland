@@ -49,7 +49,7 @@ calcGCMClimate <- function(subtype = "ISIMIP3bv2:IPSL-CM6A-LR:ssp126:1850-2100:t
              readSource("GCMClimate", subtype = .subtypeScen,
                           subset = x$timeres, convert = "onlycorrect"))
 
-  if (length(getItems(y, dim = 3)) > 1) {
+  if (length(getItems(y, dim = 3)) == 1) {
     getNames(y) <- gsub("-", "_",
                         paste(x$timeres, x$variable, x$version, x$climatemodel, x$scenario,
                               sep = "_"))
