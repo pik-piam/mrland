@@ -46,7 +46,7 @@ calcMulticroppingCells <- function(selectyears, lpjml, climatetype, scenario) {
   } else if (grepl(pattern = "actual", x = scenario)) {
 
     # Cropping Intensity Factor (between 1 and 2)
-    currMC <- calcOutput("MulticroppingCroppingIntensity", scenario = subscenario,
+    currMC <- calcOutput("MulticroppingIntensity", scenario = subscenario,
                           lpjml = lpjml, climatetype = climatetype,
                           selectyears = selectyears, aggregate = FALSE)
 
