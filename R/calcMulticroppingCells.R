@@ -45,85 +45,15 @@ calcMulticroppingCells <- function(selectyears, lpjml, climatetype, scenario) {
 
   } else if (grepl(pattern = "actual", x = scenario)) {
 
-    # areas where multicropping takes place currently (crop- and irrigation-specific)
-    phys <- calcOutput("CropareaToolbox", physical = TRUE, sectoral = "lpj",
-                       cellular = TRUE, cells = "lpjcell", irrigation = TRUE,
-                       selectyears = selectyears, aggregate = FALSE)
-    harv <- calcOutput("CropareaToolbox", physical = FALSE, sectoral = "lpj",
-                       cellular = TRUE, cells = "lpjcell", irrigation = TRUE,
-                       selectyears = selectyears, aggregate = FALSE)
-    # keep for dimensionality
-    phys[, , ] <- NA
-    harv[, , ] <- NA
-
-    if (subscenario == "total") {
-
-      # total actual multicropping area
-      tempPhys <- dimSums(calcOutput("CropareaToolbox", physical = TRUE, sectoral = "lpj",
-                         cellular = TRUE, cells = "lpjcell", irrigation = FALSE,
-                         selectyears = selectyears, aggregate = FALSE), dim = "crop")
-      tempHarv <- dimSums(calcOutput("CropareaToolbox", physical = FALSE, sectoral = "lpj",
-                         cellular = TRUE, cells = "lpjcell", irrigation = FALSE,
-                         selectyears = selectyears, aggregate = FALSE), dim = "crop")
-
-      # expand dimension
-      phys[, , ] <- tempPhys
-      harv[, , ] <- tempHarv
-
-    } else if (subscenario == "irrig") {
-
-      # total actual multicropping area (irrigation-specific)
-      tempPhys <- dimSums(calcOutput("CropareaToolbox", physical = TRUE, sectoral = "lpj",
-                                     cellular = TRUE, cells = "lpjcell", irrigation = TRUE,
-                                     selectyears = selectyears, aggregate = FALSE),
-                          dim = "crop")
-      tempHarv <- dimSums(calcOutput("CropareaToolbox", physical = FALSE, sectoral = "lpj",
-                                     cellular = TRUE, cells = "lpjcell", irrigation = TRUE,
-                                     selectyears = selectyears, aggregate = FALSE),
-                          dim = "crop")
-
-      # expand dimension
-      phys[, , ] <- tempPhys
-      harv[, , ] <- tempHarv
-
-    } else if (subscenario == "crop") {
-
-      # areas where multicropping takes place currently (crop-specific)
-      tempPhys <- calcOutput("CropareaToolbox", physical = TRUE, sectoral = "lpj",
-                             cellular = TRUE, cells = "lpjcell", irrigation = FALSE,
-                             selectyears = selectyears, aggregate = FALSE)
-      tempHarv <- calcOutput("CropareaToolbox", physical = FALSE, sectoral = "lpj",
-                             cellular = TRUE, cells = "lpjcell", irrigation = FALSE,
-                             selectyears = selectyears, aggregate = FALSE)
-
-      # expand dimension
-      phys[, , ] <- tempPhys
-      harv[, , ] <- tempHarv
-
-    } else if (subscenario == "irrig_crop") {
-
-      # areas where multicropping takes place currently (crop- and irrigation-specific)
-      phys <- calcOutput("CropareaToolbox", physical = TRUE, sectoral = "lpj",
-                         cellular = TRUE, cells = "lpjcell", irrigation = TRUE,
-                         selectyears = selectyears, aggregate = FALSE)
-      harv <- calcOutput("CropareaToolbox", physical = FALSE, sectoral = "lpj",
-                         cellular = TRUE, cells = "lpjcell", irrigation = TRUE,
-                         selectyears = selectyears, aggregate = FALSE)
-
-    } else {
-      stop("Please select whether total, irrigation-specific (irrig), crop-specific (crop),
-      or irrigation- and crop-specific (irrig_crop) currently multicropped areas shall be
-      returned through extension of scenario argument separated by :")
-    }
-
-    # cropping intensity factor
-    currMC <- ifelse(phys > 0, harv / phys, NA)
+    # Cropping Intensity Factor (between 1 and 2)
+    currMC <- calcOutput("MulticroppingCroppingIntensity", scenario = subscenario,
+                          lpjml = lpjml, climatetype = climatetype,
+                          selectyears = selectyears, aggregate = FALSE)
 
     # boolean of multicropped areas
     mcCells <- currMC
-    mcCells[is.na(currMC)] <- 0
-    mcCells[currMC <= 1]   <- 0
-    mcCells[currMC > 1]    <- 1
+    mcCells[currMC == 1] <- 0
+    mcCells[currMC > 1]  <- 1
 
   } else {
     stop("Chosen scenario in calcMulticroppingCells not available:

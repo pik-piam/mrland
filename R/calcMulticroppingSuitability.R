@@ -83,6 +83,7 @@ calcMulticroppingSuitability <- function(selectyears, lpjml, climatetype,
 
     # Crop-specific max/min photosynthesis temperatures
     temp <- calcOutput("PhotosynthesisTemperature", aggregate = FALSE)
+    # FELI: Make temperature GCM flexible
     meanMonthTemp <- collapseNames(calcOutput("GCMClimate",
                                               subtype = paste0(temperatureGCM, ":tas:monthly_mean"),
                                               smooth = 0, # KRISTINE: Or should I smooth them?
