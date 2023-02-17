@@ -132,6 +132,9 @@ calcYieldsCalibrated <- function(source = c(lpjml = "ggcmi_phase3_nchecks_9ca735
 
     }
 
+    # Order dimenstion to match with yield dimensions
+    cropareaMAGgrid <- dimOrder(cropareaMAGgrid, perm = c(2, 1), dim = 3)
+
     # Aggregate to country values
     if (cells == "magpiecell") {
 
