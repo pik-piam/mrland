@@ -177,15 +177,10 @@ fullMAGPIE <- function(rev = 0.1, dev = "") {
                aggregate = superregion)
     calcOutput("TradeTariff", type_tariff = "import",    round = 4, file = "f21_trade_tariff_import.cs3",
                aggregate = superregion)
-
-    calcOutput("TradeMargin", years = 2005, bilateral = TRUE, round = 4,
-                file = "f21_trade_margin_bilat.cs5", aggregate = TRUE)
+    calcOutput("TradeMargin", years = 2005, bilateral = TRUE, round = 4, file = "f21_trade_margin_bilat.cs5",
+                aggregate = TRUE)
     calcOutput("TradeTariff", years = 2005, bilateral = TRUE, round = 4, file = "f21_trade_tariff_bilat.cs5",
-               aggregate = superregion)
-    calcOutput("TradeTariff", type_tariff = "export",  bilateral = TRUE, round = 4,
-               file = "f21_trade_tariff_export_bilat.cs5", aggregate = superregion)
-    calcOutput("TradeTariff", type_tariff = "import", bilateral = TRUE, round = 4,
-               file = "f21_trade_tariff_import_bilat.cs5", aggregate = superregion)
+               aggregate = TRUE)
 
     # 31 Past
     calcOutput("PastureYield", range_pastr = TRUE, round = 3, file = "f31_grassl_yld_hist.cs3")
