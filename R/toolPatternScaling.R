@@ -25,8 +25,8 @@ toolPatternScaling <- function(scen, scenMean, refMean, refYear = "y2010", varia
   negative <- (any(scen < 0) | any(scenMean < 0) | any(refMean < 0))
 
   # set years
-  years       <- getYears(scen, as.integer = TRUE)
-  afterRef   <- paste0("y", years[years >= as.numeric(substring(refYear, 2))])
+  years    <- getYears(scen, as.integer = TRUE)
+  afterRef <- paste0("y", years[years >= as.numeric(substring(refYear, 2))])
 
   # check if all objects contain ref year
   if (!(refYear %in% Reduce(intersect, list(getYears(scen), getYears(scenMean), getYears(refMean))))) {
@@ -37,9 +37,9 @@ toolPatternScaling <- function(scen, scenMean, refMean, refYear = "y2010", varia
   # TO-DO find a way of muliple checking
 
   # create new magpie object with full time horizon
-  out       <- new.magpie(getCells(scen), afterRef, getNames(scen), sets = getSets(scen))
+  out      <- new.magpie(getCells(scen), afterRef, getNames(scen), sets = getSets(scen))
 
-  scen      <- scen[, afterRef, ]
+  scen     <- scen[, afterRef, ]
   scenMean <- setYears(scenMean[, refYear, ], NULL)
   refMean  <- setYears(refMean[,  refYear, ], NULL)
 
@@ -51,7 +51,7 @@ toolPatternScaling <- function(scen, scenMean, refMean, refYear = "y2010", varia
 
   lambda <- sqrt(scenMean / refMean)
   lambda[scenMean >= refMean] <- 1
-  lambda[is.nan(lambda)]        <- 1
+  lambda[is.nan(lambda)]      <- 1
 
   out <- (1 + (refMean - scenMean) / scen * toolConditionalReplace(scen / scenMean,
                                                                      c("is.na()", "is.infinite()"), 1)**lambda)

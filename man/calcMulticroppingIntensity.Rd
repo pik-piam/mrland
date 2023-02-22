@@ -4,7 +4,13 @@
 \alias{calcMulticroppingIntensity}
 \title{calcMulticroppingIntensity}
 \usage{
-calcMulticroppingIntensity(scenario, selectyears, lpjml, climatetype)
+calcMulticroppingIntensity(
+  scenario,
+  selectyears,
+  lpjml,
+  climatetype,
+  sectoral = "lpj"
+)
 }
 \arguments{
 \item{scenario}{"total": currently multicropped areas calculated from total harvested areas
@@ -18,6 +24,8 @@ calcMulticroppingIntensity(scenario, selectyears, lpjml, climatetype)
 
 \item{climatetype}{Switch between different climate scenarios or
 historical baseline "GSWP3-W5E5:historical"}
+
+\item{sectoral}{"kcr" MAgPIE crop types, and "lpj" LPJmL crop types}
 }
 \value{
 magpie object in cellular resolution
