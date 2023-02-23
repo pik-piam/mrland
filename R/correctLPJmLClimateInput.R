@@ -1,20 +1,20 @@
-#' @title correctGCMClimate
+#' @title correctLPJmLClimateInput
 #' @description Correct GCMs climate variables
 #' @param x magpie object provided by the read function
 #' @return Magpie objects with results on cellular level, weight, unit and description.
 #' @author Marcos Alves, Felicitas Beier
 #' @seealso
-#' \code{\link{readGCMClimate}}
+#' \code{\link{readLPJmLClimateInput}}
 #' @examples
 #'
 #' \dontrun{
-#' readSource("GCMClimate", subtype, convert="onlycorrect")
+#' readSource("LPJmLClimateInput", subtype, convert="onlycorrect")
 #' }
 #'
 #' @import magclass
 #' @importFrom madrat toolConditionalReplace
 
-correctGCMClimate <- function(x) { # nolint
+correctLPJmLClimateInput <- function(x) { # nolint
 
   x <- toolConditionalReplace(x,
                               conditions = c("is.na()"),

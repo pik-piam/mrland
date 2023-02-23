@@ -1,5 +1,5 @@
-#' @title calcGCMClimate
-#' @description Disaggregate CO2 global atmospheric concentration to cellular level
+#' @title calcLPJmLClimateInput
+#' @description calculate LPJmL climate inputs
 #' @param subtype type of climate data to collect,
 #'                consisting of data source, GDM, RCP, time period, variable and time resolution
 #'                separated by ":"
@@ -7,11 +7,11 @@
 #' @param cells    number of halfdegree grid cells to be returned.
 #'                 Options: "magpiecell" (59199), "lpjcell" (67420)
 #' @return magpie object in cellular resolution
-#' @author Marcos Alves, Kristine Karstens, Felicitas Beier
+#' @author Kristine Karstens, Felicitas Beier
 #'
 #' @examples
 #' \dontrun{
-#' calcOutput("GCMClimate", subtype = "ISIMIP3b:IPSL-CM6A-LR:ssp126:1850-2100:tas:annual_mean")
+#' calcOutput("LPJmLClimateInput", subtype = "ISIMIP3b:IPSL-CM6A-LR:ssp126:1850-2100:tas:annual_mean")
 #' }
 #'
 #' @importFrom madrat toolSplitSubtype toolTimeAverage
@@ -20,7 +20,7 @@
 #' @importFrom mstools toolHoldConstant
 #'
 
-calcGCMClimate <- function(subtype = "ISIMIP3bv2:IPSL-CM6A-LR:ssp126:1850-2100:tas:annual_mean",
+calcLPJmLClimateInput <- function(subtype = "ISIMIP3bv2:IPSL-CM6A-LR:ssp126:1850-2100:tas:annual_mean",
                                smooth = 0,
                                cells = "magpiecell") {
   ###### CONFIG ######
@@ -44,9 +44,9 @@ calcGCMClimate <- function(subtype = "ISIMIP3bv2:IPSL-CM6A-LR:ssp126:1850-2100:t
                          paste((splittingYear + 1), period[2], sep = "-"),
                          x$variable, sep = ":")
 
-  y <- mbind(readSource("GCMClimate", subtype = .subtypeHist,
+  y <- mbind(readSource("LPJmLClimateInput", subtype = .subtypeHist,
                           subset = x$timeres, convert = "onlycorrect"),
-             readSource("GCMClimate", subtype = .subtypeScen,
+             readSource("LPJmLClimateInput", subtype = .subtypeScen,
                           subset = x$timeres, convert = "onlycorrect"))
 
   if (length(getItems(y, dim = 3)) == 1) {

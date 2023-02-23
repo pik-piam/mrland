@@ -1,4 +1,4 @@
-#' @title readGCMClimate
+#' @title readLPJmLClimateInput
 #' @description Read Climate data used as LPJmL inputs into MAgPIE objects
 #' @param subtype Switch between different inputs,
 #'                e.g. "ISIMIP3b:IPSL-CM6A-LR:historical:1850-2014:tas"
@@ -11,10 +11,10 @@
 #' @return MAgPIE objects with results on cellular level.
 #' @author Marcos Alves, Kristine Karstens, Felicitas Beier
 #' @seealso
-#' \code{\link{readGCMClimate}}
+#' \code{\link{readLPJmLClimateInput}}
 #' @examples
 #' \dontrun{
-#' readSource("GCMClimate", subtype, convert = "onlycorrect")
+#' readSource("LPJmLClimateInput", subtype, convert = "onlycorrect")
 #' }
 #'
 #' @importFrom lpjclass read.LPJ_input
@@ -24,7 +24,7 @@
 #' @importFrom abind adrop
 #' @export
 
-readGCMClimate <- function(subtype = "ISIMIP3bv2:IPSL-CM6A-LR:historical:1850-2014:tas", # nolint
+readLPJmLClimateInput <- function(subtype = "ISIMIP3bv2:IPSL-CM6A-LR:historical:1850-2014:tas", # nolint
                                subset  = "annual_mean") {
 
   subtype <- toolSplitSubtype(subtype,
@@ -53,7 +53,7 @@ readGCMClimate <- function(subtype = "ISIMIP3bv2:IPSL-CM6A-LR:historical:1850-20
       close(filedata)
 
     } else {
-      stop("File format of GCMClimate data unknown. Please provide .clm file format.")
+      stop("File format of LPJmLClimateInput data unknown. Please provide .clm file format.")
     }
 
     if (subset == "wet") {
