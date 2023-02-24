@@ -162,29 +162,13 @@ calcConservationPriority2 <- function(consvBaseYear = "y1750", cells = "magpiece
   # combine KBA, GSN & CCA data sets
   thirty <- mbind(kba, gsn30, cca30)
   thirty <- dimSums(thirty, dim = 3.1)
-  getNames(thirty) <- paste("30by30", getNames(thirty), sep = ".")
 
   # Unprotected KBAs, DSAs and CCAs make up 16.13 %
-  # of the land surface. In 2020 ~15 % of global
-  # land surface was protected (WDPA). Therefore
-  # the conservation target is rescaled to 15 % to sum
-  # up to to 30 % together with WDPA protected areas.
+  # of the land surface. Together with the WDPA
+  # protected area in 2020 they make up ~30% of the
+  # global land surface.
 
-  # Land area (in Mha):
-  luIni <- calcOutput("LanduseInitialisation",
-    cellular = TRUE, cells = cells,
-    nclasses = nclasses, input_magpie = TRUE,
-    years = "y1995", aggregate = FALSE
-  )
-  gloLandArea <- dimSums(luIni, dim = c(1, 3))
-
-  # get scaling factor
-  target <- gloLandArea * 0.15
-  thirtySum <- dimSums(thirty, c(1, 3))
-  scalingFactor <- target / thirtySum
-
-  # KBAs, DSAs and CCAs are rescaled from ~16 % to 15 %
-  thirty <- thirty * scalingFactor
+  getNames(thirty) <- paste("30by30", getNames(thirty), sep = ".")
 
   # --------------------------------------------------
   # Half Earth (Global Safety Net)

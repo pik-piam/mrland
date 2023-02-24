@@ -1,7 +1,7 @@
 #' @title calcIrrecoverableCarbonLand
 #'
 #' @description Returns unprotected land area (Mha) that covers 50 %, 75% and
-#' 100% of irrecoverable carbon as defined in Noon et al (2022).
+#' 99% of irrecoverable carbon as defined in Noon et al (2022).
 
 #' @param maginput Whether data should be transformed (based on LUH2v2 data) to match land use types used in MAgPIE.
 #' @param nclasses If \code{magpie_input = TRUE}. Options are either "seven" or "nine". Note that by default,
@@ -29,14 +29,13 @@
 #'
 calcIrrecoverableCarbonLand <- function(maginput = TRUE, nclasses = "seven", cells = "magpiecell") {
   ic <- mbind(
-    readSource("Noon2022", subtype = "land:IrrC_30pc", convert = "onlycorrect"),
-    readSource("Noon2022", subtype = "land:IrrC_40pc", convert = "onlycorrect"),
     readSource("Noon2022", subtype = "land:IrrC_50pc", convert = "onlycorrect"),
-    readSource("Noon2022", subtype = "land:IrrC_60pc", convert = "onlycorrect"),
-    readSource("Noon2022", subtype = "land:IrrC_70pc", convert = "onlycorrect"),
-    readSource("Noon2022", subtype = "land:IrrC_80pc", convert = "onlycorrect"),
-    readSource("Noon2022", subtype = "land:IrrC_90pc", convert = "onlycorrect"),
-    readSource("Noon2022", subtype = "land:IrrC_100pc", convert = "onlycorrect")
+    readSource("Noon2022", subtype = "land:IrrC_75pc", convert = "onlycorrect"),
+    readSource("Noon2022", subtype = "land:IrrC_95pc", convert = "onlycorrect"),
+    readSource("Noon2022", subtype = "land:IrrC_99pc", convert = "onlycorrect"),
+    readSource("Noon2022", subtype = "land:IrrC_75pc_30by30", convert = "onlycorrect"),
+    readSource("Noon2022", subtype = "land:IrrC_95pc_30by30", convert = "onlycorrect"),
+    readSource("Noon2022", subtype = "land:IrrC_99pc_30by30", convert = "onlycorrect")
   )
 
   if (maginput == TRUE) {
@@ -62,26 +61,24 @@ calcIrrecoverableCarbonLand <- function(maginput = TRUE, nclasses = "seven", cel
     getYears(landNoUrban) <- getYears(ic)
     # compute mismatch factor
     icTotalLand <- mbind(
-      dimSums(ic[, , "IrrC_30pc"], dim = 3.2),
-      dimSums(ic[, , "IrrC_40pc"], dim = 3.2),
       dimSums(ic[, , "IrrC_50pc"], dim = 3.2),
-      dimSums(ic[, , "IrrC_60pc"], dim = 3.2),
-      dimSums(ic[, , "IrrC_70pc"], dim = 3.2),
-      dimSums(ic[, , "IrrC_80pc"], dim = 3.2),
-      dimSums(ic[, , "IrrC_90pc"], dim = 3.2),
-      dimSums(ic[, , "IrrC_100pc"], dim = 3.2)
+      dimSums(ic[, , "IrrC_75pc"], dim = 3.2),
+      dimSums(ic[, , "IrrC_95pc"], dim = 3.2),
+      dimSums(ic[, , "IrrC_99pc"], dim = 3.2),
+      dimSums(ic[, , "IrrC_75pc_30by30"], dim = 3.2),
+      dimSums(ic[, , "IrrC_95pc_30by30"], dim = 3.2),
+      dimSums(ic[, , "IrrC_99pc_30by30"], dim = 3.2)
     )
     landMismatch <- setNames(landNoUrban, NULL) / icTotalLand
     landMismatch <- toolConditionalReplace(landMismatch, c(">1", "is.na()"), 1)
     # correct irrecoverable carbon data
-    ic[, , "IrrC_30pc"] <- ic[, , "IrrC_30pc"] * landMismatch[, , "IrrC_30pc"]
-    ic[, , "IrrC_40pc"] <- ic[, , "IrrC_40pc"] * landMismatch[, , "IrrC_40pc"]
     ic[, , "IrrC_50pc"] <- ic[, , "IrrC_50pc"] * landMismatch[, , "IrrC_50pc"]
-    ic[, , "IrrC_60pc"] <- ic[, , "IrrC_60pc"] * landMismatch[, , "IrrC_60pc"]
-    ic[, , "IrrC_70pc"] <- ic[, , "IrrC_70pc"] * landMismatch[, , "IrrC_70pc"]
-    ic[, , "IrrC_80pc"] <- ic[, , "IrrC_80pc"] * landMismatch[, , "IrrC_80pc"]
-    ic[, , "IrrC_90pc"] <- ic[, , "IrrC_90pc"] * landMismatch[, , "IrrC_90pc"]
-    ic[, , "IrrC_100pc"] <- ic[, , "IrrC_100pc"] * landMismatch[, , "IrrC_100pc"]
+    ic[, , "IrrC_75pc"] <- ic[, , "IrrC_75pc"] * landMismatch[, , "IrrC_75pc"]
+    ic[, , "IrrC_95pc"] <- ic[, , "IrrC_95pc"] * landMismatch[, , "IrrC_95pc"]
+    ic[, , "IrrC_99pc"] <- ic[, , "IrrC_99pc"] * landMismatch[, , "IrrC_99pc"]
+    ic[, , "IrrC_75pc_30by30"] <- ic[, , "IrrC_75pc_30by30"] * landMismatch[, , "IrrC_75pc_30by30"]
+    ic[, , "IrrC_95pc_30by30"] <- ic[, , "IrrC_95pc_30by30"] * landMismatch[, , "IrrC_95pc_30by30"]
+    ic[, , "IrrC_99pc_30by30"] <- ic[, , "IrrC_99pc_30by30"] * landMismatch[, , "IrrC_99pc_30by30"]
 
     if (nclasses %in% c("seven", "nine")) {
 
@@ -158,7 +155,7 @@ calcIrrecoverableCarbonLand <- function(maginput = TRUE, nclasses = "seven", cel
     unit = "Mha",
     description = paste(
       "Unprotected land area that contains",
-      "30 %, 40 %, 50 %, 60 %, 70 %, 80%, 90 % and 100%",
+      "50 %, 75 %, 95 % and 99 %",
       "of irrecoverable carbon as defined in Noon et al (2022)."
     ),
     isocountries = FALSE

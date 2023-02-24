@@ -67,6 +67,11 @@ readNoon2022 <- function(subtype = "land:IrrC_50pc") {
         "./unprotected_irrecoverable_C_land",
         "/Irrecoverable_C_70pc_unprotected_land_area_0.5deg.tif"
       ))
+    } else if (subtype == "IrrC_75pc") {
+      unprotectedICLand <- rast(paste0(
+        "./unprotected_irrecoverable_C_land",
+        "/Irrecoverable_C_75pc_unprotected_land_area_0.5deg.tif"
+      ))
     } else if (subtype == "IrrC_80pc") {
       unprotectedICLand <- rast(paste0(
         "./unprotected_irrecoverable_C_land",
@@ -77,10 +82,35 @@ readNoon2022 <- function(subtype = "land:IrrC_50pc") {
         "./unprotected_irrecoverable_C_land",
         "/Irrecoverable_C_90pc_unprotected_land_area_0.5deg.tif"
       ))
+    } else if (subtype == "IrrC_95pc") {
+      unprotectedICLand <- rast(paste0(
+        "./unprotected_irrecoverable_C_land",
+        "/Irrecoverable_C_95pc_unprotected_land_area_0.5deg.tif"
+      ))
+    } else if (subtype == "IrrC_99pc") {
+      unprotectedICLand <- rast(paste0(
+        "./unprotected_irrecoverable_C_land",
+        "/Irrecoverable_C_99pc_unprotected_land_area_0.5deg.tif"
+      ))
     } else if (subtype == "IrrC_100pc") {
       unprotectedICLand <- rast(paste0(
         "./unprotected_irrecoverable_C_land",
         "/Irrecoverable_C_100pc_unprotected_land_area_0.5deg.tif"
+      ))
+    } else if (subtype == "IrrC_75pc_30by30") {
+      unprotectedICLand <- rast(paste0(
+        "./unprotected_irrecoverable_C_land",
+        "/IrrC_75pc_30by30_unprotected_land_area_0.5deg.tif"
+      ))
+    } else if (subtype == "IrrC_95pc_30by30") {
+      unprotectedICLand <- rast(paste0(
+        "./unprotected_irrecoverable_C_land",
+        "/IrrC_95pc_30by30_unprotected_land_area_0.5deg.tif"
+      ))
+    } else if (subtype == "IrrC_99pc_30by30") {
+      unprotectedICLand <- rast(paste0(
+        "./unprotected_irrecoverable_C_land",
+        "/IrrC_99pc_30by30_unprotected_land_area_0.5deg.tif"
       ))
     } else {
       stop("Please select an existing subtype")

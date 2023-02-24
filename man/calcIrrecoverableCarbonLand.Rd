@@ -30,7 +30,7 @@ List with a magpie object
 }
 \description{
 Returns unprotected land area (Mha) that covers 50 %, 75% and
-100% of irrecoverable carbon as defined in Noon et al (2022).
+99% of irrecoverable carbon as defined in Noon et al (2022).
 }
 \examples{
 \dontrun{
