@@ -8,7 +8,7 @@ calcMulticroppingSuitability(
   selectyears,
   lpjml,
   climatetype,
-  temperatureGCM = "ISIMIP3bv2:IPSL-CM6A-LR:ssp126:1850-2100",
+  temperatureGCM = NULL,
   minThreshold = 100,
   suitability = "endogenous"
 )
@@ -21,7 +21,9 @@ calcMulticroppingSuitability(
 \item{climatetype}{Switch between different climate scenarios or
 historical baseline "GSWP3-W5E5:historical"}
 
-\item{temperatureGCM}{GCM Climate data for temperature.
+\item{temperatureGCM}{If !NULL:
+Additional crop-specific temperature rule
+GCM Climate data for temperature.
 Specify data source, climate scenario, ssp, years
 in the following format:
 "ISIMIP3b:IPSL-CM6A-LR:ssp126:1850-2100"}
@@ -32,7 +34,7 @@ Unit of the threshold is gC/m^2.
 Default: 100gC/m^2}
 
 \item{suitability}{"endogenous": suitability for multiple cropping determined
-              by rules based on grass and crop productivity
+             by rules based on grass and crop productivity
 "exogenous": suitability for multiple cropping given by
              GAEZ data set}
 }
