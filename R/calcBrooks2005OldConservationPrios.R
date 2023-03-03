@@ -1,4 +1,4 @@
-#' @title calcConservationPriority
+#' @title calcBrooks2005OldConservationPrios
 #' @description Function calculates land area in conservation priority areas
 #'
 #' @param cells number of cells of landmask (select "magpiecell" for 59199 cells or "lpjcell" for 67420 cells)
@@ -24,7 +24,7 @@
 #' @importFrom mrcommons toolCoord2Isocell
 #'
 
-calcConservationPriority <- function(cells = "magpiecell", nclasses = "seven") {
+calcBrooks2005OldConservationPrios <- function(cells = "magpiecell", nclasses = "seven") {
 
   # Land area (in Mha):
   iniLU <- calcOutput("LanduseInitialisation",
@@ -68,11 +68,11 @@ calcConservationPriority <- function(cells = "magpiecell", nclasses = "seven") {
     x[getCells(tmp), , ] <- tmp
     map <- toolGetMappingCoord2Country()
     if (any(getCells(x) != map$coords)) {
-      stop("Wrong cell ordering in calcConservationPriority")
+      stop("Wrong cell ordering in calcBrooks2005OldConservationPrios")
     }
     getCells(x) <- paste(map$coords, map$iso, sep = ".")
   } else {
-    stop("Please select magpiecell or lpjcell in cells argument of calcConservationPriority")
+    stop("Please select magpiecell or lpjcell in cells argument of calcBrooks2005OldConservationPrios")
   }
 
   # Land area to be protected by 2050 (in Mha)

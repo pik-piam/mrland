@@ -1,4 +1,4 @@
-#' @title calcConservationPriority2
+#' @title calcConservationPriorities
 #' @description Function calculates land area in conservation priority areas that was unprotected in 2020 (WDPA).
 #'
 #' @param consvBaseYear Reference year for land conservation. Chosing "y1750", for instance, means that
@@ -31,7 +31,7 @@
 #' @importFrom mrcommons toolCoord2Isocell
 #'
 
-calcConservationPriority2 <- function(consvBaseYear = "y1750", cells = "magpiecell", nclasses = "seven") {
+calcConservationPriorities <- function(consvBaseYear = "y1750", cells = "magpiecell", nclasses = "seven") {
 
   # ===============================
   # Get conservation templates
