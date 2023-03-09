@@ -60,7 +60,8 @@ fullMAGPIE <- function(rev = 0.1, dev = "") {
                years = magYears,
                round = 6, # please dont increase rounding, this can create errors
                file = "f09_pop_iso.csv")
-    calcOutput("UrbanPop",
+    calcOutput("Urban",
+               asShare = FALSE,
                naming = "scenario",
                aggregate = FALSE,
                years = magYears,
