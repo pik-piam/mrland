@@ -24,11 +24,8 @@
 
 calcGrassGPP <- function(selectyears, lpjml, climatetype, season) {
 
-  # Extract arguments
-  cfg <- toolLPJmLVersion(version = lpjml[["crop"]], climatetype = climatetype)
   if (grepl("GSWP3-W5E5", climatetype)) {
     stage       <- "smoothed"
-    climatetype <- cfg$baseline_hist
   } else {
     stage <- "harmonized2020"
   }

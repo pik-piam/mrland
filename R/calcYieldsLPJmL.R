@@ -25,10 +25,8 @@ calcYieldsLPJmL <- function(lpjml = "ggcmi_phase3_nchecks_bft_e511ac58",
                             climatetype = "GSWP3-W5E5:historical", cells = "magpiecell") {
 
   # Extract argument information
-  cfg <- toolLPJmLVersion(version = lpjml, climatetype = climatetype)
   if (grepl("GSWP3-W5E5", climatetype)) {
     stage <- "smoothed"
-    climatetype <- cfg$baseline_hist
   } else {
     stage <- "harmonized2020"
   }
