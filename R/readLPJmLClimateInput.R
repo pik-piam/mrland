@@ -14,7 +14,7 @@
 #' \code{\link{readLPJmLClimateInput}}
 #' @examples
 #' \dontrun{
-#' readSource("LPJmLClimateInput", subtype, convert = "onlycorrect")
+#'   readSource("LPJmLClimateInput", subtype, convert = "onlycorrect")
 #' }
 #'
 #' @importFrom lpjclass read.LPJ_input
@@ -24,14 +24,13 @@
 #' @importFrom abind adrop
 #' @export
 
-readLPJmLClimateInput <- function(subtype = "ISIMIP3bv2:IPSL-CM6A-LR:historical:1850-2014:tas", # nolint
+readLPJmLClimateInput <- function(subtype = "ISIMIP3bv2:IPSL-CM6A-LR:historical:temperature", # nolint
                                subset  = "annual_mean") {
 
   subtype <- toolSplitSubtype(subtype,
                               list(version      = NULL,
                                    climatemodel = NULL,
                                    scenario     = NULL,
-                                   period       = NULL,
                                    variable     = NULL))
 
   .prepareLPJinput <- function(subset = NULL) {
@@ -56,8 +55,10 @@ readLPJmLClimateInput <- function(subtype = "ISIMIP3bv2:IPSL-CM6A-LR:historical:
       stop("File format of LPJmLClimateInput data unknown. Please provide .clm file format.")
     }
 
-    if (subset == "wet") {
+    if (subset == "wetDaysMonth") {
 
+      if (subtype$vaiable != "precipitation") stop("Subset 'wetDaysMonth' is only
+                                                   available for 'precipitation'")
       x <- lpjclass::read.LPJ_input(file_name   = filename,
                           out_years   = paste0("y", years),
                           namesum     = TRUE,

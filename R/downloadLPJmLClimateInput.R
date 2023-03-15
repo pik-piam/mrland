@@ -1,20 +1,29 @@
 #' @title downloadLPJmLClimateInput
-#' @description Download GCM climate input used for Lpjml runs
-#' @param subtype Switch between different inputs (e.g. "ISIMIP3b:IPSL-CM6A-LR:historical:1850-2014:tas")
+#' @description Download GCM climate input used for LPJmL runs
+#'
+#' @param subtype Switch between different inputs (e.g. "ISIMIP3b:IPSL-CM6A-LR:historical:1850-2014:temperature")
 #'                Argument consists of GCM version, climate model, scenario and variable,
 #'                separated by ":"
+#'
 #' @return metadata entry
-#' @author Marcos Alves
+#' @author Marcos Alves, Kristine Karstens
 #' @examples
 #' \dontrun{
 #' readSource("LPJmLClimateInput", convert = "onlycorrect")
 #' }
 #'
-downloadLPJmLClimateInput <- function(subtype = "ISIMIP3b:IPSL-CM6A-LR:ssp126:2015-2100:tas") { # nolint
+downloadLPJmLClimateInput <- function(subtype = "ISIMIP3bv2:IPSL-CM6A-LR:ssp126:temperature") { # nolint
 
-  x <- toolSplitSubtype(subtype, list(version = NULL,  climatemodel = NULL,
-                                      scenario = NULL, period = NULL,
-                                      variable = NULL))
+  x <- toolSplitSubtype(subtype, list(version = NULL, climatemodel = NULL,
+                                      scenario = NULL, variable = NULL))
+
+  varList  <- c(temperature    = "tas",
+                precipitation  = "pr",
+                longWaveNet    = "lwnet",
+                shortWave      = "rsds",
+                temperatureMin = "tasmin",
+                temperatureMax = "tasmax")
+  shortVar <- toolSubtypeSelect(x$variable, varList)
 
   if (x$climatemodel == "GSWP3-W5E5") {
     storage <- "/p/projects/lpjml/input/historical/" # nolint: absolute_path_linter.
@@ -35,9 +44,8 @@ downloadLPJmLClimateInput <- function(subtype = "ISIMIP3b:IPSL-CM6A-LR:ssp126:20
   }
 
   fileList <- list.files(path)
-  file     <- grep(paste0(x$variable, "_"),
+  file     <- grep(paste0(shortVar, "_"),
                    fileList, value = TRUE)
-  file     <- grep(x$period, file, value = TRUE)
   filePath <- file.path(path, file)
 
   if (file.exists(filePath)) {

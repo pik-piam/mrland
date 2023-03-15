@@ -5,11 +5,11 @@
 \title{downloadLPJmLClimateInput}
 \usage{
 downloadLPJmLClimateInput(
-  subtype = "ISIMIP3b:IPSL-CM6A-LR:ssp126:2015-2100:tas"
+  subtype = "ISIMIP3bv2:IPSL-CM6A-LR:ssp126:temperature"
 )
 }
 \arguments{
-\item{subtype}{Switch between different inputs (e.g. "ISIMIP3b:IPSL-CM6A-LR:historical:1850-2014:tas")
+\item{subtype}{Switch between different inputs (e.g. "ISIMIP3b:IPSL-CM6A-LR:historical:1850-2014:temperature")
 Argument consists of GCM version, climate model, scenario and variable,
 separated by ":"}
 }
@@ -17,7 +17,7 @@ separated by ":"}
 metadata entry
 }
 \description{
-Download GCM climate input used for Lpjml runs
+Download GCM climate input used for LPJmL runs
 }
 \examples{
 \dontrun{
@@ -26,5 +26,5 @@ readSource("LPJmLClimateInput", convert = "onlycorrect")
 
 }
 \author{
-Marcos Alves
+Marcos Alves, Kristine Karstens
 }

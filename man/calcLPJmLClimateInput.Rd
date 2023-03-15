@@ -5,33 +5,36 @@
 \title{calcLPJmLClimateInput}
 \usage{
 calcLPJmLClimateInput(
-  subtype = "ISIMIP3bv2:IPSL-CM6A-LR:ssp126:1850-2100:tas:annual_mean",
-  smooth = 0,
-  cells = "magpiecell"
+  climatetype = "IPSL-CM6A-LR:ssp126",
+  variable = "temperature:annual_mean",
+  stage = "harmonized2020",
+  lpjmlVersion = NULL
 )
 }
 \arguments{
-\item{subtype}{type of climate data to collect,
-consisting of data source, GDM, RCP, time period, variable and time resolution
-separated by ":"}
+\item{climatetype}{Switch between different climate scenario}
 
-\item{smooth}{set averaging value for smoothing trajectories}
+\item{variable}{Switch between different climate inputs and temporal resolution}
 
-\item{cells}{number of halfdegree grid cells to be returned.
-Options: "magpiecell" (59199), "lpjcell" (67420)}
+\item{stage}{Degree of processing: raw, smoothed, harmonized, harmonized2020}
+
+\item{lpjmlVersion}{LPJmL Version hand over}
 }
 \value{
 magpie object in cellular resolution
 }
 \description{
-calculate LPJmL climate inputs
+Handle LPJmL climate input data and its time behaviour
+             (smoothing and harmonizing to baseline)
 }
 \examples{
 \dontrun{
-calcOutput("LPJmLClimateInput", subtype = "ISIMIP3b:IPSL-CM6A-LR:ssp126:1850-2100:tas:annual_mean")
+calcOutput("LPJmLClimateInput",
+           climatetype = "IPSL-CM6A-LR:ssp126",
+           variable = "temperature:annual_mean")
 }
 
 }
 \author{
-Kristine Karstens, Felicitas Beier
+Marcos Alves, Kristine Karstens, Felicitas Beier
 }

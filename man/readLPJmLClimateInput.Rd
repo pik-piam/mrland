@@ -5,7 +5,7 @@
 \title{readLPJmLClimateInput}
 \usage{
 readLPJmLClimateInput(
-  subtype = "ISIMIP3bv2:IPSL-CM6A-LR:historical:1850-2014:tas",
+  subtype = "ISIMIP3bv2:IPSL-CM6A-LR:historical:temperature",
   subset = "annual_mean"
 )
 }
@@ -28,7 +28,7 @@ Read Climate data used as LPJmL inputs into MAgPIE objects
 }
 \examples{
 \dontrun{
-readSource("LPJmLClimateInput", subtype, convert = "onlycorrect")
+  readSource("LPJmLClimateInput", subtype, convert = "onlycorrect")
 }
 
 }
