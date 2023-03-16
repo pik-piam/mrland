@@ -45,9 +45,9 @@ calcLPJmLClimateInput <- function(climatetype = "IPSL-CM6A-LR:ssp126",
       .subtypeHist <- gsub("ssp[0-9]{3}", "historical", .subtypeScen)
 
       # For climate scenarios historical GCM data has to be read in from a different file
-      x <- mbind(readSource("GCMClimate", subtype = .subtypeHist,
+      x <- mbind(readSource("LPJmLClimateInput", subtype = .subtypeHist,
                             subset = var$timeres, convert = "onlycorrect"),
-                 readSource("GCMClimate", subtype = .subtypeScen,
+                 readSource("LPJmLClimateInput", subtype = .subtypeScen,
                             subset = var$timeres, convert = "onlycorrect"))
       years <- getYears(x, as.integer = TRUE)
       x     <- x[, years[years >= 1971], ]
@@ -55,7 +55,8 @@ calcLPJmLClimateInput <- function(climatetype = "IPSL-CM6A-LR:ssp126",
     } else {
 
       .subtypeHist <- paste(cfg$versionHist, cfg$climatetype, var$type, sep = ":")
-      x     <- readSource("LPJmL_new", subtype = .subtypeHist, convert = FALSE)
+      x     <- readSource("LPJmLClimateInput", subtype = .subtypeHist,
+                          subset = var$timeres, convert = "onlycorrect")
       years <- getYears(x, as.integer = TRUE)
       x     <- x[, years[years >= 1931], ]
     }
