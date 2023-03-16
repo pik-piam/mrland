@@ -73,9 +73,9 @@ calcLPJmLClimateInput <- function(climatetype = "IPSL-CM6A-LR:ssp126",
     harmStyle <- switch(var$type,
                         "temperature"   = "additive",
                         "precipitation" = "limited",
-                        "longWaveNet"   = stop(paste0("No harmonization available for: ", x$variable)),
-                        "shortWave"     = stop(paste0("No harmonization available for: ", x$variable)),
-                        "wetDaysMonth"  = stop(paste0("No harmonization available for: ", x$variable)))
+                        "longWaveNet"   = stop(paste0("No harmonization available for: ", var$variable)),
+                        "shortWave"     = stop(paste0("No harmonization available for: ", var$variable)),
+                        "wetDaysMonth"  = stop(paste0("No harmonization available for: ", var$variable)))
 
     if (stage == "harmonized") {
       # read in historical data for subtype
@@ -120,8 +120,8 @@ calcLPJmLClimateInput <- function(climatetype = "IPSL-CM6A-LR:ssp126",
                  "wetDaysMonth"  = "number of rainy days")
 
   description <- switch(var$type,
-                        "temperature"   = paste0("Average ", x$timeres, " air temperature"),
-                        "precipitation" = paste0("Average ", x$timeres, " precipitation"),
+                        "temperature"   = paste0("Average ", var$timeres, " air temperature"),
+                        "precipitation" = paste0("Average ", var$timeres, " precipitation"),
                         "longWaveNet"   = "Long wave radiation",
                         "ShortWave"     = "Short wave radiation",
                         "wetDaysMonth"  = "number of rainy days")
