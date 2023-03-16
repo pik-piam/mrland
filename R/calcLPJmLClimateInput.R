@@ -27,7 +27,7 @@
 calcLPJmLClimateInput <- function(climatetype = "IPSL-CM6A-LR:ssp126",
                                   variable = "temperature:annual_mean",
                                   stage = "harmonized2020",
-                                  lpjmlVersion = NULL) { #Needed here for consistency with LPJmL?
+                                  lpjmlVersion = "LPJmL4_for_MAgPIE_44ac93de") { #Needed here for consistency with LPJmL?
 
   # Create settings for LPJmL/GCM from version and climatetype argument
   cfg <- toolClimateInputVersion(lpjmlVersion = lpjmlVersion,
@@ -80,15 +80,18 @@ calcLPJmLClimateInput <- function(climatetype = "IPSL-CM6A-LR:ssp126",
     if (stage == "harmonized") {
       # read in historical data for subtype
       baseline <- calcOutput("LPJmLClimateInput", climatetype = cfg$baselineHist,
-                             variable = variable, stage = "smoothed", aggregate = FALSE)
+                             variable = variable, stage = "smoothed",
+                             lpjmlVersion = lpjmlVersion, aggregate = FALSE)
       x        <- calcOutput("LPJmLClimateInput", climatetype = cfg$climatetype,
-                             variable = variable, stage = "smoothed", aggregate = FALSE)
+                             variable = variable, stage = "smoothed",
+                             lpjmlVersion = lpjmlVersion, aggregate = FALSE)
       out <- toolHarmonize2Baseline(x, baseline, ref_year = cfg$refYearHist, method = harmStyle)
 
     } else if (stage == "harmonized2020") {
       # read in historical data for subtype
       baseline2020 <- calcOutput("LPJmLClimateInput", climatetype = cfg$baselineGcm,
-                                 variable = variable, stage = "harmonized", aggregate = FALSE)
+                                 variable = variable, stage = "harmonized",
+                                 lpjmlVersion = lpjmlVersion, aggregate = FALSE)
 
       if (cfg$climatetype    == cfg$baselineGcm) {
 
@@ -97,7 +100,8 @@ calcLPJmLClimateInput <- function(climatetype = "IPSL-CM6A-LR:ssp126",
       } else {
 
         x   <- calcOutput("LPJmLClimateInput", climatetype = cfg$climatetype,
-                               variable = variable, stage = "smoothed", aggregate = FALSE)
+                          variable = variable, stage = "smoothed",
+                          lpjmlVersion = lpjmlVersion, aggregate = FALSE)
         out <- toolHarmonize2Baseline(x, baseline2020, ref_year = cfg$refYearGcm, method = harmStyle)
       }
 
