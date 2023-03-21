@@ -47,27 +47,30 @@
 #' @importFrom mrcommons toolCoord2Isocell toolAggregateCell2Country
 #'
 
-calcAvlCropland <- function(marginal_land = "magpie", cell_upper_bound = 0.9,
-                            cells = "magpiecell", country_level = FALSE) {
+calcAvlCropland <- function(marginal_land = "magpie", cell_upper_bound = 0.9, country_level = FALSE, # nolint
+                            cells = "magpiecell") {
+
+  marginalLand <- marginal_land # nolint
+  cellUpperBound <- cell_upper_bound # nolint
+  countryLevel <- country_level # nolint
 
   # read luh data
   luh <- calcOutput("LUH2v2", landuse_types = "magpie", aggregate = FALSE,
                     cellular = TRUE, cells = "lpjcell", irrigation = FALSE, years = "y1995")
   # sum land area per grid cell
-  luh      <- collapseDim(addLocation(luh), dim = c("N", "cell"))
   landarea <- dimSums(luh, dim = 3)
 
   x <- as.magpie(NULL)
 
-  if (any(grepl("all_marginal", marginal_land)) || marginal_land == "magpie") {
+  if (any(grepl("all_marginal", marginalLand)) || marginalLand == "magpie") {
 
-    if (marginal_land == "magpie") {
+    if (marginalLand == "magpie") {
       cropsuit <- readSource("Zabel2014", subtype = paste("all_marginal", "rainfed_and_irrigated",
                                                           sep = ":"),
                              convert = "onlycorrect")
     } else {
       cropsuit <- readSource("Zabel2014", subtype = paste("all_marginal",
-                                                          unlist(strsplit(marginal_land, split = ":"))[2],
+                                                          unlist(strsplit(marginalLand, split = ":"))[2],
                                                           sep = ":"),
                              convert = "onlycorrect")
     }
@@ -76,7 +79,7 @@ calcAvlCropland <- function(marginal_land = "magpie", cell_upper_bound = 0.9,
     cropsuit <- pmin(cropsuit, landarea)
     # set upper bound for cropland at grid cell level
     # in each grid cell cropland cannot be expanded above this threshold
-    cropsuit <- cropsuit * cell_upper_bound
+    cropsuit <- cropsuit * cellUpperBound
     # cropland suitability is corrected where LUH reports (more) cropland
     cropsuit <- pmax(cropsuit, luh[, , "crop"])
 
@@ -86,16 +89,16 @@ calcAvlCropland <- function(marginal_land = "magpie", cell_upper_bound = 0.9,
 
   }
 
-  if (any(grepl("q33_marginal", marginal_land)) || marginal_land == "magpie") {
+  if (any(grepl("q33_marginal", marginalLand)) || marginalLand == "magpie") {
 
 
-    if (marginal_land == "magpie") {
+    if (marginalLand == "magpie") {
       cropsuit <- readSource("Zabel2014", subtype = paste("q33_marginal", "rainfed_and_irrigated",
                                                           sep = ":"),
                              convert = "onlycorrect")
     } else {
       cropsuit <- readSource("Zabel2014", subtype = paste("q33_marginal",
-                                                          unlist(strsplit(marginal_land, split = ":"))[2],
+                                                          unlist(strsplit(marginalLand, split = ":"))[2],
                                                           sep = ":"),
                              convert = "onlycorrect")
     }
@@ -103,7 +106,7 @@ calcAvlCropland <- function(marginal_land = "magpie", cell_upper_bound = 0.9,
     cropsuit <- pmin(cropsuit, landarea)
     # set upper bound for cropland at grid cell level
     # in each grid cell cropland cannot be expanded above this threshold
-    cropsuit <- cropsuit * cell_upper_bound
+    cropsuit <- cropsuit * cellUpperBound
     # cropland suitability is corrected where LUH reports (more) cropland
     cropsuit <- pmax(cropsuit, luh[, , "crop"])
 
@@ -113,17 +116,17 @@ calcAvlCropland <- function(marginal_land = "magpie", cell_upper_bound = 0.9,
 
   }
 
-  if (any(grepl("q50_marginal", marginal_land))) {
+  if (any(grepl("q50_marginal", marginalLand))) {
 
     cropsuit <- readSource("Zabel2014", subtype = paste("q50_marginal",
-                                                        unlist(strsplit(marginal_land, split = ":"))[2],
+                                                        unlist(strsplit(marginalLand, split = ":"))[2],
                                                         sep = ":"),
                            convert = "onlycorrect")
     # make sure that suitable cropland is not larger than total land area
     cropsuit <- pmin(cropsuit, landarea)
     # set upper bound for cropland at grid cell level
     # in each grid cell cropland cannot be expanded above this threshold
-    cropsuit <- cropsuit * cell_upper_bound
+    cropsuit <- cropsuit * cellUpperBound
     # cropland suitability is corrected where LUH reports (more) cropland
     cropsuit <- pmax(cropsuit, luh[, , "crop"])
 
@@ -134,10 +137,10 @@ calcAvlCropland <- function(marginal_land = "magpie", cell_upper_bound = 0.9,
   }
 
 
-  if (any(grepl("q66_marginal", marginal_land))) {
+  if (any(grepl("q66_marginal", marginalLand))) {
 
     cropsuit <- readSource("Zabel2014", subtype = paste("q66_marginal",
-                                                        unlist(strsplit(marginal_land, split = ":"))[2],
+                                                        unlist(strsplit(marginalLand, split = ":"))[2],
                                                         sep = ":"),
                            convert = "onlycorrect")
 
@@ -145,7 +148,7 @@ calcAvlCropland <- function(marginal_land = "magpie", cell_upper_bound = 0.9,
     cropsuit <- pmin(cropsuit, landarea)
     # set upper bound for cropland at grid cell level
     # in each grid cell cropland cannot be expanded above this threshold
-    cropsuit <- cropsuit * cell_upper_bound
+    cropsuit <- cropsuit * cellUpperBound
     # cropland suitability is corrected where LUH reports (more) cropland
     cropsuit <- pmax(cropsuit, luh[, , "crop"])
 
@@ -155,10 +158,10 @@ calcAvlCropland <- function(marginal_land = "magpie", cell_upper_bound = 0.9,
 
   }
 
-  if (any(grepl("q75_marginal", marginal_land))) {
+  if (any(grepl("q75_marginal", marginalLand))) {
 
     cropsuit <- readSource("Zabel2014", subtype = paste("q75_marginal",
-                                                        unlist(strsplit(marginal_land, split = ":"))[2],
+                                                        unlist(strsplit(marginalLand, split = ":"))[2],
                                                         sep = ":"),
                            convert = "onlycorrect")
 
@@ -166,7 +169,7 @@ calcAvlCropland <- function(marginal_land = "magpie", cell_upper_bound = 0.9,
     cropsuit <- pmin(cropsuit, landarea)
     # set upper bound for cropland at grid cell level
     # in each grid cell cropland cannot be expanded above this threshold
-    cropsuit <- cropsuit * cell_upper_bound
+    cropsuit <- cropsuit * cellUpperBound
     # cropland suitability is corrected where LUH reports (more) cropland
     cropsuit <- pmax(cropsuit, luh[, , "crop"])
 
@@ -176,15 +179,15 @@ calcAvlCropland <- function(marginal_land = "magpie", cell_upper_bound = 0.9,
 
   }
 
-  if (any(grepl("no_marginal", marginal_land)) || marginal_land == "magpie") {
+  if (any(grepl("no_marginal", marginalLand)) || marginalLand == "magpie") {
 
-    if (marginal_land == "magpie") {
+    if (marginalLand == "magpie") {
       cropsuit <- readSource("Zabel2014", subtype = paste("no_marginal", "rainfed_and_irrigated",
                                                           sep = ":"),
                              convert = "onlycorrect")
     } else {
       cropsuit <- readSource("Zabel2014", subtype = paste("no_marginal",
-                                                          unlist(strsplit(marginal_land, split = ":"))[2],
+                                                          unlist(strsplit(marginalLand, split = ":"))[2],
                                                           sep = ":"),
                              convert = "onlycorrect")
     }
@@ -192,7 +195,7 @@ calcAvlCropland <- function(marginal_land = "magpie", cell_upper_bound = 0.9,
     cropsuit <- pmin(cropsuit, landarea)
     # set upper bound for cropland at grid cell level
     # in each grid cell cropland cannot be expanded above this threshold
-    cropsuit <- cropsuit * cell_upper_bound
+    cropsuit <- cropsuit * cellUpperBound
     # cropland suitability is corrected where LUH reports (more) cropland
     cropsuit <- pmax(cropsuit, luh[, , "crop"])
 
@@ -202,9 +205,9 @@ calcAvlCropland <- function(marginal_land = "magpie", cell_upper_bound = 0.9,
 
   }
 
-  if (country_level) {
+  if (countryLevel) {
 
-    out <- toolAggregateCell2Country(collapseDim(x, dim = "iso"), fill = 0)
+    out <- toolCountryFill(dimSums(x, dim = c("x", "y")), fill = 0)
 
   } else {
 

@@ -13,27 +13,29 @@
 #'
 #' @export
 
-calcClimateClass <- function(source = "Koeppen") {
+calcClimateClass <- function(source = "Koeppen") { #n olint
 
-  if (source == "Koeppen") { # nolint
+  datasource <- source # nolint
+
+  if (datasource == "Koeppen") { # nolint
 
     x      <- readSource("Koeppen", subtype = "cellular", convert = "onlycorrect")
 
-  } else if (grepl("IPCC", source)) { # nolint
+  } else if (grepl("IPCC", datasource)) { # nolint
 
     x <- readSource("IPCCClimate", convert = "onlycorrect")
     getNames(x) <- gsub(" ", "_", tolower(getNames(x)))
 
-    if (source == "IPCC_reduced") { # nolint
+    if (datasource == "IPCC_reduced") { # nolint
       reduceIPCC  <- toolGetMapping("IPCC2IPCCreduced.csv", type = "sectoral")
       x           <- toolAggregate(x, reduceIPCC, from = "ipcc", to = "ipcc_reduced", dim = 3, partrel = TRUE)
     }
 
   } else {
- stop("Source unkown.")
-}
+    stop("Source inc calcClimateClass unkown.")
+  }
 
-  weight <- calcOutput("CellArea", aggregate = FALSE)
+  weight <- calcOutput("LandArea", aggregate = FALSE)
 
   return(list(
     x = x,
