@@ -8,48 +8,45 @@
 #' \code{\link{calcProduction}},
 #' \code{\link{calcPriceAgriculture}}
 #' @examples
-#' 
-#' \dontrun{ 
+#' \dontrun{
 #' calcOutput("ValueProduction")
 #' }
-#' 
+#'
+calcValueProduction <- function(datasource = "FAO", cellular = TRUE) {
 
+if (datasource == "FAO") {
 
-calcValueProduction<-function(datasource="FAO", cellular=TRUE){
-
-if(datasource=="FAO"){
-  
-  if (cellular==TRUE){
-  prod <- calcOutput("Production", cellular=TRUE, products="kcr", aggregate=F)[,,"dm"]
+  if (cellular == TRUE) {
+  prod <- calcOutput("Production", products = "kcr",
+                     cellular = TRUE, cells = "lpjcell",
+                     aggregate = FALSE)[, , "dm"]
+  } else {
+  prod <- calcOutput("Production", products = "kcr",
+                     cellular = FALSE, aggregate = FALSE)[, , "dm"]
   }
-  else{
-  prod <- calcOutput("Production", cellular=FALSE, products="kcr", aggregate=F)[,,"dm"]
-  }
-  
+
 prod <- collapseNames(prod)
 
-prices <- calcOutput("PriceAgriculture", datasource=datasource, aggregate=F)
-prices<-collapseNames(prices)
+prices <- calcOutput("PriceAgriculture", datasource = datasource, aggregate = FALSE)
+prices <- collapseNames(prices)
 
 
-common <- intersect(getNames(prices),getNames(prod) )
-regions <- intersect(getRegions(prices),getRegions(prod))
+common  <- intersect(getNames(prices), getNames(prod))
+regions <- intersect(getRegions(prices), getRegions(prod))
 
-x <- prod[regions,,common]*prices[regions,,common]
-}
-  
-  else {
+x <- prod[regions, , common] * prices[regions, , common]
+} else {
     stop("Only FAO datasource has country level prices")
-    
+
   }
-  return(list(x=x,
-              weight=NULL,
-              unit="US$05/tDM",
-              description="Crop Production Value",
-              min=0,
-              max=Inf, 
-              isocountries=!cellular
+  return(list(x = x,
+              weight = NULL,
+              unit = "US$05/tDM",
+              description = "Crop Production Value",
+              min = 0,
+              max = Inf,
+              isocountries = !cellular
   )
-  
-  ) 
+
+  )
 }
