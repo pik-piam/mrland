@@ -260,12 +260,6 @@ calcYields <- function(source = c(lpjml = "ggcmi_phase3_nchecks_9ca735cb", isimi
 
   if (any(is.na(cropAreaWeight))) stop("NAs in weights.")
 
-  if (cells == "lpjcell") {
-    cropAreaWeight <- collapseDim(addLocation(cropAreaWeight), dim = "cell")
-    cropAreaWeight <- dimOrder(cropAreaWeight, perm = c(2, 3, 1), dim = 1)
-    getSets(cropAreaWeight)["d1.3"] <- "iso"
-  }
-
   # Special case for India case study
   if (indiaYields) {
     yields["IND", , "rainfed"] <- yields["IND", , "rainfed"] * scaleFactor
