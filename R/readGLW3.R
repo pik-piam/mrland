@@ -35,6 +35,7 @@ readGLW3 <- function(subtype = "Da") {
     # reduce number of cells and transform to magpie object
     x <- left_join(mapping, x, by = c("lat", "lon"), copy = TRUE)
     x <- as.magpie(x[, c(3, 6)], spatial = 1)
+    getItems(x, dim = 1, raw = TRUE) <- mapping$coordiso
 
     return(x)
   }
