@@ -29,13 +29,14 @@ readGLW3 <- function(subtype = "Da") {
     # mapping with coordinates of 67420 grid cells
     mapping          <- toolGetMappingCoord2Country()
     mapping$coordiso <- paste(mapping$coords, mapping$iso, sep = ".")
-    mapping$lon      <- as.numeric(gsub("p", ".", gsub(".*\\.", "", mapping$coords)))
-    mapping$lat      <- as.numeric(gsub("p", ".", gsub("\\..*", "", mapping$coords)))
+    mapping$lat      <- as.numeric(gsub("p", ".", gsub(".*\\.", "", mapping$coords)))
+    mapping$lon      <- as.numeric(gsub("p", ".", gsub("\\..*", "", mapping$coords)))
 
     # reduce number of cells and transform to magpie object
     x <- left_join(mapping, x, by = c("lat", "lon"), copy = TRUE)
     x <- as.magpie(x[, c(3, 6)], spatial = 1)
     getItems(x, dim = 1, raw = TRUE) <- mapping$coordiso
+    getSets(x) <- c("x", "y", "iso", "year", "data")
 
     return(x)
   }
