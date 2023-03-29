@@ -39,10 +39,10 @@ calcProtectedAreaBaseline <- function(magpie_input = TRUE, nclasses = "seven", c
 
     # extend the data set to all time steps provided in the protected area data
     # i.e. use the data from the year 2015 for the year 2020.
-    luh2v2 <- setCells(mbind(
-      luh2v2,
-      setYears(luh2v2[, "y2015", ], "y2020")
-    ), getCells(PABaseline))
+    luh2v2 <- setCells(mbind(luh2v2,
+                             setYears(luh2v2[, "y2015", ],
+                                      "y2020")),
+                       getCells(PABaseline))
 
     # calculate total land area
     landArea <- dimSums(luh2v2[, "y1995", ], dim = 3)
@@ -52,7 +52,7 @@ calcProtectedAreaBaseline <- function(magpie_input = TRUE, nclasses = "seven", c
                             timestep = "5year", cells = "lpjcell")
 
     # make sure that protected area is not greater than total land area minus urban area
-    totPABase <- dimSums(PABaseline, dim = 3)
+    totPABase   <- dimSums(PABaseline, dim = 3)
     landNoUrban <- landArea - setCells(urbanLand[, getYears(PABaseline), "SSP2"], getCells(PABaseline))
     getYears(landNoUrban) <- getYears(PABaseline)
     # compute mismatch factor
@@ -64,7 +64,7 @@ calcProtectedAreaBaseline <- function(magpie_input = TRUE, nclasses = "seven", c
     if (nclasses %in% c("seven", "nine")) {
 
     # differentiate primary and secondary forest based on luh2v2 data
-    totforestluh <- dimSums(luh2v2[, , c("primf", "secdf")], dim = 3)
+    totforestluh  <- dimSums(luh2v2[, , c("primf", "secdf")], dim = 3)
     primforestShr <- luh2v2[, , "primf"] / setNames(totforestluh + 1e-10, NULL)
     secdforestShr <- luh2v2[, , "secdf"] / setNames(totforestluh + 1e-10, NULL)
     # where luh2 does not report forest, but we find forest land in
@@ -75,14 +75,18 @@ calcProtectedAreaBaseline <- function(magpie_input = TRUE, nclasses = "seven", c
     primforest <- primforestShr * setNames(PABaseline[, , "forest"], NULL)
     secdforest <- secdforestShr * setNames(PABaseline[, , "forest"], NULL)
 
-    out <- mbind(
-      PABaseline[, , c("crop", "past")],
-      new.magpie(getCells(PABaseline), getYears(PABaseline), "forestry", fill = 0),
-      setNames(primforest, "primforest"),
-      setNames(secdforest, "secdforest"),
-      new.magpie(getCells(PABaseline), getYears(PABaseline), "urban", fill = 0),
-      PABaseline[, , "other"]
-    )
+    out <- mbind(PABaseline[, , c("crop", "past")],
+                 new.magpie(cells_and_regions = getCells(PABaseline),
+                            years = getYears(PABaseline),
+                            names = "forestry",
+                            fill = 0),
+                setNames(primforest, "primforest"),
+                setNames(secdforest, "secdforest"),
+                new.magpie(cells_and_regions = getCells(PABaseline),
+                           years = getYears(PABaseline),
+                           names = "urban",
+                           fill = 0),
+      PABaseline[, , "other"])
 
     } else {
       stop("Option specified for argument 'nclasses' does not exist.")
@@ -92,17 +96,17 @@ calcProtectedAreaBaseline <- function(magpie_input = TRUE, nclasses = "seven", c
 
       # separate pasture into pasture and rangeland
       totgrassluh <- dimSums(luh2v2[, , c("pastr", "range")], dim = 3)
-      pastShr <- luh2v2[, , "pastr"] / setNames(totgrassluh + 1e-10, NULL)
+      pastShr  <- luh2v2[, , "pastr"] / setNames(totgrassluh + 1e-10, NULL)
       rangeShr <- luh2v2[, , "range"] / setNames(totgrassluh + 1e-10, NULL)
       # where luh2 does not report grassland, but we find grassland in
       # protected area data, set share of rangeland to 1
       rangeShr[pastShr == 0 & rangeShr == 0] <- 1
       # multiply shares of pasture and rangeland with pasture in protected area data
-      past <- pastShr * setNames(PABaseline[, , "past"], NULL)
+      past  <- pastShr * setNames(PABaseline[, , "past"], NULL)
       range <- rangeShr * setNames(PABaseline[, , "past"], NULL)
 
       # separate other land into primary and secondary
-      tototherluh <- dimSums(luh2v2[, , c("primn", "secdn")], dim = 3)
+      tototherluh  <- dimSums(luh2v2[, , c("primn", "secdn")], dim = 3)
       primotherShr <- luh2v2[, , "primn"] / setNames(tototherluh + 1e-10, NULL)
       secdotherShr <- luh2v2[, , "secdn"] / setNames(tototherluh + 1e-10, NULL)
       # where luh2 does not report other land, but we find other land in
@@ -112,14 +116,12 @@ calcProtectedAreaBaseline <- function(magpie_input = TRUE, nclasses = "seven", c
       primother <- primotherShr * setNames(PABaseline[, , "other"], NULL)
       secdother <- secdotherShr * setNames(PABaseline[, , "other"], NULL)
 
-      out <- mbind(
-        out[, , "crop"],
-        setNames(past, "past"),
-        setNames(range, "range"),
-        out[, , c("forestry", "primforest", "secdforest", "urban")],
-        setNames(primother, "primother"),
-        setNames(secdother, "secdother")
-      )
+      out <- mbind(out[, , "crop"],
+                  setNames(past, "past"),
+                  setNames(range, "range"),
+                  out[, , c("forestry", "primforest", "secdforest", "urban")],
+                  setNames(primother, "primother"),
+                  setNames(secdother, "secdother"))
     }
 
   } else {
