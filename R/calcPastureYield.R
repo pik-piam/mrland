@@ -20,7 +20,7 @@ calcPastureYield <- function(range_pastr = FALSE) { # nolint
     # mapping country to coordinates
     mapping <- toolGetMappingCoord2Country()
     mapping$coordiso <- paste(mapping$coords, mapping$iso, sep = ".")
-  
+
     # get years
     magYearsPast <- findset("past")[c(7, 8, 9, 10)]
 

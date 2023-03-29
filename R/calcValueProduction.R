@@ -32,7 +32,7 @@ prices <- collapseNames(prices)
 
 
 common  <- intersect(getNames(prices), getNames(prod))
-regions <- intersect(getRegions(prices), getRegions(prod))
+regions <- intersect(getItems(prices, dim = 1.1), getItems(prod, dim = 1.1))
 
 x <- prod[regions, , common] * prices[regions, , common]
 } else {

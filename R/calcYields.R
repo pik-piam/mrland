@@ -189,7 +189,8 @@ calcYields <- function(source = c(lpjml = "ggcmi_phase3_nchecks_9ca735cb", isimi
 
     cropAreaWeight <- dimSums(calcOutput("Croparea", sectoral = "kcr", physical = TRUE, irrigation = FALSE,
                                            cellular = TRUE, cells = cells, aggregate = FALSE,
-                                           years = "y1995", round = 6), dim = 3)
+                                           years = "y1995", round = 6),
+                              dim = 3)
 
   } else if (weighting %in% c("totalLUspecific", "cropSpecific", "crop+irrigSpecific")) {
 
