@@ -1,13 +1,15 @@
 #' @title readLPJmLClimateInput
 #' @description Read Climate data used as LPJmL inputs into MAgPIE objects
 #' @param subtype Switch between different inputs,
-#'                e.g. "ISIMIP3b:IPSL-CM6A-LR:historical:1850-2014:tas"
+#'                e.g. "ISIMIP3bv2:MRI-ESM2-0:ssp370:1850-2014:tas"
 #'                Available variables are: * tas -
 #'                                         * wet -
 #'                                         * per -
 #' @param subset Switch between different subsets of the same subtype
-#'               Available options are: "annual_mean", "annual_sum",
-#'                                      "monthly_mean", "monthly_sum", "wet"
+#'               Available options are: "annualMean", "annualSum",
+#'                                      "monthlyMean", "monthlySum",
+#'                                      "wetDaysMonth"
+#'               Note that not all subtype-subset combinations make sense
 #' @return MAgPIE objects with results on cellular level.
 #' @author Marcos Alves, Kristine Karstens, Felicitas Beier
 #' @seealso
@@ -24,14 +26,26 @@
 #' @importFrom abind adrop
 #' @export
 
-readLPJmLClimateInput <- function(subtype = "ISIMIP3bv2:IPSL-CM6A-LR:historical:temperature", # nolint
-                               subset  = "annual_mean") {
+readLPJmLClimateInput <- function(subtype = "ISIMIP3bv2:MRI-ESM2-0:ssp370:temperature", # nolint
+                                  subset  = "annualMean") {
 
   subtype <- toolSplitSubtype(subtype,
                               list(version      = NULL,
                                    climatemodel = NULL,
                                    scenario     = NULL,
                                    variable     = NULL))
+
+  subsetTypes  <- c("annualMean", "annualSum", "monthlyMean",
+                    "monthlySum", "wetDaysMonth", "\\d{4}:\\d{4}")
+
+  allowedCombos <- list(temperature    = c("annualMean","monthlyMean", "\\d{4}:\\d{4}"),
+                        precipitation  = subsetTypes,
+                        longWaveNet    = c("annualMean","monthlyMean", "\\d{4}:\\d{4}"),
+                        shortWave      = c("annualMean","monthlyMean", "\\d{4}:\\d{4}"),
+                        temperatureMin = c("annualMean","monthlyMean", "\\d{4}:\\d{4}"),
+                        temperatureMax = c("annualMean","monthlyMean", "\\d{4}:\\d{4}"))
+  isAllowed     <- any(sapply(allowedCombo[[subtype$variable]], grepl, x = subset))
+  if(!isAllowed) stop("Subtype-subset combination not allowed")
 
   .prepareLPJinput <- function(subset = NULL) {
 
@@ -57,49 +71,49 @@ readLPJmLClimateInput <- function(subtype = "ISIMIP3bv2:IPSL-CM6A-LR:historical:
 
     if (subset == "wetDaysMonth") {
 
-      if (subtype$vaiable != "precipitation") stop("Subset 'wetDaysMonth' is only
+      if (subtype$variable != "precipitation") stop("Subset 'wetDaysMonth' is only
                                                    available for 'precipitation'")
       x <- lpjclass::read.LPJ_input(file_name   = filename,
-                          out_years   = paste0("y", years),
-                          namesum     = TRUE,
-                          ncells      = 67420,
-                          rule4binary = ">0") / noAnnualPredictions
+                                    out_years   = paste0("y", years),
+                                    namesum     = TRUE,
+                                    ncells      = 67420,
+                                    rule4binary = ">0") / noAnnualPredictions
 
       class(x) <- "array"
       x        <- collapseNames(as.magpie(x, spatial = 1))
 
 
-    } else if (subset == "annual_mean") {
+    } else if (subset == "annualMean") {
 
       x <- lpjclass::read.LPJ_input(file_name   = filename,
-                          out_years   = paste0("y", years),
-                          namesum     = TRUE,
-                          ncells      = 67420) / noAnnualPredictions
+                                    out_years   = paste0("y", years),
+                                    namesum     = TRUE,
+                                    ncells      = 67420) / noAnnualPredictions
 
       class(x) <- "array"
       x        <- collapseNames(as.magpie(x, spatial = 1))
 
 
-    } else if (subset == "annual_sum") {
+    } else if (subset == "annualSum") {
 
       x <- lpjclass::read.LPJ_input(file_name   = filename,
-                          out_years   = paste0("y", years),
-                          namesum     = TRUE,
-                          ncells      = 67420)
+                                    out_years   = paste0("y", years),
+                                    namesum     = TRUE,
+                                    ncells      = 67420)
 
       class(x) <- "array"
       x        <- collapseNames(as.magpie(x, spatial = 1))
 
 
-    } else if (subset %in% c("monthly_mean", "monthly_sum")) {
+    } else if (subset %in% c("monthlyMean", "monthlySum")) {
       # define year sets (cut it in bunches)
       bunchLength <- 1
       yearsets    <- split(years, ceiling(seq_along(years) / bunchLength))
 
       # define month mapping
       monthLength <- c(jan = 31, feb = 28, mar = 31, apr = 30,
-                        may = 31, jun = 30, jul = 31, aug = 31,
-                        sep = 30, oct = 31, nov = 30, dec = 31)
+                       may = 31, jun = 30, jul = 31, aug = 31,
+                       sep = 30, oct = 31, nov = 30, dec = 31)
       daysMonth   <- NULL
       for (m in 1:12) {
         daysMonth <- c(daysMonth, rep(names(monthLength[m]),
@@ -136,7 +150,7 @@ readLPJmLClimateInput <- function(subtype = "ISIMIP3bv2:IPSL-CM6A-LR:historical:
                              to   = "month",
                              dim  = 3)
 
-        if (subset == "monthly_mean") {
+        if (subset == "monthlyMean") {
           tmp <- tmp / monthLength
         }
 
@@ -155,9 +169,9 @@ readLPJmLClimateInput <- function(subtype = "ISIMIP3bv2:IPSL-CM6A-LR:historical:
       }
 
       x <- lpjclass::read.LPJ_input(file_name   = filename,
-                          out_years   = paste0("y", years),
-                          namesum     = FALSE,
-                          ncells      = 67420)
+                                    out_years   = paste0("y", years),
+                                    namesum     = FALSE,
+                                    ncells      = 67420)
 
       class(x) <- "array"
       x        <- collapseNames(as.magpie(x, spatial = 1))
@@ -171,18 +185,7 @@ readLPJmLClimateInput <- function(subtype = "ISIMIP3bv2:IPSL-CM6A-LR:historical:
   }
 
   x <- .prepareLPJinput(subset)
-  # maybe add conditionals on
-  # which subtype subset combinations
-  # should be allowed
 
-  # add variable name to third dimension
-  if (is.null(getItems(x, dim = 3))) {
-    getNames(x)          <- paste(subtype$variable, subset, sep = "_")
-    getSets(x)[["d3.1"]] <- "data"
-  } else {
-    x <- add_dimension(x, dim = 3.1, add = "data",
-                       nm = paste(subtype$variable, subset, sep = "_"))
-  }
   # Add location based on LPJmL cell ordering where fist cell is FJI, second RUS, etc
   x <- collapseDim(addLocation(x), dim = c("N", "region"))
   x <- clean_magpie(x)

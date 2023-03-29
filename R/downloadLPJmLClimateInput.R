@@ -12,7 +12,7 @@
 #' readSource("LPJmLClimateInput", convert = "onlycorrect")
 #' }
 #'
-downloadLPJmLClimateInput <- function(subtype = "ISIMIP3bv2:IPSL-CM6A-LR:ssp126:temperature") { # nolint
+downloadLPJmLClimateInput <- function(subtype = "ISIMIP3bv2:MRI-ESM2-0:ssp370:temperature") { # nolint
 
   x <- toolSplitSubtype(subtype, list(version = NULL, climatemodel = NULL,
                                       scenario = NULL, variable = NULL))

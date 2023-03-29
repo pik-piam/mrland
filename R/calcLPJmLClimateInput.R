@@ -13,8 +13,8 @@
 #' @examples
 #' \dontrun{
 #' calcOutput("LPJmLClimateInput",
-#'            climatetype = "IPSL-CM6A-LR:ssp126",
-#'            variable = "temperature:annual_mean")
+#'            climatetype = "MRI-ESM2-0:ssp370",
+#'            variable = "temperature:annualMean")
 #' }
 #'
 #' @importFrom madrat toolSplitSubtype toolTimeAverage
@@ -24,8 +24,8 @@
 #' @importFrom SPEI thornthwaite
 #'
 
-calcLPJmLClimateInput <- function(climatetype = "IPSL-CM6A-LR:ssp126",
-                                  variable = "temperature:annual_mean",
+calcLPJmLClimateInput <- function(climatetype = "MRI-ESM2-0:ssp370",
+                                  variable = "temperature:annualMean",
                                   stage = "harmonized2020",
                                   lpjmlVersion = "LPJmL4_for_MAgPIE_44ac93de") { #Needed here for consistency with LPJmL?
 
@@ -33,6 +33,7 @@ calcLPJmLClimateInput <- function(climatetype = "IPSL-CM6A-LR:ssp126",
   cfg <- toolClimateInputVersion(lpjmlVersion = lpjmlVersion,
                                  climatetype = climatetype)
   var <- toolSplitSubtype(variable, list(type = NULL, timeres = NULL))
+  outtype <- ifelse(var$timeres != "wetDaysMonth", var$type , "wetDaysMonth")
 
   if (stage %in% c("raw", "smoothed")) {
 
@@ -70,7 +71,7 @@ calcLPJmLClimateInput <- function(climatetype = "IPSL-CM6A-LR:ssp126",
 
   } else if (grepl("harmonized", stage)) {
 
-    harmStyle <- switch(var$type,
+    harmStyle <- switch(outtype,
                         "temperature"   = "additive",
                         "precipitation" = "limited",
                         "longWaveNet"   = stop(paste0("No harmonization available for: ", var$variable)),
@@ -112,14 +113,14 @@ calcLPJmLClimateInput <- function(climatetype = "IPSL-CM6A-LR:ssp126",
     stop("Stage argument not supported!")
   }
 
-  unit <- switch(var$type,
+  unit <- switch(outtype,
                  "temperature"   = "Degree Celcius",
                  "precipitation" = "mm/day",
                  "longWaveNet"   = "watt per m2",
                  "shortWave"     = "watt per m2",
                  "wetDaysMonth"  = "number of rainy days")
 
-  description <- switch(var$type,
+  description <- switch(outtype,
                         "temperature"   = paste0("Average ", var$timeres, " air temperature"),
                         "precipitation" = paste0("Average ", var$timeres, " precipitation"),
                         "longWaveNet"   = "Long wave radiation",
