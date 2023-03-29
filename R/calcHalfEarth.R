@@ -12,7 +12,7 @@
 #' }
 #'
 #' @return magpie object in cellular resolution with different protection options in conservation priority areas
-#' @author Patrick v. Jeetze
+#' @author Patrick v. Jeetze, Felicitas Beier
 #'
 #' @examples
 #' \dontrun{
@@ -28,38 +28,26 @@ calcHalfEarth <- function(cells = "magpiecell", nclasses = "seven") {
 
   # Land area (in Mha):
   iniLU <- calcOutput("LanduseInitialisation",
-    cellular = TRUE, cells = cells,
-    nclasses = nclasses, input_magpie = TRUE,
-    years = "y1995", aggregate = FALSE
-  )
+                      cellular = TRUE, cells = cells,
+                      nclasses = nclasses, input_magpie = TRUE,
+                      years = "y1995", aggregate = FALSE)
   landArea <- dimSums(iniLU, dim = 3)
 
   # Half Earth Protection Share
   halfEarthShr <- readSource("HalfEarth", convert = "onlycorrect")
   getNames(halfEarthShr) <- "HalfEarth"
-  getSets(halfEarthShr) <- c("x", "y", "iso", "year", "data")
+  getSets(halfEarthShr)  <- c("x", "y", "iso", "year", "data")
 
   if (cells == "magpiecell") {
     halfEarthShr <- toolCoord2Isocell(halfEarthShr, cells = cells)
-  } else if (cells == "lpjcell") {
-    landArea <- collapseDim(addLocation(landArea), dim = c("N", "cell"))
-    map <- toolGetMappingCoord2Country()
-    if (any(getCells(landArea) != map$coords)) {
-      stop("Wrong cell ordering in calcHalfEarth")
-    }
-    getCells(landArea) <- paste(map$coords, map$iso, sep = ".")
-  } else {
-    stop("Please select magpiecell or lpjcell in cells argument of calcHalfEarth")
   }
-
   # Land area to be protected by 2050 (in Mha)
   x <- halfEarthShr * landArea
 
   # get WDPA baseline data (1995 - 2020)
   wdpaBase <- calcOutput("ProtectedAreaBaseline",
-    aggregate = FALSE, cells = cells,
-    nclasses = nclasses, magpie_input = TRUE
-  )
+                          aggregate = FALSE, cells = cells,
+                          nclasses = nclasses, magpie_input = TRUE)
 
   # make sure that current WDPA protected areas
   # are not part of conservation priority targets
@@ -67,9 +55,8 @@ calcHalfEarth <- function(cells = "magpiecell", nclasses = "seven") {
   x <- toolConditionalReplace(x, "<0", 0)
 
   urbanLand <- calcOutput("UrbanLandFuture",
-    subtype = "LUH2v2", aggregate = FALSE,
-    timestep = "5year", cells = cells
-  )
+                          subtype = "LUH2v2", aggregate = FALSE,
+                          timestep = "5year", cells = cells)
 
   # Conservation potential after 2020
   consvPot <- landArea - dimSums(wdpaBase[, "y2020", ], dim = 3) -
@@ -116,11 +103,9 @@ calcHalfEarth <- function(cells = "magpiecell", nclasses = "seven") {
   # compute land area reserved for conservation
   x <- x * setCells(landShr, getCells(x))
 
-  return(list(
-    x = x,
-    weight = NULL,
-    unit = "Mha",
-    description = "Half earth conservation priority area in each land type",
-    isocountries = FALSE
-  ))
+  return(list(x = x,
+              weight = NULL,
+              unit = "Mha",
+              description = "Half earth conservation priority area in each land type",
+              isocountries = FALSE))
 }
