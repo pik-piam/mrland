@@ -44,7 +44,7 @@ readLPJmLClimateInput <- function(subtype = "ISIMIP3bv2:MRI-ESM2-0:ssp370:temper
                         shortWave      = c("annualMean","monthlyMean", "\\d{4}:\\d{4}"),
                         temperatureMin = c("annualMean","monthlyMean", "\\d{4}:\\d{4}"),
                         temperatureMax = c("annualMean","monthlyMean", "\\d{4}:\\d{4}"))
-  isAllowed     <- any(sapply(allowedCombo[[subtype$variable]], grepl, x = subset))
+  isAllowed     <- any(sapply(allowedCombos[[subtype$variable]], grepl, x = subset))
   if(!isAllowed) stop("Subtype-subset combination not allowed")
 
   .prepareLPJinput <- function(subset = NULL) {

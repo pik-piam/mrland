@@ -8,7 +8,7 @@ calcLPJmLClimateInput(
   climatetype = "IPSL-CM6A-LR:ssp126",
   variable = "temperature:annual_mean",
   stage = "harmonized2020",
-  lpjmlVersion = NULL
+  lpjmlVersion = "LPJmL4_for_MAgPIE_44ac93de"
 )
 }
 \arguments{
