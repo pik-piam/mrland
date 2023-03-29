@@ -201,9 +201,11 @@ calcConservationPriorities <- function(consvBaseYear = "y1750", cells = "magpiec
 
   luh2v2 <- readSource("LUH2v2", subtype = paste0("states_", gsub("y", "", consvBaseYear), "to2015"),
                        convert = "onlycorrect")[, consvBaseYear, ]
-  luh2v2 <- toolCoord2Isocell(luh2v2, cells = cells)
+  if (cells == "magpiecell") {
+    luh2v2 <- toolCoord2Isocell(luh2v2, cells = cells)
+    getCells(luh2v2) <- getCells(consvPrio)
+  }
   getYears(luh2v2) <- NULL
-  getCells(luh2v2) <- getCells(consvPrio)
 
   # get total land area
   totLand <- dimSums(luh2v2, dim = 3)
@@ -264,14 +266,12 @@ calcConservationPriorities <- function(consvBaseYear = "y1750", cells = "magpiec
     consvPrio <- dimSums(consvPrio, dim = 3.2) * consvBaseLandShr
   }
 
-  return(list(
-    x = consvPrio,
-    weight = NULL,
-    unit = "Mha",
-    description = paste0("Land conservation priority targets in each land type. ",
-                        "Land use in conservation priority areas is based on the ",
-                        "reference year ", consvBaseYear,
-                        ifelse(gsub("y", "", consvBaseYear) <= 1800, " (pre-industrial)", "")),
-    isocountries = FALSE
-  ))
+  return(list(x = consvPrio,
+              weight = NULL,
+              unit = "Mha",
+              description = paste0("Land conservation priority targets in each land type. ",
+                                  "Land use in conservation priority areas is based on the ",
+                                  "reference year ", consvBaseYear,
+                                  ifelse(gsub("y", "", consvBaseYear) <= 1800, " (pre-industrial)", "")),
+              isocountries = FALSE))
 }
