@@ -45,9 +45,19 @@ calcProtectArea <- function(cells = "magpiecell", bhifl = TRUE) {
   getSets(protectShr)  <- c("x", "y", "iso", "year",  "data")
 
   if (cells == "magpiecell") {
-
     protectShr <- toolCoord2Isocell(protectShr, cells = cells)
+  } else if (cells == "lpjcell") {
 
+    tmp <- collapseDim(addLocation(x), dim = c("country", "cell"))
+    x   <- new.magpie(cells_and_regions = getItems(protectShr, dim = 1),
+                      years = getYears(tmp),
+                      names = getNames(tmp),
+                      fill = 0,
+                      sets = c("x.y.iso", "year", "data"))
+    x[getItems(tmp, dim = 1), , ] <- tmp
+
+  } else {
+    stop("Please select magpiecell or lpjcell in cells argument of calcProtectArea")
   }
 
   # Land area to be protected by 2050 (in Mha)
