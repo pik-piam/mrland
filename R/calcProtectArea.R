@@ -48,7 +48,8 @@ calcProtectArea <- function(cells = "magpiecell", bhifl = TRUE) {
     protectShr <- toolCoord2Isocell(protectShr, cells = cells)
   } else if (cells == "lpjcell") {
 
-    tmp <- collapseDim(addLocation(x), dim = c("country", "cell"))
+    tmp <- collapseDim(addLocation(x), dim = c("cell"))
+    tmp <- dimOrder(tmp, perm = c(2, 3, 1), dim = 1)
     x   <- new.magpie(cells_and_regions = getItems(protectShr, dim = 1),
                       years = getYears(tmp),
                       names = getNames(tmp),
