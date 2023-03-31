@@ -31,5 +31,5 @@ calcOutput("HalfEarth", aggregate = FALSE)
 
 }
 \author{
-Patrick v. Jeetze
+Patrick v. Jeetze, Felicitas Beier
 }
