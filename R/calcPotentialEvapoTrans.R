@@ -35,7 +35,7 @@ calcPotentialEvapoTrans <-
 
     # estimate potential evapotranspiration using the thornwaite method
     # # for temperature and latitude
-    pet[, , ]          <- toolThornthwaite(temperature, latitude)
+    pet         <- toolThornthwaite(temperature, latitude)
 
   } else if (grepl("LPJmL_new", datasource)) {
 
