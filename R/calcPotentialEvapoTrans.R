@@ -9,7 +9,7 @@
 #'
 #' @examples
 #' \dontrun{
-#' calcOutput("calcPotentialEvapoTrans",
+#' calcOutput("PotentialEvapoTrans", aggregate = FALSE,
 #'            datasource = "LPJmLClimateInput:LPJmL4_for_MAgPIE_44ac93de:harmonized2020")
 #' }
 #'
