@@ -22,7 +22,8 @@ Calculates or loads potential Evapotranspiration
 }
 \examples{
 \dontrun{
-calcOutput("calcPotentialEvapoTrans", datasource = "LPJmLClimateInput")
+calcOutput("calcPotentialEvapoTrans",
+           datasource = "LPJmLClimateInput:LPJmL4_for_MAgPIE_44ac93de:harmonized2020")
 }
 
 }

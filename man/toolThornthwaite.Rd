@@ -16,7 +16,8 @@ PET in magclass format
 }
 \description{
 This tool to calculate potential evapotranspiration (PET) based on the
-             Thornthwaite function (see SPEI::thornthwaite)
+             Thornthwaite function (see SPEI::thornthwaite for base of this re-implementation
+             https://rdrr.io/cran/SPEI/src/R/thornthwaite.R)
 }
 \author{
 Kristine Karstens

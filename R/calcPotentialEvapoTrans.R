@@ -9,7 +9,8 @@
 #'
 #' @examples
 #' \dontrun{
-#' calcOutput("calcPotentialEvapoTrans", datasource = "LPJmLClimateInput")
+#' calcOutput("calcPotentialEvapoTrans",
+#'            datasource = "LPJmLClimateInput:LPJmL4_for_MAgPIE_44ac93de:harmonized2020")
 #' }
 #'
 #' @importFrom SPEI thornthwaite

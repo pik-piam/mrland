@@ -1,6 +1,7 @@
 #' @title toolThornthwaite
 #' @description This tool to calculate potential evapotranspiration (PET) based on the
-#'              Thornthwaite function (see SPEI::thornthwaite)
+#'              Thornthwaite function (see SPEI::thornthwaite for base of this re-implementation
+#'              https://rdrr.io/cran/SPEI/src/R/thornthwaite.R)
 #'
 #' @param temp     monthly mean temperature
 #' @param lat      lattitude of the cell
@@ -8,8 +9,7 @@
 #' @return PET in magclass format
 #' @author Kristine Karstens
 #'
-#' @importFrom magclass is.magpie new.magpie getCells getYears getSets
-#' @importFrom madrat toolConditionalReplace
+#' @importFrom magclass dimSums new.magpie getItems getSets
 #'
 #' @export
 
