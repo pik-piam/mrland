@@ -1,0 +1,43 @@
+cff-version: 1.2.0
+message: If you use this software, please cite it using the metadata from this file.
+type: software
+title: 'mrland: MadRaT land data package'
+version: 0.49.0
+date-released: '2023-04-03'
+abstract: The package provides land related data via the madrat framework.
+authors:
+- family-names: Dietrich
+  given-names: Jan Philipp
+  email: dietrich@pik-potsdam.de
+- family-names: Mishra
+  given-names: Abhijeet
+- family-names: Weindl
+  given-names: Isabelle
+- family-names: Bodirsky
+  given-names: Benjamin Leon
+- family-names: Wang
+  given-names: Xiaoxi
+- family-names: Baumstark
+  given-names: Lavinia
+- family-names: Kreidenweis
+  given-names: Ulrich
+- family-names: Klein
+  given-names: David
+- family-names: Steinmetz
+  given-names: Nele
+- family-names: Chen
+  given-names: David
+- family-names: Humpenoeder
+  given-names: Florian
+- family-names: von Jeetze
+  given-names: Patrick
+- family-names: Wirth
+  given-names: Stephen
+- family-names: Beier
+  given-names: Felicitas
+- family-names: Hoetten
+  given-names: David
+license: LGPL-3.0
+repository-code: https://github.com/pik-piam/mrland
+doi: 10.5281/zenodo.3822083
+

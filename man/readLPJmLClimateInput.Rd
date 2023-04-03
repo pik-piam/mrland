@@ -5,20 +5,22 @@
 \title{readLPJmLClimateInput}
 \usage{
 readLPJmLClimateInput(
-  subtype = "ISIMIP3bv2:IPSL-CM6A-LR:historical:temperature",
-  subset = "annual_mean"
+  subtype = "ISIMIP3bv2:MRI-ESM2-0:ssp370:temperature",
+  subset = "annualMean"
 )
 }
 \arguments{
 \item{subtype}{Switch between different inputs,
-e.g. "ISIMIP3b:IPSL-CM6A-LR:historical:1850-2014:tas"
+e.g. "ISIMIP3bv2:MRI-ESM2-0:ssp370:1850-2014:tas"
 Available variables are: * tas -
                          * wet -
                          * per -}
 
 \item{subset}{Switch between different subsets of the same subtype
-Available options are: "annual_mean", "annual_sum",
-                       "monthly_mean", "monthly_sum", "wet"}
+Available options are: "annualMean", "annualSum",
+                       "monthlyMean", "monthlySum",
+                       "wetDaysMonth"
+Note that not all subtype-subset combinations make sense}
 }
 \value{
 MAgPIE objects with results on cellular level.
@@ -28,7 +30,7 @@ Read Climate data used as LPJmL inputs into MAgPIE objects
 }
 \examples{
 \dontrun{
-  readSource("LPJmLClimateInput", subtype, convert = "onlycorrect")
+readSource("LPJmLClimateInput", subtype, convert = "onlycorrect")
 }
 
 }

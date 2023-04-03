@@ -27,16 +27,15 @@
 calcLPJmLClimateInput <- function(climatetype = "MRI-ESM2-0:ssp370",
                                   variable = "temperature:annualMean",
                                   stage = "harmonized2020",
-                                  lpjmlVersion = "LPJmL4_for_MAgPIE_44ac93de") { #Needed here for consistency with LPJmL?
+                                  lpjmlVersion = "LPJmL4_for_MAgPIE_44ac93de") {
 
   # Create settings for LPJmL/GCM from version and climatetype argument
   cfg <- toolClimateInputVersion(lpjmlVersion = lpjmlVersion,
                                  climatetype = climatetype)
   var <- toolSplitSubtype(variable, list(type = NULL, timeres = NULL))
-  outtype <- ifelse(var$timeres != "wetDaysMonth", var$type , "wetDaysMonth")
+  outtype <- ifelse(var$timeres != "wetDaysMonth", var$type, "wetDaysMonth")
 
   if (stage %in% c("raw", "smoothed")) {
-
     ########## PLUG HIST + FUTURE ##########
 
 

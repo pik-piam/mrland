@@ -4,9 +4,7 @@
 \alias{downloadLPJmLClimateInput}
 \title{downloadLPJmLClimateInput}
 \usage{
-downloadLPJmLClimateInput(
-  subtype = "ISIMIP3bv2:IPSL-CM6A-LR:ssp126:temperature"
-)
+downloadLPJmLClimateInput(subtype = "ISIMIP3bv2:MRI-ESM2-0:ssp370:temperature")
 }
 \arguments{
 \item{subtype}{Switch between different inputs (e.g. "ISIMIP3b:IPSL-CM6A-LR:historical:1850-2014:temperature")

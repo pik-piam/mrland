@@ -12,3 +12,4 @@ carbon_stored.*
 ^.lintr$
 ^tests/.lintr$
 ^Makefile$
+^.*CITATION.cff$

@@ -16,7 +16,7 @@
 #' \code{\link{readLPJmLClimateInput}}
 #' @examples
 #' \dontrun{
-#'   readSource("LPJmLClimateInput", subtype, convert = "onlycorrect")
+#' readSource("LPJmLClimateInput", subtype, convert = "onlycorrect")
 #' }
 #'
 #' @importFrom lpjclass read.LPJ_input
@@ -38,14 +38,14 @@ readLPJmLClimateInput <- function(subtype = "ISIMIP3bv2:MRI-ESM2-0:ssp370:temper
   subsetTypes  <- c("annualMean", "annualSum", "monthlyMean",
                     "monthlySum", "wetDaysMonth", "\\d{4}:\\d{4}")
 
-  allowedCombos <- list(temperature    = c("annualMean","monthlyMean", "\\d{4}:\\d{4}"),
+  allowedCombos <- list(temperature    = c("annualMean", "monthlyMean", "\\d{4}:\\d{4}"),
                         precipitation  = subsetTypes,
-                        longWaveNet    = c("annualMean","monthlyMean", "\\d{4}:\\d{4}"),
-                        shortWave      = c("annualMean","monthlyMean", "\\d{4}:\\d{4}"),
-                        temperatureMin = c("annualMean","monthlyMean", "\\d{4}:\\d{4}"),
-                        temperatureMax = c("annualMean","monthlyMean", "\\d{4}:\\d{4}"))
-  isAllowed     <- any(sapply(allowedCombos[[subtype$variable]], grepl, x = subset))
-  if(!isAllowed) stop("Subtype-subset combination not allowed")
+                        longWaveNet    = c("annualMean", "monthlyMean", "\\d{4}:\\d{4}"),
+                        shortWave      = c("annualMean", "monthlyMean", "\\d{4}:\\d{4}"),
+                        temperatureMin = c("annualMean", "monthlyMean", "\\d{4}:\\d{4}"),
+                        temperatureMax = c("annualMean", "monthlyMean", "\\d{4}:\\d{4}"))
+  isAllowed     <- any(vapply(allowedCombos[[subtype$variable]], grepl, x = subset, FUN.VALUE = logical()))
+  if (!isAllowed) stop("Subtype-subset combination not allowed")
 
   .prepareLPJinput <- function(subset = NULL) {
 

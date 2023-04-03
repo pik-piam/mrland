@@ -5,8 +5,8 @@
 \title{calcLPJmLClimateInput}
 \usage{
 calcLPJmLClimateInput(
-  climatetype = "IPSL-CM6A-LR:ssp126",
-  variable = "temperature:annual_mean",
+  climatetype = "MRI-ESM2-0:ssp370",
+  variable = "temperature:annualMean",
   stage = "harmonized2020",
   lpjmlVersion = "LPJmL4_for_MAgPIE_44ac93de"
 )
@@ -30,8 +30,8 @@ Handle LPJmL climate input data and its time behaviour
 \examples{
 \dontrun{
 calcOutput("LPJmLClimateInput",
-           climatetype = "IPSL-CM6A-LR:ssp126",
-           variable = "temperature:annual_mean")
+           climatetype = "MRI-ESM2-0:ssp370",
+           variable = "temperature:annualMean")
 }
 
 }
