@@ -139,6 +139,9 @@ out[, , i] <- tmp
   out <- setYears(out, 2005)
   weight <- setYears(weight, 2005)
 
+  #add tiny value to weight to avoid 0 weights creating 0 values
+  weight <- weight + 1e-8
+
   return(list(x = out,
               weight = weight,
               unit = unit,
