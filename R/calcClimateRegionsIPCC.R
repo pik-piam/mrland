@@ -23,40 +23,33 @@
 calcClimateRegionsIPCC <- function(landusetypes = "all", cellular = FALSE, yearly = FALSE, convert = TRUE) {
 
   # PET based on thornwaite function
-  p <- readSource("LPJml_rev21", "precipitation", convert = FALSE)
-  p <- toolCell2isoCell(p)
-  t <- readSource("LPJml_rev21", "temperature", convert = FALSE)
-  t <- toolCell2isoCell(t)
-  lat <- pe <- p
-  lat[, , ] <- NA
-  pe[, , ] <- NA
-  lat <- p[, 1, 1]
-  lat[, , ] <- as.numeric(toolGetMapping("CountryToCellMapping.rds", where = "mrcommons")$lat)
-  lat <- setNames(setYears(lat, NULL), NULL)
-  tmp <- t
-  tmp <- aperm(tmp, c(3, 2, 1))
-  old <- tmp
-  dim(tmp) <- c(12 * dim(t)[2], dim(t)[1])
-  tmp <- thornthwaite(tmp, lat = lat[, , ])
-  old[, , ] <- tmp
-  pet <- as.magpie(aperm(old, c(3, 2, 1)))
+  pet       <- calcOutput("LPJmL_new", version = "LPJmL4_for_MAgPIE_44ac93de",
+                          climatetype = "GSWP3-W5E5:historical", subtype = "mpet",
+                          stage = "smoothed", aggregate = FALSE)
+  precip    <- calcOutput("LPJmLClimateInput", lpjmlVersion = "LPJmL4_for_MAgPIE_44ac93de",
+                          climatetype  = "GSWP3-W5E5:historical",
+                          variable = "precipitation:monthlySum",
+                          stage = "smoothed", aggregate = FALSE)
+  temp      <- calcOutput("LPJmLClimateInput", lpjmlVersion = "LPJmL4_for_MAgPIE_44ac93de",
+                          climatetype  = "GSWP3-W5E5:historical",
+                          variable = "temperature:monthlyMean",
+                          stage = "smoothed", aggregate = FALSE)
 
   # yearly total precip and pet
-  precip <- dimSums(p, dim = c(3.1))
-  pet1 <- dimSums(pet, dim = c(3.1))
+  precip <- dimSums(precip, dim = c(3.1))
+  pet    <- dimSums(pet, dim = c(3.1))
   # yearly MAP:PET ratio
-  ratio <- precip / (pet1 + 0.000000001)
+  ratio <- precip / (pet + 0.000000001)
   # binary where ratio>1
   ratio <- ratio > 1
   # Mean Annual Temperature
-  temp <- dimSums(t, dim = 3.1) / 12
+  temp <- dimSums(temp, dim = 3.1) / 12
   # if any month temp is above 10, binary TRUE
-  tMonthly <- t
-  tMonthly10 <- tMonthly > 10
-  tMonthly10 <- dimSums(tMonthly10, dim = 3) > 0
+  t <- t > 10
+  tMonthly10 <- dimSums(t, dim = 3) > 0
 
-  getNames(temp) <- "temp"
-  getNames(ratio) <- "ratio"
+  getNames(temp)   <- "temp"
+  getNames(ratio)  <- "ratio"
   getNames(precip) <- "precip"
   getNames(tMonthly10) <- "t_monthly10"
   clm <- mbind(temp, precip, ratio, tMonthly10)
@@ -93,18 +86,19 @@ calcClimateRegionsIPCC <- function(landusetypes = "all", cellular = FALSE, yearl
   if (cellular == TRUE) {
     out <- climateRegions
   } else if (cellular == FALSE) {
-    countryToCell <- toolGetMapping("CountryToCellMapping.rds", where = "mrcommons")
 
     if (landusetypes == "all") {
-      landuse <- calcOutput("LanduseInitialisation", cellular = TRUE, aggregate = FALSE)
+      landuse <- calcOutput("LanduseInitialisation", cells = "lpjcell", cellular = TRUE, aggregate = FALSE)
     } else if (landusetypes != "all") {
-      landuse <- calcOutput("LanduseInitialisation", cellular = TRUE, aggregate = FALSE)[, , landusetypes]
+      landuse <- calcOutput("LanduseInitialisation", cells = "lpjcell",
+                            cellular = TRUE, aggregate = FALSE)[, , landusetypes]
     }
     # cell to country aggregation
+    landuse <- dimOrder(collapseDim(addLocation(landuse), dim = c("cell")),  perm = c(2, 3, 1), dim = 1)
+    names(dimnames(landuse))[1] <- "x.y.iso"
     landuse <- time_interpolate(landuse, interpolated_year = getYears(ratio), extrapolation_type = "constant")
     landuseSum <- dimSums(landuse, dim = 3)
-    climateRegions <- toolAggregate(x = climateRegions, rel = countryToCell, weight = landuseSum,
-                                    from = "celliso", to = "iso", partrel = TRUE)
+    climateRegions <- toolAggregate(x = climateRegions, weight = landuseSum, to = "iso")
     out <- climateRegions
 
     if (convert == TRUE) {
