@@ -36,7 +36,7 @@ calcClimateRegionsIPCC <- function(landusetypes = "all", cellular = FALSE, yearl
                           stage = "smoothed", aggregate = FALSE)
 
   # yearly total precip and pet
-  precip <- dimSums(prec, dim = c(3.1))
+  precip <- dimSums(precip, dim = c(3.1))
   pet    <- dimSums(pet, dim = c(3.1))
   # yearly MAP:PET ratio
   ratio <- precip / (pet + 0.000000001)
@@ -86,15 +86,16 @@ calcClimateRegionsIPCC <- function(landusetypes = "all", cellular = FALSE, yearl
   if (cellular == TRUE) {
     out <- climateRegions
   } else if (cellular == FALSE) {
-    countryToCell <- toolGetMapping("CountryToCellMapping.rds", where = "mrcommons")
 
     if (landusetypes == "all") {
       landuse <- calcOutput("LanduseInitialisation", cells = "lpjcell", cellular = TRUE, aggregate = FALSE)
     } else if (landusetypes != "all") {
-      landuse <- calcOutput("LanduseInitialisation", cells = "lpjcell", cellular = TRUE, aggregate = FALSE)[, , landusetypes]
+      landuse <- calcOutput("LanduseInitialisation", cells = "lpjcell",
+                            cellular = TRUE, aggregate = FALSE)[, , landusetypes]
     }
     # cell to country aggregation
-    landuse <- collapseDim(addLocation(landuse), dim=c("N","cell"))
+    landuse <- dimOrder(collapseDim(addLocation(landuse), dim = c("cell")),  perm = c(2, 3, 1), dim = 1)
+    names(dimnames(landuse))[1] <- "x.y.iso"
     landuse <- time_interpolate(landuse, interpolated_year = getYears(ratio), extrapolation_type = "constant")
     landuseSum <- dimSums(landuse, dim = 3)
     climateRegions <- toolAggregate(x = climateRegions, weight = landuseSum, to = "iso")
