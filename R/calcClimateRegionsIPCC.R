@@ -10,8 +10,7 @@
 #'
 #' @return Country or cellular magpie object with fraction of each climate region by country or cell
 #' @author David Chen
-#' @seealso
-#' \code{\link{readLPJml_rev21}}
+#'
 #' @examples
 #' \dontrun{
 #' calcOutput("ClimateRegionsIPCC")
