@@ -153,6 +153,7 @@ calcMulticroppingSuitability <- function(selectyears, lpjml, climatetype,
   # For perennials that are grown throughout the whole year,
   # multicropping yield is equal to single cropping yield
   suitMC[, , "sugarcane"] <- 0
+  suitMC[, , "trro"]      <- 0
 
   # Add missing crops (betr, begr, mgrass)
   # [Note: grown throughout the whole year -> multicropping yield = single cropping]
