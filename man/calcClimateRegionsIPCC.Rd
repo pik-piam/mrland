@@ -33,9 +33,6 @@ pet from LPJml. elevation dimension not included for tropical montane class
 calcOutput("ClimateRegionsIPCC")
 }
 }
-\seealso{
-\code{\link{readLPJml_rev21}}
-}
 \author{
 David Chen
 }

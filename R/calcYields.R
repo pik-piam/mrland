@@ -156,7 +156,7 @@ calcYields <- function(source = c(lpjml = "ggcmi_phase3_nchecks_9ca735cb", isimi
   yields <- yields * calib[, , getNames(yields, dim = 1)]
 
   if (multicropping) {
-    # No multicropping factor for MAgPIE perennials:
+    # MAgPIE perennials receive full year yield of their proxy:
     yields[, , "oilpalm"]   <- proxyYields[, , "groundnut"] * calib[, , "oilpalm"]
     yields[, , "others"]    <- proxyYields[, , "maize"] * calib[, , "others"]
     yields[, , "cottn_pro"] <- proxyYields[, , "groundnut"] * calib[, , "cottn_pro"]
