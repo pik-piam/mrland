@@ -2,15 +2,17 @@
 #' @description Urban land in Mha on 0.5deg grid
 #' @param cellular TRUE for results on 0.5 degree grid.
 #' @param timestep 5year or yearly
-#' @param cells magpiecell (59199 cells) or lpjcell (67420 cells). Currently only implemented for subtype "LUH2v2".
-#' @param subtype where the data source comes from ("LUH2v2" or "Gao")
+#' @param cells    magpiecell (59199 cells) or lpjcell (67420 cells)
+#' @param subtype  where the data source comes from ("LUH2v2" or "Gao")
 #' @return List of magpie objects with results on 0.5deg grid level, weights NULL, unit and description.
-#' @author David Chen, Patrick v. Jeetze
+#' @author David Chen, Patrick v. Jeetze, Felicitas Beier
 #' @importFrom magpiesets findset
 #' @importFrom mstools toolHoldConstant
 #' @importFrom magclass nregions setCells getCells
 
-calcUrbanLandFuture <- function(timestep = "5year", subtype = "LUH2v2", cells = "magpiecell", cellular = TRUE) {
+calcUrbanLandFuture <- function(timestep = "5year", subtype = "LUH2v2",
+                                cells = "magpiecell", cellular = TRUE) {
+
   if (subtype == "LUH2v2") {
     past <- calcOutput("LanduseInitialisation",
       cellular = TRUE, nclasses = "seven", cells = "lpjcell",
@@ -35,13 +37,8 @@ calcUrbanLandFuture <- function(timestep = "5year", subtype = "LUH2v2", cells = 
       names(dimnames(out)) <- c("x.y.iso", "t", "data")
     }
 
-    if (cells == "magpiecell") {
-      out <- toolCoord2Isocell(out)
-    } else if (cells != "lpjcell") {
-      stop("Please specify cells argument")
-    }
-
   } else if (subtype == "Gao") {
+
     out <- readSource("UrbanLandGao", convert = FALSE)
 
     if (timestep == "5year") {
@@ -55,12 +52,14 @@ calcUrbanLandFuture <- function(timestep = "5year", subtype = "LUH2v2", cells = 
       out[out < 0] <- 0
     }
 
-    if (cells == "lpjcell") {
-      stop("lpjcell currently not implemented for subtype 'Gao'")
-    }
-
   } else {
     stop("Not a Valid Subtype")
+  }
+
+  if (cells == "magpiecell") {
+    out <- toolCoord2Isocell(out)
+  } else if (cells != "lpjcell") {
+    stop("Please specify cells argument")
   }
 
   return(list(

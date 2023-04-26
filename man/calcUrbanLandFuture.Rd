@@ -16,7 +16,7 @@ calcUrbanLandFuture(
 
 \item{subtype}{where the data source comes from ("LUH2v2" or "Gao")}
 
-\item{cells}{magpiecell (59199 cells) or lpjcell (67420 cells). Currently only implemented for subtype "LUH2v2".}
+\item{cells}{magpiecell (59199 cells) or lpjcell (67420 cells)}
 
 \item{cellular}{TRUE for results on 0.5 degree grid.}
 }
@@ -27,5 +27,5 @@ List of magpie objects with results on 0.5deg grid level, weights NULL, unit and
 Urban land in Mha on 0.5deg grid
 }
 \author{
-David Chen, Patrick v. Jeetze
+David Chen, Patrick v. Jeetze, Felicitas Beier
 }
