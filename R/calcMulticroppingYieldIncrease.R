@@ -175,8 +175,8 @@ calcMulticroppingYieldIncrease <- function(selectyears, lpjml, climatetype,
   }
 
   unit        <- "unitless"
-  description <- "Factor of yield increase through multiple cropping
-                  to be applied on LPJmL crop yield"
+  description <- paste0("Factor of yield increase through multiple cropping",
+                        "to be applied on LPJmL crop yield")
 
   return(list(x            = out,
               weight       = NULL,

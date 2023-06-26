@@ -63,7 +63,7 @@ calcMulticroppingSuitability <- function(selectyears, lpjml, climatetype,
     ####################
     ### Definitions  ###
     ####################
-    # Transformation factor gC/m^2 -> tDM/ha
+    # Transformation factor for grass (gC/m^2 -> tDM/ha)
     yieldTransform <- 0.01 / 0.45
 
     ####################
