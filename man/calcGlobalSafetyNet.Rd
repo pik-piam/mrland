@@ -4,7 +4,7 @@
 \alias{calcGlobalSafetyNet}
 \title{calcGlobalSafetyNet}
 \usage{
-calcGlobalSafetyNet(maginput = TRUE, nclasses = "seven", cells = "magpiecell")
+calcGlobalSafetyNet(maginput = TRUE, nclasses = "seven", cells = "lpjcell")
 }
 \arguments{
 \item{maginput}{Whether data should be transformed (based on LUH2v2 data) to match land use types used in MAgPIE.}

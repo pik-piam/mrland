@@ -4,7 +4,7 @@
 \alias{calcHalfEarth}
 \title{calcHalfEarth}
 \usage{
-calcHalfEarth(cells = "magpiecell", nclasses = "seven")
+calcHalfEarth(cells = "lpjcell", nclasses = "seven")
 }
 \arguments{
 \item{cells}{number of cells of landmask (select "magpiecell" for 59199 cells or "lpjcell" for 67420 cells)}

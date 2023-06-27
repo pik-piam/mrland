@@ -8,7 +8,7 @@ calcKeyBiodiversityAreas(
   maginput = TRUE,
   unprotected = TRUE,
   nclasses = "seven",
-  cells = "magpiecell"
+  cells = "lpjcell"
 )
 }
 \arguments{

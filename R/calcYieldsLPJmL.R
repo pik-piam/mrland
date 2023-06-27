@@ -22,7 +22,7 @@
 #' @importFrom withr local_options
 
 calcYieldsLPJmL <- function(lpjml = "ggcmi_phase3_nchecks_bft_e511ac58",
-                            climatetype = "GSWP3-W5E5:historical", cells = "magpiecell") {
+                            climatetype = "GSWP3-W5E5:historical", cells = "lpjcell") {
 
   # Extract argument information
   if (grepl("GSWP3-W5E5", climatetype)) {

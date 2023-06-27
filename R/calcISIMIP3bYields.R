@@ -20,7 +20,7 @@
 #' @importFrom mrcommons toolCoord2Isocell toolSmooth
 
 calcISIMIP3bYields <- function(subtype = "yields:EPIC-IIASA:ukesm1-0-ll:ssp585:default:3b",
-                               smooth = TRUE, cells = "magpiecell") {
+                               smooth = TRUE, cells = "lpjcell") {
 
   if (grepl("historical", subtype)) {
     stop("Can only read full future scenarios for now, with historical already added")

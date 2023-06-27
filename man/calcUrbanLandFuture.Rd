@@ -7,7 +7,7 @@
 calcUrbanLandFuture(
   timestep = "5year",
   subtype = "LUH2v2",
-  cells = "magpiecell",
+  cells = "lpjcell",
   cellular = TRUE
 )
 }

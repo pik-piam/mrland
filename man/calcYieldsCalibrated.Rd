@@ -9,7 +9,7 @@ calcYieldsCalibrated(
   climatetype = "GSWP3-W5E5:historical",
   refYear = "y1995",
   selectyears = seq(1965, 2100, by = 5),
-  cells = "magpiecell",
+  cells = "lpjcell",
   multicropping = FALSE,
   refYields = FALSE,
   areaSource = "FAO",

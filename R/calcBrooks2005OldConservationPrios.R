@@ -24,7 +24,7 @@
 #' @importFrom mrcommons toolCoord2Isocell
 #'
 
-calcBrooks2005OldConservationPrios <- function(cells = "magpiecell", nclasses = "seven") {
+calcBrooks2005OldConservationPrios <- function(cells = "lpjcell", nclasses = "seven") {
 
   # Land area (in Mha):
   iniLU <- calcOutput("LanduseInitialisation",

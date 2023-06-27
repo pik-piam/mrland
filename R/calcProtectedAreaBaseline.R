@@ -27,7 +27,8 @@
 #'
 #' @importFrom mrcommons toolCoord2Isocell
 #'
-calcProtectedAreaBaseline <- function(magpie_input = TRUE, nclasses = "seven", cells = "magpiecell") { # nolint
+calcProtectedAreaBaseline <- function(magpie_input = TRUE, nclasses = "seven", # nolint
+                                      cells = "lpjcell") {
   PABaseline <- readSource("ProtectedAreaBaseline", convert = "onlycorrect") # nolint
 
   if (magpie_input == TRUE) {
@@ -62,7 +63,6 @@ calcProtectedAreaBaseline <- function(magpie_input = TRUE, nclasses = "seven", c
     PABaseline <- PABaseline * landMismatch # nolint
 
     if (nclasses %in% c("seven", "nine")) {
-
     # differentiate primary and secondary forest based on luh2v2 data
     totforestluh  <- dimSums(luh2v2[, , c("primf", "secdf")], dim = 3)
     primforestShr <- luh2v2[, , "primf"] / setNames(totforestluh + 1e-10, NULL)
@@ -93,7 +93,6 @@ calcProtectedAreaBaseline <- function(magpie_input = TRUE, nclasses = "seven", c
     }
 
     if (nclasses == "nine") {
-
       # separate pasture into pasture and rangeland
       totgrassluh <- dimSums(luh2v2[, , c("pastr", "range")], dim = 3)
       pastShr  <- luh2v2[, , "pastr"] / setNames(totgrassluh + 1e-10, NULL)

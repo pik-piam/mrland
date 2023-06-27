@@ -31,7 +31,7 @@
 #' @importFrom mrcommons toolCoord2Isocell
 #'
 
-calcConservationPriorities <- function(consvBaseYear = "y1750", cells = "magpiecell", nclasses = "seven") {
+calcConservationPriorities <- function(consvBaseYear = "y1750", cells = "lpjcell", nclasses = "seven") {
 
   # ===============================
   # Get conservation templates

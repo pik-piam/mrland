@@ -27,7 +27,8 @@
 #'
 #' @importFrom mrcommons toolCoord2Isocell
 #'
-calcIrrecoverableCarbonLand <- function(maginput = TRUE, nclasses = "seven", cells = "magpiecell") {
+calcIrrecoverableCarbonLand <- function(maginput = TRUE, nclasses = "seven",
+                                        cells = "lpjcell") {
   ic <- mbind(
     readSource("Noon2022", subtype = "land:IrrC_50pc", convert = "onlycorrect"),
     readSource("Noon2022", subtype = "land:IrrC_75pc", convert = "onlycorrect"),

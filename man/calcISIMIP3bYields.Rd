@@ -7,7 +7,7 @@
 calcISIMIP3bYields(
   subtype = "yields:EPIC-IIASA:ukesm1-0-ll:ssp585:default:3b",
   smooth = TRUE,
-  cells = "magpiecell"
+  cells = "lpjcell"
 )
 }
 \arguments{

@@ -4,7 +4,7 @@
 \alias{calcBrooks2005OldConservationPrios}
 \title{calcBrooks2005OldConservationPrios}
 \usage{
-calcBrooks2005OldConservationPrios(cells = "magpiecell", nclasses = "seven")
+calcBrooks2005OldConservationPrios(cells = "lpjcell", nclasses = "seven")
 }
 \arguments{
 \item{cells}{number of cells of landmask (select "magpiecell" for 59199 cells or "lpjcell" for 67420 cells)}

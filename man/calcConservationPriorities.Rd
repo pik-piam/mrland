@@ -6,7 +6,7 @@
 \usage{
 calcConservationPriorities(
   consvBaseYear = "y1750",
-  cells = "magpiecell",
+  cells = "lpjcell",
   nclasses = "seven"
 )
 }

@@ -24,7 +24,7 @@
 #' @importFrom mrcommons toolCoord2Isocell
 #'
 
-calcHalfEarth <- function(cells = "magpiecell", nclasses = "seven") {
+calcHalfEarth <- function(cells = "lpjcell", nclasses = "seven") {
 
   # Land area (in Mha):
   iniLU <- calcOutput("LanduseInitialisation",

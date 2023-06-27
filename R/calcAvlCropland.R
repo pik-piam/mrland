@@ -37,8 +37,7 @@
 #'
 #' @examples
 #' \dontrun{
-#' calcOutput("AvlCropland", marginal_land = "magpie", cells = "magpiecell",
-#'            country_level = FALSE, aggregate = FALSE)
+#' calcOutput("AvlCropland", aggregate = FALSE)
 #' }
 #'
 #' @importFrom madrat readSource calcOutput
@@ -48,7 +47,7 @@
 #'
 
 calcAvlCropland <- function(marginal_land = "magpie", cell_upper_bound = 0.9, country_level = FALSE, # nolint
-                            cells = "magpiecell") {
+                            cells = "lpjcell") {
 
   marginalLand <- marginal_land # nolint
   cellUpperBound <- cell_upper_bound # nolint

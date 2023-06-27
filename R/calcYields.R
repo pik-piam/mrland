@@ -66,7 +66,7 @@
 #' @importFrom withr local_options
 
 calcYields <- function(source = c(lpjml = "ggcmi_phase3_nchecks_9ca735cb", isimip = NULL), # nolint
-                       climatetype = "GSWP3-W5E5:historical", cells = "magpiecell",
+                       climatetype = "GSWP3-W5E5:historical", cells = "lpjcell",
                        selectyears = seq(1965, 2100, by = 5),
                        weighting = "totalCrop", multicropping = FALSE,
                        indiaYields = FALSE, scaleFactor = 0.3,

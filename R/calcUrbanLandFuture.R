@@ -11,7 +11,7 @@
 #' @importFrom magclass nregions setCells getCells
 
 calcUrbanLandFuture <- function(timestep = "5year", subtype = "LUH2v2",
-                                cells = "magpiecell", cellular = TRUE) {
+                                cells = "lpjcell", cellular = TRUE) {
 
   if (subtype == "LUH2v2") {
     past <- calcOutput("LanduseInitialisation",

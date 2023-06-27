@@ -24,7 +24,7 @@
 #' @importFrom mrcommons toolCoord2Isocell
 #'
 
-calcBHIFL <- function(cells = "magpiecell", nclasses = "seven") {
+calcBHIFL <- function(cells = "lpjcell", nclasses = "seven") {
 
   # Land area (in Mha):
   iniLU <- calcOutput("LanduseInitialisation",

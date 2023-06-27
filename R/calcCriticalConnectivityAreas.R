@@ -29,7 +29,8 @@
 #'
 #' @importFrom mrcommons toolCoord2Isocell
 #'
-calcCriticalConnectivityAreas <- function(maginput = TRUE, nclasses = "seven", cells = "magpiecell", mask = "KBA_GSN") {
+calcCriticalConnectivityAreas <- function(maginput = TRUE, nclasses = "seven",
+                                          cells = "lpjcell", mask = "KBA_GSN") {
   if (mask == "KBA") {
   cca <- readSource("Brennan2022", subtype = "KBA_masked", convert = "onlycorrect")
   } else if (mask == "KBA_GSN") {

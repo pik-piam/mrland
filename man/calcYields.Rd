@@ -7,7 +7,7 @@
 calcYields(
   source = c(lpjml = "ggcmi_phase3_nchecks_9ca735cb", isimip = NULL),
   climatetype = "GSWP3-W5E5:historical",
-  cells = "magpiecell",
+  cells = "lpjcell",
   selectyears = seq(1965, 2100, by = 5),
   weighting = "totalCrop",
   multicropping = FALSE,
