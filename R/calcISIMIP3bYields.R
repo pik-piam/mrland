@@ -27,8 +27,10 @@ calcISIMIP3bYields <- function(subtype = "yields:EPIC-IIASA:ukesm1-0-ll:ssp585:d
   }
 
   st <- toolSplitSubtype(subtype, list(dataset = "yields",
-                                       model   = c("LPJmL", "EPIC-IIASA", "pDSSAT", "CYGMA1p74","PROMET","CROVER","ISAM","LDNDC","PEPIC"),
-                                       gcm     = c("gfdl-esm4", "ipsl-cm6a-lr", "mpi-esm1-2-hr", "mri-esm2-0", "ukesm1-0-ll"),
+                                       model   = c("LPJmL", "EPIC-IIASA", "pDSSAT", "CYGMA1p74", "PROMET", "CROVER",
+                                                   "ISAM", "LDNDC", "PEPIC"),
+                                       gcm     = c("gfdl-esm4", "ipsl-cm6a-lr", "mpi-esm1-2-hr", "mri-esm2-0",
+                                                   "ukesm1-0-ll"),
                                        scen    = c("historical", "ssp126", "ssp370", "ssp585"),
                                        co2     = c("default", "2015co2"),
                                        version = c("2a", "2b", "3a", "3b")))
@@ -37,9 +39,9 @@ calcISIMIP3bYields <- function(subtype = "yields:EPIC-IIASA:ukesm1-0-ll:ssp585:d
   past <- readSource("ISIMIP", subtype = pastSubtype, convert = FALSE)
   scen <- readSource("ISIMIP", subtype = subtype, convert = FALSE)
 
-  x <- mbind(past[,2:length(getYears(past)),], scen)
+  x <- mbind(past[, 2:length(getYears(past)), ], scen)
 
-  #Interpolation of y2015 after mbind of past and scen (NA due to harvest year correction)
+  # Interpolation of y2015 after mbind of past and scen (NA due to harvest year correction)
   nameClean <- function(x, subtype) {
 
       getNames(x, dim = 1)[getNames(x, dim = 1) == "mai"] <- "maiz"
@@ -66,13 +68,13 @@ calcISIMIP3bYields <- function(subtype = "yields:EPIC-IIASA:ukesm1-0-ll:ssp585:d
 
   for (n in getNames(x)) {
     cellsCorr <- where(diff[, , n] < 0)$true$regions
-    x[cellsCorr,"y2015",n]<-setYears((x[cellsCorr,"y2016",n]+x[cellsCorr,"y2014",n])/2,"y2015")
+    x[cellsCorr, "y2015", n] <- setYears((x[cellsCorr, "y2016", n] + x[cellsCorr, "y2014", n]) / 2, "y2015")
   }
 
   x <- toolCoord2Isocell(x, cells = cells)
 
-  #read in mask
-  harvArea <- collapseNames(readSource("GGCMICropCalendar",subtype="fraction_of_harvested_area", convert = FALSE))
+  # read in mask
+  harvArea <- collapseNames(readSource("GGCMICropCalendar", subtype = "fraction_of_harvested_area", convert = FALSE))
   harvArea <- nameClean(harvArea)
   harvArea <- toolCoord2Isocell(harvArea, cells = cells)
 
@@ -80,10 +82,11 @@ calcISIMIP3bYields <- function(subtype = "yields:EPIC-IIASA:ukesm1-0-ll:ssp585:d
   if (st$model == "CYGMA1p74") { # CYGMA has no winter wheat
     getNames(x, dim = 1)[getNames(x, dim = 1) == "springwheat"] <- "tece"
   } else {
-
-    #use mask to select between spring and winter wheat yields
-    tece <- collapseNames(x[,,"springwheat"]*harvArea[,,"springwheat"] + x[,,"winterwheat"]*harvArea[,,"winterwheat"])
-    #tece mask does not cover all cells, only current harv area. Fill in other areas with higher yielding variety, based on historical 30 year averages
+    # use mask to select between spring and winter wheat yields
+    tece <- collapseNames(x[, , "springwheat"] * harvArea[, , "springwheat"]
+                          + x[, , "winterwheat"] * harvArea[, , "winterwheat"])
+    # tece mask does not cover all cells, only current harv area. Fill in other areas with higher yielding variety,
+    # based on historical 30 year averages
     higherw <- magpply(x[, 1981:2011, "springwheat", ],
                        FUN = mean, MARGIN = c(1, 3)) > magpply(x[, 1981:2011, "winterwheat", ],
                                                                FUN = mean, MARGIN = c(1, 3))
@@ -97,30 +100,21 @@ calcISIMIP3bYields <- function(subtype = "yields:EPIC-IIASA:ukesm1-0-ll:ssp585:d
     tece <- add_dimension(collapseNames(tece), dim = 3.1, nm = "tece")
 
     tece <- add_dimension(collapseNames(tece), dim = 3.1, nm = "tece")
-    x <- x[, , c("springwheat", "winterwheat"), inv = TRUE]
+    x <- x[, , c("springwheat", "winterwheat"), invert = TRUE]
     x <- mbind(x, tece)
   }
 
-  if(st$model=="CROVER"){
+  if (st$model == "CROVER") {
     # CROVER doesn't have ri2 data
     getNames(x, dim = 1)[getNames(x, dim = 1) == "ricea"] <- "rice_pro"
   } else {
-
-    ### take weighted average of rice yields by crop area, multiply by two in cells where there is both (to get multicropped yield per year instead of yield per harvest)
-    multiMask  <- collapseNames(harvArea[,,"riceb"])
-    rice <- multiMask * collapseNames(x[,,"ricea"]*harvArea[,,"ricea"] + x[,,"riceb"]*harvArea[,,"riceb"])
+    ### take weighted average of rice yields by crop area, multiply by two in cells where there is both
+    ### (to get multicropped yield per year instead of yield per harvest)
+    multiMask  <- collapseNames(harvArea[, , "riceb"])
+    rice <- multiMask * collapseNames(x[, , "ricea"] * harvArea[, , "ricea"] + x[, , "riceb"] * harvArea[, , "riceb"])
     rice <- add_dimension(collapseNames(rice), dim = 3.1, nm = "rice_pro")
 
-    #higherr <- magpply(x[, 1981:2011, "ricea", ],
-    #                  FUN = mean, MARGIN = c(1, 3)) > magpply(x[, 1981:2011, "riceb", ],
-    #                                                         FUN = mean, MARGIN = c(1, 3))
-    #higherr <- time_interpolate(setYears(higherr, 1961),
-    #                            interpolated_year = getYears(x),
-    #                            integrate_interpolated_years = TRUE)
-    #rice <- ifelse(higherr == 1, x[, , "ricea", ], x[, , "riceb", ])
-    #rice <- add_dimension(collapseNames(rice), dim = 3.1, nm = "rice_pro")
-
-    x <- x[, , c("ricea", "riceb"), inv = TRUE]
+    x <- x[, , c("ricea", "riceb"), invert = TRUE]
     x <- mbind(x, rice)
   }
 
