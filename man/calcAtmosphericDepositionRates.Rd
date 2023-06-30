@@ -4,10 +4,12 @@
 \alias{calcAtmosphericDepositionRates}
 \title{calcAtmosphericDepositionRates}
 \usage{
-calcAtmosphericDepositionRates(cellular = FALSE)
+calcAtmosphericDepositionRates(cellular = FALSE, cells = "lpjcell")
 }
 \arguments{
 \item{cellular}{TRUE for results on 0.5 degree grid.}
+
+\item{cells}{magpiecell (59199 cells) or lpjcell (67420 cells)}
 }
 \value{
 List of magpie objects with results on country level, weight on country level, unit and description.
@@ -16,10 +18,10 @@ List of magpie objects with results on country level, weight on country level, u
 Conputes Atmospheric (nitrogen) deposition rates per area on different land-use types.
 }
 \examples{
-
-\dontrun{ 
+\dontrun{
 calcOutput("AtmosphericDepositionRates")
 }
+
 }
 \seealso{
 \code{\link{calcAtmosphericDeposition}},
