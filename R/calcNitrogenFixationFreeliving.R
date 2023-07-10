@@ -13,10 +13,11 @@
 #' 
 
 
-calcNitrogenFixationFreeliving<-function(){
-  out<-setYears(readSource("Herridge",subtype = "freeliving",convert=FALSE),NULL)
-  return(list(x=out,
-              weight=NULL,
-              unit="Mt Nr / Mha",
-              description="Nitrogen fixation  freeliving bacteria"))
+calcNitrogenFixationFreeliving <- function() {
+  out <- setYears(readSource("Herridge", subtype = "freeliving", convert = FALSE),
+                  NULL)
+  return(list(x = out,
+              weight = NULL,
+              unit = "Mt Nr / Mha",
+              description = "Nitrogen fixation  freeliving bacteria"))
 }

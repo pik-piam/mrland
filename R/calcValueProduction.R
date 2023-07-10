@@ -36,17 +36,13 @@ regions <- intersect(getItems(prices, dim = 1.1), getItems(prod, dim = 1.1))
 
 x <- prod[regions, , common] * prices[regions, , common]
 } else {
-    stop("Only FAO datasource has country level prices")
-
-  }
-  return(list(x = x,
-              weight = NULL,
-              unit = "US$05/tDM",
-              description = "Crop Production Value",
-              min = 0,
-              max = Inf,
-              isocountries = !cellular
-  )
-
-  )
+  stop("Only FAO datasource has country level prices")
+}
+return(list(x = x,
+            weight = NULL,
+            unit = "US$05/tDM",
+            description = "Crop Production Value",
+            min = 0,
+            max = Inf,
+            isocountries = !cellular))
 }
