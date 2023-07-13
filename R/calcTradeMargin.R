@@ -83,7 +83,7 @@ out <- toolCountryFill(out, 0)
 
 ##### make countries with 0 margins high
 # take max by product and (exporting) region
-mapping <- toolGetMapping("regionmappingH12.csv", type = "regional")
+mapping <- toolGetMapping("regionmappingH12.csv", type = "regional", where = "mappingfolder")
 reg <- unique(mapping$RegionCode)
 
 for (i in getNames(out)) {

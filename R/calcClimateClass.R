@@ -25,7 +25,7 @@ calcClimateClass <- function(source = "Koeppen") {
     getNames(x) <- gsub(" ", "_", tolower(getNames(x)))
 
     if (source == "IPCC_reduced") { # nolint
-      reduceIPCC  <- toolGetMapping("IPCC2IPCCreduced.csv", type = "sectoral")
+      reduceIPCC  <- toolGetMapping("IPCC2IPCCreduced.csv", type = "sectoral", where = "mappingfolder")
       x           <- toolAggregate(x, reduceIPCC, from = "ipcc", to = "ipcc_reduced", dim = 3, partrel = TRUE)
     }
 

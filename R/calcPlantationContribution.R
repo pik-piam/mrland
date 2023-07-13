@@ -68,7 +68,7 @@ calcPlantationContribution <- function() {
 
   ## Find standard mapping - which countries belong to REF and JPN in standard mapping -
   ## we will modify ISO codes here so that this works with all mappings
-  h12_mapping <- toolGetMapping(type = "regional", name = "h12.csv")
+  h12_mapping <- toolGetMapping(type = "regional", name = "h12.csv", where = "mappingfolder")
   JPN <- h12_mapping[h12_mapping$RegionCode == "JPN", ]$CountryCode
   REF <- h12_mapping[h12_mapping$RegionCode == "REF", ]$CountryCode
   EUR <- h12_mapping[h12_mapping$RegionCode == "EUR", ]$CountryCode
