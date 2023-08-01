@@ -10,16 +10,16 @@ calcEATLancetTargets(attributes = "kcal/d")
 \item{attributes}{Attributes of food commodities (available: kcal/d and g/d)}
 }
 \value{
-List of magpie objects with results on country level, weight on country level, unit and description.
+List of magpie objects with results on country level, weight on country level,
+        unit and description.
 }
 \description{
-Calculates minimum and maximum targets for healthy food intake according to reference 
-recommendations proposed by the EAT-Lancet Commission on healthy diets from sustainable  
+Calculates minimum and maximum targets for healthy food intake according to reference
+recommendations proposed by the EAT-Lancet Commission on healthy diets from sustainable
 food systems, specified for different MAgPIE commodities.
 }
 \examples{
-
-\dontrun{ 
+\dontrun{
 calcOutput("EATLancetTargets")
 }
 }

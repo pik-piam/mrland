@@ -2,13 +2,13 @@
 % Please edit documentation in R/readEATLancet.R
 \name{readEATLancet}
 \alias{readEATLancet}
-\title{Read in data from the EAT-Lancet Comission}
+\title{readEATLancet}
 \usage{
 readEATLancet(subtype)
 }
 \arguments{
 \item{subtype}{Type of EAT-Lancet data that should be read. Available types are:
-\itemize{ 
+\itemize{
 \item \code{cons_data}: Consumption analysis ("EAT_Lancet_cons_data.csv")
 \item \code{recommend}: Food recommendations ("EAT_Lancet_recommendations.csv")
 }}
@@ -17,13 +17,15 @@ readEATLancet(subtype)
 magpie object containing EAT-Lancet Comission data
 }
 \description{
+Read in data from the EAT-Lancet Commission
+
 Read in data from:
 Food in the Anthropocene: the EAT-Lancet Commission on healthy diets from sustainable food systems, Lancet 2019
 https://doi.org/10.1016/S0140-6736(18)31788-4
 }
 \examples{
-
-\dontrun{ a <- readSource(type="EATLancet",subtype="cons_data")
+\dontrun{
+a <- readSource(type = "EATLancet", subtype = "cons_data")
 }
 
 }

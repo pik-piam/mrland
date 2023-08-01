@@ -21,14 +21,13 @@ calcEATLancetDiets(
 List of magpie objects with results on country level, weight on country level, unit and description.
 }
 \description{
-Calculates daily per capita intake for MAgPIE food commodities that are consistent with diet scenarios 
-developed by the EAT-Lancet Commission on healthy diets from sustainable food systems. 
-The unit is kcal/day per capita or wm/day per capita. 
+Calculates daily per capita intake for MAgPIE food commodities that are consistent with diet scenarios
+developed by the EAT-Lancet Commission on healthy diets from sustainable food systems.
+The unit is kcal/day per capita or wm/day per capita.
 Mapping of intake from EAT Lancet to MAgPIE food commodities is done indivudually for the different available units.
 }
 \examples{
-
-\dontrun{ 
+\dontrun{
 calcOutput("EATLancetDiets")
 }
 }
