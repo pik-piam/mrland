@@ -38,7 +38,7 @@ calcEATLancetTargets <- function(attributes = "kcal/d") {
 
   eatTargetsFood <- toolAggregate(eatTargets, rel = relMatrixFood,
                                   dim = 3.1, partrel = TRUE,
-                                  from = "EAT_food", to = "EAT_tfood15")
+                                  from = "eatFood", to = "eatTFood15")
 
   # mapping of EAT Lancet food groups to MAgPIE diet target groups
   eatGroup    <- c("nuts_seeds", "vegetables", "fruits", "roots", "fg_redmeat")
@@ -46,11 +46,11 @@ calcEATLancetTargets <- function(attributes = "kcal/d") {
 
   relMatrixGroup <- cbind(eatGroup, eatTGroup15)
 
-  eatTargets_group <- toolAggregate(eatTargets, rel = relMatrixGroup,
+  eatTargetsGroup <- toolAggregate(eatTargets, rel = relMatrixGroup,
                                     dim = 3.1, partrel = TRUE,
-                                    from = "EAT_group", to = "EAT_tgroup15")
+                                    from = "eatGroup", to = "eatTGroup15")
 
-  eat <- mbind(eatTargetsFood, eatTargets_group)
+  eat <- mbind(eatTargetsFood, eatTargetsGroup)
 
 
   #### Selection of relevant attributes
