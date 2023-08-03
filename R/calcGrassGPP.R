@@ -25,7 +25,7 @@
 calcGrassGPP <- function(selectyears, lpjml, climatetype, season) {
 
   if (grepl("GSWP3-W5E5", climatetype)) {
-    stage       <- "smoothed"
+    stage <- "smoothed"
   } else {
     stage <- "harmonized2020"
   }
@@ -34,32 +34,31 @@ calcGrassGPP <- function(selectyears, lpjml, climatetype, season) {
   ### Read in data ###
   ####################
 
-  # monthly irrigated grass GPP
+  # monthly irrigated grass GPP (in tDM/ha)
   monthlyIrrigated <- calcOutput("LPJmL_new", subtype = "mgpp_grass_ir",
                               years = selectyears,
                               stage = stage,
                               version = lpjml[["crop"]], climatetype = climatetype,
                               aggregate = FALSE)
-  # monthly irrigated grass GPP
+  # monthly irrigated grass GPP (in tDM/ha)
   monthlyRainfed <- calcOutput("LPJmL_new", subtype = "mgpp_grass_rf",
                               years = selectyears,
                               stage = stage,
                               version = lpjml[["crop"]], climatetype = climatetype,
                               aggregate = FALSE)
 
-  # irrigated grass GPP in irrigated growing period of crop
+  # irrigated grass GPP in irrigated growing period of crop (in tDM/ha)
   grperIrrigated <- calcOutput("LPJmL_new", subtype = "cft_gpp_grass_ir",
                               years = selectyears,
                               stage = stage,
                               version = lpjml[["crop"]], climatetype = climatetype,
                               aggregate = FALSE)
-  # rainfed grass GPP in rainfed growing period of crop
+  # rainfed grass GPP in rainfed growing period of crop (in tDM/ha)
   grperRainfed <- calcOutput("LPJmL_new", subtype = "cft_gpp_grass_rf",
                               years = selectyears,
                               stage = stage,
                               version = lpjml[["crop"]], climatetype = climatetype,
                               aggregate = FALSE)
-
 
   ########################
   ### Data preparation ###
@@ -90,15 +89,9 @@ calcGrassGPP <- function(selectyears, lpjml, climatetype, season) {
   monthlyIrrigated <- add_dimension(monthlyIrrigated,
                                     add = "irrigation", nm = "irrigated")
 
-  # Calculate annual rainfed grass GPP
-  grassGPPannual[, , "rainfed"]   <- dimSums(monthlyRainfed, dim = 3)
-  # Calculate annual irrigated grass GPP
-  grassGPPannual[, , "irrigated"] <- dimSums(monthlyIrrigated, dim = 3)
-
   ##############
   ### Return ###
   ##############
-
   unit        <- "tDM per ha"
   description <- "irrigated and rainfed gross primary production of grass"
 
@@ -109,36 +102,43 @@ calcGrassGPP <- function(selectyears, lpjml, climatetype, season) {
 
   } else if (season == "wholeYear") {
 
+    # read in months with favorable growing conditions (boolean: 1=growing month; 0=no growing month)
+    grperPOT <- calcOutput("GrowingPeriodMonths",
+                           selectyears = selectyears,
+                           lpjml = lpjml, climatetype = climatetype,
+                           aggregate = FALSE)
+
+    # Calculate "annual" rainfed grass GPP for potential growing period
+    # (i.e., months with favorable crop growth conditions)
+    grassGPPannual[, , "rainfed"] <- dimSums(monthlyRainfed * grperPOT[, , "rainfed"],
+                                              dim = 3)
+    # Calculate "annual" irrigated grass GPP for potential growing period
+    # (i.e., months with favorable crop growth conditions)
+    grassGPPannual[, , "irrigated"] <- dimSums(monthlyIrrigated * grperPOT[, , "irrigated"],
+                                                dim = 3)
+
     out         <- grassGPPannual
-    description <- paste0(description, " in the entire year")
+    description <- paste0(description, " in the entire year (when crop growth is possible)")
 
   } else if (season == "monthly") {
 
-    out <- mbind(monthlyRainfed, monthlyIrrigated)
+    out                  <- mbind(monthlyRainfed, monthlyIrrigated)
     getSets(out)["d3.2"] <- "month"
-    description <- paste0(description, " per month")
+    description          <- paste0(description, " per month")
 
   } else {
     stop("Please specify output to be returned by function calcGrassGPP:
          mainSeason or wholeYear or monthly")
   }
 
-
   ##############
   ### Checks ###
   ##############
-
   if (any(is.na(out))) {
     stop("calcGrassGPP produced NA values")
   }
   if (any(out < 0)) {
     stop("calcGrassGPP produced negative values")
-  }
-  if (any((grassGPPannual - grassGPPgrper) < 0)) {
-    warning("Annual grass GPP < grass GPP in growing period. This may happen
-            when using raw rather than smoothed LPJmL inputs due to growing
-            periods that can span over two years. It should, however, even out
-            when time smoothing is applied.")  # @JENS?
   }
 
   return(list(x            = out,

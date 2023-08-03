@@ -111,12 +111,11 @@ calcMulticroppingIntensity <- function(scenario, selectyears,
   ##############
   ### Checks ###
   ##############
-
   if (any(is.na(currMC))) {
-    stop("calcMulticroppingIntensity produced NA values")
+    stop("mrland::calcMulticroppingIntensity produced NA values")
   }
   if (any(currMC > 2 || currMC < 1)) {
-    stop("Problem in calcMulticroppingIntensity:
+    stop("Problem in mrland::calcMulticroppingIntensity:
           Value should be between 1 and 2!")
   }
 
@@ -125,8 +124,8 @@ calcMulticroppingIntensity <- function(scenario, selectyears,
   ##############
   out         <- currMC
   unit        <- "factor"
-  description <- "Cropping Intensitiy of different crops under
-                  irrigated and rainfed conditions respectively"
+  description <- paste0("Cropping Intensitiy of different crops ",
+                        "under irrigated and rainfed conditions respectively")
 
   return(list(x            = out,
               weight       = NULL,

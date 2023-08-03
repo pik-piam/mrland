@@ -8,8 +8,6 @@ calcMulticroppingSuitability(
   selectyears,
   lpjml,
   climatetype,
-  temperatureGCM = NULL,
-  minThreshold = 100,
   suitability = "endogenous"
 )
 }
@@ -20,18 +18,6 @@ calcMulticroppingSuitability(
 
 \item{climatetype}{Switch between different climate scenarios or
 historical baseline "GSWP3-W5E5:historical"}
-
-\item{temperatureGCM}{If !NULL:
-Additional crop-specific temperature rule
-GCM Climate data for temperature.
-Specify data source, climate scenario, ssp, years
-in the following format:
-"ISIMIP3b:IPSL-CM6A-LR:ssp126:1850-2100"}
-
-\item{minThreshold}{Threshold of monthly grass GPP to be classified as
-growing period month
-Unit of the threshold is gC/m^2.
-Default: 100gC/m^2}
 
 \item{suitability}{"endogenous": suitability for multiple cropping determined
              by rules based on grass and crop productivity
@@ -44,9 +30,8 @@ magpie object in cellular resolution
 \description{
 Calculates which grid cells are potentially suitable for
              multiple cropping activities under rainfed and irrigated conditions.
-             Calculation is based on grassland gross primary production (GPP)
-             in the growing period of the respective crop and annual grass GPP
-             as well as the specific crop yield in the growing period.
+             Calculation is based on the length of the growing period determined by
+             monthly grassland gross primary production (GPP).
 }
 \examples{
 \dontrun{
@@ -55,5 +40,5 @@ calcOutput("MulticroppingSuitability", aggregate = FALSE)
 
 }
 \author{
-Felicitas Beier
+Felicitas Beier, Jens Heinke
 }
