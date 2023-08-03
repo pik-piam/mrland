@@ -46,7 +46,7 @@ calcMulticroppingSuitability <- function(selectyears, lpjml, climatetype,
                                           c(rep("rainfed", length(croplist)),
                                             rep("irrigated", length(croplist))),
                                             sep = "."),
-                            fill = 0,
+                            fill = NA,
                             sets = c("x", "y", "iso", "year", "crop", "irrigation"))
 
   # Choose how multiple cropping suitability is determined
@@ -70,7 +70,9 @@ calcMulticroppingSuitability <- function(selectyears, lpjml, climatetype,
     ####################
     ### Read in data ###
     ####################
-    suitMC[, , ] <- calcOutput("MultipleCroppingZones", layers = 2, aggregate = FALSE)
+    mcZones <- calcOutput("MultipleCroppingZones", layers = 2, aggregate = FALSE)
+    suitMC[, , "rainfed"]   <- mcZones[, , "rainfed"]
+    suitMC[, , "irrigated"] <- mcZones[, , "irrigated"]
 
   } else {
     stop("Please select whether endogenously calculated multiple cropping suitability
@@ -85,21 +87,15 @@ calcMulticroppingSuitability <- function(selectyears, lpjml, climatetype,
           Please double-check in mrland:calcMulticroppingSuitability")
   }
 
-  # For perennials (i.e. crops that are grown throughout the whole year),
+  # For perennials (i.e. crops that are grown throughout the whole year)
+  # and betr, begr, mgrass (also grown the whole year),
   # multicropping yield is equal to single cropping yield,
   # achieved by setting suitability to 0 here.
   suitMC[, , "sugarcane"] <- 0
   suitMC[, , "trro"]      <- 0
-
-  # Add missing crops (betr, begr, mgrass)
-  # [Note: grown throughout the whole year -> multicropping yield = single cropping]
-  missingCrops <- new.magpie(cells_and_regions = getItems(suitMC, dim = 1),
-                             years = getItems(suitMC, dim = 2),
-                             names = c("betr.irrigated", "betr.rainfed",
-                                       "begr.irrigated", "begr.rainfed",
-                                       "mgrass.irrigated", "mgrass.rainfed"),
-                             fill = 0)
-  suitMC       <- mbind(suitMC, missingCrops)
+  suitMC[, , "betr"]      <- 0
+  suitMC[, , "begr"]      <- 0
+  suitMC[, , "mgrass"]    <- 0
 
   # If multiple cropping is possible under rainfed conditions,
   # it is also possible under irrigated conditions
