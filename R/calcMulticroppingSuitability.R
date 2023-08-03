@@ -34,7 +34,7 @@ calcMulticroppingSuitability <- function(selectyears, lpjml, climatetype,
                              type = "sectoral",
                              where = "mappingfolder")
   mapCell  <- toolGetMappingCoord2Country()
-  croplist <- lpj2mag$LPJmL
+  croplist <- unique(lpj2mag$LPJmL)
 
   # Prepare data structure as crop-specific object
   # (While the chosen rule is not crop-specific,
