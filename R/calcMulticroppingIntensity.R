@@ -108,6 +108,9 @@ calcMulticroppingIntensity <- function(scenario, selectyears,
   currMC[currMC > 2]    <- 2
   currMC[is.na(currMC)] <- 1
 
+  # change dimension order of third dimension
+  currMC <- dimOrder(currMC, c(2, 1), dim = 3)
+
   ##############
   ### Checks ###
   ##############
