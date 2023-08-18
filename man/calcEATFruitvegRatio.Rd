@@ -7,7 +7,7 @@
 calcEATFruitvegRatio(populationweight = "PopulationPast")
 }
 \arguments{
-\item{populationweight}{datasource of populationweight: FAO can be selected in order to better meet exact values. 
+\item{populationweight}{datasource of populationweight: FAO can be selected in order to better meet exact values.
 Normal datasource is PopulationPast}
 }
 \value{
@@ -19,7 +19,7 @@ Information on the calorie supply from fruits and vegetables is relevant in the 
 e.g. as proposed by the EAT-Lancet Commission on healthy diets from sustainable food systems.
 }
 \examples{
-\dontrun{ 
+\dontrun{
 calcOutput("EATFruitvegRatio")
 }
 }

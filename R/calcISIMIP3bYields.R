@@ -104,7 +104,7 @@ calcISIMIP3bYields <- function(subtype = "yields:EPIC-IIASA:ukesm1-0-ll:ssp585:d
     tece <- add_dimension(collapseNames(tece), dim = 3.1, nm = "tece")
 
     tece <- add_dimension(collapseNames(tece), dim = 3.1, nm = "tece")
-    x <- x[, , c("springwheat", "winterwheat"), inv = TRUE]
+    x <- x[, , c("springwheat", "winterwheat"), invert = TRUE]
     x <- mbind(x, tece)
   }
 
@@ -119,18 +119,10 @@ calcISIMIP3bYields <- function(subtype = "yields:EPIC-IIASA:ukesm1-0-ll:ssp585:d
     rice <- multiMask * collapseNames(x[, , "ricea"] * harvArea[, , "ricea"] + x[, , "riceb"] * harvArea[, , "riceb"])
     rice <- add_dimension(collapseNames(rice), dim = 3.1, nm = "rice_pro")
 
-# nolint start
-    # higherr <- magpply(x[, 1981:2011, "ricea", ],
-    #                  FUN = mean, MARGIN = c(1, 3)) > magpply(x[, 1981:2011, "riceb", ],
-    #                                                         FUN = mean, MARGIN = c(1, 3))
-    # higherr <- time_interpolate(setYears(higherr, 1961),
-    #                            interpolated_year = getYears(x),
-    #                            integrate_interpolated_years = TRUE)
-    # rice <- ifelse(higherr == 1, x[, , "ricea", ], x[, , "riceb", ])
-    # rice <- add_dimension(collapseNames(rice), dim = 3.1, nm = "rice_pro")
-# nolint end
 
-    x <- x[, , c("ricea", "riceb"), inv = TRUE]
+
+
+    x <- x[, , c("ricea", "riceb"), invert = TRUE]
     x <- mbind(x, rice)
   }
 

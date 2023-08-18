@@ -29,34 +29,8 @@ readProtectedAreaBaseline <- function() {
 
     # Read raster file: The file contains land cover information for all legally
     # designated protected areas in the reference year, estimated based on
-    # ESA CCI land use/land cover (LULC) information with a spatial resolution of
-    # 10 arc seconds
-    luWDPA <- rast(paste0("./ESACCI-LC_WDPA_", yr, "_10s.tif"))
-
-    # The LULC information was simplified to the following classes:
-    # urban = "1", crop = "2", past = "3", forest = "4", other = "5", water = "6", barren = "7"
-
-    # set "urban" (1) and "water" (6) to NA, add "barren" to "other" (5)
-    classMatrx_lc <- rbind(c(1, NA), c(6, NA), c(7, 5))
-    luWDPA <- classify(luWDPA, classMatrx_lc)
-    gc()
-
-    # divide into separate layers
-    luWDPA <- segregate(luWDPA, other = NA)
-    gc()
-
-    # compute cell size for each LULC layer
-    luWDPA_area <- cellSize(luWDPA[[c("2", "3", "4", "5")]], mask = TRUE, unit = "ha")
-    gc()
-    # set names
-    names(luWDPA_area) <- c("crop", "past", "forest", "other")
-
-    # sum cell area to 0.5 degree
-    # aggregation factor from 10 arc sec to 0.5 degree: 180
-    luWDPA_area_0.5 <- aggregate(luWDPA_area, fact = 180, fun = sum, na.rm = TRUE)
-    gc()
-    # convert to Mha
-    luWDPA_area_0.5 <- luWDPA_area_0.5 / 1e6
+    # ESA CCI land use/land cover (LULC)
+    luWDPA_area_0.5 <- rast(paste0("./wdpa_esacci_land_", yr, "_0.5deg.tif"))
 
     # get spatial mapping
     map <- toolGetMappingCoord2Country(pretty = TRUE)
@@ -79,9 +53,6 @@ readProtectedAreaBaseline <- function() {
 
     message(paste("Finished year", yr))
 
-    rm(luWDPA, luWDPA_area, luWDPA_area_0.5)
-    tmpFiles(current = TRUE, orphan = TRUE, remove = FALSE)
-    gc()
   }
 
   return(out)

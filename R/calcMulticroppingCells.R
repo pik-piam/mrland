@@ -38,9 +38,8 @@ calcMulticroppingCells <- function(selectyears, lpjml, climatetype, scenario) {
 
     # Cells that can potentially be multi-cropped (irrigation- and crop-specific)
     mcCells <- calcOutput("MulticroppingSuitability", selectyears = selectyears,
-                          lpjml = lpjml,
-                          climatetype = climatetype,
-                          minThreshold = 100, suitability = subscenario,
+                          lpjml = lpjml, climatetype = climatetype,
+                          suitability = subscenario,
                           aggregate = FALSE)
 
   } else if (grepl(pattern = "actual", x = scenario)) {
@@ -79,9 +78,9 @@ calcMulticroppingCells <- function(selectyears, lpjml, climatetype, scenario) {
   ##############
   out         <- mcCells
   unit        <- "boolean"
-  description <- "Multicropping of different crops under
-                  irrigated and rainfed conditions respectively.
-                  1 = multi-cropped, 0 = not multi-cropped"
+  description <- paste0("Gridcell-specific multiple cropping ",
+                        "under irrigated and rainfed conditions. ",
+                        "1 = multi-cropped, 0 = not multi-cropped")
 
   return(list(x            = out,
               weight       = NULL,

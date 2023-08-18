@@ -7,10 +7,12 @@
 calcEfNSoil(method = "IPCC_reg")
 }
 \arguments{
-\item{method}{If IPCC, using the ipcc emission factors as share of applied N inputs. If Nloss, as share of cropland budget surplus.}
+\item{method}{If IPCC, using the ipcc emission factors as share of applied N inputs.
+If Nloss, as share of cropland budget surplus.}
 }
 \value{
-List of magpie object with results on country level, weight on country level, unit and description.
+List of magpie object with results on country level,
+        weight on country level, unit and description.
 }
 \description{
 Emission factors from cropland soils.
@@ -20,7 +22,6 @@ Emission factors from cropland soils.
 \dontrun{ 
 calcOutput("EmisNitrogenPast")
 }
-
 }
 \author{
 Benjamin Leon Bodirsky

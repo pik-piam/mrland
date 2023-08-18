@@ -65,7 +65,8 @@ calcMulticroppingYieldIncrease <- function(selectyears, lpjml, climatetype,
   ####################
   ### Read in data ###
   ####################
-  # grass GPP in the entire year (main + off season) (in tDM/ha)
+  # grass GPP in the entire year (main + off season) where cropping is possible
+  # taking the growing period months into account (in tDM/ha)
   grassGPPannual <- setYears(calcOutput("GrassGPP", season = "wholeYear",
                                         lpjml = lpjml, climatetype = climatetype,
                                         selectyears = selectyears, aggregate = FALSE),
@@ -81,23 +82,27 @@ calcMulticroppingYieldIncrease <- function(selectyears, lpjml, climatetype,
                             years = selectyears,
                             cells = "lpjcell", aggregate = FALSE)
 
-  croplist   <- getItems(grassGPPannual, dim = "crop")
-  cropYields <- cropYields[, , croplist]
+  # ensure that ordering of third dimension is the same for all objects
+  cropIrrigList <- getItems(grassGPPannual, dim = 3)
+  # make sure crops and ordering of objects is the same
+  cropYields <- cropYields[, , cropIrrigList]
   getSets(cropYields)["d3.1"] <- "crop"
   getSets(cropYields)["d3.2"] <- "irrigation"
 
   # Multiple cropping suitability
   if (areaMask == "none") {
     suitMC <- calcOutput("MulticroppingCells",
-                          scenario = "potential:exogenous", lpjml = lpjml, climatetype = climatetype,
-                          selectyears = selectyears, aggregate = FALSE)[, , croplist]
+                          scenario = "potential:exogenous",
+                          lpjml = lpjml, climatetype = climatetype,
+                          selectyears = selectyears,
+                          aggregate = FALSE)[, , cropIrrigList]
     # multiple cropping is allowed everywhere
     suitMC[, , ] <- 1
   } else {
     suitMC <- calcOutput("MulticroppingCells", scenario = areaMask,
                           lpjml = lpjml, climatetype = climatetype,
-                          selectyears = selectyears, aggregate = FALSE)[, , croplist]
-
+                          selectyears = selectyears,
+                          aggregate = FALSE)[, , cropIrrigList]
   }
 
   ####################
@@ -115,7 +120,7 @@ calcMulticroppingYieldIncrease <- function(selectyears, lpjml, climatetype,
   ### Yield Increase Factor  ###
   # Calculate multiple cropping factor based on annual grass GPP and
   # grass GPP in growing period of crop
-  grassGPPoffseason                        <- (grassGPPannual - grassGPPgrper)
+  grassGPPoffseason <- (grassGPPannual[, , cropIrrigList] - grassGPPgrper[, , cropIrrigList])
   grassGPPoffseason[grassGPPoffseason < 0] <- 0
 
   increaseFACTOR <- ifelse(rule1 & rule2,
@@ -136,7 +141,8 @@ calcMulticroppingYieldIncrease <- function(selectyears, lpjml, climatetype,
 
   # Some MAgPIE perennial crops or crops that are grown throughout the whole year
   # are proxied by an LPJmL crop that is grown with seasonality.
-  # For these, full year yields are calculated in all locations. This implies
+  # For these, full year yields (limited to potential growing period)
+  # are calculated in all locations. This implies
   # (a) no masking of multicropping suitability (suitable everywhere)
   # (b) no fallow factor applied
   proxyIncrease <- new.magpie(cells_and_regions = getItems(increaseFACTOR, dim = 1),
@@ -151,7 +157,9 @@ calcMulticroppingYieldIncrease <- function(selectyears, lpjml, climatetype,
                                              grassGPPoffseason[, , "maize"] / grassGPPgrper[, , "maize"],
                                            0)
   getSets(proxyIncrease) <- getSets(increaseFACTOR)
-  # @KRISTINE, JENS: Check whether that makes sense
+  # @KRISTINE, JENS: Check whether that makes sense. Should this be adjusted to full annual?
+  # Jens: maybe better to just use grass GPP,
+  # Kristine: but how to make sure that oil palm doesn't grow in temperate regions?
 
   ##############
   ### Checks ###
@@ -175,7 +183,7 @@ calcMulticroppingYieldIncrease <- function(selectyears, lpjml, climatetype,
   }
 
   unit        <- "unitless"
-  description <- paste0("Factor of yield increase through multiple cropping",
+  description <- paste0("Factor of yield increase through multiple cropping ",
                         "to be applied on LPJmL crop yield")
 
   return(list(x            = out,
