@@ -40,7 +40,7 @@ calcMulticroppingSuitability <- function(selectyears, lpjml, climatetype,
   # (While the chosen rule is not crop-specific,
   #  perennials have to be excluded from multiple cropping as grow beyond over several years.
   #  This is done further down in the code)
-  suitMC       <- new.magpie(cells_and_regions = paste(mapCell$coords, mapCell$iso, sep = "."),
+  suitMC   <- new.magpie(cells_and_regions = paste(mapCell$coords, mapCell$iso, sep = "."),
                             years = selectyears,
                             names = paste(croplist,
                                           c(rep("rainfed", length(croplist)),
@@ -81,8 +81,8 @@ calcMulticroppingSuitability <- function(selectyears, lpjml, climatetype,
   }
 
   if (any(suitMC[, , sample(croplist, 1)] != suitMC[, , sample(croplist, 1)])) {
-    stop("Multiple cropping suitability is not defined as crop-specific 
-          and should be the same for every crop. 
+    stop("Multiple cropping suitability is not defined as crop-specific
+          and should be the same for every crop.
           This is not the case here.
           Please double-check in mrland:calcMulticroppingSuitability")
   }
