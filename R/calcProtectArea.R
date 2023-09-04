@@ -21,10 +21,10 @@
 calcProtectArea <- function(cells = "magpiecell", bhifl = TRUE) {
 
   # Land area (in Mha):
-  landArea <- calcOutput("LanduseInitialisation", cellular = TRUE, cells = cells,
-                         nclasses = "seven", input_magpie = TRUE,
-                         years = "y1995", aggregate = FALSE)
-  landArea <- dimSums(landArea, dim = 3)
+  landArea <- setYears(collapseNames(dimSums(readSource("LUH2v2", subtype = "states_1995to1996",
+                                                        convert = "onlycorrect")[, "y1995", ],
+                                             dim = 3)),
+                       NULL)
 
   # Protection Area mz file (conservation priority area in Mha)
   x <- readSource("ProtectArea", convert = "onlycorrect")
