@@ -50,8 +50,6 @@ calcProtectArea <- function(cells = "magpiecell", bhifl = TRUE) {
 
   } else if (cells == "lpjcell") {
 
-    landArea <- collapseDim(addLocation(landArea), dim = c("N", "cell"))
-
     tmp <- collapseDim(addLocation(x), dim = c("region", "cell"))
 
     x   <- new.magpie(cells_and_regions = getCells(collapseDim(protectShr, dim = "iso")),
