@@ -47,6 +47,7 @@ calcProtectArea <- function(cells = "magpiecell", bhifl = TRUE) {
   if (cells == "magpiecell") {
 
     protectShr <- toolCoord2Isocell(protectShr, cells = cells)
+    landArea   <- toolCoord2Isocell(landArea, cells = cells)
 
   } else if (cells == "lpjcell") {
 
