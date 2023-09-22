@@ -23,9 +23,7 @@ calcEATLancetTargets <- function(attributes = "kcal/d") {
   eatTargets <- readSource(type = "EATLancet", subtype = "recommend")
   eatTargets[which(is.na(eatTargets))] <- 0
 
-
   #### Mapping to MAgPIE
-
   # mapping of EAT Lancet food categories to MAgPIE food commodities
   eatFood    <- c("legumes", "soybeans", "fish",
                   "poultry", "eggs", "milk",

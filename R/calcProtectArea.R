@@ -21,10 +21,10 @@
 calcProtectArea <- function(cells = "lpjcell", bhifl = TRUE) {
 
   # Land area (in Mha):
-  landArea <- calcOutput("LanduseInitialisation", cellular = TRUE, cells = cells,
-                         nclasses = "seven", input_magpie = TRUE,
-                         years = "y1995", aggregate = FALSE)
-  landArea <- dimSums(landArea, dim = 3)
+  landArea <- setYears(collapseNames(dimSums(readSource("LUH2v2", subtype = "states_1995to1996",
+                                                        convert = "onlycorrect")[, "y1995", ],
+                                             dim = 3)),
+                       NULL)
 
   # Protection Area mz file (conservation priority area in Mha)
   x <- readSource("ProtectArea", convert = "onlycorrect")
@@ -45,17 +45,25 @@ calcProtectArea <- function(cells = "lpjcell", bhifl = TRUE) {
   getSets(protectShr)  <- c("x", "y", "iso", "year",  "data")
 
   if (cells == "magpiecell") {
+
     protectShr <- toolCoord2Isocell(protectShr, cells = cells)
+    landArea   <- toolCoord2Isocell(landArea, cells = cells)
+
   } else if (cells == "lpjcell") {
 
-    tmp <- collapseDim(addLocation(x), dim = c("cell"))
-    tmp <- dimOrder(tmp, perm = c(2, 3, 1), dim = 1)
-    x   <- new.magpie(cells_and_regions = getItems(protectShr, dim = 1),
+    tmp <- collapseDim(addLocation(x), dim = c("region", "cell"))
+
+    x   <- new.magpie(cells_and_regions = getCells(collapseDim(protectShr, dim = "iso")),
                       years = getYears(tmp),
-                      names = getNames(tmp),
-                      fill = 0,
+                      names = getNames(tmp), fill = 0,
                       sets = c("x.y.iso", "year", "data"))
-    x[getItems(tmp, dim = 1), , ] <- tmp
+    x[getCells(tmp), , ] <- tmp
+
+    map         <- toolGetMappingCoord2Country()
+    if (any(getCells(x) != map$coords)) {
+      stop("Wrong cell ordering in calcProtectArea")
+    }
+    getCells(x) <- paste(map$coords, map$iso, sep = ".")
 
   } else {
     stop("Please select magpiecell or lpjcell in cells argument of calcProtectArea")
