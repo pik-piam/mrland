@@ -4,13 +4,7 @@
 \alias{calcMulticroppingIntensity}
 \title{calcMulticroppingIntensity}
 \usage{
-calcMulticroppingIntensity(
-  scenario,
-  selectyears,
-  lpjml,
-  climatetype,
-  sectoral = "lpj"
-)
+calcMulticroppingIntensity(scenario, selectyears, sectoral = "lpj")
 }
 \arguments{
 \item{scenario}{"total": currently multicropped areas calculated from total harvested areas
@@ -19,11 +13,6 @@ calcMulticroppingIntensity(
 "irrig_crop" (crop- and irrigation-specific)}
 
 \item{selectyears}{Years to be returned}
-
-\item{lpjml}{LPJmL version required for respective inputs: natveg or crop}
-
-\item{climatetype}{Switch between different climate scenarios or
-historical baseline "GSWP3-W5E5:historical"}
 
 \item{sectoral}{"kcr" MAgPIE crop types, and "lpj" LPJmL crop types}
 }

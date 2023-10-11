@@ -29,13 +29,11 @@
 #'
 
 calcMulticroppingCells <- function(selectyears, lpjml, climatetype, scenario) {
-
   # extract sub-scenario
   subscenario <- strsplit(scenario, split = ":")[[1]][2]
   scenario    <- strsplit(scenario, split = ":")[[1]][1]
 
   if (grepl(pattern = "potential", x = scenario)) {
-
     # Cells that can potentially be multi-cropped (irrigation- and crop-specific)
     mcCells <- calcOutput("MulticroppingSuitability", selectyears = selectyears,
                           lpjml = lpjml, climatetype = climatetype,
@@ -43,11 +41,9 @@ calcMulticroppingCells <- function(selectyears, lpjml, climatetype, scenario) {
                           aggregate = FALSE)
 
   } else if (grepl(pattern = "actual", x = scenario)) {
-
     # Cropping Intensity Factor (between 1 and 2)
     currMC <- calcOutput("MulticroppingIntensity", scenario = subscenario,
-                          lpjml = lpjml, climatetype = climatetype,
-                          selectyears = selectyears, aggregate = FALSE)
+                         selectyears = selectyears, aggregate = FALSE)
 
     # boolean of multicropped areas
     mcCells <- currMC
