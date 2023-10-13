@@ -23,7 +23,7 @@ readForestLossDrivers <- function(){
   mapping <- read.csv("mapping.csv",header = TRUE,sep = ";")
   
   ## Magpie standard
-  iso_country <- toolGetMapping(type = "regional", name = "h12.csv")
+  iso_country <- toolGetMapping(type = "regional", name = "regionmappingH12.csv", where = "madrat")
   
   ## Merge Mappings
   full_mapping <- merge(mapping,iso_country,by="CountryCode")[,c(-2,-4)] 

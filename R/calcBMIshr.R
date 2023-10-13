@@ -23,9 +23,9 @@ calcBMIshr <- function(convert=TRUE){
   ### Adult
   
   x<-readSource("NCDrisc",subtype="BMI_shr",convert=FALSE)
-  mapping <- toolGetMapping(type = "sectoral", name = "NCDriscBMIshr2Lutz.csv")
+  mapping <- toolGetMapping(type = "sectoral", name = "NCDriscBMIshr2Lutz.csv", where = "mappingfolder")
   x<-toolAggregate(x,rel = mapping,from = "NCDrisc",to = "lutz",dim = 3.1)
-  mapping <- toolGetMapping(type = "sectoral", name = "BMIgroup_adultBMI.csv")
+  mapping <- toolGetMapping(type = "sectoral", name = "BMIgroup_adultBMI.csv", where = "mappingfolder")
   adult<-toolAggregate(x,rel = mapping,from = "adultBMI",to = "BMIgroup",dim = 3.3,weight = NULL,partrel = TRUE)  
   
   ### underaged
@@ -37,9 +37,9 @@ calcBMIshr <- function(convert=TRUE){
   
   x<-x[,,relevant]
   weight<-x*0+1  ### assume equal weighting within age groups
-  mapping <- toolGetMapping(type = "sectoral", name = "NCDrisc2Lutz.csv")
+  mapping <- toolGetMapping(type = "sectoral", name = "NCDrisc2Lutz.csv", where = "mappingfolder")
   x<-toolAggregate(x,rel = mapping,from = "NCDrisc",to = "lutz",dim = 3.1,weight = weight,partrel = TRUE)  
-  mapping <- toolGetMapping(type = "sectoral", name = "BMIgroup_underagedBMI.csv")
+  mapping <- toolGetMapping(type = "sectoral", name = "BMIgroup_underagedBMI.csv", where = "mappingfolder")
   x<-toolAggregate(x,rel = mapping,from = "underagedBMI",to = "BMIgroup",dim = 3.3,weight = NULL,partrel = TRUE)  
   underaged<-add_columns(x,addnm = c(  "mediumhigh"),dim=3.3)
   underaged[,,c( "mediumhigh")]=0
@@ -62,7 +62,7 @@ calcBMIshr <- function(convert=TRUE){
     bmi_regr=collapseNames(regression[,,"intercept"]+regression[,,"saturation"]*gdp_pc/(regression[,,"halfsaturation"]+gdp_pc))
     bmi_regr=time_interpolate(bmi_regr,interpolated_year = getYears(BMI2),integrate_interpolated_years = FALSE)
     
-    mapping <- toolGetMapping(type = "sectoral", name = "Lutz2agegroups.csv")
+    mapping <- toolGetMapping(type = "sectoral", name = "Lutz2agegroups.csv", where = "mappingfolder")
 
     
     BMI2<-BMI2*NA

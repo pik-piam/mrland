@@ -21,7 +21,7 @@ calcPlantedForest <- function() {
   out <- setYears(planted_share[, "y2000", ], NULL)
 
   ## Change EUR values - See Forestry GMD paper review from Pekka Lauri
-  mag_iso_reg <- toolGetMapping(type = "regional", name = "h12.csv")
+  mag_iso_reg <- toolGetMapping(type = "regional", name = "regionmappingH12.csv", where = "madrat")
   reg_eur <- mag_iso_reg$CountryCode[mag_iso_reg$RegionCode == "EUR"]
   out[reg_eur, , ] <- out[reg_eur, , ] * 3
   out[reg_eur, , ][out[reg_eur, , ] > 1] <- 1
