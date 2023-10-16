@@ -13,7 +13,6 @@ A magpie object at iso level for all years with information on pumping costs
 provides costs of pumping irrigation water
 }
 \examples{
-
 \dontrun{
 calcOutput("PumpingCosts")
 }
