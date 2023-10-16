@@ -12,7 +12,8 @@ calcExoTcDummy <- function() {
   isoCountry  <- toolGetMapping("iso_country.csv", where = "mrland")
   isoCountry1 <- as.vector(isoCountry[, "x"])
   names(isoCountry1) <- isoCountry[, "X"]
-  x <- new.magpie(cells_and_regions = isoCountry1, years = seq(1995, 2150, by = 5), names = c("crop", "pastr"), fill = 0)
+  x <- new.magpie(cells_and_regions = isoCountry1, years = seq(1995, 2150, by = 5),
+                  names = c("crop", "pastr"), fill = 0)
 
   return(list(x = x,
               weight = NULL,
