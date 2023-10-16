@@ -13,26 +13,25 @@
 #' @export
 
 calcPlantedForest <- function() {
-
   ## Read land area frpom source
   a <- readSource("FRA2020", "forest_area")
-  planted_share <- setNames(round(a[, , "plantationForest"], 3) / round(a[, , "plantedForest"], 3), NULL)
-  planted_share[is.na(planted_share)] <- 0
-  out <- setYears(planted_share[, "y2000", ], NULL)
+  plantedShare <- setNames(round(a[, , "plantationForest"], 3) / round(a[, , "plantedForest"], 3), NULL)
+  plantedShare[is.na(plantedShare)] <- 0
+  out <- setYears(plantedShare[, "y2000", ], NULL)
 
   ## Change EUR values - See Forestry GMD paper review from Pekka Lauri
-  mag_iso_reg <- toolGetMapping(type = "regional", name = "h12.csv")
-  reg_eur <- mag_iso_reg$CountryCode[mag_iso_reg$RegionCode == "EUR"]
-  out[reg_eur, , ] <- out[reg_eur, , ] * 3
-  out[reg_eur, , ][out[reg_eur, , ] > 1] <- 1
+  magIsoReg <- toolGetMapping(type = "regional", name = "regionmappingH12.csv", where = "madrat")
+  regEur <- magIsoReg$CountryCode[magIsoReg$RegionCode == "EUR"]
+  out[regEur, , ] <- out[regEur, , ] * 3
+  out[regEur, , ][out[regEur, , ] > 1] <- 1
 
   ## Weight
   weight <- setYears(setNames(round(a[, "y2000", "plantedForest"], 3), NULL), NULL)
 
   return(list(x = out,
-    weight = weight,
-    min = 0,
-    unit = "share",
-    description = "Calculates the share of plantation forest in planted forest"))
+              weight = weight,
+              min = 0,
+              unit = "share",
+              description = "Calculates the share of plantation forest in planted forest"))
 
 }

@@ -16,8 +16,7 @@ List with a magpie object
 estimates population based on BMI share
 }
 \examples{
-
-\dontrun{ 
+\dontrun{
 calcOutput("BMIshr")
 }
 
