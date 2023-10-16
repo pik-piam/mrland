@@ -15,8 +15,7 @@ on export values from FAOSTAT. Function calculates this based on average
 values of the specified years.
 }
 \examples{
-
-\dontrun{ 
+\dontrun{
 a <- calcTradeExportShr()
 }
 

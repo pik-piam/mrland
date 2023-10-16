@@ -14,8 +14,7 @@ Calculates regional self sufficiences from FAO data as
 production/domestic_supply.
 }
 \examples{
-
-\dontrun{ 
+\dontrun{
 a <- calcTradeSelfSuff()
 }
 

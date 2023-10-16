@@ -15,9 +15,9 @@
 #' @export
 
 calcPlantationContribution <- function() {
-
   ## Read Share from source
-  out <- mbind(readSource("TimberShare", subtype = "abare", convert = TRUE), readSource("TimberShare", subtype = "brown", convert = TRUE))
+  out <- mbind(readSource("TimberShare", subtype = "abare", convert = TRUE),
+               readSource("TimberShare", subtype = "brown", convert = TRUE))
 
   out <- setYears(out, "y1995")
 
@@ -31,33 +31,34 @@ calcPlantationContribution <- function() {
   short <- paste0("y", seq(2025, 2050, 5))
   long  <- paste0("y", seq(2055, 2250, 5))
 
-  out <- time_interpolate(dataset = out, interpolated_year = year, integrate_interpolated_years = TRUE, extrapolation_type = "constant")
+  out <- time_interpolate(dataset = out, interpolated_year = year, integrate_interpolated_years = TRUE,
+                          extrapolation_type = "constant")
   out <- add_dimension(x = out, dim = 3.2, nm = scen)
 
-  out_scen <- out[, , "constant", invert = TRUE]
+  outScen <- out[, , "constant", invert = TRUE]
 
   mods <- str_extract_all(scen, "\\d+")
   names(mods) <- scen
 
-  for (i in getNames(out_scen, dim = "new")) {
+  for (i in getNames(outScen, dim = "new")) {
     for (j in 2:length(year)) {
-      present <- getYears(out_scen)[j]
-      past    <- getYears(out_scen)[j - 1]
+      present <- getYears(outScen)[j]
+      past    <- getYears(outScen)[j - 1]
 
-      scen_pattern <- mods[[i]]
+      scenPattern <- mods[[i]]
       multiplier <- c((1 + as.numeric(mods[[i]]) / 100))
 
-      if (length(grep(pattern = "0", x = scen_pattern, value = TRUE)) > 0) {
-        pos <- match(grep(pattern = "0", x = scen_pattern, value = TRUE), scen_pattern)
-        multiplier[pos] <- (1 + as.numeric(grep(pattern = "0", x = scen_pattern, value = TRUE)) / 1000)
+      if (length(grep(pattern = "0", x = scenPattern, value = TRUE)) > 0) {
+        pos <- match(grep(pattern = "0", x = scenPattern, value = TRUE), scenPattern)
+        multiplier[pos] <- (1 + as.numeric(grep(pattern = "0", x = scenPattern, value = TRUE)) / 1000)
       }
 
-      if (present %in% hist) out_scen[, present, i] <- setYears(out_scen[, past, i], NULL) * multiplier[1]
-      if (present %in% short) out_scen[, present, i] <- setYears(out_scen[, past, i], NULL) * multiplier[2]
-      if (present %in% long) out_scen[, present, i] <- setYears(out_scen[, past, i], NULL) * multiplier[3]
+      if (present %in% hist) outScen[, present, i] <- setYears(outScen[, past, i], NULL) * multiplier[1]
+      if (present %in% short) outScen[, present, i] <- setYears(outScen[, past, i], NULL) * multiplier[2]
+      if (present %in% long) outScen[, present, i] <- setYears(outScen[, past, i], NULL) * multiplier[3]
     }
   }
-  out[, , getNames(out_scen)] <- out_scen
+  out[, , getNames(outScen)] <- outScen
   out[, length(year) + 1, ] <- out[, length(year), ]
   out[out > 1] <- 1
   out <- round(out, 3)
@@ -68,13 +69,13 @@ calcPlantationContribution <- function() {
 
   ## Find standard mapping - which countries belong to REF and JPN in standard mapping -
   ## we will modify ISO codes here so that this works with all mappings
-  h12_mapping <- toolGetMapping(type = "regional", name = "h12.csv")
-  JPN <- h12_mapping[h12_mapping$RegionCode == "JPN", ]$CountryCode
-  REF <- h12_mapping[h12_mapping$RegionCode == "REF", ]$CountryCode
-  EUR <- h12_mapping[h12_mapping$RegionCode == "EUR", ]$CountryCode
-  out[JPN, , ] <- 0.00001
-  out[REF, , ] <- 0.01
-  out[EUR, , ] <- out[EUR, , ] * 3
+  h12mapping <- toolGetMapping(type = "regional", name = "regionmappingH12.csv", where = "madrat")
+  jpn <- h12mapping[h12mapping$RegionCode == "JPN", ]$CountryCode
+  ref <- h12mapping[h12mapping$RegionCode == "REF", ]$CountryCode
+  eur <- h12mapping[h12mapping$RegionCode == "EUR", ]$CountryCode
+  out[jpn, , ] <- 0.00001
+  out[ref, , ] <- 0.01
+  out[eur, , ] <- out[eur, , ] * 3
   ## WARNING : (DO NOT CHANGE 0.01 value in REF to any value lower than this as
   ## this will result in wrong plantation establishment in REF and would need
   ## adjustment in establishment calibration factors - currently 0.05 for REF)
@@ -85,9 +86,8 @@ calcPlantationContribution <- function() {
   weight <- collapseNames(calcOutput("TimberDemand", aggregate = FALSE)[, "y1995", "production"])[, , c("Roundwood")]
 
   return(list(x = out,
-    weight = weight,
-    min = 0,
-    unit = "percent",
-    description = "Calculates the share of roundwood production coming from timber plantations"))
-
+              weight = weight,
+              min = 0,
+              unit = "percent",
+              description = "Calculates the share of roundwood production coming from timber plantations"))
 }
