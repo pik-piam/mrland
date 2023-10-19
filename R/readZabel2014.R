@@ -34,7 +34,6 @@
 #'
 
 readZabel2014 <- function(subtype = "all_marginal:rainfed_and_irrigated") {
-
   # extract subtype
   condition <- unlist(strsplit(subtype, split = ":"))[2]
   subtype   <- unlist(strsplit(subtype, split = ":"))[1]
@@ -46,18 +45,18 @@ readZabel2014 <- function(subtype = "all_marginal:rainfed_and_irrigated") {
   # read data
   if (condition == "rainfed_and_irrigated") {
 
-      cropsuitZabel <- rast(paste0("./cropsuitability_rainfed_and_irrigated/1981-2010/",
-                                   "overall_cropsuit_i_1981-2010/overall_cropsuit_i_1981-2010.tif"))
+    cropsuitZabel <- rast(paste0("./cropsuitability_rainfed_and_irrigated/1981-2010/",
+                                 "overall_cropsuit_i_1981-2010/overall_cropsuit_i_1981-2010.tif"))
 
   } else if (condition == "rainfed") {
 
-      cropsuitZabel <- rast(paste0("./cropsuitability_rainfed_only/1981-2010/",
-                                   "overall_suitability_1/overall_suitability_rainfed_1981-2010.tif"))
+    cropsuitZabel <- rast(paste0("./cropsuitability_rainfed_only/1981-2010/",
+                                 "overall_suitability_1/overall_suitability_rainfed_1981-2010.tif"))
 
   } else if (condition == "irrigated") {
 
-      cropsuitZabel <- rast(paste0("./cropsuitability_irrigated_only/1981-2010/",
-                                  "overall_suitability_1/overall_suitability_irrigated_1981-2010.tif"))
+    cropsuitZabel <- rast(paste0("./cropsuitability_irrigated_only/1981-2010/",
+                                 "overall_suitability_1/overall_suitability_irrigated_1981-2010.tif"))
 
   } else {
     stop("Please select which suitability condition should be selected:
@@ -69,7 +68,6 @@ readZabel2014 <- function(subtype = "all_marginal:rainfed_and_irrigated") {
   # In Zabel et al. (2014) marginal land is defined by a suitability index <= 0.33
 
   if (subtype == "all_marginal") {
-
     # all marginal land is included
     rclassMatrx <- matrix(c(
       0, 0, NA,
@@ -79,7 +77,6 @@ readZabel2014 <- function(subtype = "all_marginal:rainfed_and_irrigated") {
     )
     cropsuitZabel <- classify(cropsuitZabel, rclassMatrx, include.lowest = TRUE)
   } else if (subtype == "q33_marginal") {
-
     # The bottom tertile (suitability index below 0.13) of the marginal land area is excluded
     rclassMatrx <- matrix(c(
       0, 0.13, NA,
@@ -89,7 +86,6 @@ readZabel2014 <- function(subtype = "all_marginal:rainfed_and_irrigated") {
     )
     cropsuitZabel <- classify(cropsuitZabel, rclassMatrx, include.lowest = TRUE)
   } else if (subtype == "q50_marginal") {
-
     # The bottom  half (suitability index below 0.18) of the marginal land area is excluded
     rclassMatrx <- matrix(c(
       0, 0.18, NA,
@@ -99,7 +95,6 @@ readZabel2014 <- function(subtype = "all_marginal:rainfed_and_irrigated") {
     )
     cropsuitZabel <- classify(cropsuitZabel, rclassMatrx, include.lowest = TRUE)
   } else if (subtype == "q66_marginal") {
-
     # The first and second tertile (suitability index below 0.23) of the marginal land area are excluded
     rclassMatrx <- matrix(c(
       0, 0.23, NA,
@@ -109,7 +104,6 @@ readZabel2014 <- function(subtype = "all_marginal:rainfed_and_irrigated") {
     )
     cropsuitZabel <- classify(cropsuitZabel, rclassMatrx, include.lowest = TRUE)
   } else if (subtype == "q75_marginal") {
-
     # The first, second and third quartiles (suitability index below 0.25) of the marginal land are are excluded
     rclassMatrx <- matrix(c(
       0, 0.25, NA,
@@ -119,7 +113,6 @@ readZabel2014 <- function(subtype = "all_marginal:rainfed_and_irrigated") {
     )
     cropsuitZabel <- classify(cropsuitZabel, rclassMatrx, include.lowest = TRUE)
   } else if (subtype == "no_marginal") {
-
     # marginal land (suitability index below 0.33) is fully excluded
     rclassMatrx <- matrix(c(
       0, 0.33, NA,
@@ -132,13 +125,13 @@ readZabel2014 <- function(subtype = "all_marginal:rainfed_and_irrigated") {
 
   # aggregate and sum up area (Mha) of suitable pixels (1) per 0.5 degree grid cell
   # aggregation factor from 30 arc sec to 0.5 degree: 60
-  cropsuitZabelArea <- cellSize(cropsuitZabel, unit = "ha") * 1e-6
+  cropsuitZabelArea <- cellSize(cropsuitZabel, unit = "ha", mask = TRUE) * 1e-6
   cropsuitZabel05 <- aggregate(cropsuitZabelArea, fact = 60, fun = sum, na.rm = TRUE)
 
   ### Create magpie object
 
   # get spatial mapping
-  map <- toolGetMappingCoord2Country(pretty = TRUE)
+  map <- mrcommons::toolGetMappingCoord2Country(pretty = TRUE)
   # transform raster to magpie object
   out <- as.magpie(extract(cropsuitZabel05, map[c("lon", "lat")])[, 2], spatial = 1)
   # set dimension names
