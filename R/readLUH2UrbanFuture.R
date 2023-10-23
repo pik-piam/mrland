@@ -37,7 +37,7 @@ readLUH2UrbanFuture <- function() {
       shr <- rast(files[i], subds = data_sel)
       shr <- shr[[t]]
       x <- shr * carea
-      x <- aggregate(x, fact = 2, fun = sum)
+      x <- aggregate(x, fact = 2, fun = sum, na.rm = TRUE)
       x <- as.magpie(extract(x, map[c("lon", "lat")])[, 2], spatial = 1)
       dimnames(x) <- list(
         "x.y.iso" = paste(map$coords, map$iso, sep = "."),

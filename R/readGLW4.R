@@ -40,7 +40,7 @@ readGLW4 <- function(subtype = "Da_Ct") {
                                           Aw_Bf = "Bf/6_Bf_2015_Aw.tif"))
 
   x <- rast(file)
-  x <- aggregate(x, fact = 6, fun = sum)
+  x <- aggregate(x, fact = 6, fun = sum, na.rm = TRUE)
   x <- as.magpie(x)
 
   return(x)

@@ -17,7 +17,7 @@ readGLW3 <- function(subtype = "Da") {
     strName <- toolSubtypeSelect(subtype, c(Da = "5_Ct_2010_Da.tif",
                                             Aw = "6_Ct_2010_Aw.tif"))
     x <- raster(strName)
-    x <- raster::aggregate(x, fact = 6, fun = sum)
+    x <- raster::aggregate(x, fact = 6, fun = sum, na.rm = TRUE)
     x <- rasterToPoints(x)
 
     colnames(x) <- c("lon", "lat", paste0("X5_Ct_2010_", subtype))

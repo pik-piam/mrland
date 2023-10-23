@@ -33,7 +33,7 @@ readUrbanLandGao <- function() {
 
         # aggregate and reproject
         r <- rast(res = 0.5)
-        t <- aggregate(t, fact = 4, fun = "sum")
+        t <- aggregate(t, fact = 4, fun = "sum", na.rm = TRUE)
 
         t <- (project(t, r))
 
