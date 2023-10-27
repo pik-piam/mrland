@@ -35,7 +35,7 @@ Multiple Cropping Suitability mask selected
 (mask can be:
 "none": no mask applied (only for development purposes)
 "actual:total": currently multicropped areas calculated from total harvested areas
-                and total physical areas per cell from readLanduseToolbox
+                and total physical areas per cell from readLanduseLandInG
 "actual:crop" (crop-specific), "actual:irrigation" (irrigation-specific),
 "actual:irrig_crop" (crop- and irrigation-specific),
 "potential:endogenous": potentially multicropped areas given
@@ -47,11 +47,11 @@ Multiple Cropping Suitability mask selected
 \item{refYields}{assumption for baseline yields with respect to multiple cropping (e.g.,
 FALSE: single-cropped LPJmL yields used as baseline to calculate country-level yields,
 "TRUE:actual:irrig_crop": multicropped yields
-                          where Toolbox reports current multiple cropping
+                          where LandInG reports current multiple cropping
                           (irrigation- and crop-specific))}
 
-\item{areaSource}{data source for croparea used in calculation: FAO or Toolbox
-Note: when calibrating multicropped yields, Toolbox croparea should be used}
+\item{areaSource}{data source for croparea used in calculation: FAO or LandInG
+Note: when calibrating multicropped yields, LandInG croparea should be used}
 
 \item{marginal_land}{Defines which share of marginal land should be included (see options below) and
                      whether suitable land under irrigated conditions ("irrigated"),

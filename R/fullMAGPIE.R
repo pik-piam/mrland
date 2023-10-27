@@ -25,7 +25,7 @@ fullMAGPIE <- function(rev = 0.1, dev = "") {
   # Check if mapping comes with an additional "superregion" layer and if so,
   # aggregate some outputs to the superregional level. Otherwise,
   # aggregate everything to regional level.
-  map <- toolGetMapping(getConfig("regionmapping"), type = "regional", where = "mappingfolder")
+  map <- toolGetMapping(getConfig("regionmapping"), type = "regional")
   superregion <- ifelse("superregion" %in% colnames(map), "superregion", "region")
 
   cellsregions <- function(reg_revision = 0, map) { # nolint
@@ -112,21 +112,21 @@ fullMAGPIE <- function(rev = 0.1, dev = "") {
              aggregate = FALSE)
   calcOutput("BMI", file = "f15_bmi.cs3", aggregate = FALSE)
 
-  calcOutput("EATLancetDiets", aggregate = TRUE, round = 4, file = "f15_intake_EATLancet.cs3",
+  calcOutput("EATLancetDiets",  aggregate = TRUE, round = 4, file = "f15_intake_EATLancet.cs3",
              attributes = "kcal", calib = TRUE, FAOcountr = FALSE)
-  calcOutput("EATLancetDiets", aggregate = FALSE, round = 1, file = "f15_intake_EATLancet_iso.cs3",
+  calcOutput("EATLancetDiets",  aggregate = FALSE, round = 1, file = "f15_intake_EATLancet_iso.cs3",
              attributes = "kcal", calib = TRUE, FAOcountr = FALSE)
-  calcOutput("EATLancetWaste", aggregate = TRUE, round = 4, file = "f15_supply2intake_ratio_bottomup.cs3",
+  calcOutput("EATLancetWaste",  aggregate = TRUE, round = 4, file = "f15_supply2intake_ratio_bottomup.cs3",
              out_type = "ratio_detailed")
-  calcOutput("EATLancetWaste", aggregate = FALSE, round = 4, file = "f15_supply2intake_ratio_bottomup_iso.cs3",
+  calcOutput("EATLancetWaste",  aggregate = FALSE, round = 4, file = "f15_supply2intake_ratio_bottomup_iso.cs3",
              out_type = "ratio_detailed")
-  calcOutput("EATLancetWaste", aggregate = TRUE, round = 4, file = "f15_calib_factor_FAOfsupply.cs4",
+  calcOutput("EATLancetWaste",  aggregate = TRUE, round = 4, file = "f15_calib_factor_FAOfsupply.cs4",
              out_type = "calib")
-  calcOutput("EATLancetWaste", aggregate = FALSE, round = 4, file = "f15_calib_factor_FAOfsupply_iso.cs4",
+  calcOutput("EATLancetWaste",  aggregate = FALSE, round = 4, file = "f15_calib_factor_FAOfsupply_iso.cs4",
              out_type = "calib")
-  calcOutput("FAOLossesWaste", aggregate = TRUE, round = 4, file = "f15_supply2intake_ratio_FAO.cs3",
+  calcOutput("FAOLossesWaste",  aggregate = TRUE, round = 4, file = "f15_supply2intake_ratio_FAO.cs3",
              out_type = "waste")
-  calcOutput("FAOLossesWaste", aggregate = FALSE, round = 4, file = "f15_supply2intake_ratio_FAO_iso.cs3",
+  calcOutput("FAOLossesWaste",  aggregate = FALSE, round = 4, file = "f15_supply2intake_ratio_FAO_iso.cs3",
              out_type = "waste")
   calcOutput("EATLancetTargets", aggregate = TRUE, round = 4, file = "f15_targets_EATLancet.cs3",
              attributes = "kcal/d")
@@ -137,15 +137,15 @@ fullMAGPIE <- function(rev = 0.1, dev = "") {
   calcOutput("EATFruitvegRatio", aggregate = FALSE, round = 4, file = "f15_fruitveg2others_kcal_ratio_iso.csv",
              populationweight = "PopulationPast")
 
-  calcOutput("NINDiets", aggregate = TRUE, round = 4, file = "f15_intake_NIN.cs3",
+  calcOutput("NINDiets",  aggregate = TRUE, round = 4, file = "f15_intake_NIN.cs3",
              attributes = "kcal", calib = TRUE, FAOcountr = FALSE)
-  calcOutput("NINDiets", aggregate = FALSE, round = 1, file = "f15_intake_NIN_iso.cs3",
+  calcOutput("NINDiets",  aggregate = FALSE, round = 1, file = "f15_intake_NIN_iso.cs3",
              attributes = "kcal", calib = TRUE, FAOcountr = FALSE)
 
   # 16 demand
-  calcOutput("Attributes", round = 4, aggregate = FALSE, file = "fm_attributes.cs3")
-  calcOutput("SeedShare", years = magYears, round = 4, file = "f16_seed_shr.csv")
-  calcOutput("LossShare", years = magYears, round = 4, file = "f16_waste_shr.csv")
+  calcOutput("Attributes", round = 4, aggregate = FALSE,        file = "fm_attributes.cs3")
+  calcOutput("SeedShare", years = magYears, round = 4,           file = "f16_seed_shr.csv")
+  calcOutput("LossShare", years = magYears, round = 4,           file = "f16_waste_shr.csv")
   calcOutput("DomesticBalanceflow", years = magYears, round = 4, file = "f16_domestic_balanceflow.csv")
 
   # 18 residues
@@ -154,29 +154,29 @@ fullMAGPIE <- function(rev = 0.1, dev = "") {
   calcOutput("ResCombustEff", round = 4, file = "f18_res_combust_eff.cs4", aggregate = FALSE)
 
   # 20 processing
-  calcOutput("Processing_shares", years = magYears, round = 4,
+  calcOutput("Processing_shares",             years = magYears, round = 4,
              file = "f20_processing_shares.cs3")
   calcOutput("Processing_conversion_factors", years = magYears, round = 4,
              file = "f20_processing_conversion_factors.cs3", aggregate = FALSE)
-  calcOutput("Processing_balanceflow", years = magYears, round = 4,
+  calcOutput("Processing_balanceflow",        years = magYears, round = 4,
              file = "f20_processing_balanceflow.cs3")
 
   # 21 trade
-  calcOutput("TradeSelfSuff", years = magYears, round = 2, file = "f21_trade_self_suff.cs3",
+  calcOutput("TradeSelfSuff",    years = magYears, round = 2, file = "f21_trade_self_suff.cs3",
              aggregate = superregion)
-  calcOutput("TradeExportShr", years = magYears, round = 2, file = "f21_trade_export_share.cs3",
+  calcOutput("TradeExportShr",   years = magYears, round = 2, file = "f21_trade_export_share.cs3",
              aggregate = superregion)
   calcOutput("TradeBalanceflow", years = magYears, round = 4, file = "f21_trade_balanceflow.cs3",
              aggregate = FALSE)
   calcOutput("TradeBalance", years = magYears, round = 2, file = "f21_trade_balance.cs3",
              aggregate = superregion)
-  calcOutput("TradeMargin", years = 2005, round = 4, file = "f21_trade_margin.cs3",
+  calcOutput("TradeMargin",      years = 2005,      round = 4, file = "f21_trade_margin.cs3",
              aggregate = superregion)
-  calcOutput("TradeTariff", years = 2005, round = 4, file = "f21_trade_tariff.cs3",
+  calcOutput("TradeTariff",      years = 2005,      round = 4, file = "f21_trade_tariff.cs3",
              aggregate = superregion)
-  calcOutput("TradeTariff", type_tariff = "export", round = 4, file = "f21_trade_tariff_export.cs3",
+  calcOutput("TradeTariff", type_tariff = "export",    round = 4, file = "f21_trade_tariff_export.cs3",
              aggregate = superregion)
-  calcOutput("TradeTariff", type_tariff = "import", round = 4, file = "f21_trade_tariff_import.cs3",
+  calcOutput("TradeTariff", type_tariff = "import",    round = 4, file = "f21_trade_tariff_import.cs3",
              aggregate = superregion)
   calcOutput("TradeMargin", years = 2005, bilateral = TRUE, round = 4, file = "f21_trade_margin_bilat.cs5",
              aggregate = TRUE)
@@ -187,7 +187,7 @@ fullMAGPIE <- function(rev = 0.1, dev = "") {
   calcOutput("PastureYield", range_pastr = TRUE, round = 3, file = "f31_grassl_yld_hist.cs3")
 
   # 32 forestry
-  calcOutput("AfforestCosts", years = 2001, round = 0, file = "f32_fac_req_ha.csv")
+  calcOutput("AfforestCosts", years = 2001,        round = 0, file = "f32_fac_req_ha.csv")
   calcOutput("GrowingStockPlantations", aggregate = TRUE, round = 0, file = "f32_gs_target.cs4")
   calcOutput("GrowingStockPlantAbsolute", aggregate = TRUE, round = 0, file = "f32_gs_absolutetarget.cs4")
   calcOutput("GrowingStockpha", aggregate = TRUE, round = 0, file = "f32_gs_relativetarget.cs4")
@@ -210,8 +210,6 @@ fullMAGPIE <- function(rev = 0.1, dev = "") {
              round = 2, file = "f36_weekly_hours_iso.csv")
   calcOutput("HourlyLaborCosts", projection = "SSP2", aggregate = FALSE, years = seq(1965, 2015, 5),
              round = 4, file = "f36_historic_hourly_labor_costs.csv")
-  calcOutput("RegressionsILO", subtype = "HourlyLaborCosts", recalculate = FALSE, aggregate = FALSE,
-             round = 10, file = "f36_regression_hourly_labor_costs.csv")
   calcOutput("AgEmplILO", aggregate = FALSE, subsectors = FALSE, years = seq(1995, 2015, 5),
              round = 4, file = "f36_historic_ag_employment.csv")
   calcOutput("NonMAgPIEFactorCosts", subtype = "subsidies", aggSubsidies = TRUE, years = seq(1965, 2150, 5),

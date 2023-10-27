@@ -11,7 +11,7 @@
 #' @param refYields     assumption for baseline yields with respect to multiple cropping (e.g.,
 #'                      FALSE: single-cropped LPJmL yields used as baseline to calculate country-level yields,
 #'                      "TRUE:actual:irrig_crop": multicropped yields
-#'                                                where Toolbox reports current multiple cropping
+#'                                                where LandInG reports current multiple cropping
 #'                                                (irrigation- and crop-specific))
 #' @param cells         number of cells "magpiecell" for 59199 cells or
 #'                      "lpjcell" for 67420 cells
@@ -20,7 +20,7 @@
 #'                      (mask can be:
 #'                      "none": no mask applied (only for development purposes)
 #'                      "actual:total": currently multicropped areas calculated from total harvested areas
-#'                                      and total physical areas per cell from readLanduseToolbox
+#'                                      and total physical areas per cell from readLanduseLandInG
 #'                      "actual:crop" (crop-specific), "actual:irrigation" (irrigation-specific),
 #'                      "actual:irrig_crop" (crop- and irrigation-specific),
 #'                      "potential:endogenous": potentially multicropped areas given
@@ -28,8 +28,8 @@
 #'                      "potential:exogenous": potentially multicropped areas given
 #'                                             GAEZ suitability classification)
 #'                      (e.g. TRUE:actual:total; TRUE:none; FALSE)
-#' @param areaSource    data source for croparea used in calculation: FAO or Toolbox
-#'                      Note: when calibrating multicropped yields, Toolbox croparea should be used
+#' @param areaSource    data source for croparea used in calculation: FAO or LandInG
+#'                      Note: when calibrating multicropped yields, LandInG croparea should be used
 #' @param marginal_land Defines which share of marginal land should be included (see options below) and
 #'                      whether suitable land under irrigated conditions ("irrigated"),
 #'                      under rainfed conditions ("rainfed")
@@ -75,120 +75,120 @@ calcYieldsCalibrated <- function(source = c(lpjml = "ggcmi_phase3_nchecks_9ca735
                                  multicropping = FALSE, refYields = FALSE,
                                  areaSource = "FAO", marginal_land = "magpie") { # nolint
 
-    local_options(magclass_sizeLimit = 1e+12)
+  local_options(magclass_sizeLimit = 1e+12)
 
-    # correct ref year format
-    if (!grepl("y", refYear)) {
-      refYear <- paste0("y", refYear)
+  # correct ref year format
+  if (!grepl("y", refYear)) {
+    refYear <- paste0("y", refYear)
+  }
+
+  # extract crop list
+  crops          <- setdiff(findset("kcr"), c("betr", "begr"))
+
+  # read FAO and LPJmL yields
+  yieldFAOiso    <- calcOutput("FAOYield", cut = 0.98, areaSource = areaSource,
+                               aggregate = FALSE)[, refYear, crops]
+  yieldLPJmLgrid <- calcOutput("Yields", source = source, climatetype = climatetype, # nolint
+                               selectyears = selectyears,
+                               multicropping = multicropping, marginal_land = marginal_land,
+                               aggregate = FALSE, supplementary = TRUE, cells = cells)
+  yieldLPJmLbase <- calcOutput("Yields", source = source, climatetype = climatetype, # nolint
+                               selectyears = selectyears,
+                               multicropping = refYields, marginal_land = marginal_land,
+                               aggregate = FALSE, supplementary = FALSE, cells = cells)
+
+  years          <- getYears(yieldLPJmLgrid$x, as.integer = TRUE)
+  years          <- years[years >= as.integer(gsub("y", "", refYear))]
+  weight         <- yieldLPJmLgrid$weight
+
+  otherYields    <- yieldLPJmLgrid$x[, years, setdiff(getNames(yieldLPJmLgrid$x, dim = 1), crops)]
+  yieldLPJmLgrid <- yieldLPJmLgrid$x[, years, crops]
+  yieldLPJmLbase <- yieldLPJmLbase[, refYear, crops]
+
+  # crop-specific cropland area split by irrigation and rainfed
+  if (areaSource == "FAO") {
+
+    cropareaMAGgrid <- calcOutput("Croparea", sectoral = "kcr", physical = TRUE,
+                                  cellular = TRUE,  cells = cells,
+                                  irrigation = TRUE, aggregate = FALSE)[, refYear, crops]
+
+    if (cells == "lpjcell") {
+      mapping <- toolGetMappingCoord2Country()
+      cropareaMAGgrid <- collapseDim(addLocation(cropareaMAGgrid), dim = c("cell", "N"))
+      cropareaMAGgrid <- cropareaMAGgrid[mapping$coords, , ]
+      getCells(cropareaMAGgrid) <- paste(mapping$coords, mapping$iso, sep = ".")
     }
 
-    # extract crop list
-    crops          <- setdiff(findset("kcr"), c("betr", "begr"))
+    # total irrigated & rainfed cropland (for correction of 0 cropland areas)
+    proxyMAGgrid    <- dimSums(cropareaMAGgrid, dim = "MAG")
 
-    # read FAO and LPJmL yields
-    yieldFAOiso    <- calcOutput("FAOYield", cut = 0.98, areaSource = areaSource,
-                                 aggregate = FALSE)[, refYear, crops]
-    yieldLPJmLgrid <- calcOutput("Yields", source = source, climatetype = climatetype, # nolint
-                                  selectyears = selectyears,
-                                  multicropping = multicropping, marginal_land = marginal_land,
-                                  aggregate = FALSE, supplementary = TRUE, cells = cells)
-    yieldLPJmLbase <- calcOutput("Yields", source = source, climatetype = climatetype, # nolint
-                                  selectyears = selectyears,
-                                  multicropping = refYields, marginal_land = marginal_land,
-                                  aggregate = FALSE, supplementary = FALSE, cells = cells)
+  } else if (areaSource == "LandInG") {
 
-    years          <- getYears(yieldLPJmLgrid$x, as.integer = TRUE)
-    years          <- years[years >= as.integer(gsub("y", "", refYear))]
-    weight         <- yieldLPJmLgrid$weight
+    cropareaMAGgrid <- calcOutput("CropareaLandInG", sectoral = "kcr", physical = TRUE,
+                                  irrigation = TRUE, selectyears = refYear,
+                                  cellular = TRUE, cells = cells, aggregate = FALSE)[, , crops]
+    # total irrigated & rainfed cropland (for correction of 0 cropland areas)
+    proxyMAGgrid    <- dimSums(cropareaMAGgrid, dim = "crop")
 
-    otherYields    <- yieldLPJmLgrid$x[, years, setdiff(getNames(yieldLPJmLgrid$x, dim = 1), crops)]
-    yieldLPJmLgrid <- yieldLPJmLgrid$x[, years, crops]
-    yieldLPJmLbase <- yieldLPJmLbase[, refYear, crops]
+  }
 
-    # crop-specific cropland area split by irrigation and rainfed
-    if (areaSource == "FAO") {
+  # Order dimenstion to match with yield dimensions
+  cropareaMAGgrid <- dimOrder(cropareaMAGgrid, perm = c(2, 1), dim = 3)
 
-      cropareaMAGgrid <- calcOutput("Croparea", sectoral = "kcr", physical = TRUE,
-                                    cellular = TRUE,  cells = cells,
-                                    irrigation = TRUE, aggregate = FALSE)[, refYear, crops]
+  # Aggregate to country values
+  if (cells == "magpiecell") {
 
-      if (cells == "lpjcell") {
-        mapping <- toolGetMappingCoord2Country()
-        cropareaMAGgrid <- collapseDim(addLocation(cropareaMAGgrid), dim = c("cell", "N"))
-        cropareaMAGgrid <- cropareaMAGgrid[mapping$coords, , ]
-        getCells(cropareaMAGgrid) <- paste(mapping$coords, mapping$iso, sep = ".")
-      }
+    # Crop-specific total cropland area per country
+    cropareaMAGiso <- dimSums(cropareaMAGgrid, dim = c("cell", "irrigation"))
 
-      # total irrigated & rainfed cropland (for correction of 0 cropland areas)
-      proxyMAGgrid    <- dimSums(cropareaMAGgrid, dim = "MAG")
+    # Averaged LPJmL yield per country (LPJmL production / area)
+    yieldLPJmLiso  <- dimSums(dimSums(yieldLPJmLbase * cropareaMAGgrid,
+                                      dim = 3.2),
+                              dim = "cell") / cropareaMAGiso
 
-    } else if (areaSource == "Toolbox") {
+    # Correction where no historical crop-specific areas given
+    yieldLPJmLiso[cropareaMAGiso == 0] <- (dimSums(dimSums(yieldLPJmLbase * proxyMAGgrid,
+                                                           dim = 3.2),
+                                                   dim = "cell") / dimSums(cropareaMAGiso,
+                                                                           dim = 3))[cropareaMAGiso == 0]
 
-      cropareaMAGgrid <- calcOutput("CropareaToolbox", sectoral = "kcr", physical = TRUE,
-                                    irrigation = TRUE, selectyears = refYear,
-                                    cellular = TRUE, cells = cells, aggregate = FALSE)[, , crops]
-      # total irrigated & rainfed cropland (for correction of 0 cropland areas)
-      proxyMAGgrid    <- dimSums(cropareaMAGgrid, dim = "crop")
+  } else if (cells == "lpjcell") {
 
-    }
+    # Crop-specific total cropland area per country
+    cropareaMAGiso <- dimSums(cropareaMAGgrid, dim = c("x", "y", "irrigation"))
 
-    # Order dimenstion to match with yield dimensions
-    cropareaMAGgrid <- dimOrder(cropareaMAGgrid, perm = c(2, 1), dim = 3)
+    # Averaged LPJmL yield per country (LPJmL production / area)
+    yieldLPJmLiso  <- dimSums(dimSums(yieldLPJmLbase * cropareaMAGgrid,
+                                      dim = 3.2),
+                              dim = c("x", "y")) / cropareaMAGiso
 
-    # Aggregate to country values
-    if (cells == "magpiecell") {
+    # Correction where no historical crop-specific areas given
+    yieldLPJmLiso[cropareaMAGiso == 0] <- (dimSums(dimSums(yieldLPJmLbase * proxyMAGgrid,
+                                                           dim = 3.2),
+                                                   dim = c("x", "y")) / dimSums(cropareaMAGiso,
+                                                                                dim = 3))[cropareaMAGiso == 0]
 
-      # Crop-specific total cropland area per country
-      cropareaMAGiso <- dimSums(cropareaMAGgrid, dim = c("cell", "irrigation"))
+  } else {
+    stop("Please select cells to be returned.")
+  }
 
-      # Averaged LPJmL yield per country (LPJmL production / area)
-      yieldLPJmLiso  <- dimSums(dimSums(yieldLPJmLbase * cropareaMAGgrid,
-                                        dim = 3.2),
-                                dim = "cell") / cropareaMAGiso
+  # Correction NAs
+  yieldLPJmLiso <- toolConditionalReplace(yieldLPJmLiso, "is.na()", 0)
 
-      # Correction where no historical crop-specific areas given
-      yieldLPJmLiso[cropareaMAGiso == 0] <- (dimSums(dimSums(yieldLPJmLbase * proxyMAGgrid,
-                                                             dim = 3.2),
-                                                     dim = "cell") / dimSums(cropareaMAGiso,
-                                                                             dim = 3))[cropareaMAGiso == 0]
+  # Harmonize countries
+  yieldLPJmLiso <- yieldLPJmLiso[intersect(getCells(yieldLPJmLiso), getCells(yieldFAOiso)), , ]
+  yieldFAOiso   <- yieldFAOiso[intersect(getCells(yieldLPJmLiso), getCells(yieldFAOiso)), , ]
 
-    } else if (cells == "lpjcell") {
+  # Yield calibration of LPJmL yields to FAO country yield levels
+  out <- toolPatternScaling(yieldLPJmLgrid, yieldLPJmLiso, yieldFAOiso, refYear = refYear)
 
-      # Crop-specific total cropland area per country
-      cropareaMAGiso <- dimSums(cropareaMAGgrid, dim = c("x", "y", "irrigation"))
+  # Combine with pasture, betr, begr yields that were not calibrated
+  getCells(out) <- getCells(otherYields)
+  out           <- mbind(out, otherYields)
 
-      # Averaged LPJmL yield per country (LPJmL production / area)
-      yieldLPJmLiso  <- dimSums(dimSums(yieldLPJmLbase * cropareaMAGgrid,
-                                        dim = 3.2),
-                                dim = c("x", "y")) / cropareaMAGiso
-
-      # Correction where no historical crop-specific areas given
-      yieldLPJmLiso[cropareaMAGiso == 0] <- (dimSums(dimSums(yieldLPJmLbase * proxyMAGgrid,
-                                                             dim = 3.2),
-                                                     dim = c("x", "y")) / dimSums(cropareaMAGiso,
-                                                                                  dim = 3))[cropareaMAGiso == 0]
-
-    } else {
-      stop("Please select cells to be returned.")
-    }
-
-    # Correction NAs
-    yieldLPJmLiso <- toolConditionalReplace(yieldLPJmLiso, "is.na()", 0)
-
-    # Harmonize countries
-    yieldLPJmLiso <- yieldLPJmLiso[intersect(getCells(yieldLPJmLiso), getCells(yieldFAOiso)), , ]
-    yieldFAOiso   <- yieldFAOiso[intersect(getCells(yieldLPJmLiso), getCells(yieldFAOiso)), , ]
-
-    # Yield calibration of LPJmL yields to FAO country yield levels
-    out <- toolPatternScaling(yieldLPJmLgrid, yieldLPJmLiso, yieldFAOiso, refYear = refYear)
-
-    # Combine with pasture, betr, begr yields that were not calibrated
-    getCells(out) <- getCells(otherYields)
-    out           <- mbind(out, otherYields)
-
-    return(list(x            = out,
-                weight       = weight,
-                unit         = "t DM per ha physical area",
-                description  = "Calibrated crop yields by plant type and irrigation",
-                isocountries = FALSE))
+  return(list(x            = out,
+              weight       = weight,
+              unit         = "t DM per ha physical area",
+              description  = "Calibrated crop yields by plant type and irrigation",
+              isocountries = FALSE))
 }

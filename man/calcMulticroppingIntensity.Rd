@@ -8,7 +8,7 @@ calcMulticroppingIntensity(scenario, selectyears, sectoral = "lpj")
 }
 \arguments{
 \item{scenario}{"total": currently multicropped areas calculated from total harvested areas
-         and total physical areas per cell from readLanduseToolbox
+         and total physical areas per cell from readLandInG
 "crop" (crop-specific), "irrigation" (irrigation-specific),
 "irrig_crop" (crop- and irrigation-specific)}
 
@@ -20,7 +20,7 @@ calcMulticroppingIntensity(scenario, selectyears, sectoral = "lpj")
 magpie object in cellular resolution
 }
 \description{
-Returns cropping intensity according to Landuse Toolbox
+Returns cropping intensity according to LandInG data
              given the chosen scenario
 }
 \examples{
