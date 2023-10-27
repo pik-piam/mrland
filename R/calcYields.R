@@ -18,7 +18,7 @@
 #'                      (mask can be:
 #'                      "none": no mask applied (only for development purposes)
 #'                      "actual:total": currently multicropped areas calculated from total harvested areas
-#'                                      and total physical areas per cell from readLanduseToolbox
+#'                                      and total physical areas per cell from readLandInG
 #'                      "actual:crop" (crop-specific), "actual:irrigation" (irrigation-specific),
 #'                      "actual:irrig_crop" (crop- and irrigation-specific),
 #'                      "potential:endogenous": potentially multicropped areas given
@@ -100,11 +100,11 @@ calcYields <- function(source = c(lpjml = "ggcmi_phase3_nchecks_9ca735cb", isimi
     # are proxied by maize and groundnut and require special treatment in mapping
     proxyYields   <- yields[, , c("groundnut", "maize")]
     proxyIncrease <- calcOutput("MulticroppingYieldIncrease", crops = "proxy",
-                                 areaMask = areaMask,
-                                 lpjml = source[["lpjml"]], # nolint: undesirable_function_linter.
-                                 climatetype = climatetype,
-                                 selectyears = selectyears,
-                                 aggregate = FALSE)
+                                areaMask = areaMask,
+                                lpjml = source[["lpjml"]], # nolint: undesirable_function_linter.
+                                climatetype = climatetype,
+                                selectyears = selectyears,
+                                aggregate = FALSE)
 
     if (cells == "magpiecell") {
       increaseFactor <- toolCoord2Isocell(increaseFactor)
@@ -121,7 +121,7 @@ calcYields <- function(source = c(lpjml = "ggcmi_phase3_nchecks_9ca735cb", isimi
   # LPJmL to MAgPIE crops
   lpj2mag <- toolGetMapping("MAgPIE_LPJmL.csv", type = "sectoral", where = "mappingfolder")
   yields  <- toolAggregate(yields, lpj2mag, from = "LPJmL",
-                          to = "MAgPIE", dim = 3.1, partrel = TRUE)
+                           to = "MAgPIE", dim = 3.1, partrel = TRUE)
 
   # Check for NAs
   if (any(is.na(yields))) {
@@ -172,8 +172,8 @@ calcYields <- function(source = c(lpjml = "ggcmi_phase3_nchecks_9ca735cb", isimi
     cfg       <- toolLPJmLVersion(version = source["lpjml"], # nolint: undesirable_function_linter.
                                   climatetype = climatetype)
     repHarmon <- toolHarmonize2Baseline(x = isimipYields[, commonYears, commonVars],
-                                       base = yields[, commonYears, commonVars],
-                                       ref_year = cfg$ref_year_gcm)
+                                        base = yields[, commonYears, commonVars],
+                                        ref_year = cfg$ref_year_gcm)
     gc()
     # convert to array for memory
     yields    <- as.array(yields)
@@ -188,8 +188,8 @@ calcYields <- function(source = c(lpjml = "ggcmi_phase3_nchecks_9ca735cb", isimi
   if (weighting == "totalCrop") {
 
     cropAreaWeight <- dimSums(calcOutput("Croparea", sectoral = "kcr", physical = TRUE, irrigation = FALSE,
-                                           cellular = TRUE, cells = cells, aggregate = FALSE,
-                                           years = "y1995", round = 6), dim = 3)
+                                         cellular = TRUE, cells = cells, aggregate = FALSE,
+                                         years = "y1995", round = 6), dim = 3)
 
   } else if (weighting %in% c("totalLUspecific", "cropSpecific", "crop+irrigSpecific")) {
 
@@ -207,7 +207,7 @@ calcYields <- function(source = c(lpjml = "ggcmi_phase3_nchecks_9ca735cb", isimi
                                    fill = NA)
       cropAreaWeight[, , findset("kcr")] <- crop + 10^-10
       cropAreaWeight[, , "pasture"]      <- mbind(setNames(past + 10^-10, "irrigated"),
-                                                    setNames(past + 10^-10, "rainfed"))
+                                                  setNames(past + 10^-10, "rainfed"))
 
     } else if (weighting == "cropSpecific") {
 
@@ -233,7 +233,7 @@ calcYields <- function(source = c(lpjml = "ggcmi_phase3_nchecks_9ca735cb", isimi
   } else if (weighting == "avlCropland") {
 
     cropAreaWeight <- setNames(calcOutput("AvlCropland", marginal_land = marginal_land, cells = cells,
-                                            country_level = FALSE, aggregate = FALSE),
+                                          country_level = FALSE, aggregate = FALSE),
                                NULL)
 
   } else if (weighting == "avlCropland+avlPasture") {
@@ -250,8 +250,8 @@ calcYields <- function(source = c(lpjml = "ggcmi_phase3_nchecks_9ca735cb", isimi
                                  fill = avlCrop)
 
     cropAreaWeight[, , "pasture"] <- pmax(avlCrop,
-                                           dimSums(lu1995[, , c("primforest", "secdforest", "forestry", "past")],
-                                                   dim = 3))
+                                          dimSums(lu1995[, , c("primforest", "secdforest", "forestry", "past")],
+                                                  dim = 3))
 
   } else {
 

@@ -21,7 +21,7 @@
 #' @param areaMask      Multicropping area mask to be used
 #'                      "none": no mask applied (only for development purposes)
 #'                      "actual:total": currently multicropped areas calculated from total harvested areas
-#'                                      and total physical areas per cell from readLanduseToolbox
+#'                                      and total physical areas per cell from readLandInG
 #'                      "actual:crop" (crop-specific), "actual:irrigation" (irrigation-specific),
 #'                      "actual:irrig_crop" (crop- and irrigation-specific)
 #'                      "potential:endogenous": potentially multicropped areas given
@@ -92,17 +92,17 @@ calcMulticroppingYieldIncrease <- function(selectyears, lpjml, climatetype,
   # Multiple cropping suitability
   if (areaMask == "none") {
     suitMC <- calcOutput("MulticroppingCells",
-                          scenario = "potential:exogenous",
-                          lpjml = lpjml, climatetype = climatetype,
-                          selectyears = selectyears,
-                          aggregate = FALSE)[, , cropIrrigList]
+                         scenario = "potential:exogenous",
+                         lpjml = lpjml, climatetype = climatetype,
+                         selectyears = selectyears,
+                         aggregate = FALSE)[, , cropIrrigList]
     # multiple cropping is allowed everywhere
     suitMC[, , ] <- 1
   } else {
     suitMC <- calcOutput("MulticroppingCells", scenario = areaMask,
-                          lpjml = lpjml, climatetype = climatetype,
-                          selectyears = selectyears,
-                          aggregate = FALSE)[, , cropIrrigList]
+                         lpjml = lpjml, climatetype = climatetype,
+                         selectyears = selectyears,
+                         aggregate = FALSE)[, , cropIrrigList]
   }
 
   ####################
@@ -124,7 +124,7 @@ calcMulticroppingYieldIncrease <- function(selectyears, lpjml, climatetype,
   grassGPPoffseason[grassGPPoffseason < 0] <- 0
 
   increaseFACTOR <- ifelse(rule1 & rule2,
-                             grassGPPoffseason / grassGPPgrper,
+                           grassGPPoffseason / grassGPPgrper,
                            0) * fallowFactor * suitMC
 
   # Add missing crops (betr, begr, mgrass)
@@ -151,10 +151,10 @@ calcMulticroppingYieldIncrease <- function(selectyears, lpjml, climatetype,
                                         "maize.irrigated", "maize.rainfed"),
                               fill = NA)
   proxyIncrease[, , "groundnut"] <- ifelse(grassGPPgrper[, , "groundnut"] > 0,
-                                             grassGPPoffseason[, , "groundnut"] / grassGPPgrper[, , "groundnut"],
+                                           grassGPPoffseason[, , "groundnut"] / grassGPPgrper[, , "groundnut"],
                                            0)
   proxyIncrease[, , "maize"]     <- ifelse(grassGPPgrper[, , "maize"] > 0,
-                                             grassGPPoffseason[, , "maize"] / grassGPPgrper[, , "maize"],
+                                           grassGPPoffseason[, , "maize"] / grassGPPgrper[, , "maize"],
                                            0)
   getSets(proxyIncrease) <- getSets(increaseFACTOR)
   # @KRISTINE, JENS: Check whether that makes sense. Should this be adjusted to full annual?
