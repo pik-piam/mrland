@@ -31,6 +31,7 @@
 #' @param cells            magpiecell (59199 cells) or lpjcell (67420 cells)
 #' @param country_level    Whether output shall be at country level.
 #'                         Requires aggregate=FALSE in calcOutput.
+#' @param luhBaseYear      Base year of LUH land area
 #'
 #' @return magpie object in cellular resolution
 #' @author Patrick v. Jeetze, Felicitas Beier
@@ -47,15 +48,20 @@
 #'
 
 calcAvlCropland <- function(marginal_land = "magpie", cell_upper_bound = 0.9, country_level = FALSE, # nolint
-                            cells = "lpjcell") {
+                            cells = "lpjcell", luhBaseYear = "y1995") {
 
+  # extract function arguments
   marginalLand <- marginal_land # nolint
   cellUpperBound <- cell_upper_bound # nolint
   countryLevel <- country_level # nolint
 
-  # read luh data
+  if (is.numeric(luhBaseYear)) {
+    luhBaseYear <- paste0("y", luhBaseYear)
+  }
+
+  # read luh data in chosen base year
   luh <- calcOutput("LUH2v2", landuse_types = "magpie", aggregate = FALSE,
-                    cellular = TRUE, cells = "lpjcell", irrigation = FALSE, years = "y1995")
+                    cellular = TRUE, cells = "lpjcell", irrigation = FALSE, years = luhBaseYear)
   # sum land area per grid cell
   landarea <- dimSums(luh, dim = 3)
 

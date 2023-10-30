@@ -8,7 +8,8 @@ calcAvlCropland(
   marginal_land = "magpie",
   cell_upper_bound = 0.9,
   country_level = FALSE,
-  cells = "lpjcell"
+  cells = "lpjcell",
+  luhBaseYear = "y1995"
 )
 }
 \arguments{
@@ -42,6 +43,8 @@ cropland cannot be expanded above this value.}
 Requires aggregate=FALSE in calcOutput.}
 
 \item{cells}{magpiecell (59199 cells) or lpjcell (67420 cells)}
+
+\item{luhBaseYear}{Base year of LUH land area}
 }
 \value{
 magpie object in cellular resolution
