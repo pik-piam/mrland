@@ -8,7 +8,8 @@ calcMulticroppingSuitability(
   selectyears,
   lpjml,
   climatetype,
-  suitability = "endogenous"
+  suitability = "endogenous",
+  sectoral = "lpj"
 )
 }
 \arguments{
@@ -23,6 +24,8 @@ historical baseline "GSWP3-W5E5:historical"}
              by rules based on grass and crop productivity
 "exogenous": suitability for multiple cropping given by
              GAEZ data set}
+
+\item{sectoral}{"kcr" MAgPIE crops, and "lpj" LPJmL crops}
 }
 \value{
 magpie object in cellular resolution

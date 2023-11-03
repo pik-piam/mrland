@@ -24,6 +24,14 @@
 
 calcMulticroppingIntensity <- function(scenario, selectyears,
                                        sectoral = "lpj") {
+
+  if (grepl("kcr", sectoral)) {
+    perennials <- c("sugr_cane", "oilpalm")
+    # should cottn_pro and others also be perennial? (because grown throughout entire year)
+  } else if (grepl("lpj", sectoral)) {
+    perennials <- c("sugarcane", "trro", "betr", "begr", "mgrass")
+  }
+
   # areas where multicropping takes place currently (crop- and irrigation-specific)
   phys <- calcOutput("CropareaLandInG", physical = TRUE, sectoral = sectoral,
                      cellular = TRUE, cells = "lpjcell", irrigation = TRUE,
@@ -112,6 +120,12 @@ calcMulticroppingIntensity <- function(scenario, selectyears,
   if (any(currMC > 2 || currMC < 1)) {
     stop("Problem in mrland::calcMulticroppingIntensity:
         Value should be between 1 and 2!")
+  }
+  if (any(currMC[, , perennials]) > 1) {
+    stop(paste0(
+      "Problem in mrland::calcMulticroppingIntensity: ",
+      "Perennials should not have CI > 1"
+    ))
   }
 
   ##############

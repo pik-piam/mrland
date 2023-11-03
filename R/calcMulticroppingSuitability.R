@@ -13,6 +13,7 @@
 #'                                    by rules based on grass and crop productivity
 #'                       "exogenous": suitability for multiple cropping given by
 #'                                    GAEZ data set
+#' @param sectoral       "kcr" MAgPIE crops, and "lpj" LPJmL crops
 #'
 #' @return magpie object in cellular resolution
 #' @author Felicitas Beier, Jens Heinke
@@ -27,31 +28,45 @@
 #'
 
 calcMulticroppingSuitability <- function(selectyears, lpjml, climatetype,
-                                         suitability = "endogenous") {
-
+                                         suitability = "endogenous", sectoral = "lpj") {
   # mappings
   lpj2mag  <- toolGetMapping("MAgPIE_LPJmL.csv",
                              type = "sectoral",
                              where = "mappingfolder")
   mapCell  <- toolGetMappingCoord2Country()
-  croplist <- unique(lpj2mag$LPJmL)
+
+  # crop selection
+  if (sectoral == "kcr") {
+    # MAgPIE crops selected
+    croplist <- unique(lpj2mag$MAgPIE)
+    # In MAgPIE, perennials (i.e. crops that are grown throughout the whole year)
+    # are sugr_cane and oilpalm.
+    # Furthermore, cottn_pro and others are also grown throughout the whole year.
+    perennials <- c("sugr_cane", "oilpalm", "cottn_pro", "others")
+  } else if (sectoral == "lpj") {
+    # LPJmL crops selected
+    croplist <- unique(lpj2mag$LPJmL)
+    # For LPJmL crops, perennials (i.e. crops that are grown throughout the whole year)
+    # are sugarcane and trro.
+    # Furthermore, betr, begr and mgrass are also grown throughout the whole year.
+    perennials <- c("sugarcane", "trro", "betr", "begr", "mgrass")
+  }
 
   # Prepare data structure as crop-specific object
   # (While the chosen rule is not crop-specific,
-  #  perennials have to be excluded from multiple cropping as grow beyond over several years.
+  #  perennials have to be excluded from multiple cropping.
   #  This is done further down in the code)
   suitMC   <- new.magpie(cells_and_regions = paste(mapCell$coords, mapCell$iso, sep = "."),
-                            years = selectyears,
-                            names = paste(croplist,
-                                          c(rep("rainfed", length(croplist)),
-                                            rep("irrigated", length(croplist))),
-                                            sep = "."),
-                            fill = NA,
-                            sets = c("x", "y", "iso", "year", "crop", "irrigation"))
+                         years = selectyears,
+                         names = paste(croplist,
+                                       c(rep("rainfed", length(croplist)),
+                                         rep("irrigated", length(croplist))),
+                                       sep = "."),
+                         fill = NA,
+                         sets = c("x", "y", "iso", "year", "crop", "irrigation"))
 
   # Choose how multiple cropping suitability is determined
   if (suitability == "endogenous") {
-
     # Read in growing period months
     grper <- calcOutput("GrowingPeriodMonths",
                         selectyears = selectyears,
@@ -88,14 +103,9 @@ calcMulticroppingSuitability <- function(selectyears, lpjml, climatetype,
   }
 
   # For perennials (i.e. crops that are grown throughout the whole year)
-  # and betr, begr, mgrass (also grown the whole year),
   # multicropping yield is equal to single cropping yield,
   # achieved by setting suitability to 0 here.
-  suitMC[, , "sugarcane"] <- 0
-  suitMC[, , "trro"]      <- 0
-  suitMC[, , "betr"]      <- 0
-  suitMC[, , "begr"]      <- 0
-  suitMC[, , "mgrass"]    <- 0
+  suitMC[, , perennials] <- 0
 
   # If multiple cropping is possible under rainfed conditions,
   # it is also possible under irrigated conditions
