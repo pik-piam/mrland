@@ -26,10 +26,13 @@ calcMulticroppingIntensity <- function(scenario, selectyears,
                                        sectoral = "lpj") {
 
   if (grepl("kcr", sectoral)) {
+    # perennial MAgPIE crops
     perennials <- c("sugr_cane", "oilpalm")
     # should cottn_pro and others also be perennial? (because grown throughout entire year)
   } else if (grepl("lpj", sectoral)) {
-    perennials <- c("sugarcane", "trro", "betr", "begr", "mgrass")
+    # perennial LPJmL crops
+    perennials <- c("sugarcane", "trro", "betr", "begr")
+    # Note: "mgrass" not part of the set in calcCropareaLandInG
   }
 
   # areas where multicropping takes place currently (crop- and irrigation-specific)
