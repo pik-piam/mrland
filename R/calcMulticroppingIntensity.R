@@ -124,7 +124,7 @@ calcMulticroppingIntensity <- function(scenario, selectyears,
     stop("Problem in mrland::calcMulticroppingIntensity:
         Value should be between 1 and 2!")
   }
-  if (any(currMC[, , perennials]) > 1) {
+  if (any(currMC[, , perennials] > 1)) {
     stop(paste0(
       "Problem in mrland::calcMulticroppingIntensity: ",
       "Perennials should not have CI > 1"
