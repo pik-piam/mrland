@@ -39,6 +39,8 @@ calcMulticroppingSuitability <- function(selectyears, lpjml, climatetype,
   if (sectoral == "kcr") {
     # MAgPIE crops selected
     croplist <- unique(lpj2mag$MAgPIE)
+    # remove pasture from croplist
+    croplist <- croplist[croplist != "pasture"]
     # In MAgPIE, perennials (i.e. crops that are grown throughout the whole year)
     # are sugr_cane and oilpalm.
     # Furthermore, cottn_pro and others are also grown throughout the whole year.
@@ -46,9 +48,11 @@ calcMulticroppingSuitability <- function(selectyears, lpjml, climatetype,
   } else if (sectoral == "lpj") {
     # LPJmL crops selected
     croplist <- unique(lpj2mag$LPJmL)
+    # remove mgrass from croplist
+    croplist <- croplist[croplist != "mgrass"]
     # For LPJmL crops, perennials (i.e. crops that are grown throughout the whole year)
     # are sugarcane and trro.
-    # Furthermore, betr, begr and mgrass are also grown throughout the whole year.
+    # Furthermore, betr and begr are also grown throughout the whole year.
     perennials <- c("sugarcane", "trro", "betr", "begr", "mgrass")
   }
 
