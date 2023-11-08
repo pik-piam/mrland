@@ -1,6 +1,6 @@
 #' @title calcMulticroppingCells
 #'
-#' @description Returns grid cells where multiple cropping takes place given the
+#' @description Returns grid cells and crops where multiple cropping takes place given the
 #'              chosen scenario
 #'
 #' @param selectyears   Years to be returned
@@ -15,6 +15,7 @@
 #'                                              temperature and productivity limits
 #'                      "potential:exogenous": potentially multicropped areas given
 #'                                             GAEZ suitability classification
+#' @param sectoral      "kcr" MAgPIE crops, and "lpj" LPJmL crops
 #'
 #' @return magpie object in cellular resolution
 #' @author Felicitas Beier
@@ -28,7 +29,8 @@
 #' @importFrom magclass dimSums dimOrder
 #'
 
-calcMulticroppingCells <- function(selectyears, lpjml, climatetype, scenario) {
+calcMulticroppingCells <- function(selectyears, lpjml, climatetype, scenario, sectoral = "lpj") {
+
   # extract sub-scenario
   subscenario <- strsplit(scenario, split = ":")[[1]][2]
   scenario    <- strsplit(scenario, split = ":")[[1]][1]
@@ -37,12 +39,13 @@ calcMulticroppingCells <- function(selectyears, lpjml, climatetype, scenario) {
     # Cells that can potentially be multi-cropped (irrigation- and crop-specific)
     mcCells <- calcOutput("MulticroppingSuitability", selectyears = selectyears,
                           lpjml = lpjml, climatetype = climatetype,
-                          suitability = subscenario,
+                          suitability = subscenario, sectoral = sectoral,
                           aggregate = FALSE)
 
   } else if (grepl(pattern = "actual", x = scenario)) {
     # Cropping Intensity Factor (between 1 and 2)
     currMC <- calcOutput("MulticroppingIntensity", scenario = subscenario,
+                         sectoral = sectoral,
                          selectyears = selectyears, aggregate = FALSE)
 
     # boolean of multicropped areas

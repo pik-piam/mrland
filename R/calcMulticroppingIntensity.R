@@ -24,6 +24,23 @@
 
 calcMulticroppingIntensity <- function(scenario, selectyears,
                                        sectoral = "lpj") {
+
+  if (grepl("kcr", sectoral)) {
+    # perennial MAgPIE crops
+    perennials <- c("sugr_cane", "oilpalm")
+    # should cottn_pro and others also be perennial? (because grown throughout entire year)
+  } else if (grepl("lpj", sectoral)) {
+    # perennial LPJmL crops
+    perennials <- c("sugarcane", "betr", "begr")
+    # trro would technically be a perennial, but proxied by cassav_sp, so excluded here
+    # Question: trro is represented by cassav_sp in MAgPIE crop mapping
+    #        therefore it can get a CI > 1
+    #        How should this combination of different mappings be treated?
+    #        Should we do it the other way around? Toolbox with lpj crops and then map to MAgPIE crops?
+    # @KRISTINE/JENS
+    # Note: "mgrass" not part of the set in calcCropareaLandInG
+  }
+
   # areas where multicropping takes place currently (crop- and irrigation-specific)
   phys <- calcOutput("CropareaLandInG", physical = TRUE, sectoral = sectoral,
                      cellular = TRUE, cells = "lpjcell", irrigation = TRUE,
@@ -112,6 +129,12 @@ calcMulticroppingIntensity <- function(scenario, selectyears,
   if (any(currMC > 2 || currMC < 1)) {
     stop("Problem in mrland::calcMulticroppingIntensity:
         Value should be between 1 and 2!")
+  }
+  if (any(currMC[, , perennials] > 1)) {
+    stop(paste0(
+      "Problem in mrland::calcMulticroppingIntensity: ",
+      "Perennials should not have CI > 1"
+    ))
   }
 
   ##############

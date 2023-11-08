@@ -4,7 +4,13 @@
 \alias{calcMulticroppingCells}
 \title{calcMulticroppingCells}
 \usage{
-calcMulticroppingCells(selectyears, lpjml, climatetype, scenario)
+calcMulticroppingCells(
+  selectyears,
+  lpjml,
+  climatetype,
+  scenario,
+  sectoral = "lpj"
+)
 }
 \arguments{
 \item{selectyears}{Years to be returned}
@@ -22,12 +28,14 @@ historical baseline "GSWP3-W5E5:historical"}
                         temperature and productivity limits
 "potential:exogenous": potentially multicropped areas given
                        GAEZ suitability classification}
+
+\item{sectoral}{"kcr" MAgPIE crops, and "lpj" LPJmL crops}
 }
 \value{
 magpie object in cellular resolution
 }
 \description{
-Returns grid cells where multiple cropping takes place given the
+Returns grid cells and crops where multiple cropping takes place given the
              chosen scenario
 }
 \examples{

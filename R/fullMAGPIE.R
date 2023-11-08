@@ -25,7 +25,7 @@ fullMAGPIE <- function(rev = 0.1, dev = "") {
   # Check if mapping comes with an additional "superregion" layer and if so,
   # aggregate some outputs to the superregional level. Otherwise,
   # aggregate everything to regional level.
-  map <- toolGetMapping(getConfig("regionmapping"), type = "regional")
+  map <- toolGetMapping(getConfig("regionmapping"), type = "regional", where = "mappingfolder")
   superregion <- ifelse("superregion" %in% colnames(map), "superregion", "region")
 
   cellsregions <- function(reg_revision = 0, map) { # nolint
@@ -210,6 +210,8 @@ fullMAGPIE <- function(rev = 0.1, dev = "") {
              round = 2, file = "f36_weekly_hours_iso.csv")
   calcOutput("HourlyLaborCosts", projection = "SSP2", aggregate = FALSE, years = seq(1965, 2015, 5),
              round = 4, file = "f36_historic_hourly_labor_costs.csv")
+  calcOutput("RegressionsILO", subtype = "HourlyLaborCosts", recalculate = FALSE, aggregate = FALSE,
+             round = 10, file = "f36_regression_hourly_labor_costs.csv")
   calcOutput("AgEmplILO", aggregate = FALSE, subsectors = FALSE, years = seq(1995, 2015, 5),
              round = 4, file = "f36_historic_ag_employment.csv")
   calcOutput("NonMAgPIEFactorCosts", subtype = "subsidies", aggSubsidies = TRUE, years = seq(1965, 2150, 5),

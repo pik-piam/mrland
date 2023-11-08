@@ -92,6 +92,7 @@ calcMulticroppingYieldIncrease <- function(selectyears, lpjml, climatetype,
   # Multiple cropping suitability
   if (areaMask == "none") {
     suitMC <- calcOutput("MulticroppingCells",
+                         sectoral = "lpj",
                          scenario = "potential:exogenous",
                          lpjml = lpjml, climatetype = climatetype,
                          selectyears = selectyears,
@@ -100,6 +101,7 @@ calcMulticroppingYieldIncrease <- function(selectyears, lpjml, climatetype,
     suitMC[, , ] <- 1
   } else {
     suitMC <- calcOutput("MulticroppingCells", scenario = areaMask,
+                         sectoral = "lpj",
                          lpjml = lpjml, climatetype = climatetype,
                          selectyears = selectyears,
                          aggregate = FALSE)[, , cropIrrigList]
