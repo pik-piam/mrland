@@ -4,7 +4,7 @@
 \alias{calcProtectArea}
 \title{calcProtectArea}
 \usage{
-calcProtectArea(cells = "magpiecell", bhifl = TRUE)
+calcProtectArea(cells = "lpjcell", bhifl = TRUE)
 }
 \arguments{
 \item{cells}{number of cells of landmask (select "magpiecell" for 59199 cells or "lpjcell" for 67420 cells)}

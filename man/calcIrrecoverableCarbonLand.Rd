@@ -7,7 +7,7 @@
 calcIrrecoverableCarbonLand(
   maginput = TRUE,
   nclasses = "seven",
-  cells = "magpiecell"
+  cells = "lpjcell"
 )
 }
 \arguments{

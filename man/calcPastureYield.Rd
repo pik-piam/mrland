@@ -2,19 +2,20 @@
 % Please edit documentation in R/calcPastureYield.R
 \name{calcPastureYield}
 \alias{calcPastureYield}
-\title{Calculate Pasture Yields}
+\title{calcPastureYield}
 \usage{
 calcPastureYield(range_pastr = FALSE)
 }
 \arguments{
-\item{range_pastr}{Boolean value indicating if the grass yields should be split between rangelands and pastures.}
+\item{range_pastr}{Boolean value indicating if the grass yields
+should be split between rangelands and pastures.}
 }
 \value{
-Pasture yields and corresponding weights as a list of
-two MAgPIE objects
+Pasture yields and corresponding weights as a list of two MAgPIE objects
 }
 \description{
-Provides Pasture yields defined as ratio of grazed biomass to grazed area
+Provides pasture yields defined as
+             ratio of grazed biomass to grazed area
 }
 \examples{
 \dontrun{

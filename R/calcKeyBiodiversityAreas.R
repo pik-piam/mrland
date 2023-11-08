@@ -28,7 +28,7 @@
 #' @importFrom mrcommons toolCoord2Isocell
 #'
 calcKeyBiodiversityAreas <- function(maginput = TRUE, unprotected = TRUE,
-                                     nclasses = "seven", cells = "magpiecell") {
+                                     nclasses = "seven", cells = "lpjcell") {
   if (unprotected) {
     kba <- readSource("KeyBiodiversityAreas", subtype = "unprotected", convert = "onlycorrect")
   } else {

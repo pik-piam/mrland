@@ -18,7 +18,7 @@
 #' @importFrom mrcommons toolCoord2Isocell
 #'
 
-calcProtectArea <- function(cells = "magpiecell", bhifl = TRUE) {
+calcProtectArea <- function(cells = "lpjcell", bhifl = TRUE) {
 
   # Land area (in Mha):
   landArea <- setYears(collapseNames(dimSums(readSource("LUH2v2", subtype = "states_1995to1996",

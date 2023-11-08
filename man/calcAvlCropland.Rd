@@ -7,8 +7,9 @@
 calcAvlCropland(
   marginal_land = "magpie",
   cell_upper_bound = 0.9,
-  cells = "magpiecell",
-  country_level = FALSE
+  country_level = FALSE,
+  cells = "lpjcell",
+  luhBaseYear = "y1995"
 )
 }
 \arguments{
@@ -38,10 +39,12 @@ of the marginal land are are excluded
 Even if, for instance, the total available cropland area equals the land area in a grid cell,
 cropland cannot be expanded above this value.}
 
-\item{cells}{magpiecell (59199 cells) or lpjcell (67420 cells)}
-
 \item{country_level}{Whether output shall be at country level.
 Requires aggregate=FALSE in calcOutput.}
+
+\item{cells}{magpiecell (59199 cells) or lpjcell (67420 cells)}
+
+\item{luhBaseYear}{Base year of LUH land area}
 }
 \value{
 magpie object in cellular resolution
@@ -53,8 +56,7 @@ Calculates the total available cropland per grid cell,
 }
 \examples{
 \dontrun{
-calcOutput("AvlCropland", marginal_land = "magpie", cells = "magpiecell",
-           country_level = FALSE, aggregate = FALSE)
+calcOutput("AvlCropland", aggregate = FALSE)
 }
 
 }

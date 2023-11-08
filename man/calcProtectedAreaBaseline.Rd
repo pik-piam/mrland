@@ -7,7 +7,7 @@
 calcProtectedAreaBaseline(
   magpie_input = TRUE,
   nclasses = "seven",
-  cells = "magpiecell"
+  cells = "lpjcell"
 )
 }
 \arguments{

@@ -18,8 +18,7 @@ List of magpie objects with results on country level, weight on country level, u
 calculates production value based on production and prices, only works for FAO dataset currently
 }
 \examples{
-
-\dontrun{ 
+\dontrun{
 calcOutput("ValueProduction")
 }
 

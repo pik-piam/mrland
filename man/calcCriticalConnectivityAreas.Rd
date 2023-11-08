@@ -7,7 +7,7 @@
 calcCriticalConnectivityAreas(
   maginput = TRUE,
   nclasses = "seven",
-  cells = "magpiecell",
+  cells = "lpjcell",
   mask = "KBA_GSN"
 )
 }

@@ -24,7 +24,7 @@
 #' @importFrom mrcommons toolCoord2Isocell
 #'
 
-calcBHIFL <- function(cells = "magpiecell", nclasses = "seven") {
+calcBHIFL <- function(cells = "lpjcell", nclasses = "seven") {
 
   # Land area (in Mha):
   iniLU <- calcOutput("LanduseInitialisation",
@@ -52,7 +52,6 @@ calcBHIFL <- function(cells = "magpiecell", nclasses = "seven") {
 
   if (cells == "lpjcell") {
     map <- toolGetMappingCoord2Country()
-    landArea <- collapseDim(addLocation(landArea), dim = c("N", "cell"))
     tmp <- collapseDim(addLocation(x), dim = c("region", "cell"))
     x <- new.magpie(
       cells_and_regions = map$coords,
@@ -64,7 +63,7 @@ calcBHIFL <- function(cells = "magpiecell", nclasses = "seven") {
     if (any(getCells(x) != map$coords)) {
       stop("Wrong cell ordering in calcBHIFL")
     }
-    getCells(x) <- paste(map$coords, map$iso, sep = ".")
+    getItems(x, dim = 1, raw = TRUE) <- paste(map$coords, map$iso, sep = ".")
   } else if (cells != "magpiecell") {
     stop("Please select magpiecell or lpjcell in cells argument of calcBHIFL")
   }

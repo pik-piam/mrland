@@ -1,20 +1,21 @@
 #' @title readUrbanLandGao
-#' @description Read gridded urban land, from Gao O'Neill and JOnes SEDAC dataset,https://sedac.ciesin.columbia.edu/data/set/ssp-1-8th-urban-land-extent-projection-base-year-ssp-2000-2100
+#' @description Read gridded urban land, from Gao O'Neill and Jones SEDAC dataset,
+#'              https://sedac.ciesin.columbia.edu/data/set/ssp-1-8th-urban-land-extent-projection-base-year-ssp-2000-2100 #nolint
 #' @return magpie object of 2000-2100 urban land in Mha, in 10 year intervals
-#' @author David M Chen
+#' @author David M Chen, Felicitas Beier
 #' @importFrom terra aggregate project rast
 #' @importFrom raster brick
 #' @import magclass
 
-
 readUrbanLandGao <- function() {
 
-  # mapping <- toolGetMapping(type="cell", name="CountryToCellMapping.csv")
+  # cell to country mapping
+  mapping <- toolGetMappingCoord2Country(pretty = TRUE)
 
-  ssps <- c("SSP1", "SSP2", "SSP3", "SSP4", "SSP5")
+  ssps  <- c("SSP1", "SSP2", "SSP3", "SSP4", "SSP5")
   years <- seq(2010, 2100, 10)
 
-  area <- rast("ancillary-layers-netcdf/land_area_km2.nc")
+  area  <- rast("ancillary-layers-netcdf/land_area_km2.nc")
 
   .read <- function(years, ssps) {
     x <- NULL
@@ -28,29 +29,33 @@ readUrbanLandGao <- function() {
         }
 
         # multiply by land area to get km2 of urban land
-
         t <- t * area
 
         # aggregate and reproject
         r <- rast(res = 0.5)
-        t <- aggregate(t, fact = 4, fun = "sum")
+        t <- aggregate(t, fact = 4, fun = "sum", na.rm = TRUE)
 
         t <- (project(t, r))
 
-        t <- as.magpie(brick(t))
-        t <- toolCoord2Isocell(t, fillMissing = 0)
+        tmp <- as.magpie(brick(t))
+        t   <- new.magpie(cells_and_regions = mapping$coords,
+                          years = getItems(tmp, dim = 2),
+                          names = getItems(tmp, dim = 3),
+                          fill = 0)
+        commonCells <- intersect(getItems(t, dim = 1), getItems(tmp, dim = 1))
+
+        t[commonCells, , ] <- tmp[commonCells, , ]
 
         # proper names
         getYears(t) <- year
         getNames(t) <- ssp
-        getSets(t) <- getSets(t)[1:4]
+        getSets(t)  <- getSets(t)[1:4]
 
         x <- mbind(x, t)
       }
     }
     return(x)
   }
-
 
   # read base year
   base <- .read(years = 2000, ssps = "SSP1")
@@ -66,5 +71,11 @@ readUrbanLandGao <- function() {
 
   # convert km2 to Mha
   x <- x / 10000
+
+  # sort and naming
+  x <- x[mapping$coords, , ]
+  getItems(x, dim = 1, raw = TRUE) <- paste(mapping$coords, mapping$iso, sep = ".")
+  getSets(x) <- c("x", "y", "iso", "year", "data")
+
   return(x)
 }

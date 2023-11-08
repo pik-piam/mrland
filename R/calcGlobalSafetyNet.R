@@ -26,7 +26,7 @@
 #'
 #' @importFrom mrcommons toolCoord2Isocell
 #'
-calcGlobalSafetyNet <- function(maginput = TRUE, nclasses = "seven", cells = "magpiecell") {
+calcGlobalSafetyNet <- function(maginput = TRUE, nclasses = "seven", cells = "lpjcell") {
   gsn <- mbind(
     readSource("Dinerstein2020", subtype = "GSN:distinct_species_assemblages", convert = "onlycorrect"),
     readSource("Dinerstein2020", subtype = "GSN:rare_phenomena", convert = "onlycorrect"),
