@@ -53,7 +53,7 @@ calcMulticroppingSuitability <- function(selectyears, lpjml, climatetype,
     # For LPJmL crops, perennials (i.e. crops that are grown throughout the whole year)
     # are sugarcane and trro.
     # Furthermore, betr and begr are also grown throughout the whole year.
-    perennials <- c("sugarcane", "trro", "betr", "begr", "mgrass")
+    perennials <- c("sugarcane", "trro", "betr", "begr")
   }
 
   # Prepare data structure as crop-specific object
