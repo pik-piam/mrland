@@ -48,10 +48,9 @@ calcMulticroppingCells <- function(selectyears, lpjml, climatetype, scenario, se
                          sectoral = sectoral,
                          selectyears = selectyears, aggregate = FALSE)
 
-    # boolean of multicropped areas
-    mcCells <- currMC
-    mcCells[currMC == 1] <- 0
-    mcCells[currMC > 1]  <- 1
+    mcCells         <- currMC
+    mcCells[, , ]   <- 0
+    mcCells[currMC > (1 + 1e-6)] <- 1
 
   } else {
     stop("Chosen scenario in calcMulticroppingCells not available:
