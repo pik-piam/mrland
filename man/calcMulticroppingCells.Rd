@@ -9,7 +9,7 @@ calcMulticroppingCells(
   lpjml,
   climatetype,
   scenario,
-  sectoral = "lpj"
+  sectoral = "kcr"
 )
 }
 \arguments{

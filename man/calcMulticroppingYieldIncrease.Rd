@@ -9,9 +9,7 @@ calcMulticroppingYieldIncrease(
   lpjml,
   climatetype,
   fallowFactor = 0.75,
-  minThreshold = 100,
-  areaMask = "potential:endogenous",
-  crops = "standard"
+  minThreshold = 100
 )
 }
 \arguments{
@@ -29,20 +27,6 @@ sowing of second (off) season}
 and crop yield to exclude low yielding cells
 Unit of the threshold is gC/m^2.
 Default: 100 gC/m^2}
-
-\item{areaMask}{Multicropping area mask to be used
-"none": no mask applied (only for development purposes)
-"actual:total": currently multicropped areas calculated from total harvested areas
-                and total physical areas per cell from readLandInG
-"actual:crop" (crop-specific), "actual:irrigation" (irrigation-specific),
-"actual:irrig_crop" (crop- and irrigation-specific)
-"potential:endogenous": potentially multicropped areas given
-                        temperature and productivity limits
-"potential:exogenous": potentially multicropped areas given
-                       GAEZ suitability classification}
-
-\item{crops}{standard: default crops,
-proxy: proxy crops for LPJmL to MAgPIE mapping and treatment of perennials}
 }
 \value{
 magpie object in cellular resolution

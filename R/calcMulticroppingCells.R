@@ -29,13 +29,14 @@
 #' @importFrom magclass dimSums dimOrder
 #'
 
-calcMulticroppingCells <- function(selectyears, lpjml, climatetype, scenario, sectoral = "lpj") {
+calcMulticroppingCells <- function(selectyears, lpjml, climatetype, scenario, sectoral = "kcr") {
 
   # extract sub-scenario
   subscenario <- strsplit(scenario, split = ":")[[1]][2]
   scenario    <- strsplit(scenario, split = ":")[[1]][1]
 
   if (grepl(pattern = "potential", x = scenario)) {
+
     # Cells that can potentially be multi-cropped (irrigation- and crop-specific)
     mcCells <- calcOutput("MulticroppingSuitability", selectyears = selectyears,
                           lpjml = lpjml, climatetype = climatetype,
@@ -43,6 +44,7 @@ calcMulticroppingCells <- function(selectyears, lpjml, climatetype, scenario, se
                           aggregate = FALSE)
 
   } else if (grepl(pattern = "actual", x = scenario)) {
+
     # Cropping Intensity Factor (between 1 and 2)
     currMC <- calcOutput("MulticroppingIntensity", scenario = subscenario,
                          sectoral = sectoral,
@@ -50,7 +52,7 @@ calcMulticroppingCells <- function(selectyears, lpjml, climatetype, scenario, se
 
     mcCells         <- currMC
     mcCells[, , ]   <- 0
-    mcCells[currMC > (1 + 1e-6)] <- 1
+    mcCells[currMC > (1 + 1e-3)] <- 1
 
   } else {
     stop("Chosen scenario in calcMulticroppingCells not available:
@@ -76,7 +78,7 @@ calcMulticroppingCells <- function(selectyears, lpjml, climatetype, scenario, se
   ##############
   out         <- mcCells
   unit        <- "boolean"
-  description <- paste0("Gridcell-specific multiple cropping ",
+  description <- paste0("Gridcell- and crop-specific multiple cropping ",
                         "under irrigated and rainfed conditions. ",
                         "1 = multi-cropped, 0 = not multi-cropped")
 

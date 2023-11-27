@@ -96,32 +96,53 @@ calcYields <- function(source = c(lpjml = "ggcmi_phase3_nchecks_9ca735cb", isimi
                                  selectyears = selectyears,
                                  aggregate = FALSE)
 
-    # MAgPIE perennials or crops grown throughout entire year (cotton, others, oilpalm)
-    # are proxied by maize and groundnut and require special treatment in mapping
-    proxyYields   <- yields[, , c("groundnut", "maize")]
-    proxyIncrease <- calcOutput("MulticroppingYieldIncrease", crops = "proxy",
-                                areaMask = areaMask,
-                                lpjml = source[["lpjml"]], # nolint: undesirable_function_linter.
-                                climatetype = climatetype,
-                                selectyears = selectyears,
-                                aggregate = FALSE)
-
     if (cells == "magpiecell") {
       increaseFactor <- toolCoord2Isocell(increaseFactor)
-      proxyIncrease  <- toolCoord2Isocell(proxyIncrease)
     }
 
-    # Whole year yields for proxy crops (main-season yield + off-season yield)
-    proxyYields <- proxyYields + proxyYields * proxyIncrease
+    # Main-season yield
+    mainYield <- yields
+    # Off-season yield
+    offYield  <- yields * increaseFactor
+
+    # LPJmL to MAgPIE crops
+    lpj2mag   <- toolGetMapping("MAgPIE_LPJmL.csv", type = "sectoral", where = "mappingfolder")
+    mainYield <- toolAggregate(mainYield, lpj2mag, from = "LPJmL",
+                               to = "MAgPIE", dim = 3.1, partrel = TRUE)
+    offYield  <- toolAggregate(offYield, lpj2mag, from = "LPJmL",
+                               to = "MAgPIE", dim = 3.1, partrel = TRUE)
+    croplist  <- getItems(mainYield, dim = "crop")
+
+    # Multiple cropping suitability
+    if (areaMask == "none") {
+      suitMC <- calcOutput("MulticroppingCells",
+                           sectoral = "kcr",
+                           scenario = "potential:exogenous",
+                           lpjml = c(crop = source[["lpjml"]]), # nolint: undesirable_function_linter.
+                           climatetype = climatetype,
+                           selectyears = selectyears,
+                           aggregate = FALSE)[, , croplist]
+      # multiple cropping is allowed everywhere
+      suitMC[, , ] <- 1
+    } else {
+      suitMC <- calcOutput("MulticroppingCells", scenario = areaMask,
+                           sectoral = "kcr",
+                           lpjml =  c(crop = source[["lpjml"]]), # nolint: undesirable_function_linter.
+                           climatetype = climatetype,
+                           selectyears = selectyears,
+                           aggregate = FALSE)[, , croplist]
+    }
 
     # Whole year yields under multicropping (main-season yield + off-season yield)
-    yields <- yields + yields * increaseFactor
-  }
+    yields <- mainYield + offYield * increaseFactor * suitMC
 
-  # LPJmL to MAgPIE crops
-  lpj2mag <- toolGetMapping("MAgPIE_LPJmL.csv", type = "sectoral", where = "mappingfolder")
-  yields  <- toolAggregate(yields, lpj2mag, from = "LPJmL",
-                           to = "MAgPIE", dim = 3.1, partrel = TRUE)
+  } else {
+
+    # LPJmL to MAgPIE crops
+    lpj2mag <- toolGetMapping("MAgPIE_LPJmL.csv", type = "sectoral", where = "mappingfolder")
+    yields  <- toolAggregate(yields, lpj2mag, from = "LPJmL",
+                             to = "MAgPIE", dim = 3.1, partrel = TRUE)
+  }
 
   # Check for NAs
   if (any(is.na(yields))) {
@@ -152,15 +173,8 @@ calcYields <- function(source = c(lpjml = "ggcmi_phase3_nchecks_9ca735cb", isimi
   calib[, , "others"]    <- yieldsFAO[, , "others"] / yieldsFAO[, , "maiz"]         # LPJmL proxy is maize
   calib[, , "potato"]    <- yieldsFAO[, , "potato"] / yieldsFAO[, , "sugr_beet"]    # LPJmL proxy is sugarbeet
 
-  # Recalibrate yields for proxys
+  # Recalibrate yields for proxies
   yields <- yields * calib[, , getNames(yields, dim = 1)]
-
-  if (multicropping) {
-    # MAgPIE perennials receive full year yield of their proxy:
-    yields[, , "oilpalm"]   <- proxyYields[, , "groundnut"] * calib[, , "oilpalm"]
-    yields[, , "others"]    <- proxyYields[, , "maize"] * calib[, , "others"]
-    yields[, , "cottn_pro"] <- proxyYields[, , "groundnut"] * calib[, , "cottn_pro"]
-  }
 
   if (!is.na(source["isimip"])) { # nolint: undesirable_function_linter.
     isimipYields <- calcOutput("ISIMIP3bYields", subtype = source[["isimip"]], # nolint: undesirable_function_linter.

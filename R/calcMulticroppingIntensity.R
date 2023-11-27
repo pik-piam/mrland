@@ -26,19 +26,19 @@ calcMulticroppingIntensity <- function(scenario, selectyears,
                                        sectoral = "lpj") {
 
   if (grepl("kcr", sectoral)) {
-    # perennial MAgPIE crops
-    perennials <- c("sugr_cane", "oilpalm")
-    # should cottn_pro and others also be perennial? (because grown throughout entire year)
+
+    # Crops that are not suitable for multiple cropping (either because they are a perennial
+    # crop that's grown over several years or because the growing period is too long to
+    # allow for another season
+    cropsNoMC <- c("sugr_cane", "oilpalm", "betr", "begr")
+
   } else if (grepl("lpj", sectoral)) {
-    # perennial LPJmL crops
-    perennials <- c("sugarcane", "betr", "begr")
-    # trro would technically be a perennial, but proxied by cassav_sp, so excluded here
-    # Question: trro is represented by cassav_sp in MAgPIE crop mapping
-    #        therefore it can get a CI > 1
-    #        How should this combination of different mappings be treated?
-    #        Should we do it the other way around? Toolbox with lpj crops and then map to MAgPIE crops?
-    # @KRISTINE/JENS
-    # Note: "mgrass" not part of the set in calcCropareaLandInG
+
+    # Crops that are not suitable for multiple cropping (either because they are a perennial
+    # crop that's grown over several years or because the growing period is too long to
+    # allow for another season
+    cropsNoMC <- c("sugarcane", "betr", "begr")
+
   }
 
   # areas where multicropping takes place currently (crop- and irrigation-specific)
@@ -130,10 +130,11 @@ calcMulticroppingIntensity <- function(scenario, selectyears,
     stop("Problem in mrland::calcMulticroppingIntensity:
         Value should be between 1 and 2!")
   }
-  if (any(currMC[, , perennials] > 1)) {
+  if (any(currMC[, , cropsNoMC] > 1)) {
     stop(paste0(
       "Problem in mrland::calcMulticroppingIntensity: ",
-      "Perennials should not have CI > 1"
+      "Crops that are not suitable for multiple cropping ",
+      "should not have CI > 1"
     ))
   }
 

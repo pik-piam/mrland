@@ -18,18 +18,6 @@
 #'                      and crop yield to exclude low yielding cells
 #'                      Unit of the threshold is gC/m^2.
 #'                      Default: 100 gC/m^2
-#' @param areaMask      Multicropping area mask to be used
-#'                      "none": no mask applied (only for development purposes)
-#'                      "actual:total": currently multicropped areas calculated from total harvested areas
-#'                                      and total physical areas per cell from readLandInG
-#'                      "actual:crop" (crop-specific), "actual:irrigation" (irrigation-specific),
-#'                      "actual:irrig_crop" (crop- and irrigation-specific)
-#'                      "potential:endogenous": potentially multicropped areas given
-#'                                              temperature and productivity limits
-#'                      "potential:exogenous": potentially multicropped areas given
-#'                                             GAEZ suitability classification
-#' @param crops         standard: default crops,
-#'                      proxy: proxy crops for LPJmL to MAgPIE mapping and treatment of perennials
 #'
 #' @return magpie object in cellular resolution
 #' @author Felicitas Beier
@@ -44,9 +32,7 @@
 #'
 
 calcMulticroppingYieldIncrease <- function(selectyears, lpjml, climatetype,
-                                           fallowFactor = 0.75, minThreshold = 100,
-                                           areaMask = "potential:endogenous",
-                                           crops = "standard") {
+                                           fallowFactor = 0.75, minThreshold = 100) {
 
   # Function requires lpjml argument in standard format
   if (length(lpjml) == 1) {
@@ -89,23 +75,6 @@ calcMulticroppingYieldIncrease <- function(selectyears, lpjml, climatetype,
   getSets(cropYields)["d3.1"] <- "crop"
   getSets(cropYields)["d3.2"] <- "irrigation"
 
-  # Multiple cropping suitability
-  if (areaMask == "none") {
-    suitMC <- calcOutput("MulticroppingCells",
-                         sectoral = "lpj",
-                         scenario = "potential:exogenous",
-                         lpjml = lpjml, climatetype = climatetype,
-                         selectyears = selectyears,
-                         aggregate = FALSE)[, , cropIrrigList]
-    # multiple cropping is allowed everywhere
-    suitMC[, , ] <- 1
-  } else {
-    suitMC <- calcOutput("MulticroppingCells", scenario = areaMask,
-                         sectoral = "lpj",
-                         lpjml = lpjml, climatetype = climatetype,
-                         selectyears = selectyears,
-                         aggregate = FALSE)[, , cropIrrigList]
-  }
 
   ####################
   ### Calculations ###
@@ -127,7 +96,7 @@ calcMulticroppingYieldIncrease <- function(selectyears, lpjml, climatetype,
 
   increaseFACTOR <- ifelse(rule1 & rule2,
                            grassGPPoffseason / grassGPPgrper,
-                           0) * fallowFactor * suitMC
+                           0) * fallowFactor
 
   # Add missing crops (betr, begr, mgrass)
   # [Note: grown throughout the whole year] ---> set to 0
@@ -140,55 +109,25 @@ calcMulticroppingYieldIncrease <- function(selectyears, lpjml, climatetype,
   getSets(missingCrops) <- getSets(increaseFACTOR)
   increaseFACTOR        <- mbind(increaseFACTOR, missingCrops)
 
-
-  # Some MAgPIE perennial crops or crops that are grown throughout the whole year
-  # are proxied by an LPJmL crop that is grown with seasonality.
-  # For these, full year yields (limited to potential growing period)
-  # are calculated in all locations. This implies
-  # (a) no masking of multicropping suitability (suitable everywhere)
-  # (b) no fallow factor applied
-  proxyIncrease <- new.magpie(cells_and_regions = getItems(increaseFACTOR, dim = 1),
-                              years = getItems(increaseFACTOR, dim = 2),
-                              names = c("groundnut.irrigated", "groundnut.rainfed",
-                                        "maize.irrigated", "maize.rainfed"),
-                              fill = NA)
-  proxyIncrease[, , "groundnut"] <- ifelse(grassGPPgrper[, , "groundnut"] > 0,
-                                           grassGPPoffseason[, , "groundnut"] / grassGPPgrper[, , "groundnut"],
-                                           0)
-  proxyIncrease[, , "maize"]     <- ifelse(grassGPPgrper[, , "maize"] > 0,
-                                           grassGPPoffseason[, , "maize"] / grassGPPgrper[, , "maize"],
-                                           0)
-  getSets(proxyIncrease) <- getSets(increaseFACTOR)
-  # @KRISTINE, JENS: Check whether that makes sense. Should this be adjusted to full annual?
-  # Jens: maybe better to just use grass GPP,
-  # Kristine: but how to make sure that oil palm doesn't grow in temperate regions?
-
   ##############
   ### Checks ###
   ##############
 
   if (any(is.na(increaseFACTOR))) {
-    stop("calcMulticroppingMask produced NA values")
+    stop("calcMulticroppingYieldIncrease produced NA values")
   }
   if (any(increaseFACTOR < 0)) {
-    stop("calcMulticroppingMask produced negative values")
+    stop("calcMulticroppingYieldIncrease produced negative values")
   }
 
   ##############
   ### Return ###
   ##############
-
-  if (crops == "proxy") {
-    out <- proxyIncrease
-  } else {
-    out <- increaseFACTOR
-  }
-
   unit        <- "unitless"
   description <- paste0("Factor of yield increase through multiple cropping ",
                         "to be applied on LPJmL crop yield")
 
-  return(list(x            = out,
+  return(list(x            = increaseFACTOR,
               weight       = NULL,
               unit         = unit,
               description  = description,
