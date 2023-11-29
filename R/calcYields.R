@@ -90,7 +90,6 @@ calcYields <- function(source = c(lpjml = "ggcmi_phase3_nchecks_9ca735cb", isimi
   if (multicropping) {
 
     increaseFactor <- calcOutput("MulticroppingYieldIncrease",
-                                 areaMask = areaMask,
                                  lpjml = source[["lpjml"]], # nolint: undesirable_function_linter.
                                  climatetype = climatetype,
                                  selectyears = selectyears,
