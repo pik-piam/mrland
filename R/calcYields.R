@@ -110,7 +110,7 @@ calcYields <- function(source = c(lpjml = "ggcmi_phase3_nchecks_9ca735cb", isimi
                                to = "MAgPIE", dim = 3.1, partrel = TRUE)
     offYield  <- toolAggregate(offYield, lpj2mag, from = "LPJmL",
                                to = "MAgPIE", dim = 3.1, partrel = TRUE)
-    croplist  <- getItems(mainYield, dim = "crop")
+    croplist  <- getItems(mainYield, dim = 3.1)
 
     # Multiple cropping suitability
     if (areaMask == "none") {
