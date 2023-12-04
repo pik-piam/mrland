@@ -86,6 +86,8 @@ calcYields <- function(source = c(lpjml = "ggcmi_phase3_nchecks_9ca735cb", isimi
                                  years = selectyears,
                                  cells = cells, aggregate = FALSE),
                       selectyears)
+  # Mapping LPJmL to MAgPIE crops
+  lpj2mag   <- toolGetMapping("MAgPIE_LPJmL.csv", type = "sectoral", where = "mappingfolder")
 
   if (multicropping) {
 
@@ -105,7 +107,6 @@ calcYields <- function(source = c(lpjml = "ggcmi_phase3_nchecks_9ca735cb", isimi
     offYield  <- yields * increaseFactor
 
     # LPJmL to MAgPIE crops
-    lpj2mag   <- toolGetMapping("MAgPIE_LPJmL.csv", type = "sectoral", where = "mappingfolder")
     mainYield <- toolAggregate(mainYield, lpj2mag, from = "LPJmL",
                                to = "MAgPIE", dim = 3.1, partrel = TRUE)
     offYield  <- toolAggregate(offYield, lpj2mag, from = "LPJmL",
@@ -120,7 +121,11 @@ calcYields <- function(source = c(lpjml = "ggcmi_phase3_nchecks_9ca735cb", isimi
                            lpjml = c(crop = source[["lpjml"]]), # nolint: undesirable_function_linter.
                            climatetype = climatetype,
                            selectyears = selectyears,
-                           aggregate = FALSE)[, , croplist]
+                           aggregate = FALSE)
+      # Add pasture to suitMC object with suitability set to 0
+      suitMC <- add_columns(suitMC, dim = 3.1, addnm = "pasture", fill = 0)
+      # Reduce to croplist and ensure ordering
+      suitMC <- suitMC[, , croplist]
       # multiple cropping is allowed everywhere
       suitMC[, , ] <- 1
     } else {
@@ -129,7 +134,11 @@ calcYields <- function(source = c(lpjml = "ggcmi_phase3_nchecks_9ca735cb", isimi
                            lpjml =  c(crop = source[["lpjml"]]), # nolint: undesirable_function_linter.
                            climatetype = climatetype,
                            selectyears = selectyears,
-                           aggregate = FALSE)[, , croplist]
+                           aggregate = FALSE)
+      # Add pasture to suitMC object with suitability set to 0
+      suitMC <- add_columns(suitMC, dim = 3.1, addnm = "pasture", fill = 0)
+      # Reduce to croplist and ensure ordering
+      suitMC <- suitMC[, , croplist]
     }
 
     # Whole year yields under multicropping (main-season yield + off-season yield)
@@ -138,7 +147,6 @@ calcYields <- function(source = c(lpjml = "ggcmi_phase3_nchecks_9ca735cb", isimi
   } else {
 
     # LPJmL to MAgPIE crops
-    lpj2mag <- toolGetMapping("MAgPIE_LPJmL.csv", type = "sectoral", where = "mappingfolder")
     yields  <- toolAggregate(yields, lpj2mag, from = "LPJmL",
                              to = "MAgPIE", dim = 3.1, partrel = TRUE)
   }
