@@ -1,8 +1,8 @@
 Type: Package
 Package: mrland
 Title: MadRaT land data package
-Version: 0.51.6
-Date: 2023-12-04
+Version: 0.51.7
+Date: 2023-12-11
 Authors@R: c(
     person("Jan Philipp", "Dietrich", , "dietrich@pik-potsdam.de", role = c("aut", "cre")),
     person("Abhijeet", "Mishra", role = "aut"),
@@ -34,6 +34,7 @@ Depends:
     mrcommons (>= 1.37.0),
     mrfactors
 Imports:
+    GDPuc,
     SPEI,
     countrycode,
     data.table,

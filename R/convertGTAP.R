@@ -98,14 +98,14 @@ convertGTAP <- function(x, subtype) {
     (stop("Not supported by current convertGTAP funtion, please set convert to FALSE!"))
   }
 
-# fill with global average
-if (ndim(out, dim = 1) == 2) {
+  # fill with global average
+  if (ndim(out, dim = 1) == 2) {
 
-   out <- toolCountryFillBilateral(out, fill = 0)
+    out <- toolCountryFillBilateral(out, fill = 0)
 
-} else if (ndim(out, dim = 1) == 1) {
-out <- toolCountryFill(out, 0)
-}
+  } else if (ndim(out, dim = 1) == 1) {
+    out <- toolCountryFill(out, 0)
+  }
 
   return(out)
 }

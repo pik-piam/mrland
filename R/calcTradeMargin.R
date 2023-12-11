@@ -4,6 +4,7 @@
 #' \itemize{
 #' \item \code{GTAP7}
 #' \item \code{GTAP8}
+#' \item \code{GTAP9}
 #' }
 #' @param producer_price which producer price should be used
 #' @param bilateral  whether bilateral trade margin should be calculated
@@ -16,9 +17,10 @@
 #' }
 #' @importFrom magpiesets findset
 #' @importFrom magclass is.magpie
+#' @importFrom GDPuc convertGDP
 
-calcTradeMargin <- function(gtap_version = "GTAP7", bilateral = FALSE, producer_price = "FAOini") { # nolint
-  stopifnot(gtap_version %in% c("GTAP7", "GTAP8"))
+calcTradeMargin <- function(gtap_version = "GTAP9", bilateral = FALSE, producer_price = "FAOini") { # nolint
+  stopifnot(gtap_version %in% c("GTAP7", "GTAP8", "GTAP9"))
   viws <- calcOutput(type = "GTAPTrade", subtype = paste(gtap_version, "VIWS", sep = "_"),
                      bilateral = bilateral, aggregate = FALSE)
   vxwd <- calcOutput(type = "GTAPTrade", subtype = paste(gtap_version, "VXWD", sep = "_"),
@@ -35,8 +37,7 @@ calcTradeMargin <- function(gtap_version = "GTAP7", bilateral = FALSE, producer_
                     bilateral = bilateral, aggregate = FALSE)
 
   # (imports-exports world price)/exports at mkt price * (value of output mkt prices/payment received at fgate)
-  y <- setYears(vtwr / vxmd * (vom / voa), NULL)
-
+  y <- (vtwr / vxmd * (vom / voa))
   y[is.infinite(y)] <- NA
 
   fillMean <- function(x) {
@@ -55,7 +56,8 @@ calcTradeMargin <- function(gtap_version = "GTAP7", bilateral = FALSE, producer_
     producer_price <- "FAOp" # nolint
   }
   if (producer_price %in% c("IMPACT3.2.2World_Price", "FAO", "FAOp", "WBGEM")) {
-    p <- collapseNames(calcOutput("PriceAgriculture", datasource = producer_price, aggregate = FALSE))[, 2005, ]
+    p <- collapseNames(calcOutput("PriceAgriculture",
+                                  datasource = producer_price, aggregate = FALSE))[, 2005, ]
   } else if (producer_price == "FAOini") {
     p <- calcOutput("IniFoodPrice", products = "k_trade", aggregate = FALSE)
   } else {
@@ -82,26 +84,32 @@ calcTradeMargin <- function(gtap_version = "GTAP7", bilateral = FALSE, producer_
   }
 
   ##### make countries with 0 margins high
-  # take max by product and (exporting) region
+
+  # take 2x the median by product and (exporting) region
   mapping <- toolGetMapping("regionmappingH12.csv", type = "regional", where = "madrat")
   reg <- unique(mapping$RegionCode)
-
+  getSets(out)[1] <- "Regions"
   for (i in getNames(out)) {
     for (r in reg) {
       tmp <- out[list("Regions" = mapping[which(mapping$RegionCode == r), "CountryCode"]), , i]
       # round to include values that were in range of e-14
-      tmp[which(round(tmp, 3) == 0)]  <- max(tmp)
+      tmp[which(round(tmp, 3) == 0)]  <- 2 * median(tmp)
       out[list("Regions" =  mapping[which(mapping$RegionCode == r), "CountryCode"]), , i] <- tmp
     }
   }
-  # take 99 percetile by product for if still 0
-  for (i in where(out == 0)$true$data) {
-    tmp <- out[, , i]
-    tmp[which(tmp == 0)]  <- quantile(tmp, .75)
-    out[, , i] <- tmp
+  # take successively higher percetile by product only for if still 0
+
+  for (qu in c(0.75, 0.85, 0.95)) {
+
+    for (i in magclass::where(out == 0)$true$data) {
+      tmp <- out[, , i]
+      tmp[which(tmp == 0)]  <- quantile(tmp, qu)
+      out[, , i] <- tmp
+    }
   }
 
-  weight <- setYears(vxmd * voa, NULL)[, , kTrade]
+  weight <- (vxmd * voa)[, , kTrade]
+
   if (!any(c("wood", "woodfuel") %in% getNames(weight))) {
     out <- add_columns(x = out, addnm = findset("kforestry"), dim = 3.1)
     out[, , findset("kforestry")] <- out[, , "others"]
@@ -121,6 +129,7 @@ calcTradeMargin <- function(gtap_version = "GTAP7", bilateral = FALSE, producer_
   }
 
   # fill in data in ktrade but not in GTAP
+  # (distiller's grain an exception as it is in GTAP but not traded in FAOSTAT)
   out <- add_columns(x = out, addnm =  setdiff(findset("k_trade"), getNames(out)), dim = 3.1)
   weight <- add_columns(x = weight, addnm =  setdiff(findset("k_trade"), getNames(weight)), dim = 3.1)
   out[, , "brans"] <- out[, , "maiz"]
@@ -133,11 +142,24 @@ calcTradeMargin <- function(gtap_version = "GTAP7", bilateral = FALSE, producer_
   weight[, , "betr"] <- weight[, , "wood"]
   out[, , "begr"] <- out[, , "sugr_cane"]
   weight[, , "begr"] <- weight[, , "sugr_cane"]
+  out[, , "distillers_grain"] <- out[, , "tece"]
+  weight[, , "distillers_grain"] <- weight[, , "tece"]
+
+  if (gtap_version == "GTAP9") {
+    if (!bilateral) {
+      out <- GDPuc::convertGDP(out, unit_in = "current US$MER",
+                               unit_out = "constant 2005 US$MER",
+                               replace_NAs = "no_conversion")
+    }
+    out <- setYears(out[, 2011, ], NULL)
+    weight <- setYears(weight[, 2011, ], NULL)
+  } else {
+    out <- setYears(out, NULL)
+    weight <- setYears(weight, NULL)
+  }
 
   unit <- "US$05"
   description <- "Trade margins"
-  out <- setYears(out, 2005)
-  weight <- setYears(weight, 2005)
 
   # add tiny value to weight to avoid 0 weights creating 0 values
   weight <- weight + 1e-8

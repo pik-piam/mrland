@@ -5,7 +5,7 @@
 \title{calcTradeMargin}
 \usage{
 calcTradeMargin(
-  gtap_version = "GTAP7",
+  gtap_version = "GTAP9",
   bilateral = FALSE,
   producer_price = "FAOini"
 )
@@ -15,6 +15,7 @@ calcTradeMargin(
 \itemize{
 \item \code{GTAP7}
 \item \code{GTAP8}
+\item \code{GTAP9}
 }}
 
 \item{bilateral}{whether bilateral trade margin should be calculated}

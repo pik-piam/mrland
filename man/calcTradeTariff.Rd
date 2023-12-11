@@ -5,7 +5,7 @@
 \title{calcTradeTariff}
 \usage{
 calcTradeTariff(
-  gtap_version = "GTAP7",
+  gtap_version = "GTAP9",
   type_tariff = "total",
   bilateral = FALSE
 )

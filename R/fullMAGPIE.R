@@ -170,9 +170,9 @@ fullMAGPIE <- function(rev = 0.1, dev = "") {
              aggregate = FALSE)
   calcOutput("TradeBalance", years = magYears, round = 2, file = "f21_trade_balance.cs3",
              aggregate = superregion)
-  calcOutput("TradeMargin",      years = 2005,      round = 4, file = "f21_trade_margin.cs3",
+  calcOutput("TradeMargin", round = 4, file = "f21_trade_margin.cs3",
              aggregate = superregion)
-  calcOutput("TradeTariff",      years = 2005,      round = 4, file = "f21_trade_tariff.cs3",
+  calcOutput("TradeTariff", round = 4, file = "f21_trade_tariff.cs3",
              aggregate = superregion)
   calcOutput("TradeTariff", type_tariff = "export",    round = 4, file = "f21_trade_tariff_export.cs3",
              aggregate = superregion)
