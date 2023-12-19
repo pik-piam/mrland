@@ -14,7 +14,7 @@
 #' @return magpie object containing EAT-Lancet Comission data
 #' @importFrom data.table fread
 #' @importFrom magclass complete_magpie
-#' @author Isabelle Weindl, Jan Philipp Dietrich
+#' @author Isabelle Weindl, Jan Philipp Dietrich, Felicitas Beier
 #' @seealso \code{\link{readSource}}
 #' @examples
 #' \dontrun{
@@ -44,11 +44,14 @@ readEATLancet <- function(subtype) {
 
   } else if (subtype == "recommend") {
 
-    data  <- read.csv("EAT_Lancet_recommendations.csv", sep = ",", header = TRUE, stringsAsFactors = FALSE)
+    data  <- read.csv("EAT_Lancet_recommendations_2.csv", sep = ",", header = TRUE,
+                      stringsAsFactors = FALSE)
     mdata <- as.magpie(data, spatial = 0, temporal = 0, datacol = 2)
     getSets(mdata, fulldim = FALSE)[3] <- "target.unit.type"
 
-  } else stop("Not a valid subtype!")
+  } else {
+    stop("Not a valid subtype!")
+  }
 
   return(mdata)
 }

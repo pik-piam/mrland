@@ -132,9 +132,9 @@ fullMAGPIE <- function(rev = 0.1, dev = "") {
              attributes = "kcal/d")
   calcOutput("EATLancetTargets", aggregate = FALSE, round = 4, file = "f15_targets_EATLancet_iso.cs3",
              attributes = "kcal/d")
-  calcOutput("EATFruitvegRatio", aggregate = TRUE, round = 4, file = "f15_fruitveg2others_kcal_ratio.csv",
+  calcOutput("EATFruitvegRatio", aggregate = TRUE, round = 4, file = "f15_fruitveg2others_kcal_ratio.cs3",
              populationweight = "PopulationPast")
-  calcOutput("EATFruitvegRatio", aggregate = FALSE, round = 4, file = "f15_fruitveg2others_kcal_ratio_iso.csv",
+  calcOutput("EATFruitvegRatio", aggregate = FALSE, round = 4, file = "f15_fruitveg2others_kcal_ratio_iso.cs3",
              populationweight = "PopulationPast")
 
   calcOutput("NINDiets",  aggregate = TRUE, round = 4, file = "f15_intake_NIN.cs3",

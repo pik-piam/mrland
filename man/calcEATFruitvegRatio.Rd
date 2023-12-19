@@ -28,5 +28,5 @@ calcOutput("EATFruitvegRatio")
 \code{\link{calcEATLancetDiets}}
 }
 \author{
-Isabelle Weindl
+Isabelle Weindl, Felicitas Beier
 }

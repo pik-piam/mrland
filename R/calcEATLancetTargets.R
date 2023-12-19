@@ -25,10 +25,10 @@ calcEATLancetTargets <- function(attributes = "kcal/d") {
 
   #### Mapping to MAgPIE
   # mapping of EAT Lancet food categories to MAgPIE food commodities
-  eatFood    <- c("legumes", "soybeans", "fish",
+  eatFood    <- c("legumes", "fish",
                   "poultry", "eggs", "milk",
                   "sugar", "oil_palm", "oil_veg")
-  eatTFood15 <- c("t_puls_pro", "t_soybean", "t_fish",
+  eatTFood15 <- c("t_legumes", "t_fish",
                   "t_livst_chick", "t_livst_egg", "t_livst_milk",
                   "t_sugar", "t_oils", "t_oils")
 
@@ -39,14 +39,14 @@ calcEATLancetTargets <- function(attributes = "kcal/d") {
                                   from = "eatFood", to = "eatTFood15")
 
   # mapping of EAT Lancet food groups to MAgPIE diet target groups
-  eatGroup    <- c("nuts_seeds", "vegetables", "fruits", "roots", "fg_redmeat")
-  eatTGroup15 <- c("t_nutseeds", "t_fruitveg", "t_fruitveg", "t_roots", "t_redmeat")
+  eatGroup    <- c("nuts_seeds", "vegetables", "fruits", "fruits_starch",   "roots",   "fg_redmeat")
+  eatTGroup15 <- c("t_nutseeds", "t_fruitveg", "t_fruitveg", "t_fruitstarch", "t_roots", "t_redmeat")
 
   relMatrixGroup <- cbind(eatGroup, eatTGroup15)
 
   eatTargetsGroup <- toolAggregate(eatTargets, rel = relMatrixGroup,
-                                    dim = 3.1, partrel = TRUE,
-                                    from = "eatGroup", to = "eatTGroup15")
+                                   dim = 3.1, partrel = TRUE,
+                                   from = "eatGroup", to = "eatTGroup15")
 
   eat <- mbind(eatTargetsFood, eatTargetsGroup)
 

@@ -7,7 +7,7 @@
 #' @param populationweight datasource of populationweight: FAO can be selected in order to better meet exact values.
 #' Normal datasource is PopulationPast
 #' @return List of magpie objects with results on country level, weight on country level, unit and description.
-#' @author Isabelle Weindl
+#' @author Isabelle Weindl, Felicitas Beier
 #' @seealso \code{\link{calcOutput}}, \code{\link{calcEATLancetTargets}}, \code{\link{calcFAOharmonized}},
 #' \code{\link{calcEATLancetDiets}}
 #' @examples
@@ -15,14 +15,15 @@
 #' calcOutput("EATFruitvegRatio")
 #' }
 #' @importFrom madrat toolFillWithRegionAvg
+#' @importFrom magpiesets findset
 #' @export
 
 calcEATFruitvegRatio <- function(populationweight = "PopulationPast") {
   ### FAO Commodity balance
-  FAOcbs  <- calcOutput(type = "FAOharmonized", aggregate = FALSE)[, , "food_supply_kcal"]
+  cbsFAO  <- calcOutput(type = "FAOharmonized", aggregate = FALSE)[, , "food_supply_kcal"]
   pastYrs <- findset("past")
-  FAOcbs  <- collapseNames(FAOcbs[, pastYrs, ])
-  getSets(FAOcbs) <- c("region", "year", "ItemCodeItem")
+  cbsFAO  <- collapseNames(cbsFAO[, pastYrs, ])
+  getSets(cbsFAO) <- c("region", "year", "ItemCodeItem")
 
   ### Population weight
   if (populationweight == "PopulationPast") {
@@ -42,37 +43,70 @@ calcEATFruitvegRatio <- function(populationweight = "PopulationPast") {
   ### (all fruits and vegetables contained in "others")
   others <- relationmatrix[relationmatrix$k %in% "others", "FoodBalanceItem"]
   fruitvegOthers <- c("2601|Tomatoes and products",
-                  "2602|Onions",
-                  "2605|Vegetables, Other",
-                  "2611|Oranges, Mandarines",
-                  "2612|Lemons, Limes and products",
-                  "2613|Grapefruit and products",
-                  "2614|Citrus, Other",
-                  "2617|Apples and products",
-                  "2618|Pineapples and products",
-                  "2619|Dates",
-                  "2620|Grapes and products (excl wine)",
-                  "2625|Fruits, Other")
-  # Note: In FAOitems.csv 2615|Bananas and 2616|Plantains are mapped to the magpie commodity "cassav_sp".
+                      "2602|Onions",
+                      "2605|Vegetables, Other",
+                      "2611|Oranges, Mandarines",
+                      "2612|Lemons, Limes and products",
+                      "2613|Grapefruit and products",
+                      "2614|Citrus, Other",
+                      "2617|Apples and products",
+                      "2618|Pineapples and products",
+                      "2619|Dates",
+                      "2620|Grapes and products (excl wine)",
+                      "2625|Fruits, Other")
+  ### Definitions of the food groups "cassava" and "bananas"
+  ### (bananas and plantains contained in "cassav_sp")
+  cassava <- relationmatrix[relationmatrix$k %in% "cassav_sp", "FoodBalanceItem"]
+  bananas <- c("2615|Bananas",
+               "2616|Plantains")
 
   # check if all fruits and vegetables included in "fruitvegOthers" are also contained in "others":
   if (any(setdiff(fruitvegOthers, others)) == TRUE) {
     stop("The above definition of fruits and vegetables (fruitvegOthers)
          is not consistent with the current mapping of FAO items to MAgPIE commodities.")
   }
+  # check if all fruits included in "bananas" are also contained in "cassava":
+  if (any(setdiff(bananas, cassava)) == TRUE) {
+    stop("The above definition of fruits (bananas and plantains)
+         is not consistent with the current mapping of FAO items to MAgPIE commodities.")
+  }
 
   ### Aggregation of calories and calculation of ratios:
-  kcalOthers <- dimSums(FAOcbs[, , others], dim = 3)
-  kcalFrutiVeg <- dimSums(FAOcbs[, , fruitvegOthers], dim = 3)
+  # For fruits in others category
+  kcalOthers   <- dimSums(cbsFAO[, , others], dim = 3)
+  kcalFruitVeg <- dimSums(cbsFAO[, , fruitvegOthers], dim = 3)
 
-  ratioFruitveg2Others <- kcalFrutiVeg / kcalOthers
-  out <- toolFillWithRegionAvg(ratioFruitveg2Others, weight = weight, verbose = FALSE)
+  ratioFruitveg2Others <- kcalFruitVeg / kcalOthers
+  ratioFruitveg2Others <- toolFillWithRegionAvg(ratioFruitveg2Others, weight = weight, verbose = FALSE)
+  ratioFruitveg2Others <- add_dimension(ratioFruitveg2Others, add = "EAT_special", nm = "others")
+
+  # For fruits in cassav_sp category
+  kcalCassava <- dimSums(cbsFAO[, , cassava], dim = 3)
+  kcalBananas <- dimSums(cbsFAO[, , bananas], dim = 3)
+
+  ratioFruit2Cassava <- kcalBananas / kcalCassava
+  ratioFruit2Cassava <- toolFillWithRegionAvg(ratioFruit2Cassava, weight = weight, verbose = FALSE)
+  # Correct NA's in the past by extending values from years that have values
+  if (any(is.na(ratioFruit2Cassava))) {
+    noCassavaRegions <- where(is.na(ratioFruit2Cassava))$true$regions
+    for (i in noCassavaRegions) {
+      yrsNoNA <- where(!is.na(ratioFruit2Cassava[i, , ]))$true$years
+      tmp <- new.magpie(cells_and_regions = i,
+                        years = yrsNoNA)
+      tmp[, , ] <- ratioFruit2Cassava[i, , ][!is.na(ratioFruit2Cassava[i, , ])]
+      ratioFruit2Cassava[i, , ] <- toolHoldConstant(tmp, pastYrs)
+    }
+  }
+  ratioFruit2Cassava <- add_dimension(ratioFruit2Cassava, add = "EAT_special", nm = "cassav_sp")
+
+  out <- mbind(ratioFruitveg2Others, ratioFruit2Cassava)
 
   min <- 0
 
   return(list(x = out,
               weight = weight,
               unit = "-",
-              description = "share of fruits and vegetables in the others food group",
+              description = paste0("share of fruits and vegetables in the others food group ",
+                                   "and cassava_sp food group respectively"),
               min = min))
 }

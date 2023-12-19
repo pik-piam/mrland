@@ -33,5 +33,5 @@ a <- readSource(type = "EATLancet", subtype = "cons_data")
 \code{\link{readSource}}
 }
 \author{
-Isabelle Weindl, Jan Philipp Dietrich
+Isabelle Weindl, Jan Philipp Dietrich, Felicitas Beier
 }
