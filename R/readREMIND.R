@@ -17,9 +17,9 @@ readREMIND <- function(subtype) {
 
   .readAndRename <- function(fileList, pattern, replacement) {
     x <- NULL
-    for(f in file_list) {
+    for (f in fileList) {
       # select REMIND only since newer coupled REMIND reportings also contain MAgPIE
-      x <- mbind(x, read.report(f, as.list = FALSE)[,,"REMIND"])
+      x <- mbind(x, read.report(f, as.list = FALSE)[, , "REMIND"])
     }
     # remove model and variable name
     x <- collapseNames(x)
@@ -29,65 +29,65 @@ readREMIND <- function(subtype) {
   }
 
   # Please refer to the 2019-R2M41/readme.txt for the source of the data
-  file_list <- c("2019-R2M41/REMIND_generic_r8473-trunk-C_Budg600-rem-5.mif",
-                 "2019-R2M41/REMIND_generic_r8473-trunk-C_Budg950-rem-5.mif",
-                 "2019-R2M41/REMIND_generic_r8473-trunk-C_Budg1300-rem-5.mif",
-                 "2019-R2M41/REMIND_generic_r8473-trunk-C_NDC-rem-5.mif",
-                 "2019-R2M41/REMIND_generic_r8473-trunk-C_NPi-rem-5.mif")
+  fileList <- c("2019-R2M41/REMIND_generic_r8473-trunk-C_Budg600-rem-5.mif",
+                "2019-R2M41/REMIND_generic_r8473-trunk-C_Budg950-rem-5.mif",
+                "2019-R2M41/REMIND_generic_r8473-trunk-C_Budg1300-rem-5.mif",
+                "2019-R2M41/REMIND_generic_r8473-trunk-C_NDC-rem-5.mif",
+                "2019-R2M41/REMIND_generic_r8473-trunk-C_NPi-rem-5.mif")
 
-  out <- .readAndRename(fileList = file_list, pattern = "r8473-trunk-C_", replacement = "R2M41-SSP2-")
+  out <- .readAndRename(fileList = fileList, pattern = "r8473-trunk-C_", replacement = "R2M41-SSP2-")
 
-  if(grepl("_",subtype)){
+  if (grepl("_", subtype)) {
 
-    subtype     <- strsplit(subtype, split="_")
-    revision    <- as.numeric(unlist(subtype)[2])
+    subtype  <- strsplit(subtype, split = "_")
+    revision <- as.numeric(unlist(subtype)[2])
 
     if (revision > 4.58) {
       # Please refer to the 2021-R21M42/readme.txt for the source of the data
-      file_list <- c("2021-R21M42/REMIND_generic_C_SDP-NPi-rem-5.mif",
-                     "2021-R21M42/REMIND_generic_C_SDP-PkBudg900-rem-5.mif",
-                     "2021-R21M42/REMIND_generic_C_SDP-PkBudg1000-rem-5.mif",
-                     "2021-R21M42/REMIND_generic_C_SDP-PkBudg1100-rem-5.mif",
-                     "2021-R21M42/REMIND_generic_C_SSP1-NPi-rem-5.mif",
-                     "2021-R21M42/REMIND_generic_C_SSP1-PkBudg900-rem-5.mif",
-                     "2021-R21M42/REMIND_generic_C_SSP1-PkBudg1100-rem-5.mif",
-                     "2021-R21M42/REMIND_generic_C_SSP1-PkBudg1300-rem-5.mif",
-                     "2021-R21M42/REMIND_generic_C_SSP2-NPi-rem-5.mif",
-                     "2021-R21M42/REMIND_generic_C_SSP2-PkBudg900-rem-5.mif",
-                     "2021-R21M42/REMIND_generic_C_SSP2-PkBudg1100-rem-5.mif",
-                     "2021-R21M42/REMIND_generic_C_SSP2-PkBudg1300-rem-5.mif",
-                     "2021-R21M42/REMIND_generic_C_SSP5-NPi-rem-5.mif",
-                     "2021-R21M42/REMIND_generic_C_SSP5-PkBudg900-rem-5.mif",
-                     "2021-R21M42/REMIND_generic_C_SSP5-PkBudg1100-rem-5.mif",
-                     "2021-R21M42/REMIND_generic_C_SSP5-PkBudg1300-rem-5.mif")
+      fileList <- c("2021-R21M42/REMIND_generic_C_SDP-NPi-rem-5.mif",
+                    "2021-R21M42/REMIND_generic_C_SDP-PkBudg900-rem-5.mif",
+                    "2021-R21M42/REMIND_generic_C_SDP-PkBudg1000-rem-5.mif",
+                    "2021-R21M42/REMIND_generic_C_SDP-PkBudg1100-rem-5.mif",
+                    "2021-R21M42/REMIND_generic_C_SSP1-NPi-rem-5.mif",
+                    "2021-R21M42/REMIND_generic_C_SSP1-PkBudg900-rem-5.mif",
+                    "2021-R21M42/REMIND_generic_C_SSP1-PkBudg1100-rem-5.mif",
+                    "2021-R21M42/REMIND_generic_C_SSP1-PkBudg1300-rem-5.mif",
+                    "2021-R21M42/REMIND_generic_C_SSP2-NPi-rem-5.mif",
+                    "2021-R21M42/REMIND_generic_C_SSP2-PkBudg900-rem-5.mif",
+                    "2021-R21M42/REMIND_generic_C_SSP2-PkBudg1100-rem-5.mif",
+                    "2021-R21M42/REMIND_generic_C_SSP2-PkBudg1300-rem-5.mif",
+                    "2021-R21M42/REMIND_generic_C_SSP5-NPi-rem-5.mif",
+                    "2021-R21M42/REMIND_generic_C_SSP5-PkBudg900-rem-5.mif",
+                    "2021-R21M42/REMIND_generic_C_SSP5-PkBudg1100-rem-5.mif",
+                    "2021-R21M42/REMIND_generic_C_SSP5-PkBudg1300-rem-5.mif")
 
-      out <- mbind(out, .readAndRename(fileList = file_list, pattern = "C_(SDP|SSP)", replacement = "R21M42-\\1"))
+      out <- mbind(out, .readAndRename(fileList = fileList, pattern = "C_(SDP|SSP)", replacement = "R21M42-\\1"))
     }
 
     if (revision >= 4.96) {
       # Please refer to the 2023-R32M46/readme.txt for the source of the data
-      file_list <- c("2023-R32M46/REMIND_generic_C_SDP_MC-NDC-rem-5.mif",
-                     "2023-R32M46/REMIND_generic_C_SDP_MC-NPi-rem-5.mif",
-                     "2023-R32M46/REMIND_generic_C_SDP_MC-PkBudg650-rem-5.mif",
-                     "2023-R32M46/REMIND_generic_C_SSP1-NDC-rem-5.mif",
-                     "2023-R32M46/REMIND_generic_C_SSP1-NPi-rem-5.mif",
-                     "2023-R32M46/REMIND_generic_C_SSP1-PkBudg1050-rem-5.mif",
-                     "2023-R32M46/REMIND_generic_C_SSP1-PkBudg650-rem-5.mif",
-                     "2023-R32M46/REMIND_generic_C_SSP2EU-NDC-rem-5.mif",
-                     "2023-R32M46/REMIND_generic_C_SSP2EU-NPi-rem-5.mif",
-                     "2023-R32M46/REMIND_generic_C_SSP2EU-PkBudg1050-rem-5.mif",
-                     "2023-R32M46/REMIND_generic_C_SSP2EU-PkBudg650-rem-5.mif",
-                     "2023-R32M46/REMIND_generic_C_SSP5-NDC-rem-5.mif",
-                     "2023-R32M46/REMIND_generic_C_SSP5-NPi-rem-5.mif",
-                     "2023-R32M46/REMIND_generic_C_SSP5-PkBudg1050-rem-5.mif",
-                     "2023-R32M46/REMIND_generic_C_SSP5-PkBudg650-rem-5.mif")
+      fileList <- c("2023-R32M46/REMIND_generic_C_SDP_MC-NDC-rem-5.mif",
+                    "2023-R32M46/REMIND_generic_C_SDP_MC-NPi-rem-5.mif",
+                    "2023-R32M46/REMIND_generic_C_SDP_MC-PkBudg650-rem-5.mif",
+                    "2023-R32M46/REMIND_generic_C_SSP1-NDC-rem-5.mif",
+                    "2023-R32M46/REMIND_generic_C_SSP1-NPi-rem-5.mif",
+                    "2023-R32M46/REMIND_generic_C_SSP1-PkBudg1050-rem-5.mif",
+                    "2023-R32M46/REMIND_generic_C_SSP1-PkBudg650-rem-5.mif",
+                    "2023-R32M46/REMIND_generic_C_SSP2EU-NDC-rem-5.mif",
+                    "2023-R32M46/REMIND_generic_C_SSP2EU-NPi-rem-5.mif",
+                    "2023-R32M46/REMIND_generic_C_SSP2EU-PkBudg1050-rem-5.mif",
+                    "2023-R32M46/REMIND_generic_C_SSP2EU-PkBudg650-rem-5.mif",
+                    "2023-R32M46/REMIND_generic_C_SSP5-NDC-rem-5.mif",
+                    "2023-R32M46/REMIND_generic_C_SSP5-NPi-rem-5.mif",
+                    "2023-R32M46/REMIND_generic_C_SSP5-PkBudg1050-rem-5.mif",
+                    "2023-R32M46/REMIND_generic_C_SSP5-PkBudg650-rem-5.mif")
 
-      out <- mbind(out, .readAndRename(fileList = file_list, pattern = "C_(SDP_MC|SSP)", replacement = "R32M46-\\1"))
+      out <- mbind(out, .readAndRename(fileList = fileList, pattern = "C_(SDP_MC|SSP)", replacement = "R32M46-\\1"))
     }
   }
 
   # shorten names of the REMIND scenarios
-  getNames(out) <- gsub("-rem-5","",getNames(out))
+  getNames(out) <- gsub("-rem-5", "", getNames(out))
 
   return(out)
 
