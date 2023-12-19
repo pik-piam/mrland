@@ -23,37 +23,27 @@ calcEATLancetTargets <- function(attributes = "kcal/d") {
   eatTargets <- readSource(type = "EATLancet", subtype = "recommend")
   eatTargets[which(is.na(eatTargets))] <- 0
 
-  #### Mapping to MAgPIE
   # mapping of EAT Lancet food categories to MAgPIE food commodities
   eatFood    <- c("legumes", "fish",
                   "poultry", "eggs", "milk",
-                  "sugar", "oil_palm", "oil_veg")
+                  "sugar", "oil_palm", "oil_veg",
+                  "nuts_seeds", "vegetables", "fruits",
+                  "fruits_starch",   "roots",   "fg_redmeat")
   eatTFood15 <- c("t_legumes", "t_fish",
                   "t_livst_chick", "t_livst_egg", "t_livst_milk",
-                  "t_sugar", "t_oils", "t_oils")
+                  "t_sugar", "t_oils", "t_oils",
+                  "t_nutseeds", "t_fruitveg", "t_fruitveg",
+                  "t_fruitstarch", "t_roots", "t_redmeat")
 
   relMatrixFood <- cbind(eatFood, eatTFood15)
 
-  eatTargetsFood <- toolAggregate(eatTargets, rel = relMatrixFood,
-                                  dim = 3.1, partrel = TRUE,
-                                  from = "eatFood", to = "eatTFood15")
-
-  # mapping of EAT Lancet food groups to MAgPIE diet target groups
-  eatGroup    <- c("nuts_seeds", "vegetables", "fruits", "fruits_starch",   "roots",   "fg_redmeat")
-  eatTGroup15 <- c("t_nutseeds", "t_fruitveg", "t_fruitveg", "t_fruitstarch", "t_roots", "t_redmeat")
-
-  relMatrixGroup <- cbind(eatGroup, eatTGroup15)
-
-  eatTargetsGroup <- toolAggregate(eatTargets, rel = relMatrixGroup,
-                                   dim = 3.1, partrel = TRUE,
-                                   from = "eatGroup", to = "eatTGroup15")
-
-  eat <- mbind(eatTargetsFood, eatTargetsGroup)
+  eat <- toolAggregate(eatTargets, rel = relMatrixFood,
+                       dim = 3.1, partrel = TRUE,
+                       from = "eatFood", to = "eatTFood15")
 
 
   #### Selection of relevant attributes
   out <- collapseNames(eat[, , attributes])
-
 
   #### Define weights and units
   weight <- collapseNames(calcOutput("Population", aggregate = FALSE)[, "y2010", "pop_SSP2"])
