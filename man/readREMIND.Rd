@@ -17,7 +17,7 @@ Reads in a reporting mif file from REMIND
 }
 \examples{
 
-\dontrun{ 
+\dontrun{
 readSource("REMIND",aggregate=FALSE)
 }
 }
