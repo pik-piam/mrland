@@ -85,18 +85,21 @@ calcEATFruitvegRatio <- function(populationweight = "PopulationPast") {
   kcalBananas <- dimSums(cbsFAO[, , bananas], dim = 3)
 
   ratioFruit2Cassava <- kcalBananas / kcalCassava
-  ratioFruit2Cassava <- toolFillWithRegionAvg(ratioFruit2Cassava, weight = weight, verbose = FALSE)
   # Correct NA's in the past by extending values from years that have values
   if (any(is.na(ratioFruit2Cassava))) {
     noCassavaRegions <- where(is.na(ratioFruit2Cassava))$true$regions
     for (i in noCassavaRegions) {
       yrsNoNA <- where(!is.na(ratioFruit2Cassava[i, , ]))$true$years
-      tmp <- new.magpie(cells_and_regions = i,
-                        years = yrsNoNA)
-      tmp[, , ] <- ratioFruit2Cassava[i, , ][!is.na(ratioFruit2Cassava[i, , ])]
-      ratioFruit2Cassava[i, , ] <- toolHoldConstant(tmp, pastYrs)
+      if (!identical(yrsNoNA, character(0))) {
+        tmp <- new.magpie(cells_and_regions = i,
+                          years = yrsNoNA)
+        tmp[, , ] <- ratioFruit2Cassava[i, , ][!is.na(ratioFruit2Cassava[i, , ])]
+        ratioFruit2Cassava[i, , ] <- toolHoldConstant(tmp, pastYrs)
+      }
     }
   }
+  # Fill missing countries with regional average
+  ratioFruit2Cassava <- toolFillWithRegionAvg(ratioFruit2Cassava, weight = weight, verbose = FALSE)
   ratioFruit2Cassava <- add_dimension(ratioFruit2Cassava, add = "EAT_special", nm = "cassav_sp")
 
   out <- mbind(ratioFruitveg2Others, ratioFruit2Cassava)
