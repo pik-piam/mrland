@@ -2,7 +2,7 @@
 % Please edit documentation in R/convertEATLancet.R
 \name{convertEATLancet}
 \alias{convertEATLancet}
-\title{Convert data from the EAT Lancet Comission}
+\title{convertEATLancet}
 \usage{
 convertEATLancet(x, subtype)
 }
@@ -11,7 +11,7 @@ convertEATLancet(x, subtype)
 resolution}
 
 \item{subtype}{Type of EAT Lancet data that should be read. Available types are:
-\itemize{ 
+\itemize{
 \item \code{cons_data}: Consumption analysis ("EAT_Lancet_cons_data.csv")
 \item \code{recommend}: Food recommendations ("EAT_Lancet_recommendations.csv")
 }}
@@ -20,17 +20,16 @@ resolution}
 EAT Lancet data as MAgPIE object at ISO country level
 }
 \description{
-Convert data from the EAT Lancet Comission to ISO country level.
+Convert data from the EAT Lancet Commission to be used in MAgPIE
 }
 \examples{
-
 \dontrun{
-a <- readSource(type="EATLancet",subtype="cons_data")
+a <- readSource(type = "EATLancet", subtype = "cons_data")
 }
 }
 \seealso{
 \code{\link{readSource}}
 }
 \author{
-Isabelle Weindl
+Isabelle Weindl, Felicitas Beier
 }

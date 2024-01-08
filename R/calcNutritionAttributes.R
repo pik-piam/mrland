@@ -26,10 +26,10 @@ calcNutritionAttributes <- function() {
   fooduseFlour <- dimSums(massbalance[, , c("food", "flour1")][, , c("ge", "nr")], dim = c(1, 3.2), na.rm = TRUE)
 
   if (any(household > fooduseFlour)) {
-    message(paste("The following items violate massbalance constraints:",
-            paste(unique(dimnames(household)[[3]][which(household > fooduseFlour, arr.ind = TRUE)[, 3]]),
-                  collapse = " "),
-            ". Violating items are corrected through household balance flow."))
+    message(paste("The following items violate massbalance constraints: ",
+                  paste(unique(dimnames(household)[[3]][which(household > fooduseFlour, arr.ind = TRUE)[, 3]]),
+                        collapse = " "),
+                  ". Violating items are corrected through household balance flow."))
     household[household > fooduseFlour] <- fooduseFlour[household > fooduseFlour]
   }
 
