@@ -27,12 +27,14 @@ calcEATLancetTargets <- function(attributes = "kcal/d") {
   eatFood    <- c("legumes", "fish",
                   "poultry", "eggs", "milk",
                   "sugar", "oil_palm", "oil_veg",
-                  "nuts_seeds", "vegetables", "fruits",
+                  "nuts_seeds", "peanuts",
+                  "vegetables", "fruits",
                   "fruits_starch",   "roots",   "fg_redmeat")
   eatTFood15 <- c("t_legumes", "t_fish",
                   "t_livst_chick", "t_livst_egg", "t_livst_milk",
                   "t_sugar", "t_oils", "t_oils",
-                  "t_nutseeds", "t_fruitveg", "t_fruitveg",
+                  "t_nutseeds", "t_peanuts",
+                  "t_fruitveg", "t_fruitveg",
                   "t_fruitstarch", "t_roots", "t_redmeat")
 
   relMatrixFood <- cbind(eatFood, eatTFood15)
