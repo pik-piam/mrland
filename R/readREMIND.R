@@ -19,7 +19,7 @@ readREMIND <- function(subtype) {
     x <- NULL
     for (f in fileList) {
       # select REMIND only since newer coupled REMIND reportings also contain MAgPIE
-      x <- mbind(x, read.report(f, as.list = FALSE)[, , "REMIND"])
+      x <- mbind(x, read.report(f, as.list = FALSE, showSeparatorWarning = FALSE)[, , "REMIND"])
     }
     # remove model and variable name
     x <- collapseNames(x)
