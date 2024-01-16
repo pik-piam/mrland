@@ -8,6 +8,15 @@
 \description{
 The package provides land related data via the madrat framework.
 }
+\seealso{
+Useful links:
+\itemize{
+  \item \url{https://github.com/pik-piam/mrland}
+  \item \doi{10.5281/zenodo.3822083}
+  \item Report bugs at \url{https://github.com/pik-piam/mrland/issues}
+}
+
+}
 \author{
 Maintainer: Jan Philipp Dietrich <dietrich@pik-potsdam.de>
 }
