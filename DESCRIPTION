@@ -29,7 +29,7 @@ BugReports: https://github.com/pik-piam/mrland/issues
 Depends:
     R (>= 2.10.0),
     madrat (>= 1.30),
-    magclass (>= 3.17),
+    magclass (>= 6.13.1),
     mrdrivers (>= 1.0.0),
     mrcommons (>= 1.37.0),
     mrfactors
