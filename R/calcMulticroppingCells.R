@@ -30,25 +30,34 @@
 #'
 
 calcMulticroppingCells <- function(selectyears, lpjml, climatetype, scenario, sectoral = "kcr") {
-
   # extract sub-scenario
   subscenario <- strsplit(scenario, split = ":")[[1]][2]
   scenario    <- strsplit(scenario, split = ":")[[1]][1]
 
   if (grepl(pattern = "potential", x = scenario)) {
-
     # Cells that can potentially be multi-cropped (irrigation- and crop-specific)
     mcCells <- calcOutput("MulticroppingSuitability", selectyears = selectyears,
                           lpjml = lpjml, climatetype = climatetype,
                           suitability = subscenario, sectoral = sectoral,
                           aggregate = FALSE)
 
-  } else if (grepl(pattern = "actual", x = scenario)) {
+    # To Do: Include check whether irrigation water requirements in second season are < 0
+    # and remove them from multiple cropping under irrigated conditions.
+    # Maybe shift to multiple cropping under rainfed conditions. If suitable!
+    # Note: then shift calcMulticroppingCells to mrwater...
 
+    # Also: If not suitable, but "actual", needs correction. WHY IS THIS STILL POSSIBLE?
+
+  } else if (grepl(pattern = "actual", x = scenario)) {
     # Cropping Intensity Factor (between 1 and 2)
     currMC <- calcOutput("MulticroppingIntensity", scenario = subscenario,
                          sectoral = sectoral,
                          selectyears = selectyears, aggregate = FALSE)
+
+    # To Do: Include check whether irrigation water requirements in second season are < 0
+    # and remove them from multiple cropping under irrigated conditions.
+    # Maybe shift to multiple cropping under rainfed conditions. If suitable!
+    # Note: then shift calcMulticroppingCells to mrwater...
 
     mcCells         <- currMC
     mcCells[, , ]   <- 0

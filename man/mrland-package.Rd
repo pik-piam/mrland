@@ -3,6 +3,7 @@
 \docType{package}
 \name{mrland-package}
 \alias{mrland-package}
+\alias{_PACKAGE}
 \alias{mrland}
 \title{MadRaT land data package}
 \description{

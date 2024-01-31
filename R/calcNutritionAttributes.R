@@ -1,6 +1,6 @@
 #' @title calcNutritionAttributes
 #'
-#' @description Calculates nutrition attributes of food products, i.e. calory and protein
+#' @description Calculates nutrition attributes of food products, i.e. calorie and protein
 #'              supply of a product dedicated to food use.
 #'
 #' @return magpie object

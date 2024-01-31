@@ -10,7 +10,7 @@ calcNutritionAttributes()
 magpie object
 }
 \description{
-Calculates nutrition attributes of food products, i.e. calory and protein
+Calculates nutrition attributes of food products, i.e. calorie and protein
              supply of a product dedicated to food use.
 }
 \examples{
