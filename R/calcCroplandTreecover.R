@@ -32,7 +32,7 @@ calcCroplandTreecover <- function(maginput = TRUE, cells = "magpiecell") {
 
     # cropland treecover area is corrected to make sure that it is not
     # larger than cropland area reported by LUH
-    treecover <- pmax(treecover, luh[, , "crop"])
+    out <- pmax(treecover, luh[, , "crop"])
   } else {
     out <- treecover
   }

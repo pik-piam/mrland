@@ -33,7 +33,7 @@ calcSNVTargetCropland <- function(maginput = TRUE, cells = "magpiecell") {
 
     # SNV target cropland area is corrected to make sure that it is not
     # larger than cropland area reported by LUH
-    targetCropland <- pmax(targetCropland, luh[, , "crop"])
+    out <- pmax(targetCropland, luh[, , "crop"])
   } else {
     out <- targetCropland
   }
