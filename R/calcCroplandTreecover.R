@@ -13,7 +13,7 @@
 #'
 #' @examples
 #' \dontrun{
-#' calcOutput("calcCroplandTreecover", aggregate = FALSE)
+#' calcOutput("CroplandTreecover", aggregate = FALSE)
 #' }
 #'
 #' @importFrom mrcommons toolCoord2Isocell
@@ -32,7 +32,7 @@ calcCroplandTreecover <- function(maginput = TRUE, cells = "magpiecell") {
 
     # cropland treecover area is corrected to make sure that it is not
     # larger than cropland area reported by LUH
-    out <- pmax(treecover, luh[, , "crop"])
+    out <- pmin(treecover, luh[, , "crop"])
   } else {
     out <- treecover
   }

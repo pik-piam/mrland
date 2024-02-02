@@ -14,7 +14,7 @@
 #'
 #' @examples
 #' \dontrun{
-#' calcOutput("calcSNVTargetCropland", aggregate = FALSE)
+#' calcOutput("SNVTargetCropland", aggregate = FALSE)
 #' }
 #'
 #' @importFrom mrcommons toolCoord2Isocell
@@ -33,7 +33,7 @@ calcSNVTargetCropland <- function(maginput = TRUE, cells = "magpiecell") {
 
     # SNV target cropland area is corrected to make sure that it is not
     # larger than cropland area reported by LUH
-    out <- pmax(targetCropland, luh[, , "crop"])
+    out <- pmin(targetCropland, luh[, , "crop"])
   } else {
     out <- targetCropland
   }

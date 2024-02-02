@@ -20,7 +20,7 @@ Returns area on cropland covered by trees (Mha).
 }
 \examples{
 \dontrun{
-calcOutput("calcCroplandTreecover", aggregate = FALSE)
+calcOutput("CroplandTreecover", aggregate = FALSE)
 }
 
 }

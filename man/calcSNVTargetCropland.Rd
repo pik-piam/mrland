@@ -21,7 +21,7 @@ semi-natural vegetation in farmed landscapes.
 }
 \examples{
 \dontrun{
-calcOutput("calcSNVTargetCropland", aggregate = FALSE)
+calcOutput("SNVTargetCropland", aggregate = FALSE)
 }
 
 }
