@@ -1,7 +1,7 @@
 #' @title calcSNVTargetCropland
 #'
-#' @description Returns cropland area (Mha) that requires relocation in response of increasing
-#' semi-natural vegetation in farmed landscapes.
+#' @description Returns cropland area (Mha) that requires relocation in response of
+#' maintaining 20% or 50% semi-natural vegetation in farmed landscapes.
 
 #' @param maginput Whether data should be corrected to align with cropland
 #' initialised in MAgPIE.
@@ -33,7 +33,10 @@ calcSNVTargetCropland <- function(maginput = TRUE, cells = "magpiecell") {
 
     # SNV target cropland area is corrected to make sure that it is not
     # larger than cropland area reported by LUH
-    out <- pmin(targetCropland, luh[, , "crop"])
+    for (i in seq(ndata(targetCropland))) {
+      targetCropland[, , i] <- pmin(targetCropland[, , i], luh[, , "crop"])
+    }
+    out <- targetCropland
   } else {
     out <- targetCropland
   }
@@ -50,7 +53,8 @@ calcSNVTargetCropland <- function(maginput = TRUE, cells = "magpiecell") {
     unit = "Mha",
     description = paste(
       "Cropland area (Mha) that requires relocation in",
-      "response of increasing semi-natural vegetation in farmed landscapes"
+      "response of a share of 20% and 50% semi-natural vegetation",
+      "in farmed landscapes"
     ),
     isocountries = FALSE
   ))

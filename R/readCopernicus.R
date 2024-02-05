@@ -28,33 +28,38 @@ readCopernicus <- function(subtype = "CroplandTreecover") {
   terraOptions(tempdir = local_tempdir(tmpdir = getConfig("tmpfolder")), todisk = TRUE, memfrac = 0.5)
   defer(terraOptions(tempdir = tempdir()))
 
+  # get spatial mapping
+  map <- toolGetMappingCoord2Country(pretty = TRUE)
+
   # read data
   if (subtype == "CroplandTreecover") {
-    r <- rast(paste0(
-      "./land_cover/copernicus_lc100_2019_crop_treecover_area_0.5.tif"
-    ))
-    name <- "CropTreecoverArea"
+    r <- rast("./land_cover/copernicus_lc100_2019_crop_treecover_area_0.5.tif")
+    nm <- "CropTreecoverArea"
+
+    # transform raster to magpie object
+    out <- as.magpie(extract(r, map[c("lon", "lat")], ID = FALSE), spatial = 1)
   } else if (subtype == "SNVTargetCropland") {
-    r <- rast(paste0(
-      "./land_cover/copernicus_lc100_2019_SNV50_target_crop_area_0.5.tif"
-    ))
-    name <- "SNVTargetCropland"
+    r <- c(
+      rast("./land_cover/copernicus_lc100_2019_SNV20_target_crop_area_0.5.tif"),
+      rast("./land_cover/copernicus_lc100_2019_SNV50_target_crop_area_0.5.tif")
+    )
+    nm <- c("SNV20TargetCropland", "SNV50TargetCropland")
+    names(r) <- nm
+
+    # transform raster to magpie object
+    out <- mbind(
+      as.magpie(extract(r[["SNV20TargetCropland"]], map[c("lon", "lat")], ID = FALSE), spatial = 1),
+      as.magpie(extract(r[["SNV50TargetCropland"]], map[c("lon", "lat")], ID = FALSE), spatial = 1)
+    )
   } else {
     stop("Please select an existing subtype")
   }
-
-  # get spatial mapping
-  map <- toolGetMappingCoord2Country(pretty = TRUE)
-  # transform raster to magpie object
-  out <- mbind(
-    as.magpie(extract(r, map[c("lon", "lat")], ID = FALSE), spatial = 1)
-  )
 
   # set dimension names
   dimnames(out) <- list(
     "x.y.iso" = paste(map$coords, map$iso, sep = "."),
     "t" = NULL,
-    "data" = name
+    "data" = nm
   )
 
   return(out)

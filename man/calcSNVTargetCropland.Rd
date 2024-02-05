@@ -16,8 +16,8 @@ initialised in MAgPIE.}
 List with a magpie object
 }
 \description{
-Returns cropland area (Mha) that requires relocation in response of increasing
-semi-natural vegetation in farmed landscapes.
+Returns cropland area (Mha) that requires relocation in response of
+maintaining 20% or 50% semi-natural vegetation in farmed landscapes.
 }
 \examples{
 \dontrun{
