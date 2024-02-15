@@ -4,20 +4,20 @@
 \alias{fullMAGPIE}
 \title{fullMAgPIE}
 \usage{
-fullMAGPIE(rev = 0.1, dev = "")
+fullMAGPIE(rev = numeric_version("0.1"), dev = "")
 }
 \arguments{
-\item{rev}{data revision which should be used as input (positive numeric).}
+\item{rev}{data revision which should be used as input (numeric_version).}
 
 \item{dev}{For developing purposes, apply changes as per dev flag}
 }
 \description{
-Function that produces the complete regional data set required for running the
-MAgPIE model.
+Function that produces the regional data set for running the MAgPIE model.
 }
 \examples{
 \dontrun{
-fullMAgPIE(revision = 12, mainfolder = "pathtowhereallfilesarestored")
+retrieveData("MAGPIE", rev = numeric_version("12"),
+             mainfolder = "pathtowhereallfilesarestored")
 }
 
 }
