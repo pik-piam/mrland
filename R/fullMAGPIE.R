@@ -1,22 +1,24 @@
 #' fullMAgPIE
 #'
-#' Function that produces the complete regional data set required for running the
-#' MAgPIE model.
+#' Function that produces the regional data set for running the MAgPIE model.
 #'
-#' @param rev data revision which should be used as input (positive numeric).
+#' @param rev data revision which should be used as input (numeric_version).
 #' @param dev For developing purposes, apply changes as per dev flag
 #' @author Jan Philipp Dietrich, Benjamin Leon Bodirsky, Florian Humpenoeder, Edna J. Molina Bacca
 #' @seealso
 #' \code{\link{readSource}}, \code{\link{getCalculations}}, \code{\link{calcOutput}}
 #' @examples
 #' \dontrun{
-#' fullMAgPIE(revision = 12, mainfolder = "pathtowhereallfilesarestored")
+#' retrieveData("MAGPIE", rev = numeric_version("12"),
+#'              mainfolder = "pathtowhereallfilesarestored")
 #' }
 #'
-fullMAGPIE <- function(rev = 0.1, dev = "") {
+fullMAGPIE <- function(rev = numeric_version("0.1"), dev = "") {
 
-  if (rev < 4.66) stop("mrland(>= 0.15.0) does not support revision below 4.63 anymore.
-                       Please use a older snapshot/version of the library, if you need older revisions.")
+  if (rev < numeric_version("4.66")) {
+    stop("This version of mrland does not support revision below 4.66 anymore. ",
+         "Please use a older snapshot/version of the library, if you need older revisions.")
+  }
 
   magYears <- findset("time")
   magYearsPast <- findset("past")
@@ -28,7 +30,7 @@ fullMAGPIE <- function(rev = 0.1, dev = "") {
   map <- toolGetMapping(getConfig("regionmapping"), type = "regional", where = "mappingfolder")
   superregion <- ifelse("superregion" %in% colnames(map), "superregion", "region")
 
-  cellsregions <- function(reg_revision = 0, map) { # nolint
+  cellsregions <- function(reg_revision, map) { # nolint
     # function which calculates the name vector for spatial 0.5 degree MAgPIE data sets
     # containing MAgPIE cell number and corresponding region
     regionscode    <- regionscode(map)
@@ -274,15 +276,10 @@ fullMAGPIE <- function(rev = 0.1, dev = "") {
   calcOutput("EF3confinement", selection = "recycling", round = 4, file = "f55_awms_recycling_share.cs4")
 
   # 56_ghg_policy
-  if (rev < 4) {
-    calcOutput("GHGPrices", emissions = "pollutants", years = shortYears, round = 2,
-               file = "f56_pollutant_prices.cs3")
-  } else {
-    calcOutput("GHGPrices", datasource = "SSP_and_REM", years = shortYears, round = 2,
-               file = "f56_pollutant_prices.cs3", rev = rev)
-    calcOutput("GHGPrices", datasource = "S4N_project", round = 2,
-               file = "f56_pollutant_prices_sim4nexus.cs3", rev = rev)
-  }
+  calcOutput("GHGPrices", datasource = "SSP_and_REM", years = shortYears, round = 2,
+             file = "f56_pollutant_prices.cs3", rev = rev)
+  calcOutput("GHGPrices", datasource = "S4N_project", round = 2,
+             file = "f56_pollutant_prices_sim4nexus.cs3", rev = rev)
 
   # 57 maccs
   shortYearsFrom2010 <- shortYears[as.integer(sub("y", "", shortYears)) >= 2010]
