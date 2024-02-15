@@ -1,122 +1,127 @@
 #' @title calc2ndBioDem
 #' @description calculates 2nd generation bioenergy demand
 #' @return magpie object with results on country level, weight on country level, unit and description.
-#' 
+#'
 #' @param datasource source to be used
-#' @param rev data revision the output will be produced for (positive numeric)
-#' 
-#' @examples   
-#' 
-#' \dontrun{ 
+#' @param rev data revision the output will be produced for (numeric_version)
+#'
+#' @examples
+#' \dontrun{
 #' calcOutput("2ndBioDem")
 #' }
 #' @import magclass
 #' @importFrom madrat readSource calcOutput
 #' @importFrom magclass collapseNames time_interpolate mbind lowpass
 
-calc2ndBioDem <- function(datasource, rev = 0.1) {
-  
+calc2ndBioDem <- function(datasource, rev = numeric_version("0.1")) {
+
   if (datasource == "REMIND") {
-    x <- readSource("REMIND", subtype = paste0("extensive_",rev))
-    x <- x[,,"Primary Energy Production|Biomass|Energy Crops (EJ/yr)"]*10^3
+    x <- readSource("REMIND", subtype = paste0("extensive_", rev))
+    x <- x[, , "Primary Energy Production|Biomass|Energy Crops (EJ/yr)"] * 10^3
     x <- collapseNames(x)
-    first_remind_year <- sort(getYears(x))[1]
-    x <- time_interpolate(x,seq(1995,2150,5),extrapolation_type = "constant")
-    
+    firstRemindYear <- sort(getYears(x))[1]
+    x <- time_interpolate(x, seq(1995, 2150, 5), extrapolation_type = "constant")
+
     # set values in initial years that are not existing in REMIND data to zero
-    x[,getYears(x)<first_remind_year,]<-0
-    
+    x[, getYears(x) < firstRemindYear, ] <- 0
+
     description <- "2nd generation bioenergy demand for different scenarios taken from R2M41 coupled runs"
-    
+
   } else if (datasource == "Strefler2021") {
-    x <- readSource("Strefler2021", subtype = paste0("extensive_",rev))
-    x <- x[,,"Primary Energy Production|Biomass|Energy Crops (EJ/yr)"]*10^3
+    x <- readSource("Strefler2021", subtype = paste0("extensive_", rev))
+    x <- x[, , "Primary Energy Production|Biomass|Energy Crops (EJ/yr)"] * 10^3
     x <- collapseNames(x)
-    first_remind_year <- sort(getYears(x))[1]
-    x <- time_interpolate(x,seq(1995,2150,5),extrapolation_type = "constant")
-    
+    firstRemindYear <- sort(getYears(x))[1]
+    x <- time_interpolate(x, seq(1995, 2150, 5), extrapolation_type = "constant")
+
     # set values in initial years that are not existing in REMIND data to zero
-    x[,getYears(x)<first_remind_year,]<-0
-    
-    description <- "2nd generation bioenergy demand for different scenarios taken from Strefler et al 2021 (DOI 10.1038/s41467-021-22211-2)"
-    
+    x[, getYears(x) < firstRemindYear, ] <- 0
+
+    description <- paste("2nd generation bioenergy demand for different scenarios taken",
+                         "from Strefler et al 2021 (DOI 10.1038/s41467-021-22211-2)")
+
   } else if (datasource == "REMMAG") {
-    x <- readSource("REMMAG","biodem")
-    #harmonize historic period
-    x[,c(1995,2000,2005,2010),] <- collapseNames(x[,c(1995,2000,2005,2010),"SSP2-Ref-SPA0"])
+    x <- readSource("REMMAG", "biodem")
+    # harmonize historic period
+    x[, c(1995, 2000, 2005, 2010), ] <- collapseNames(x[, c(1995, 2000, 2005, 2010), "SSP2-Ref-SPA0"])
     description <- "2nd generation bioenergy demand for different scenarios taken from R17M3 coupled runs"
 
   } else if (datasource == "SSPResults") {
-    x<-readSource("SSPResults")
-    x<- collapseNames(x[,,"Primary Energy|Biomass|Energy Crops (EJ/yr)"])*10^3
+    x <- readSource("SSPResults")
+    x <- collapseNames(x[, , "Primary Energy|Biomass|Energy Crops (EJ/yr)"]) * 10^3
     description <- "2nd generation bioenergy demand for different scenarios taken from IIASA SSP database"
 
   } else if (datasource == "S4N_project") {
-    # Total bioenergy demand (including 1st genation, 2nd generation and residues) at country level from IMAGE for 2 different SSP2 scenarios starting in 2005 (in EJ per year)
-    image_be <- readSource("S4Nproject_input", subtype="bioenergy", convert="onlycorrect")
+    # Total bioenergy demand (including 1st genation, 2nd generation and residues)
+    # at country level from IMAGE for 2 different SSP2 scenarios starting in 2005 (in EJ per year)
+    imageBe <- readSource("S4Nproject_input", subtype = "bioenergy", convert = "onlycorrect")
 
     # Transform units: from EJ to PJ
-    image_be <- image_be*1e3
-    
+    imageBe <- imageBe * 1e3
+
     # 1st gen BE demand in MAgPIE in scenario selected for Sim4Nexus (in PJ/yr)
-    BE_1st <- calcOutput("1stBioDem", years=seq(2005, 2100,by=5), aggregate=FALSE)
-    BE_1st <- collapseNames(BE_1st[,,"const2030"])
-    BE_1st <- dimSums(BE_1st, dim=3)
+    be1st <- calcOutput("1stBioDem", years = seq(2005, 2100, by = 5), aggregate = FALSE)
+    be1st <- collapseNames(be1st[, , "const2030"])
+    be1st <- dimSums(be1st, dim = 3)
     # 2nd gen residues in MAgPIE in scenario selected for Sim4Nexus (in PJ/yr)
-    res    <- calcOutput("ResFor2ndBioengery", products="kres", product_aggr=TRUE, add_off=TRUE, years=seq(2005, 2100,by=5), aggregate=FALSE)
-    res    <- collapseNames(res[,,"ssp2"])
-    
+    res    <- calcOutput("ResFor2ndBioengery", products = "kres", product_aggr = TRUE,
+                         add_off = TRUE, years = seq(2005, 2100, by = 5), aggregate = FALSE)
+    res    <- collapseNames(res[, , "ssp2"])
+
     # 2nd generation bioenergy demand: Total BE (IMAGE) - 1st BE (MAgPIE) - residues (MAgPIE)
-    image_be <- image_be - BE_1st - res
-    
+    imageBe <- imageBe - be1st - res
+
     # Correct negative values
-    image_be[image_be<0] <- 0
-    
+    imageBe[imageBe < 0] <- 0
+
     # Fill missing years (1995, 2000) with 2nd generation bioenergy demand from REMMAG data
-    remmag_be  <- readSource("REMMAG", subtype="biodem")
-    remmag_be  <- collapseNames(remmag_be[,c("y1995","y2000"),"SSP2-26-SPA2"])
-    x <- new.magpie(getCells(image_be), paste0("y",seq(1995, 2100,by=5)), getNames(image_be))
-    
-    x[,getYears(remmag_be),"SSP2"]            <- remmag_be
-    x[,getYears(remmag_be),"SSP2_SPA2_26I_D"] <- remmag_be
-    x[,getYears(image_be),]                   <- image_be
-    
+    remmagBE  <- readSource("REMMAG", subtype = "biodem")
+    remmagBE  <- collapseNames(remmagBE[, c("y1995", "y2000"), "SSP2-26-SPA2"])
+    x <- new.magpie(getCells(imageBe), paste0("y", seq(1995, 2100, by = 5)), getNames(imageBe))
+
+    x[, getYears(remmagBE), "SSP2"]            <- remmagBE
+    x[, getYears(remmagBE), "SSP2_SPA2_26I_D"] <- remmagBE
+    x[, getYears(imageBe), ]                   <- imageBe
+
     # fill missing years in the future
-    x <- time_interpolate(x, seq(1995,2150,5), extrapolation_type="constant")
-    
+    x <- time_interpolate(x, seq(1995, 2150, 5), extrapolation_type = "constant")
+
     description <- "2nd generation bioenergy demand for different scenarios provided by IMAGE"
-    
+
   } else if (datasource == "SSP_and_REM") {
-    ssp <- calcOutput("2ndBioDem",datasource="SSPResults",aggregate = FALSE, rev = rev)
-    rem <- calcOutput("2ndBioDem",datasource="REMIND",aggregate = FALSE, rev = rev)
-    if (rev > 4.58) {
-      strefler <- calcOutput("2ndBioDem",datasource="Strefler2021",aggregate = FALSE, rev = rev)
-    } else strefler <- NULL
-    
-    ssp <- time_interpolate(ssp,getYears(rem),extrapolation_type = "constant")
-    x <- mbind(ssp,rem,strefler)
-    
-    #years
-    years <- getYears(x,as.integer = T)
-    yr_hist <- years[years > 1995 & years <= 2020]
-    yr_fut <- years[years >= 2020]
-    
-    #apply lowpass filter (not applied on 1st time step, applied separately on historic and future period)
+    ssp <- calcOutput("2ndBioDem", datasource = "SSPResults", aggregate = FALSE, rev = rev)
+    rem <- calcOutput("2ndBioDem", datasource = "REMIND", aggregate = FALSE, rev = rev)
+    if (rev > numeric_version("4.58")) {
+      strefler <- calcOutput("2ndBioDem", datasource = "Strefler2021", aggregate = FALSE, rev = rev)
+    } else {
+      strefler <- NULL
+    }
+
+    ssp <- time_interpolate(ssp, getYears(rem), extrapolation_type = "constant")
+    x <- mbind(ssp, rem, strefler)
+
+    # years
+    years <- getYears(x, as.integer = TRUE)
+    yrHist <- years[years > 1995 & years <= 2020]
+    yrFut <- years[years >= 2020]
+
+    # apply lowpass filter (not applied on 1st time step, applied separately on historic and future period)
     iter <- 3
-    x <- mbind(x[,1995,],lowpass(x[,yr_hist,],i=iter),lowpass(x[,yr_fut,],i=iter)[,-1,])
-    
+    x <- mbind(x[, 1995, ], lowpass(x[, yrHist, ], i = iter), lowpass(x[, yrFut, ], i = iter)[, -1, ])
+
     # sort scenarios alphabetically
-    x <- x[,,sort(getNames(x))]
-    
-    description <- "2nd generation bioenergy demand for different scenarios taken from R2M41 coupled runs and from IIASA SSP database"
-  
-  } else { 
-    stop("Unknown datasource",datasource)
+    x <- x[, , sort(getNames(x))]
+
+    description <- paste("2nd generation bioenergy demand for different scenarios",
+                         "taken from R2M41 coupled runs and from IIASA SSP database")
+
+  } else {
+    stop("Unknown datasource", datasource)
   }
-  
-  return(list(x=x, weight=NULL, 
-              description=description,
-              unit="PJ per year", 
-              note="bioenergy is demanded in the country which is expected to produce the bioenergy (demand after trade)"))
-  
+
+  return(list(x = x, weight = NULL,
+              description = description,
+              unit = "PJ per year",
+              note = paste("bioenergy is demanded in the country which is expected",
+                           "to produce the bioenergy (demand after trade)")))
 }

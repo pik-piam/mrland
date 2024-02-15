@@ -4,12 +4,12 @@
 \alias{calc2ndBioDem}
 \title{calc2ndBioDem}
 \usage{
-calc2ndBioDem(datasource, rev = 0.1)
+calc2ndBioDem(datasource, rev = numeric_version("0.1"))
 }
 \arguments{
 \item{datasource}{source to be used}
 
-\item{rev}{data revision the output will be produced for (positive numeric)}
+\item{rev}{data revision the output will be produced for (numeric_version)}
 }
 \value{
 magpie object with results on country level, weight on country level, unit and description.
@@ -18,9 +18,7 @@ magpie object with results on country level, weight on country level, unit and d
 calculates 2nd generation bioenergy demand
 }
 \examples{
-  
-
-\dontrun{ 
+\dontrun{
 calcOutput("2ndBioDem")
 }
 }
