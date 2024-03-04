@@ -43,6 +43,8 @@ calcCroplandTreecover <- function(maginput = TRUE, cells = "magpiecell") {
     stop("Please specify cells argument")
   }
 
+  out <- collapseDim(out, dim = 3)
+
   return(list(
     x = out,
     weight = NULL,
