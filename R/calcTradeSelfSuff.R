@@ -14,21 +14,20 @@
 calcTradeSelfSuff <- function() {
 
   massbalance <- calcOutput("FAOmassbalance", aggregate = FALSE)
-  # add missing products
-  newproducts <- c("betr", "begr", "scp")
-  massbalance[, , newproducts] <- 0
+  # add missing products - only scp at the moment
+  massbalance[, , "scp"] <- 0
   massbalance <- massbalance[, , findset("k_trade")]
 
   selfSuff <- massbalance[, , "production.dm"] / massbalance[, , "domestic_supply.dm"]
   selfSuff <- collapseNames(selfSuff)
   selfSuff[is.nan(selfSuff)] <- 0
   selfSuff[selfSuff == Inf] <- 1
-  selfSuff[, , newproducts] <- 1
+  selfSuff[, , "scp"] <- 1
 
   weight <- massbalance[, , "domestic_supply.dm"]
   weight <- collapseNames(weight)
   weight[is.nan(weight)] <- 0
-  weight[, , newproducts] <- 1
+  weight[, , "scp"] <- 1
 
   out <- toolHoldConstantBeyondEnd(selfSuff)
   weight <- toolHoldConstantBeyondEnd(weight)

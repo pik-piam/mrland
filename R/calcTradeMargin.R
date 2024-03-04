@@ -138,10 +138,6 @@ calcTradeMargin <- function(gtap_version = "GTAP9", bilateral = FALSE, producer_
   weight[, , "ethanol"] <- weight[, , "oils"]
   out[, , "scp"] <- out[, , "sugar"]
   weight[, , "scp"] <- weight[, , "sugar"]
-  out[, , "betr"] <- out[, , "wood"]
-  weight[, , "betr"] <- weight[, , "wood"]
-  out[, , "begr"] <- out[, , "sugr_cane"]
-  weight[, , "begr"] <- weight[, , "sugr_cane"]
   out[, , "distillers_grain"] <- out[, , "tece"]
   weight[, , "distillers_grain"] <- weight[, , "tece"]
 

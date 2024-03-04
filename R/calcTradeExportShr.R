@@ -21,7 +21,7 @@ calcTradeExportShr <- function() {
 
   netexp <- massbalance[, , "export"][, , "dm"] - massbalance[, , "import"][, , "dm"]
   netexp[netexp < 0] <- 0
-  netexp[, , c("betr", "begr", "scp")] <- 1
+  netexp[, , "scp"] <- 1
 
   expGlo <- dimSums(netexp, dim = 1)
   expShr <- netexp / expGlo
