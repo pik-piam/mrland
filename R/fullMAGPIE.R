@@ -326,10 +326,10 @@ fullMAGPIE <- function(rev = numeric_version("0.1"), dev = "") {
              file = "f70_hist_cap_share.csv")
   calcOutput("RegFactorShare", datasource = "USDA", factor = "cap", round = 4, aggregate = FALSE,
              file = "f70_cap_share_reg.csv")
-  calcOutput("Production", round = 4, products = "kli", aggregate = TRUE, years = 2005,
+  calcOutput("Production", round = 4, products = "kli", aggregate = TRUE, years = seq(1995, 2010, 5),
              file = "f70_hist_prod_livst.cs3")
-  calcOutput("FactorCostsLivst", round = 4, aggregate = TRUE, years = 2005,
-             file = "f70_hist_factor_costs_livst.csv")
+  calcOutput("FactorCostsLivst", round = 4, aggregate = TRUE, years = seq(1995, 2015, 5),
+             file = "f70_hist_factor_costs_livst.cs3")
 
   # 73 timber -- Always needed on iso country level so no need to aggregate
   calcOutput("EndUseTimber", aggregate = FALSE, round = 4, file = "f73_prod_specific_timber.csv")
