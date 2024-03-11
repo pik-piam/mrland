@@ -40,7 +40,7 @@ readREMIND <- function(subtype) {
   if (grepl("_", subtype)) {
 
     subtype  <- strsplit(subtype, split = "_")
-    revision <- as.numeric(unlist(subtype)[2])
+    revision <- numeric_version(unlist(subtype)[2])
 
     if (revision > 4.58) {
       # Please refer to the 2021-R21M42/readme.txt for the source of the data
