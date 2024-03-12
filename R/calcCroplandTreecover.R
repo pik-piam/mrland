@@ -50,7 +50,7 @@ calcCroplandTreecover <- function(maginput = TRUE, cells = "magpiecell") {
     weight = NULL,
     unit = "Mha",
     description = paste(
-      "Cropland area covered by trees"
+      "Cropland area covered by trees in 2015"
     ),
     isocountries = FALSE
   ))

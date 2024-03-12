@@ -33,7 +33,7 @@ readCopernicus <- function(subtype = "CroplandTreecover") {
 
   # read data
   if (subtype == "CroplandTreecover") {
-    r <- rast("./land_cover/copernicus_lc100_2019_crop_treecover_area_0.5.tif")
+    r <- rast("./land_cover/copernicus_lc100_2015_crop_treecover_area_0.5.tif")
     nm <- "CropTreecoverArea"
 
     # transform raster to magpie object
