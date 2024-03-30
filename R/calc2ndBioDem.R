@@ -16,8 +16,12 @@
 calc2ndBioDem <- function(datasource, rev = numeric_version("0.1")) {
 
   if (datasource == "REMIND") {
-    x <- readSource("REMIND", subtype = paste0("extensive_", rev))
-    x <- x[, , "Primary Energy Production|Biomass|Energy Crops (EJ/yr)"] * 10^3
+    x <- readSource("REMIND",
+                    subtype = paste0("extensive_",
+                                     rev,
+                                     "_",
+                                     "Primary Energy Production|Biomass|Energy Crops (EJ/yr)"))
+    x <- x * 10^3
     x <- collapseNames(x)
     firstRemindYear <- sort(getYears(x))[1]
     x <- time_interpolate(x, seq(1995, 2150, 5), extrapolation_type = "constant")

@@ -23,8 +23,12 @@
 calcGHGPrices <- function(emissions = "pollutants", datasource = "REMMAG", rev = numeric_version("0.1")) {
 
   if (datasource == "REMIND") {
-    x <- readSource("REMIND", subtype = paste0("intensive_", rev))
-    outC <- x[, , "Price|Carbon (US$2005/t CO2)"] * 44 / 12 # US$2005/tCO2 -> US$2005/tC
+    x <- readSource("REMIND",
+                    subtype = paste0("intensive_",
+                                     rev,
+                                     "_",
+                                     "Price|Carbon (US$2005/t CO2)"))
+    outC <- x * 44 / 12 # US$2005/tCO2 -> US$2005/tC
     getNames(outC, dim = 2) <- "co2_c"
 
     outN2oDirect <- x[, , "Price|N2O (US$2005/t N2O)"] * 44 / 28 # US$2005/tN2O -> US$2005/tN

@@ -1,7 +1,9 @@
 #' @title readREMIND
 #' @description Reads in a reporting mif file from REMIND
 #'
-#' @param subtype Either "intensive" or "extensive"
+#' @param subtype A string composed of three items: unit, revision and indicator.
+#' Unit can be either "intensive" or "extensive", revision is the input data
+#' revision, and indicator is the name of thre REMIND indicator
 #' @return MAgPIE object with regional aggregation of REMIND H12
 #' @author David Klein
 #' @seealso
@@ -15,11 +17,13 @@
 
 readREMIND <- function(subtype) {
 
-  .readAndRename <- function(fileList, pattern, replacement) {
+  .readAndRename <- function(fileList, pattern, replacement, indicator) {
     x <- NULL
     for (f in fileList) {
       # select REMIND only since newer coupled REMIND reportings also contain MAgPIE
-      x <- mbind(x, read.report(f, as.list = FALSE, showSeparatorWarning = FALSE)[, , "REMIND"])
+      x <- mbind(x, read.report(f,
+                                as.list = FALSE,
+                                showSeparatorWarning = FALSE)[, , "REMIND"][, , indicator])
     }
     # remove model and variable name
     x <- collapseNames(x)
@@ -28,19 +32,23 @@ readREMIND <- function(subtype) {
     return(x)
   }
 
-  # Please refer to the 2019-R2M41/readme.txt for the source of the data
-  fileList <- c("2019-R2M41/REMIND_generic_r8473-trunk-C_Budg600-rem-5.mif",
-                "2019-R2M41/REMIND_generic_r8473-trunk-C_Budg950-rem-5.mif",
-                "2019-R2M41/REMIND_generic_r8473-trunk-C_Budg1300-rem-5.mif",
-                "2019-R2M41/REMIND_generic_r8473-trunk-C_NDC-rem-5.mif",
-                "2019-R2M41/REMIND_generic_r8473-trunk-C_NPi-rem-5.mif")
-
-  out <- .readAndRename(fileList = fileList, pattern = "r8473-trunk-C_", replacement = "R2M41-SSP2-")
-
   if (grepl("_", subtype)) {
 
     subtype  <- strsplit(subtype, split = "_")
     revision <- numeric_version(unlist(subtype)[2])
+    indicator <- unlist(subtype)[3]
+
+    # Please refer to the 2019-R2M41/readme.txt for the source of the data
+    fileList <- c("2019-R2M41/REMIND_generic_r8473-trunk-C_Budg600-rem-5.mif",
+                  "2019-R2M41/REMIND_generic_r8473-trunk-C_Budg950-rem-5.mif",
+                  "2019-R2M41/REMIND_generic_r8473-trunk-C_Budg1300-rem-5.mif",
+                  "2019-R2M41/REMIND_generic_r8473-trunk-C_NDC-rem-5.mif",
+                  "2019-R2M41/REMIND_generic_r8473-trunk-C_NPi-rem-5.mif")
+
+    out <- .readAndRename(fileList = fileList,
+                          pattern = "r8473-trunk-C_",
+                          replacement = "R2M41-SSP2-",
+                          indicator = indicator)
 
     if (revision > 4.58) {
       # Please refer to the 2021-R21M42/readme.txt for the source of the data
@@ -68,7 +76,10 @@ readREMIND <- function(subtype) {
                       "2021-R21M42/REMIND_generic_C_SSP5-NDC-rem-5.mif")
       }
 
-      out <- mbind(out, .readAndRename(fileList = fileList, pattern = "C_(SDP|SSP)", replacement = "R21M42-\\1"))
+      out <- mbind(out, .readAndRename(fileList = fileList,
+                                       pattern = "C_(SDP|SSP)",
+                                       replacement = "R21M42-\\1",
+                                       indicator = indicator))
     }
 
     if (revision >= 4.96) {
@@ -89,7 +100,10 @@ readREMIND <- function(subtype) {
                     "2023-R32M46/REMIND_generic_C_SSP5-PkBudg1050-rem-5.mif",
                     "2023-R32M46/REMIND_generic_C_SSP5-PkBudg650-rem-5.mif")
 
-      out <- mbind(out, .readAndRename(fileList = fileList, pattern = "C_(SDP_MC|SSP)", replacement = "R32M46-\\1"))
+      out <- mbind(out, .readAndRename(fileList = fileList,
+                                       pattern = "C_(SDP_MC|SSP)",
+                                       replacement = "R32M46-\\1",
+                                       indicator = indicator))
     }
   }
 

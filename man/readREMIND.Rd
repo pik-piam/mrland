@@ -7,7 +7,9 @@
 readREMIND(subtype)
 }
 \arguments{
-\item{subtype}{Either "intensive" or "extensive"}
+\item{subtype}{A string composed of three items: unit, revision and indicator.
+Unit can be either "intensive" or "extensive", revision is the input data
+revision, and indicator is the name of thre REMIND indicator}
 }
 \value{
 MAgPIE object with regional aggregation of REMIND H12
