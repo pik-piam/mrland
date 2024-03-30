@@ -29,16 +29,31 @@ calcGHGPrices <- function(emissions = "pollutants", datasource = "REMMAG", rev =
                                      "_",
                                      "Price|Carbon (US$2005/t CO2)"))
     outC <- x * 44 / 12 # US$2005/tCO2 -> US$2005/tC
-    getNames(outC, dim = 2) <- "co2_c"
+    outC <- add_dimension(outC, dim = 3.1, nm = "co2_c")
 
-    outN2oDirect <- x[, , "Price|N2O (US$2005/t N2O)"] * 44 / 28 # US$2005/tN2O -> US$2005/tN
-    getNames(outN2oDirect, dim = 2) <- "n2o_n_direct"
+    x <- readSource("REMIND",
+                    subtype = paste0("intensive_",
+                                     rev,
+                                     "_",
+                                     "Price|N2O (US$2005/t N2O)"))
+    outN2oDirect <- x * 44 / 28 # US$2005/tN2O -> US$2005/tN
+    outN2oDirect <- add_dimension(outN2oDirect, dim = 3.1, nm = "n2o_n_direct")
 
-    outN2oIndirect <- x[, , "Price|N2O (US$2005/t N2O)"] * 44 / 28 # US$2005/tN2O -> US$2005/tN
-    getNames(outN2oIndirect, dim = 2) <- "n2o_n_indirect"
+    x <- readSource("REMIND",
+                    subtype = paste0("intensive_",
+                                     rev,
+                                     "_",
+                                     "Price|N2O (US$2005/t N2O)"))
+    outN2oIndirect <- x[, , ] * 44 / 28 # US$2005/tN2O -> US$2005/tN
+    outN2oIndirect <- add_dimension(outN2oIndirect, dim = 3.1, nm = "n2o_n_indirect")
 
-    outCh4 <- x[, , "Price|CH4 (US$2005/t CH4)"]
-    getNames(outCh4, dim = 2) <- "ch4"
+    x <- readSource("REMIND",
+                    subtype = paste0("intensive_",
+                                     rev,
+                                     "_",
+                                     "Price|CH4 (US$2005/t CH4)"))
+    outCh4 <- x[, , ]
+    outCh4 <- add_dimension(outCh4, dim = 3.1, nm = "ch4")
 
     x <- mbind(outN2oDirect, outN2oIndirect, outCh4, outC)
 
@@ -51,9 +66,6 @@ calcGHGPrices <- function(emissions = "pollutants", datasource = "REMMAG", rev =
     # prices to zero (replicating the coupling script)
     setToZero <- getNames(x)[grepl("NPi|NDC", getNames(x))]
     x[, , setToZero] <- 0
-
-    # swap dimensions (scenario and gas) such that in the output file gas is in lines and scenarios in columns
-    getNames(x) <- gsub("^([^\\.]*)\\.(.*$)", "\\2.\\1", getNames(x))
 
     description <- "GHG certificate prices for different scenarios based on data from REMIND-MAgPIE coupling"
 
