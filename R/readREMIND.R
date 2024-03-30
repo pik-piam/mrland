@@ -60,6 +60,13 @@ readREMIND <- function(subtype) {
                     "2021-R21M42/REMIND_generic_C_SSP5-PkBudg900-rem-5.mif",
                     "2021-R21M42/REMIND_generic_C_SSP5-PkBudg1100-rem-5.mif",
                     "2021-R21M42/REMIND_generic_C_SSP5-PkBudg1300-rem-5.mif")
+      if (revision > 4.103) {
+        fileList <- c(fileList,
+                      "2021-R21M42/REMIND_generic_C_SDP-NDC-rem-5.mif",
+                      "2021-R21M42/REMIND_generic_C_SSP1-NDC-rem-5.mif",
+                      "2021-R21M42/REMIND_generic_C_SSP2-NDC-rem-5.mif",
+                      "2021-R21M42/REMIND_generic_C_SSP5-NDC-rem-5.mif")
+      }
 
       out <- mbind(out, .readAndRename(fileList = fileList, pattern = "C_(SDP|SSP)", replacement = "R21M42-\\1"))
     }
