@@ -16,7 +16,7 @@
 #'
 #' @importFrom terra rast classify cellSize aggregate terraOptions
 #' @importFrom withr local_tempdir defer
-#' @importFrom mrcommons toolGetMappingCoord2Country
+#' @importFrom mstools toolGetMappingCoord2Country
 #'
 
 readKeyBiodiversityAreas <- function(subtype = "unprotected") {

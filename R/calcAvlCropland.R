@@ -44,7 +44,7 @@
 #' @importFrom madrat readSource calcOutput
 #' @importFrom magclass dimSums getCells getYears getNames mbind collapseDim as.magpie
 #' @importFrom magpiesets addLocation
-#' @importFrom mrcommons toolCoord2Isocell toolAggregateCell2Country
+#' @importFrom mstools toolCoord2Isocell toolAggregateCell2Country
 #'
 
 calcAvlCropland <- function(marginal_land = "magpie", cell_upper_bound = 0.9, country_level = FALSE, # nolint

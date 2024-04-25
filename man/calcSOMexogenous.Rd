@@ -13,8 +13,7 @@ List of magpie objects with results on country level, weight on country level, u
 Uses an exogenous trajectory of Soil organic matter loss nitrogen release
 }
 \examples{
-
-\dontrun{ 
+\dontrun{
 calcOutput("SOMexogenous")
 }
 }

@@ -65,7 +65,7 @@
 #' @importFrom magpiesets findset
 #' @importFrom magclass getYears getNames dimSums mbind
 #' @importFrom madrat calcOutput toolConditionalReplace
-#' @importFrom mrcommons toolCoord2Isocell
+#' @importFrom mstools toolCoord2Isocell
 #' @importFrom withr local_options
 
 calcYieldsCalibrated <- function(source = c(lpjml = "ggcmi_phase3_nchecks_9ca735cb", isimip = NULL),

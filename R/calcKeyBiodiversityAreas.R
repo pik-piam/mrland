@@ -25,7 +25,7 @@
 #' calcOutput("calcKeyBiodiversityAreas", aggregate = FALSE)
 #' }
 #'
-#' @importFrom mrcommons toolCoord2Isocell
+#' @importFrom mstools toolCoord2Isocell
 #'
 calcKeyBiodiversityAreas <- function(maginput = TRUE, unprotected = TRUE,
                                      nclasses = "seven", cells = "lpjcell") {

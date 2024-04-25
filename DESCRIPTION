@@ -1,8 +1,8 @@
 Type: Package
 Package: mrland
 Title: MadRaT land data package
-Version: 0.57.0
-Date: 2024-04-15
+Version: 0.58.0
+Date: 2024-04-25
 Authors@R: c(
     person("Jan Philipp", "Dietrich", , "dietrich@pik-potsdam.de", role = c("aut", "cre")),
     person("Abhijeet", "Mishra", role = "aut"),
@@ -30,9 +30,10 @@ Depends:
     R (>= 2.10.0),
     madrat (>= 1.30),
     magclass (>= 6.13.1),
-    mrdrivers (>= 1.0.0),
     mrcommons (>= 1.37.0),
-    mrfactors
+    mrfaocore,
+    mrfactors,
+    mrlandcore
 Imports:
     GDPuc,
     SPEI,
@@ -40,7 +41,7 @@ Imports:
     data.table,
     dplyr,
     magpiesets,
-    mstools,
+    mstools (>= 0.5.1),
     ncdf4,
     raster,
     readxl,

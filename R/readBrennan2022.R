@@ -24,7 +24,7 @@
 #'
 #' @importFrom terra rast classify cellSize aggregate terraOptions
 #' @importFrom withr local_tempdir defer
-#' @importFrom mrcommons toolGetMappingCoord2Country
+#' @importFrom mstools toolGetMappingCoord2Country
 #'
 
 readBrennan2022 <- function(subtype = "KBA_GSN_masked") {

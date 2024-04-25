@@ -17,7 +17,7 @@
 #' calcOutput("SNVTargetCropland", aggregate = FALSE)
 #' }
 #'
-#' @importFrom mrcommons toolCoord2Isocell
+#' @importFrom mstools toolCoord2Isocell
 #'
 calcSNVTargetCropland <- function(maginput = TRUE, cells = "magpiecell") {
   targetCropland <- readSource("Copernicus", subtype = "SNVTargetCropland", convert = "onlycorrect")

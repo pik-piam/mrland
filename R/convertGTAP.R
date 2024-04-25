@@ -12,6 +12,7 @@
 #' }
 #' @importFrom madrat toolAggregate
 #' @importFrom magclass as.magpie magpiesort
+#' @importFrom mstools toolCountryFillBilateral
 
 convertGTAP <- function(x, subtype) {
   x <- magpiesort(x)

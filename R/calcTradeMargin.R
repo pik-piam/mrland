@@ -18,6 +18,7 @@
 #' @importFrom magpiesets findset
 #' @importFrom magclass is.magpie
 #' @importFrom GDPuc convertGDP
+#' @importFrom mstools toolCountryFillBilateral
 
 calcTradeMargin <- function(gtap_version = "GTAP9", bilateral = FALSE, producer_price = "FAOini") { # nolint
   stopifnot(gtap_version %in% c("GTAP7", "GTAP8", "GTAP9"))

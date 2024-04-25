@@ -12,7 +12,7 @@
 #' readSource("ProtectedAreaBaseline", convert = "onlycorrect")
 #' }
 #' @importFrom terra aggregate cellSize classify extract rast segregate terraOptions tmpFiles
-#' @importFrom mrcommons toolGetMappingCoord2Country
+#' @importFrom mstools toolGetMappingCoord2Country
 #' @importFrom withr local_tempdir defer
 #'
 

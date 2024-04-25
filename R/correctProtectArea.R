@@ -12,6 +12,7 @@
 #' }
 #'
 #' @importFrom madrat toolConditionalReplace
+#' @importFrom mstools toolCell2isoCell
 
 correctProtectArea <- function(x) {
 
