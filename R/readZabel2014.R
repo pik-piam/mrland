@@ -28,7 +28,7 @@
 #' readSource("Zabel2014", subtype = "all_marginal:rainfed_and_irrigated", convert = "onlycorrect")
 #' }
 #'
-#' @importFrom terra rast classify extract aggregate terraOptions
+#' @importFrom terra rast classify extract aggregate terraOptions mask
 #' @importFrom withr local_tempdir defer
 #' @importFrom mrcommons toolGetMappingCoord2Country
 #'
@@ -125,7 +125,8 @@ readZabel2014 <- function(subtype = "all_marginal:rainfed_and_irrigated") {
 
   # aggregate and sum up area (Mha) of suitable pixels (1) per 0.5 degree grid cell
   # aggregation factor from 30 arc sec to 0.5 degree: 60
-  cropsuitZabelArea <- cellSize(cropsuitZabel, unit = "ha", mask = TRUE) * 1e-6
+  cropsuitZabelArea <- cellSize(cropsuitZabel, unit = "ha", mask = FALSE) * 1e-6
+  cropsuitZabelArea <- mask(cropsuitZabelArea, cropsuitZabel)
   cropsuitZabel05 <- aggregate(cropsuitZabelArea, fact = 60, fun = sum, na.rm = TRUE)
 
   ### Create magpie object
