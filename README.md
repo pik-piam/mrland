@@ -39,7 +39,7 @@ In case of questions / problems please contact Jan Philipp Dietrich <dietrich@pi
 
 To cite package **mrland** in publications use:
 
-Dietrich J, Mishra A, Weindl I, Bodirsky B, Wang X, Baumstark L, Kreidenweis U, Klein D, Steinmetz N, Chen D, Humpenoeder F, von Jeetze P, Wirth S, Beier F, Hoetten D (2024). _mrland: MadRaT land data package_. doi: 10.5281/zenodo.3822083 (URL: https://doi.org/10.5281/zenodo.3822083), R package version 0.58.0, <URL: https://github.com/pik-piam/mrland>.
+Dietrich J, Mishra A, Weindl I, Bodirsky B, Wang X, Baumstark L, Kreidenweis U, Klein D, Steinmetz N, Chen D, Humpenoeder F, von Jeetze P, Wirth S, Beier F, Hoetten D (2024). _mrland: MadRaT land data package_. doi:10.5281/zenodo.3822083 <https://doi.org/10.5281/zenodo.3822083>, R package version 0.58.0, <https://github.com/pik-piam/mrland>.
 
 A BibTeX entry for LaTeX users is
 
@@ -49,7 +49,7 @@ A BibTeX entry for LaTeX users is
   author = {Jan Philipp Dietrich and Abhijeet Mishra and Isabelle Weindl and Benjamin Leon Bodirsky and Xiaoxi Wang and Lavinia Baumstark and Ulrich Kreidenweis and David Klein and Nele Steinmetz and David Chen and Florian Humpenoeder and Patrick {von Jeetze} and Stephen Wirth and Felicitas Beier and David Hoetten},
   year = {2024},
   note = {R package version 0.58.0},
-  doi = {10.5281/zenodo.3822083},
   url = {https://github.com/pik-piam/mrland},
+  doi = {10.5281/zenodo.3822083},
 }
 ```
