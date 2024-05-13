@@ -1,8 +1,8 @@
 Type: Package
 Package: mrland
 Title: MadRaT land data package
-Version: 0.58.0.9001
-Date: 2024-04-25
+Version: 0.59.0
+Date: 2024-05-13
 Authors@R: c(
     person("Jan Philipp", "Dietrich", , "dietrich@pik-potsdam.de", role = c("aut", "cre")),
     person("Abhijeet", "Mishra", role = "aut"),
@@ -18,7 +18,8 @@ Authors@R: c(
     person("Patrick", "von Jeetze", role = "aut"),
     person("Stephen", "Wirth", role = "aut"),
     person("Felicitas", "Beier", role = "aut"),
-    person("David", "Hoetten", role = "aut")
+    person("David", "Hoetten", role = "aut"),
+    person("Pascal", "Sauer", role = "aut")
   )
 Description: The package provides land related data via the madrat
     framework.
@@ -27,25 +28,25 @@ URL: https://github.com/pik-piam/mrland,
     https://doi.org/10.5281/zenodo.3822083
 BugReports: https://github.com/pik-piam/mrland/issues
 Depends:
-    R (>= 2.10.0),
     madrat (>= 1.30),
     magclass (>= 6.13.1),
-    mrcommons (>= 1.37.0),
-    mrfaocore,
-    mrfactors,
-    mrlandcore
+    mrcommons (>= 1.41.0),
+    mrfactors (>= 0.4.0),
+    mrfaocore (>= 1.0.0),
+    mrlandcore (>= 1.0.0),
+    R (>= 2.10.0)
 Imports:
-    GDPuc,
-    SPEI,
     countrycode,
     data.table,
     dplyr,
+    GDPuc,
     magpiesets,
-    mstools (>= 0.5.1),
+    mstools (>= 0.6.0),
     ncdf4,
     raster,
     readxl,
     reshape2,
+    SPEI,
     stringr,
     terra,
     withr
