@@ -28,11 +28,10 @@
 #'
 #' @importFrom magpiesets findset addLocation
 #' @importFrom magclass collapseDim
-#' @importFrom mrcommons toolCoord2Isocell
+#' @importFrom mstools toolCoord2Isocell
 #'
 
 calcConservationPriorities <- function(consvBaseYear = "y1750", cells = "lpjcell", nclasses = "seven") {
-
   # ===============================
   # Get conservation templates
   # ===============================
@@ -270,8 +269,8 @@ calcConservationPriorities <- function(consvBaseYear = "y1750", cells = "lpjcell
               weight = NULL,
               unit = "Mha",
               description = paste0("Land conservation priority targets in each land type. ",
-                                  "Land use in conservation priority areas is based on the ",
-                                  "reference year ", consvBaseYear,
-                                  ifelse(gsub("y", "", consvBaseYear) <= 1800, " (pre-industrial)", "")),
+                                   "Land use in conservation priority areas is based on the ",
+                                   "reference year ", consvBaseYear,
+                                   ifelse(gsub("y", "", consvBaseYear) <= 1800, " (pre-industrial)", "")),
               isocountries = FALSE))
 }

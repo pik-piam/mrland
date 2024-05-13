@@ -25,7 +25,7 @@
 #' calcOutput("ProtectedAreaBaseline", aggregate = FALSE)
 #' }
 #'
-#' @importFrom mrcommons toolCoord2Isocell
+#' @importFrom mstools toolCoord2Isocell
 #'
 calcProtectedAreaBaseline <- function(magpie_input = TRUE, nclasses = "seven", # nolint
                                       cells = "lpjcell") {

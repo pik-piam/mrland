@@ -21,11 +21,10 @@
 #'
 #' @importFrom magpiesets findset addLocation
 #' @importFrom magclass collapseDim
-#' @importFrom mrcommons toolCoord2Isocell
+#' @importFrom mstools toolCoord2Isocell
 #'
 
 calcHalfEarth <- function(cells = "lpjcell", nclasses = "seven") {
-
   # Land area (in Mha):
   iniLU <- calcOutput("LanduseInitialisation",
                       cellular = TRUE, cells = cells,
@@ -46,8 +45,8 @@ calcHalfEarth <- function(cells = "lpjcell", nclasses = "seven") {
 
   # get WDPA baseline data (1995 - 2020)
   wdpaBase <- calcOutput("ProtectedAreaBaseline",
-                          aggregate = FALSE, cells = cells,
-                          nclasses = nclasses, magpie_input = TRUE)
+                         aggregate = FALSE, cells = cells,
+                         nclasses = nclasses, magpie_input = TRUE)
 
   # make sure that current WDPA protected areas
   # are not part of conservation priority targets
@@ -60,7 +59,7 @@ calcHalfEarth <- function(cells = "lpjcell", nclasses = "seven") {
 
   # Conservation potential after 2020
   consvPot <- landArea - dimSums(wdpaBase[, "y2020", ], dim = 3) -
-                setCells(urbanLand[, "y2020", "SSP2"], getCells(wdpaBase))
+    setCells(urbanLand[, "y2020", "SSP2"], getCells(wdpaBase))
   consvPot <- toolConditionalReplace(consvPot, "<0", 0)
 
   # Where conservation priority area is larger than conservation potential
@@ -74,7 +73,7 @@ calcHalfEarth <- function(cells = "lpjcell", nclasses = "seven") {
   if (nclasses == "seven") {
     # calulate share of respective natveg classes
     natvegShr <- iniLU[, , c("primforest", "secdforest", "other")] /
-                   dimSums(iniLU[, , c("primforest", "secdforest", "other")], dim = 3)
+      dimSums(iniLU[, , c("primforest", "secdforest", "other")], dim = 3)
     natvegShr <- toolConditionalReplace(natvegShr, "is.na()", 0)
 
     # magpie object containing all land classes and their conservation land shares
@@ -87,7 +86,7 @@ calcHalfEarth <- function(cells = "lpjcell", nclasses = "seven") {
   } else if (nclasses == "nine") {
     # calulate share of respective natveg classes
     natvegShr <- iniLU[, , c("primforest", "secdforest", "primother", "secdother")] /
-                   dimSums(iniLU[, , c("primforest", "secdforest", "primother", "secdother")], dim = 3)
+      dimSums(iniLU[, , c("primforest", "secdforest", "primother", "secdother")], dim = 3)
     natvegShr <- toolConditionalReplace(natvegShr, "is.na()", 0)
 
     # magpie object containing all land classes and their conservation land shares

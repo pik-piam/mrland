@@ -27,14 +27,14 @@
 #' calcOutput("calcCriticalConnectivityAreas", aggregate = FALSE)
 #' }
 #'
-#' @importFrom mrcommons toolCoord2Isocell
+#' @importFrom mstools toolCoord2Isocell
 #'
 calcCriticalConnectivityAreas <- function(maginput = TRUE, nclasses = "seven",
                                           cells = "lpjcell", mask = "KBA_GSN") {
   if (mask == "KBA") {
-  cca <- readSource("Brennan2022", subtype = "KBA_masked", convert = "onlycorrect")
+    cca <- readSource("Brennan2022", subtype = "KBA_masked", convert = "onlycorrect")
   } else if (mask == "KBA_GSN") {
-  cca <- readSource("Brennan2022", subtype = "KBA_GSN_masked", convert = "onlycorrect")
+    cca <- readSource("Brennan2022", subtype = "KBA_GSN_masked", convert = "onlycorrect")
   } else {
     stop("Option specified for argument 'mask' does not exist.")
   }
@@ -68,7 +68,6 @@ calcCriticalConnectivityAreas <- function(maginput = TRUE, nclasses = "seven",
     cca[, , "CCA"] <- cca[, , "CCA"] * landMismatch[, , "CCA"]
 
     if (nclasses %in% c("seven", "nine")) {
-
       # differentiate primary and secondary forest based on LUH2v2 data
       totForestLUH <- dimSums(luh2v2[, , c("primf", "secdf")], dim = 3) # nolint
       primforestShr <- luh2v2[, , "primf"] / setNames(totForestLUH + 1e-10, NULL)
@@ -94,7 +93,6 @@ calcCriticalConnectivityAreas <- function(maginput = TRUE, nclasses = "seven",
     }
 
     if (nclasses == "nine") {
-
       # separate pasture into pasture and rangeland
       totGrassLUH <- dimSums(luh2v2[, , c("pastr", "range")], dim = 3) # nolint
       pastShr <- luh2v2[, , "pastr"] / setNames(totGrassLUH + 1e-10, NULL)

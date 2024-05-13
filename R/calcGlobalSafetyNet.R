@@ -24,7 +24,7 @@
 #' calcOutput("calcGlobalSafetyNet", aggregate = FALSE)
 #' }
 #'
-#' @importFrom mrcommons toolCoord2Isocell
+#' @importFrom mstools toolCoord2Isocell
 #'
 calcGlobalSafetyNet <- function(maginput = TRUE, nclasses = "seven", cells = "lpjcell") {
   gsn <- mbind(

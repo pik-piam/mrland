@@ -61,7 +61,8 @@
 #' @importFrom magpiesets findset
 #' @importFrom magclass getYears add_columns dimSums time_interpolate
 #' @importFrom madrat toolFillYears toolGetMapping toolTimeAverage
-#' @importFrom mrcommons toolLPJmLVersion toolHarmonize2Baseline
+#' @importFrom mrlandcore toolLPJmLVersion
+#' @importFrom mstools toolHarmonize2Baseline
 #' @importFrom stringr str_split
 #' @importFrom withr local_options
 

@@ -24,6 +24,7 @@
 #' @importFrom magclass as.data.frame add_columns
 #' @importFrom magpiesets findset
 #' @importFrom GDPuc convertGDP
+#' @importFrom mstools toolCountryFillBilateral
 #'
 
 calcTradeTariff<- function(gtap_version = "GTAP9", type_tariff = "total", bilateral = FALSE) { #nolint

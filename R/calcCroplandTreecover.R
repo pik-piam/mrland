@@ -16,7 +16,7 @@
 #' calcOutput("CroplandTreecover", aggregate = FALSE)
 #' }
 #'
-#' @importFrom mrcommons toolCoord2Isocell
+#' @importFrom mstools toolCoord2Isocell
 #'
 calcCroplandTreecover <- function(maginput = TRUE, cells = "magpiecell") {
   treecover <- readSource("Copernicus", subtype = "CroplandTreecover", convert = "onlycorrect")

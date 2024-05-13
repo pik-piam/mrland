@@ -25,7 +25,7 @@
 #' calcOutput("calcIrrecoverableCarbonLand", aggregate = FALSE)
 #' }
 #'
-#' @importFrom mrcommons toolCoord2Isocell
+#' @importFrom mstools toolCoord2Isocell
 #'
 calcIrrecoverableCarbonLand <- function(maginput = TRUE, nclasses = "seven",
                                         cells = "lpjcell") {

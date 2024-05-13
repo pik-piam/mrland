@@ -15,7 +15,7 @@
 #'
 #' @importFrom magpiesets findset addLocation
 #' @importFrom magclass collapseDim
-#' @importFrom mrcommons toolCoord2Isocell
+#' @importFrom mstools toolCoord2Isocell
 #'
 
 calcProtectArea <- function(cells = "lpjcell", bhifl = TRUE) {

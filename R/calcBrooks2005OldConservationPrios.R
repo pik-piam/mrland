@@ -21,11 +21,10 @@
 #'
 #' @importFrom magpiesets findset addLocation
 #' @importFrom magclass collapseDim
-#' @importFrom mrcommons toolCoord2Isocell
+#' @importFrom mstools toolCoord2Isocell
 #'
 
 calcBrooks2005OldConservationPrios <- function(cells = "lpjcell", nclasses = "seven") {
-
   # Land area (in Mha):
   iniLU <- calcOutput("LanduseInitialisation",
     cellular = TRUE, cells = cells,
@@ -99,7 +98,7 @@ calcBrooks2005OldConservationPrios <- function(cells = "lpjcell", nclasses = "se
 
   # Conservation potential after 2020
   consvPot <- landArea - dimSums(wdpaBase[, "y2020", ], dim = 3) -
-                setCells(urbanLand[, "y2020", "SSP2"], getCells(wdpaBase))
+    setCells(urbanLand[, "y2020", "SSP2"], getCells(wdpaBase))
   consvPot <- toolConditionalReplace(consvPot, "<0", 0)
 
   # Where conservation priority area is larger than conservation potential
@@ -113,7 +112,7 @@ calcBrooks2005OldConservationPrios <- function(cells = "lpjcell", nclasses = "se
   if (nclasses == "seven") {
     # calulate share of respective natveg classes
     natvegShr <- iniLU[, , c("primforest", "secdforest", "other")] /
-                   dimSums(iniLU[, , c("primforest", "secdforest", "other")], dim = 3)
+      dimSums(iniLU[, , c("primforest", "secdforest", "other")], dim = 3)
     natvegShr <- toolConditionalReplace(natvegShr, "is.na()", 0)
 
     # magpie object containing all land classes and their conservation land shares
@@ -126,7 +125,7 @@ calcBrooks2005OldConservationPrios <- function(cells = "lpjcell", nclasses = "se
   } else if (nclasses == "nine") {
     # calulate share of respective natveg classes
     natvegShr <- iniLU[, , c("primforest", "secdforest", "primother", "secdother")] /
-                   dimSums(iniLU[, , c("primforest", "secdforest", "primother", "secdother")], dim = 3)
+      dimSums(iniLU[, , c("primforest", "secdforest", "primother", "secdother")], dim = 3)
     natvegShr <- toolConditionalReplace(natvegShr, "is.na()", 0)
 
     # magpie object containing all land classes and their conservation land shares

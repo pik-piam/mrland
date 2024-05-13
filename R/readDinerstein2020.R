@@ -25,7 +25,7 @@
 #'
 #' @importFrom terra rast classify cellSize aggregate terraOptions
 #' @importFrom withr local_tempdir defer
-#' @importFrom mrcommons toolGetMappingCoord2Country
+#' @importFrom mstools toolGetMappingCoord2Country
 #'
 
 readDinerstein2020 <- function(subtype = "GSN:distinct_species_assemblages") {

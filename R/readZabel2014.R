@@ -30,7 +30,7 @@
 #'
 #' @importFrom terra rast classify extract aggregate terraOptions mask
 #' @importFrom withr local_tempdir defer
-#' @importFrom mrcommons toolGetMappingCoord2Country
+#' @importFrom mstools toolGetMappingCoord2Country
 #'
 
 readZabel2014 <- function(subtype = "all_marginal:rainfed_and_irrigated") {
@@ -132,7 +132,7 @@ readZabel2014 <- function(subtype = "all_marginal:rainfed_and_irrigated") {
   ### Create magpie object
 
   # get spatial mapping
-  map <- mrcommons::toolGetMappingCoord2Country(pretty = TRUE)
+  map <- toolGetMappingCoord2Country(pretty = TRUE)
   # transform raster to magpie object
   out <- as.magpie(extract(cropsuitZabel05, map[c("lon", "lat")])[, 2], spatial = 1)
   # set dimension names

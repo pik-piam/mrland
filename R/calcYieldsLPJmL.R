@@ -18,7 +18,6 @@
 #' }
 #'
 #' @importFrom madrat toolGetMapping
-#' @importFrom mrcommons toolLPJmLVersion
 #' @importFrom withr local_options
 
 calcYieldsLPJmL <- function(lpjml = "ggcmi_phase3_nchecks_bft_e511ac58",

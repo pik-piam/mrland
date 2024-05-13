@@ -17,7 +17,7 @@
 #' @importFrom mstools toolHoldConstant
 #' @importFrom madrat toolSplitSubtype
 #' @importFrom magclass dimOrder magpply dimSums getNames mbind time_interpolate
-#' @importFrom mrcommons toolCoord2Isocell toolSmooth
+#' @importFrom mstools toolCoord2Isocell toolSmooth
 
 calcISIMIP3bYields <- function(subtype = "yields:EPIC-IIASA:ukesm1-0-ll:ssp585:default:3b",
                                smooth = TRUE, cells = "lpjcell") {
@@ -45,25 +45,21 @@ calcISIMIP3bYields <- function(subtype = "yields:EPIC-IIASA:ukesm1-0-ll:ssp585:d
 
   # Interpolation of y2015 after mbind of past and scen (NA due to harvest year correction)
   nameClean <- function(x, subtype) {
-
-      getNames(x, dim = 1)[getNames(x, dim = 1) == "mai"] <- "maiz"
-      getNames(x, dim = 1)[getNames(x, dim = 1) == "soy"] <- "soybean"
-      getNames(x, dim = 1)[getNames(x, dim = 1) == "ri1"] <- "ricea"
-      getNames(x, dim = 1)[getNames(x, dim = 1) == "ri2"] <- "riceb"
-      getNames(x, dim = 1)[getNames(x, dim = 1) == "swh"] <- "springwheat"
-      getNames(x, dim = 1)[getNames(x, dim = 1) == "wwh"] <- "winterwheat"
-      getNames(x, dim = 2)[getNames(x, dim = 2) == "ir"] <- "irrigated"
-      getNames(x, dim = 2)[getNames(x, dim = 2) == "rf"] <- "rainfed"
-
+    getNames(x, dim = 1)[getNames(x, dim = 1) == "mai"] <- "maiz"
+    getNames(x, dim = 1)[getNames(x, dim = 1) == "soy"] <- "soybean"
+    getNames(x, dim = 1)[getNames(x, dim = 1) == "ri1"] <- "ricea"
+    getNames(x, dim = 1)[getNames(x, dim = 1) == "ri2"] <- "riceb"
+    getNames(x, dim = 1)[getNames(x, dim = 1) == "swh"] <- "springwheat"
+    getNames(x, dim = 1)[getNames(x, dim = 1) == "wwh"] <- "winterwheat"
+    getNames(x, dim = 2)[getNames(x, dim = 2) == "ir"] <- "irrigated"
+    getNames(x, dim = 2)[getNames(x, dim = 2) == "rf"] <- "rainfed"
     return(x)
   }
 
-  plantDay    <- collapseNames(readSource("GGCMICropCalendar",
-                                          subtype = "planting_day")[, , c("ri1", "ri2", "wwh",
-                                                                       "swh", "soy", "mai")][, , c("rf", "ir")])
-  maturityDay <- collapseNames(readSource("GGCMICropCalendar",
-                                          subtype = "maturity_day")[, , c("ri1", "ri2", "wwh",
-                                                                          "swh", "soy", "mai")][, , c("rf", "ir")])
+  plantDay    <- readSource("GGCMICropCalendar", subtype = "planting_day")
+  plantDay    <- collapseNames(plantDay[, , c("ri1", "ri2", "wwh", "swh", "soy", "mai")][, , c("rf", "ir")])
+  maturityDay <- readSource("GGCMICropCalendar", subtype = "maturity_day")
+  maturityDay <- collapseNames(maturityDay[, , c("ri1", "ri2", "wwh", "swh", "soy", "mai")][, , c("rf", "ir")])
 
   diff <- maturityDay - plantDay
   diff <- nameClean(diff, subtype)
@@ -72,14 +68,14 @@ calcISIMIP3bYields <- function(subtype = "yields:EPIC-IIASA:ukesm1-0-ll:ssp585:d
     cellsCorr <- where(diff[, , n] < 0)$true$regions
     x[cellsCorr, "y2015", n] <- setYears((x[cellsCorr, "y2016", n] +
                                             x[cellsCorr, "y2014", n]) / 2,
-                                        "y2015")
+                                         "y2015")
   }
 
 
   # read in mask
   harvArea <- collapseNames(readSource("GGCMICropCalendar",
-                                        subtype = "fraction_of_harvested_area",
-                                        convert = FALSE))
+                                       subtype = "fraction_of_harvested_area",
+                                       convert = FALSE))
   harvArea <- nameClean(harvArea)
 
   # for wheat take higher yielding variety  based on highest mean yield between 1981 and 2011
@@ -88,7 +84,7 @@ calcISIMIP3bYields <- function(subtype = "yields:EPIC-IIASA:ukesm1-0-ll:ssp585:d
   } else {
     # use mask to select between spring and winter wheat yields
     tece <- collapseNames(x[, , "springwheat"] * harvArea[, , "springwheat"] +
-                           x[, , "winterwheat"] * harvArea[, , "winterwheat"])
+                            x[, , "winterwheat"] * harvArea[, , "winterwheat"])
     # tece mask does not cover all cells, only current harv area.
     # Fill in other areas with higher yielding variety, based on historical 30 year averages
     higherw <- magpply(x[, 1981:2011, "springwheat", ],

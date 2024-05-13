@@ -20,7 +20,7 @@
 #'
 #' @importFrom terra rast terraOptions
 #' @importFrom withr local_tempdir defer
-#' @importFrom mrcommons toolGetMappingCoord2Country
+#' @importFrom mstools toolGetMappingCoord2Country
 #'
 
 readCopernicus <- function(subtype = "CroplandTreecover") {
