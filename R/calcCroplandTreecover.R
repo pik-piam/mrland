@@ -5,6 +5,8 @@
 #' @param maginput Whether data should be corrected to align with cropland
 #' initialised in MAgPIE.
 #' @param cells magpiecell (59199 cells) or lpjcell (67420 cells)
+#' @param countryLevel    Whether output shall be at country level.
+#'                         Requires aggregate=FALSE in calcOutput.
 #'
 #' @return List with a magpie object
 #' @author Patrick v. Jeetze
@@ -18,7 +20,7 @@
 #'
 #' @importFrom mstools toolCoord2Isocell
 #'
-calcCroplandTreecover <- function(maginput = TRUE, cells = "magpiecell") {
+calcCroplandTreecover <- function(maginput = TRUE, cells = "magpiecell", countryLevel = FALSE) {
   treecover <- readSource("Copernicus", subtype = "CroplandTreecover", convert = "onlycorrect")
 
   if (maginput) {
@@ -44,6 +46,10 @@ calcCroplandTreecover <- function(maginput = TRUE, cells = "magpiecell") {
   }
 
   out <- collapseDim(out, dim = 3)
+
+  if (countryLevel) {
+    out <- toolCountryFill(dimSums(out, dim = c("x", "y")), fill = 0)
+  }
 
   return(list(
     x = out,

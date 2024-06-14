@@ -4,13 +4,20 @@
 \alias{calcCroplandTreecover}
 \title{calcCroplandTreecover}
 \usage{
-calcCroplandTreecover(maginput = TRUE, cells = "magpiecell")
+calcCroplandTreecover(
+  maginput = TRUE,
+  cells = "magpiecell",
+  countryLevel = FALSE
+)
 }
 \arguments{
 \item{maginput}{Whether data should be corrected to align with cropland
 initialised in MAgPIE.}
 
 \item{cells}{magpiecell (59199 cells) or lpjcell (67420 cells)}
+
+\item{countryLevel}{Whether output shall be at country level.
+Requires aggregate=FALSE in calcOutput.}
 }
 \value{
 List with a magpie object

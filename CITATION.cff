@@ -2,8 +2,8 @@ cff-version: 1.2.0
 message: If you use this software, please cite it using the metadata from this file.
 type: software
 title: 'mrland: MadRaT land data package'
-version: 0.59.0
-date-released: '2024-05-13'
+version: 0.59.1
+date-released: '2024-06-14'
 abstract: The package provides land related data via the madrat framework.
 authors:
 - family-names: Dietrich
@@ -40,6 +40,7 @@ authors:
 - family-names: Sauer
   given-names: Pascal
 license: LGPL-3.0
+keywords: ~
 repository-code: https://github.com/pik-piam/mrland
 doi: 10.5281/zenodo.3822083
 
