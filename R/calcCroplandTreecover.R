@@ -39,16 +39,25 @@ calcCroplandTreecover <- function(maginput = TRUE, cells = "magpiecell", country
     out <- treecover
   }
 
-  if (cells == "magpiecell") {
-    out <- toolCoord2Isocell(out)
-  } else if (cells != "lpjcell") {
-    stop("Please specify cells argument")
-  }
-
   out <- collapseDim(out, dim = 3)
 
   if (countryLevel) {
-    out <- toolCountryFill(dimSums(out, dim = 1.2), fill = 0)
+
+    out <- toolCountryFill(dimSums(out, dim = c("x", "y")), fill = 0)
+
+  } else {
+
+    if (cells == "magpiecell") {
+
+      out <- toolCoord2Isocell(out)
+
+    } else if (cells == "lpjcell") {
+
+      out <- out
+
+    } else {
+      stop("Please specify cells argument")
+    }
   }
 
   return(list(
