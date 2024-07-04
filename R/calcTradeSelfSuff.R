@@ -31,6 +31,7 @@ calcTradeSelfSuff <- function() {
 
   out <- toolHoldConstantBeyondEnd(selfSuff)
   weight <- toolHoldConstantBeyondEnd(weight)
+  weight <- weight + 10^-10
 
   return(list(x = out,
               weight = weight,

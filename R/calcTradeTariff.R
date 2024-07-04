@@ -160,7 +160,7 @@ calcTradeTariff<- function(gtap_version = "GTAP9", type_tariff = "total", bilate
   missing <- setdiff(kTrade, getNames(weight))
   weight <- add_columns(weight, dim = 3.1, addnm = missing)
   weight[, , missing] <- 1
-  weight <- weight[, , setdiff(getNames(weight), kTrade), invert = TRUE]
+  weight <- weight[, , setdiff(getNames(weight), kTrade), invert = TRUE] + 10^-10
 
 
   description <- paste0(type_tariff, "trade tariff")

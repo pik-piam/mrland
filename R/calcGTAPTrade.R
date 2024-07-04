@@ -76,7 +76,7 @@ calcGTAPTrade <- function(subtype = NULL, bilateral = FALSE) {
 
     out <- toolAggregate(out, rel = sectorMapping,
                          from = "gtap", to = "magpie", dim = 3,
-                         weight = w[getItems(out, dim = 1), getYears(out), ],
+                         weight = w[getItems(out, dim = 1), getYears(out), ] + 10^-10,
                          partrel = TRUE)
 
 
