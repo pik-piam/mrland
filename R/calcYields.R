@@ -209,7 +209,7 @@ calcYields <- function(source = c(lpjml = "ggcmi_phase3_nchecks_9ca735cb", isimi
     cropAreaWeight <- dimSums(calcOutput("Croparea", sectoral = "kcr", physical = TRUE, irrigation = FALSE,
                                          cellular = TRUE, cells = cells, aggregate = FALSE,
                                          years = "y1995", round = 6),
-                              dim = 3)
+                              dim = 3) + 10e-10
 
   } else if (weighting %in% c("totalLUspecific", "cropSpecific", "crop+irrigSpecific")) {
 
@@ -225,9 +225,9 @@ calcYields <- function(source = c(lpjml = "ggcmi_phase3_nchecks_9ca735cb", isimi
                                    years = NULL,
                                    names = getNames(yields),
                                    fill = NA)
-      cropAreaWeight[, , findset("kcr")] <- crop + 10^-10
-      cropAreaWeight[, , "pasture"]      <- mbind(setNames(past + 10^-10, "irrigated"),
-                                                  setNames(past + 10^-10, "rainfed"))
+      cropAreaWeight[, , findset("kcr")] <- crop + 10e-10
+      cropAreaWeight[, , "pasture"]      <- mbind(setNames(past + 10e-10, "irrigated"),
+                                                  setNames(past + 10e-10, "rainfed"))
 
     } else if (weighting == "cropSpecific") {
 
@@ -236,17 +236,17 @@ calcYields <- function(source = c(lpjml = "ggcmi_phase3_nchecks_9ca735cb", isimi
                                    names = getNames(yields, dim = 1),
                                    fill = NA)
 
-      cropAreaWeight[, , findset("kcr")] <- dimSums(crop, dim = 3.1) + 10^-10
-      cropAreaWeight[, , "pasture"]      <- past + 10^-10
+      cropAreaWeight[, , findset("kcr")] <- dimSums(crop, dim = 3.1) + 10e-10
+      cropAreaWeight[, , "pasture"]      <- past + 10e-10
 
     } else {
 
       cropAreaWeight <- new.magpie(cells_and_regions = getCells(yields),
                                    years = NULL,
                                    names = getNames(yields, dim = 1),
-                                   fill = (dimSums(crop, dim = 3) + 10^-10))
+                                   fill = (dimSums(crop, dim = 3) + 10e-10))
 
-      cropAreaWeight[, , "pasture"] <- past + 10^-10
+      cropAreaWeight[, , "pasture"] <- past + 10e-10
 
     }
 
@@ -254,7 +254,7 @@ calcYields <- function(source = c(lpjml = "ggcmi_phase3_nchecks_9ca735cb", isimi
 
     cropAreaWeight <- setNames(calcOutput("AvlCropland", marginal_land = marginal_land, cells = cells,
                                           country_level = FALSE, aggregate = FALSE),
-                               NULL)
+                               NULL) + 10e-10
 
   } else if (weighting == "avlCropland+avlPasture") {
 
@@ -271,7 +271,7 @@ calcYields <- function(source = c(lpjml = "ggcmi_phase3_nchecks_9ca735cb", isimi
 
     cropAreaWeight[, , "pasture"] <- pmax(avlCrop,
                                           dimSums(lu1995[, , c("primforest", "secdforest", "forestry", "past")],
-                                                  dim = 3))
+                                                  dim = 3)) + 10e-10
 
   } else {
 
