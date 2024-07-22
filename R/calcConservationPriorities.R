@@ -215,8 +215,19 @@ calcConservationPriorities <- function(consvBaseYear = "y1750", cells = "lpjcell
     timestep = "5year", cells = cells
   )
 
-  # make sure that conservation priority land is not greater than total land area minus urban area
-  landNoUrban <- setYears(totLand, "y2020") - setCells(urbanLand[, "y2020", "SSP2"], getCells(totLand))
+  # baseline protected area (WDPA)
+  wdpaLand <- calcOutput("ProtectedAreaBaseline",
+    aggregate = FALSE, nclasses = "seven",
+    cells = cells, magpie_input = TRUE,
+  )
+
+  # make sure that future conservation priority land is not greater
+  # than total land area minus urban area and currently protected areas
+  landNoUrban <- setYears(totLand, "y2020") -
+    setCells(urbanLand[, "y2020", "SSP2"], getCells(totLand)) -
+    setCells(dimSums(wdpaLand[, "y2020", ], dim = 3), getCells(totLand))
+  landNoUrban[landNoUrban < 0] <- 0
+
   getYears(landNoUrban) <- getYears(consvPrio)
   # compute mismatch factor
   landMismatch <- setNames(landNoUrban, NULL) / dimSums(consvPrio, dim = 3.2)
