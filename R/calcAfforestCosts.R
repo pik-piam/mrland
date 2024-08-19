@@ -30,5 +30,5 @@ calcAfforestCosts <- function() {
   l <- setYears(readSource("FAO_online","Land")[,2001,"6601|Land area.Area_(1000_ha)",drop=TRUE],NULL)
   l[is.na(l)|is.nan(l)] <- 0
 
-  return(list(x=x,weight=l,unit="US$2004/ha",description="Afforestation factor requirement costs"))
+  return(list(x=x,weight=l,unit="US$2017/ha",description="Afforestation factor requirement costs"))
 }
