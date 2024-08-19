@@ -68,7 +68,11 @@ calcGHGPrices <- function(emissions = "pollutants", datasource = "REMMAG", rev =
     x[, , setToZero] <- 0
 
     description <- "GHG certificate prices for different scenarios based on data from REMIND-MAgPIE coupling"
-
+    
+    #convert these to 2017$ here
+    x <- convertGDP(x, unit_in = "constant 2005 US$MER",
+                       unit_out = "constant 2017 US$MER",
+                       replace_NAs = "no_conversion")
 
   } else if (datasource == "Strefler2021") {
     x <- readSource("Strefler2021", subtype = paste0("intensive_", rev))
@@ -99,6 +103,12 @@ calcGHGPrices <- function(emissions = "pollutants", datasource = "REMMAG", rev =
     # swap dimensions (scenario and gas) such that in the output file gas is in lines and scenarios in columns
     getNames(x) <- gsub("^([^\\.]*)\\.(.*$)", "\\2.\\1", getNames(x))
 
+    # convert these to 2017$ here
+    x <- convertGDP(x, unit_in = "constant 2005 US$MER",
+                       unit_out = "constant 2017 US$MER",
+                       replace_NAs = "no_conversion")
+
+
     description <- paste("GHG certificate prices for different scenarios taken",
                          "from Strefler et al 2021 (DOI 10.1038/s41467-021-22211-2)")
 
@@ -115,14 +125,18 @@ calcGHGPrices <- function(emissions = "pollutants", datasource = "REMMAG", rev =
     } else if (emissions != "ghg") {
       stop("unknown emission type")
     }
+ 
+    #convert these to 2017$ here
+    x <- convertGDP(x, unit_in = "constant 2005 US$MER",
+                       unit_out = "constant 2017 US$MER",
+                       replace_NAs = "no_conversion")
 
     description <- "ghg certificate prices for different scenarios based on data from REMIND-MAgPIE-coupling"
-
 
   } else if (datasource == "SSPResults") {
 
     x <- readSource("SSPResults")
-    x <- collapseNames(x[, , "Price|Carbon (US$2005/t CO2)"])
+    x <- collapseNames(x[, , "Price|Carbon (US$2017/t CO2)"])
     x <- x * 44 / 12
 
     pollutants <- findset("pollutants")
@@ -191,6 +205,11 @@ calcGHGPrices <- function(emissions = "pollutants", datasource = "REMMAG", rev =
     # fill missing years in the future
     x <- time_interpolate(x, seq(1995, 2150, 5), extrapolation_type = "constant")
 
+    #convert these to 2017$ here
+    x <- convertGDP(x, unit_in = "constant 2005 US$MER",
+                       unit_out = "constant 2017 US$MER",
+                       replace_NAs = "no_conversion")
+
     description <- "ghg certificate prices for different scenarios based on CO2 prices provided by IMAGE"
 
   } else if (datasource == "SSP_and_REM") {
@@ -218,7 +237,7 @@ calcGHGPrices <- function(emissions = "pollutants", datasource = "REMMAG", rev =
   pop <- calcOutput("Population", aggregate = FALSE)
 
   return(list(x = x, weight = pop[, 2010, 1],
-              unit = "US$ 2005 per t N2O-N CH4 and CO2-C",
+              unit = "US$ 2017 per t N2O-N CH4 and CO2-C",
               description = description,
               note = "As weight for aggregation currently population data from 2010 is used.",
               min = 0,
