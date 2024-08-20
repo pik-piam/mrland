@@ -163,7 +163,7 @@ calcTradeTariff<- function(gtap_version = "GTAP9", type_tariff = "total", bilate
 
 
   description <- paste0(type_tariff, "trade tariff")
-  unit <- "USD17MER/tDM"
+  unit <- "US$2017/tDM"
   return(list(x = out,
               weight = weight,
               unit = unit,

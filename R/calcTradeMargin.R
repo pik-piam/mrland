@@ -154,7 +154,7 @@ calcTradeMargin <- function(gtap_version = "GTAP9", bilateral = FALSE, producer_
     weight <- setYears(weight, NULL)
   }
 
-  unit <- "US$17"
+  unit <- "US$2017"
   description <- "Trade margins"
 
   # add tiny value to weight to avoid 0 weights creating 0 values
