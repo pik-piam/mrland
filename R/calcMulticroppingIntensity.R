@@ -126,16 +126,14 @@ calcMulticroppingIntensity <- function(scenario, selectyears,
   if (any(is.na(currMC))) {
     stop("mrland::calcMulticroppingIntensity produced NA values")
   }
-  if (any(currMC > 2 || currMC < 1)) {
+  if (any(currMC > 2 | currMC < 1)) {
     stop("Problem in mrland::calcMulticroppingIntensity:
-        Value should be between 1 and 2!")
+         Value should be between 1 and 2!")
   }
   if (any(currMC[, , cropsNoMC] > 1)) {
-    stop(paste0(
-      "Problem in mrland::calcMulticroppingIntensity: ",
-      "Crops that are not suitable for multiple cropping ",
-      "should not have CI > 1"
-    ))
+    stop(paste0("Problem in mrland::calcMulticroppingIntensity: ",
+                "Crops that are not suitable for multiple cropping ",
+                "should not have CI > 1"))
   }
 
   ##############
