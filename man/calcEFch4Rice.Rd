@@ -13,11 +13,12 @@ calcEFch4Rice(physical = TRUE)
 List of magpie objects with results on country level, weight on country level, unit and description.
 }
 \description{
-emission factors for methane from flooded rice fields, depending on phyiscal area or area harvested. The emission factors were calculated based on FAOSTAT estimates due to lack of all necessary parameters in the IPCC Guidelines
+emission factors for methane from flooded rice fields, depending on phyiscal area or area harvested.
+The emission factors were calculated based on FAOSTAT estimates due to lack of all necessary parameters in the
+IPCC Guidelines
 }
 \examples{
-
-\dontrun{ 
+\dontrun{
 calcOutput("EFch4Rice")
 }
 

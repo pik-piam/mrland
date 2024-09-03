@@ -13,8 +13,7 @@ List of magpie objects with results on country level, weight on country level, u
 calculates the share of N in biomass derived from biological fixation
 }
 \examples{
-
-\dontrun{ 
+\dontrun{
 calcOutput("calcNitrogenFixationNdfa")
 }
 
