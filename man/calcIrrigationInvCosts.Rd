@@ -10,11 +10,12 @@ calcIrrigationInvCosts()
 MAgPIE object
 }
 \description{
-This function calculates irrigation investment costs for each country until the year 2050. 
-Values linearly converge towards the value of Germany (1995) by 2050.
+This function calculates irrigation investment costs for each country until
+             the year 2050. Values linearly converge towards the value of Germany (1995)
+             by 2050.
 }
 \examples{
-\dontrun{ 
+\dontrun{
 calcOutput("IrrigationInvCosts")
 }
 
