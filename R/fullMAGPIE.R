@@ -77,6 +77,8 @@ fullMAGPIE <- function(rev = numeric_version("0.1"), dev = "") {
              round = 6) # please dont increase rounding, this can create errors
   calcOutput("PhysicalInactivity", aggregate = FALSE, years = magYears, round = 3,
              file = "f09_physical_inactivity.cs3")
+  calcOutput("GDPdeflator", aggregate = FALSE, round = 3, file = "fm_gdp_defl_ppp.csv",
+             currency = "PPP")
 
   # 13 tc
   calcOutput("ExoTcDummy",       round = 4, file = "f13_tau_scenario.csv", aggregate = superregion)
@@ -100,7 +102,7 @@ fullMAGPIE <- function(rev = numeric_version("0.1"), dev = "") {
              regression = "demand_regression")
   calcOutput("RegressionParameters", aggregate = FALSE, round = 3, file = "f15_bodyheight_regr_paras.cs3",
              regression = "bodyheight_regression")
- 
+
   calcOutput("Intake", modelinput = "age_groups_hist", standardize = FALSE, method = "FAO_WHO_UNU1985",
              aggregate = FALSE, years = magYearsPast, round = 1, file = "f15_intake_pc_observed_iso.cs3")
   calcOutput("FoodSupplyPast", per_capita = TRUE, products = NULL, product_aggr = FALSE,
