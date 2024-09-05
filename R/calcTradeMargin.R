@@ -143,11 +143,10 @@ calcTradeMargin <- function(gtap_version = "GTAP9", bilateral = FALSE, producer_
   weight[, , "distillers_grain"] <- weight[, , "tece"]
 
   if (gtap_version == "GTAP9") {
-    if (!bilateral) {
       out <- GDPuc::convertGDP(out, unit_in = "current US$MER",
-                               unit_out = "constant 2005 US$MER",
+                               unit_out = "constant 2017 US$MER",
                                replace_NAs = "no_conversion")
-    }
+    
     out <- setYears(out[, 2011, ], NULL)
     weight <- setYears(weight[, 2011, ], NULL)
   } else {
@@ -155,7 +154,7 @@ calcTradeMargin <- function(gtap_version = "GTAP9", bilateral = FALSE, producer_
     weight <- setYears(weight, NULL)
   }
 
-  unit <- "US$05"
+  unit <- "US$2017"
   description <- "Trade margins"
 
   # add tiny value to weight to avoid 0 weights creating 0 values

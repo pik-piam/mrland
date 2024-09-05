@@ -112,11 +112,10 @@ calcTradeTariff<- function(gtap_version = "GTAP9", type_tariff = "total", bilate
     p <- add_dimension(p, dim = 1.2,   nm = getItems(p, dim = 1))
   }
   if (gtap_version == "GTAP9") {
-    if (!bilateral) {
       y <- GDPuc::convertGDP(y, unit_in = "current US$MER",
-                             unit_out = "constant 2005 US$MER",
+                             unit_out = "constant 2017 US$MER",
                              replace_NAs = "no_conversion")
-    }
+    
     y <- setYears(y[, 2011, ], NULL)
   }
 
@@ -164,7 +163,7 @@ calcTradeTariff<- function(gtap_version = "GTAP9", type_tariff = "total", bilate
 
 
   description <- paste0(type_tariff, "trade tariff")
-  unit <- "USD05MER/tDM"
+  unit <- "US$2017/tDM"
   return(list(x = out,
               weight = weight,
               unit = unit,

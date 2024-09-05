@@ -44,13 +44,14 @@ fullMAGPIE <- function(rev = numeric_version("0.1"), dev = "") {
 
   # 09 drivers
   calcOutput("GDP",
+             unit = "constant 2017 Int$PPP",
              naming = "scenario",
              aggregate = FALSE,
              years = magYears,
              round = 3, # please dont increase rounding, this can create errors
              file = "f09_gdp_ppp_iso.csv")
   calcOutput("GDP",
-             unit = "constant 2005 US$MER",
+             unit = "constant 2017 US$MER",
              naming = "scenario",
              aggregate = FALSE,
              years = magYears,
@@ -99,7 +100,7 @@ fullMAGPIE <- function(rev = numeric_version("0.1"), dev = "") {
              regression = "demand_regression")
   calcOutput("RegressionParameters", aggregate = FALSE, round = 3, file = "f15_bodyheight_regr_paras.cs3",
              regression = "bodyheight_regression")
-
+ 
   calcOutput("Intake", modelinput = "age_groups_hist", standardize = FALSE, method = "FAO_WHO_UNU1985",
              aggregate = FALSE, years = magYearsPast, round = 1, file = "f15_intake_pc_observed_iso.cs3")
   calcOutput("FoodSupplyPast", per_capita = TRUE, products = NULL, product_aggr = FALSE,

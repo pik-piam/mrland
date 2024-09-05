@@ -13,10 +13,13 @@
 #' }
 #' 
 convertSathayeForest <- function(x) {
- 
-  # convert data from $US-2000 into $US-2004
-  x <- x * 1.091
+
+  # convert data from $US-2000 into $US-2017
   y <- toolAggregate(x, "regionmappingSathayeForest.csv", weight=NULL )
-   
+  y <- convertGDP(y, unit_in = "constant 2000 US$MER",
+                      unit_out = "constant 2017 US$MER",
+                      replace_NAs = "no_conversion")
+
+
   return(y)
 }
