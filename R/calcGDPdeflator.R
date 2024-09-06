@@ -16,7 +16,7 @@ calcGDPdeflator <- function(yearFrom = 2017, yearTo = 2005, currency = "PPP") {
 
   defl2017 <- new.magpie(cells_and_regions = reg,
                          years = NULL,
-                         names = "dummy",
+                         names = NULL,
                          fill = 1)
 
   if (currency == "PPP") {
@@ -29,6 +29,7 @@ calcGDPdeflator <- function(yearFrom = 2017, yearTo = 2005, currency = "PPP") {
                          unit_in = paste("constant", yearFrom, unit, sep = " "),
                          unit_out = paste("constant", yearTo, unit, sep = " "),
                          replace_NAs = c("linear", "no_conversion"))
+  getNames(defl2017) <- NULL
 
   return(list(x = defl2017,
               weight = NULL,

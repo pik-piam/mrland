@@ -77,7 +77,7 @@ fullMAGPIE <- function(rev = numeric_version("0.1"), dev = "") {
              round = 6) # please dont increase rounding, this can create errors
   calcOutput("PhysicalInactivity", aggregate = FALSE, years = magYears, round = 3,
              file = "f09_physical_inactivity.cs3")
-  calcOutput("GDPdeflator", aggregate = FALSE, round = 3, file = "fm_gdp_defl_ppp.csv",
+  calcOutput("GDPdeflator", aggregate = FALSE, round = 3, file = "fm_gdp_defl_ppp.cs4",
              currency = "PPP")
 
   # 13 tc
