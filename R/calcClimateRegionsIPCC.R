@@ -19,17 +19,17 @@
 #' @importFrom magpiesets findset
 
 
-calcClimateRegionsIPCC <- function(landusetypes = "all", cellular = FALSE, yearly = FALSE, convert = TRUE) {
-
+calcClimateRegionsIPCC <- function(landusetypes = "all", cellular = FALSE,
+                                   yearly = FALSE, convert = TRUE) {
   # PET based on thornwaite function
   pet       <- calcOutput("LPJmL_new", version = "LPJmL4_for_MAgPIE_44ac93de",
                           climatetype = "GSWP3-W5E5:historical", subtype = "mpet",
                           stage = "smoothed", aggregate = FALSE)
-  precip    <- calcOutput("LPJmLClimateInput", lpjmlVersion = "LPJmL4_for_MAgPIE_44ac93de",
+  precip    <- calcOutput("LPJmLClimateInput_new", lpjmlVersion = "LPJmL4_for_MAgPIE_44ac93de",
                           climatetype  = "GSWP3-W5E5:historical",
                           variable = "precipitation:monthlySum",
                           stage = "smoothed", aggregate = FALSE)
-  temp      <- calcOutput("LPJmLClimateInput", lpjmlVersion = "LPJmL4_for_MAgPIE_44ac93de",
+  temp      <- calcOutput("LPJmLClimateInput_new", lpjmlVersion = "LPJmL4_for_MAgPIE_44ac93de",
                           climatetype  = "GSWP3-W5E5:historical",
                           variable = "temperature:monthlyMean",
                           stage = "smoothed", aggregate = FALSE)
@@ -44,7 +44,7 @@ calcClimateRegionsIPCC <- function(landusetypes = "all", cellular = FALSE, yearl
   # Mean Annual Temperature
   temp <- dimSums(temp, dim = 3.1) / 12
   # if any month temp is above 10, binary TRUE
-  t <- t > 10
+  t <- temp > 10
   tMonthly10 <- dimSums(t, dim = 3) > 0
 
   getNames(temp)   <- "temp"
@@ -54,15 +54,15 @@ calcClimateRegionsIPCC <- function(landusetypes = "all", cellular = FALSE, yearl
   clm <- mbind(temp, precip, ratio, tMonthly10)
   # climate zones, set to zero, note, no tropical montane climate (exists in IPCC classification)
   clm <- add_columns(clm, dim = 3.1, addnm = c("tropical_wet", "tropical_moist", "tropical_dry",
-                                                   "warm_temp_moist", "warm_temp_dry",
-                                                   "cool_temp_moist", "cool_temp_dry",
-                                                   "boreal_moist", "boreal_dry",
-                                                   "polar_moist", "polar_dry"))
+                                               "warm_temp_moist", "warm_temp_dry",
+                                               "cool_temp_moist", "cool_temp_dry",
+                                               "boreal_moist", "boreal_dry",
+                                               "polar_moist", "polar_dry"))
   clm[, , c("tropical_wet", "tropical_moist", "tropical_dry",
-              "warm_temp_moist", "warm_temp_dry",
-              "cool_temp_moist", "cool_temp_dry",
-              "boreal_moist", "boreal_dry",
-              "polar_moist", "polar_dry")] <- 0
+            "warm_temp_moist", "warm_temp_dry",
+            "cool_temp_moist", "cool_temp_dry",
+            "boreal_moist", "boreal_dry",
+            "polar_moist", "polar_dry")] <- 0
   # IPCC decision tree
   clm[, , "tropical_wet"][which(clm[, , "temp"] > 18 & clm[, , "precip"] > 2000)] <- 1
   clm[, , "tropical_moist"][which(clm[, , "temp"] > 18 & clm[, , "precip"] <= 2000 & clm[, , "precip"] > 1000)] <- 1
@@ -77,10 +77,10 @@ calcClimateRegionsIPCC <- function(landusetypes = "all", cellular = FALSE, yearl
   clm[, , "polar_dry"][which(clm[, , "temp"] < 0 & clm[, , "t_monthly10"] == 0 & clm[, , "ratio"] == 0)] <- 1
 
   climateRegions <- clm[, , c("tropical_wet", "tropical_moist", "tropical_dry",
-                                 "warm_temp_moist", "warm_temp_dry",
-                                 "cool_temp_moist", "cool_temp_dry",
-                                 "boreal_moist", "boreal_dry",
-                                 "polar_moist", "polar_dry")]
+                              "warm_temp_moist", "warm_temp_dry",
+                              "cool_temp_moist", "cool_temp_dry",
+                              "boreal_moist", "boreal_dry",
+                              "polar_moist", "polar_dry")]
 
   if (cellular == TRUE) {
     out <- climateRegions
@@ -107,12 +107,11 @@ calcClimateRegionsIPCC <- function(landusetypes = "all", cellular = FALSE, yearl
     }
   }
 
-
   weight <- calcOutput("LanduseInitialisation", cellular = FALSE, aggregate = FALSE)
   weight <- time_interpolate(weight, interpolated_year = getYears(out), extrapolation_type = "constant")
   if (landusetypes != "all") {
-weight <- weight[, , landusetypes]
-}
+    weight <- weight[, , landusetypes]
+  }
 
   return(list(x = out,
               weight = weight,
@@ -120,7 +119,5 @@ weight <- weight[, , landusetypes]
               min = 0,
               max = 1,
               description = "Proportion of IPCC Climate Region",
-              isocountries = !cellular
-  )
-  )
+              isocountries = !cellular))
 }
