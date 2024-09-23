@@ -34,12 +34,13 @@ calcAtmosphericDepositionRates <- function(cellular = FALSE, cells = "lpjcell") 
   out[is.na(out)] <- 0
   out[is.infinite(out)] <- 0
 
-  return(list(
-    x = out,
-    weight = weight,
-    unit = "Mt Nr / Mha",
-    min = 0,
-    max = 2000,
-    isocountries = (!cellular & (nregions(out) != 1)),
-    description = "Atmospheric deposition per ha on different land types."))
+  weight <- weight + 10^(-10)
+
+  return(list(x = out,
+              weight = weight,
+              unit = "Mt Nr / Mha",
+              min = 0,
+              max = 2000,
+              isocountries = (!cellular & (nregions(out) != 1)),
+              description = "Atmospheric deposition per ha on different land types."))
 }
