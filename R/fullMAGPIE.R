@@ -44,13 +44,14 @@ fullMAGPIE <- function(rev = numeric_version("0.1"), dev = "") {
 
   # 09 drivers
   calcOutput("GDP",
+             unit = "constant 2017 Int$PPP",
              naming = "scenario",
              aggregate = FALSE,
              years = magYears,
              round = 3, # please dont increase rounding, this can create errors
              file = "f09_gdp_ppp_iso.csv")
   calcOutput("GDP",
-             unit = "constant 2005 US$MER",
+             unit = "constant 2017 US$MER",
              naming = "scenario",
              aggregate = FALSE,
              years = magYears,
@@ -76,6 +77,8 @@ fullMAGPIE <- function(rev = numeric_version("0.1"), dev = "") {
              round = 6) # please dont increase rounding, this can create errors
   calcOutput("PhysicalInactivity", aggregate = FALSE, years = magYears, round = 3,
              file = "f09_physical_inactivity.cs3")
+  calcOutput("GDPdeflator", aggregate = FALSE, round = 3, file = "fm_gdp_defl_ppp.cs4",
+             currency = "PPP")
 
   # 13 tc
   calcOutput("ExoTcDummy",       round = 4, file = "f13_tau_scenario.csv", aggregate = superregion)

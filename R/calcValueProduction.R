@@ -40,7 +40,7 @@ x <- prod[regions, , common] * prices[regions, , common]
 }
 return(list(x = x,
             weight = NULL,
-            unit = "US$05/tDM",
+            unit = "US$2017/tDM",
             description = "Crop Production Value",
             min = 0,
             max = Inf,
