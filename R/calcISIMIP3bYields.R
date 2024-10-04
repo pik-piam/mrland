@@ -87,13 +87,13 @@ calcISIMIP3bYields <- function(subtype = "yields:EPIC-IIASA:ukesm1-0-ll:ssp585:d
                             x[, , "winterwheat"] * harvArea[, , "winterwheat"])
     # tece mask does not cover all cells, only current harv area.
     # Fill in other areas with higher yielding variety, based on historical 30 year averages
-    higherw <- magpply(x[, 1981:2011, "springwheat", ],
-                       FUN = mean, MARGIN = c(1, 3)) > magpply(x[, 1981:2011, "winterwheat", ],
+    higherw <- magpply(x[, 1981:2011, "springwheat"],
+                       FUN = mean, MARGIN = c(1, 3)) > magpply(x[, 1981:2011, "winterwheat"],
                                                                FUN = mean, MARGIN = c(1, 3))
     higherw <- time_interpolate(setYears(higherw, 1961),
                                 interpolated_year = getYears(x),
                                 integrate_interpolated_years = TRUE)
-    higherw <- collapseNames(ifelse(higherw == 1, x[, , "springwheat", ], x[, , "winterwheat", ]))
+    higherw <- collapseNames(ifelse(higherw == 1, x[, , "springwheat"], x[, , "winterwheat"]))
 
     tece <- ifelse(tece == 0, higherw, tece)
 
