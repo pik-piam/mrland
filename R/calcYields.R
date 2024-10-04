@@ -198,8 +198,8 @@ calcYields <- function(source = c(lpjml = "ggcmi_phase3_nchecks_9ca735cb", isimi
     yields    <- as.array(yields)
     repHarmon <- as.array(repHarmon)
     yields[, commonYears, commonVars] <- repHarmon[, commonYears, commonVars]
-    yields    <- as.magpie(yields)
-    repHarmon <- as.magpie(repHarmon)
+    yields    <- as.magpie(yields, spatial = 1)
+    repHarmon <- as.magpie(repHarmon, spatial = 1)
 
   }
 
