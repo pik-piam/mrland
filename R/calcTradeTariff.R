@@ -23,7 +23,7 @@
 #' @importFrom reshape2 acast
 #' @importFrom magclass as.data.frame add_columns
 #' @importFrom magpiesets findset
-#' @importFrom GDPuc convertGDP
+#' @importFrom GDPuc toolConvertGDP
 #' @importFrom mstools toolCountryFillBilateral
 #'
 
@@ -112,10 +112,10 @@ calcTradeTariff<- function(gtap_version = "GTAP9", type_tariff = "total", bilate
     p <- add_dimension(p, dim = 1.2,   nm = getItems(p, dim = 1))
   }
   if (gtap_version == "GTAP9") {
-      y <- GDPuc::convertGDP(y, unit_in = "current US$MER",
-                             unit_out = "constant 2017 US$MER",
-                             replace_NAs = "no_conversion")
-    
+    y <- GDPuc::toolConvertGDP(y, unit_in = "current US$MER",
+                               unit_out = "constant 2017 US$MER",
+                               replace_NAs = "no_conversion")
+
     y <- setYears(y[, 2011, ], NULL)
   }
 

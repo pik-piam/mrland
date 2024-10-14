@@ -17,7 +17,7 @@
 #' }
 #' @importFrom magpiesets findset
 #' @importFrom magclass is.magpie
-#' @importFrom GDPuc convertGDP
+#' @importFrom GDPuc toolConvertGDP
 #' @importFrom mstools toolCountryFillBilateral
 
 calcTradeMargin <- function(gtap_version = "GTAP9", bilateral = FALSE, producer_price = "FAOini") { # nolint
@@ -143,10 +143,10 @@ calcTradeMargin <- function(gtap_version = "GTAP9", bilateral = FALSE, producer_
   weight[, , "distillers_grain"] <- weight[, , "tece"]
 
   if (gtap_version == "GTAP9") {
-      out <- GDPuc::convertGDP(out, unit_in = "current US$MER",
-                               unit_out = "constant 2017 US$MER",
-                               replace_NAs = "no_conversion")
-    
+    out <- GDPuc::toolConvertGDP(out, unit_in = "current US$MER",
+                                 unit_out = "constant 2017 US$MER",
+                                 replace_NAs = "no_conversion")
+
     out <- setYears(out[, 2011, ], NULL)
     weight <- setYears(weight[, 2011, ], NULL)
   } else {

@@ -70,8 +70,8 @@ calcGHGPrices <- function(emissions = "pollutants", datasource = "REMMAG", rev =
     description <- "GHG certificate prices for different scenarios based on data from REMIND-MAgPIE coupling"
 
     #convert from USD05MER to USD17MER based on USA values for all countries as the CO2 price is global.
-    x <- x * round(GDPuc::convertSingle(1, "USA", unit_in = "constant 2005 US$MER",
-                                        unit_out = "constant 2017 US$MER"), 2)
+    x <- x * round(GDPuc::toolConvertSingle(1, "USA", unit_in = "constant 2005 US$MER",
+                                            unit_out = "constant 2017 US$MER"), 2)
 
   } else if (datasource == "Strefler2021") {
     x <- readSource("Strefler2021", subtype = paste0("intensive_", rev))
@@ -103,8 +103,8 @@ calcGHGPrices <- function(emissions = "pollutants", datasource = "REMMAG", rev =
     getNames(x) <- gsub("^([^\\.]*)\\.(.*$)", "\\2.\\1", getNames(x))
 
     #convert from USD05MER to USD17MER based on USA values for all countries as the CO2 price is global.
-    x <- x * round(GDPuc::convertSingle(1, "USA", unit_in = "constant 2005 US$MER",
-                                        unit_out = "constant 2017 US$MER"), 2)
+    x <- x * round(GDPuc::toolConvertSingle(1, "USA", unit_in = "constant 2005 US$MER",
+                                            unit_out = "constant 2017 US$MER"), 2)
 
     description <- paste("GHG certificate prices for different scenarios taken",
                          "from Strefler et al 2021 (DOI 10.1038/s41467-021-22211-2)")
@@ -124,8 +124,8 @@ calcGHGPrices <- function(emissions = "pollutants", datasource = "REMMAG", rev =
     }
 
     #convert from USD05MER to USD17MER based on USA values for all countries as the CO2 price is global.
-    x <- x * round(GDPuc::convertSingle(1, "USA", unit_in = "constant 2005 US$MER",
-                                        unit_out = "constant 2017 US$MER"), 2)
+    x <- x * round(GDPuc::toolConvertSingle(1, "USA", unit_in = "constant 2005 US$MER",
+                                            unit_out = "constant 2017 US$MER"), 2)
 
     description <- "ghg certificate prices for different scenarios based on data from REMIND-MAgPIE-coupling"
 
@@ -202,8 +202,8 @@ calcGHGPrices <- function(emissions = "pollutants", datasource = "REMMAG", rev =
     x <- time_interpolate(x, seq(1995, 2150, 5), extrapolation_type = "constant")
 
     #convert from USD05MER to USD17MER based on USA values for all countries as the CO2 price is global.
-    x <- x * round(GDPuc::convertSingle(1, "USA", unit_in = "constant 2005 US$MER",
-                                        unit_out = "constant 2017 US$MER"), 2)
+    x <- x * round(GDPuc::toolConvertSingle(1, "USA", unit_in = "constant 2005 US$MER",
+                                            unit_out = "constant 2017 US$MER"), 2)
 
     description <- "ghg certificate prices for different scenarios based on CO2 prices provided by IMAGE"
 
