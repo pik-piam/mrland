@@ -44,7 +44,7 @@ readEATLancet <- function(subtype) {
 
   } else if (subtype == "recommend") {
 
-    data  <- read.csv("EAT_Lancet_recommendations_2.csv", sep = ",", header = TRUE,
+    data  <- read.csv("EAT_Lancet_recommendations_2p0.csv", sep = ",", header = TRUE,
                       stringsAsFactors = FALSE)
     mdata <- as.magpie(data, spatial = 0, temporal = 0, datacol = 2)
     getSets(mdata, fulldim = FALSE)[3] <- "target.unit.type"
