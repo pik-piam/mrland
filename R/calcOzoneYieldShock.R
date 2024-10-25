@@ -81,7 +81,7 @@ calcOzoneYieldShock <- function(
     list(
       x = yieldShock,
       weight = cropAreaWeights,
-      unit = "t per ha",
+      unit = "%",
       description = "percentage yield shock due to ozone",
       isocountries = FALSE
     )
