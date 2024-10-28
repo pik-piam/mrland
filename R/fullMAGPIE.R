@@ -235,6 +235,9 @@ fullMAGPIE <- function(rev = numeric_version("0.1"), dev = "") {
              file = "f38_historical_share_iso.csv")
   calcOutput("RegFactorShare", datasource = "USDA", factor = "cap", round = 4, aggregate = FALSE,
              file = "f38_regression_cap_share.csv")
+  calcOutput("FactorCostsCrops", aggregate = FALSE, years = c(1995, 2000, 2005, 2010), 
+             round = 2, file = "f38_hist_factor_costs_crops_iso.cs3")
+
 
   # 41 Area Equipped for Irrigation
   # f41_irrig(j) should be read out of calcAreaEquippedForIrrigation()
@@ -331,6 +334,8 @@ fullMAGPIE <- function(rev = numeric_version("0.1"), dev = "") {
              file = "f70_hist_prod_livst.cs3")
   calcOutput("FactorCostsLivst", round = 4, aggregate = TRUE, years = seq(1995, 2015, 5),
              file = "f70_hist_factor_costs_livst.cs3")
+  calcOutput("FactorCostsLivst", aggregate = FALSE, years = c(1995, 2000, 2005, 2010), 
+             round = 4, file = "f38_hist_factor_costs_livst_iso.cs3")
 
   # 73 timber -- Always needed on iso country level so no need to aggregate
   calcOutput("EndUseTimber", aggregate = FALSE, round = 4, file = "f73_prod_specific_timber.csv")
