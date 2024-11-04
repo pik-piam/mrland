@@ -225,7 +225,7 @@ fullMAGPIE <- function(rev = numeric_version("0.1"), dev = "") {
   # Question: Is f38_region_yield used? And why not f14_region_yield?
   calcOutput("FacReq", round = 2, aggregate = "GLO", years = 2005, file = "f38_fac_req_fao.csv")
   calcOutput("FacReq", round = 2, aggregate = TRUE, file = "f38_fac_req_fao_regional.cs4")
-  calcOutput("AgCapLabourShare", round = 2, aggregate = FALSE, years = c(1995, 2000, 2005, 2010),
+  calcOutput("AgCapLabourShare", round = 4, aggregate = FALSE, years = c(1995, 2000, 2005, 2010),
              file = "f38_historical_share_iso.csv")
   calcOutput("RegFactorShare", datasource = "USDA", round = 4, aggregate = FALSE,
              file = "f38_regression_cap_share.csv")
