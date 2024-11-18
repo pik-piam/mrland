@@ -85,9 +85,6 @@ readS4Nproject_input <- function(subtype = "co2prices") { # nolint: object_name_
     popReg <- merge(popReg, regionmapping, "Region")
     popReg <- collapseNames(as.magpie(data.frame(iso = popReg$iso, year = popReg$year, Value = popReg$Value)))
 
-    # country population share
-    pop_shr <- pop / popReg
-
     # bioenergy demand weighted by population
     x <- x * pop / popReg
   }
