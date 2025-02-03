@@ -32,6 +32,7 @@ Depends:
     madrat (>= 1.30),
     magclass (>= 6.13.1),
     mrcommons (>= 1.41.0),
+    mrdrivers (>= 6.0.0),
     mrfactors (>= 0.4.0),
     mrfaocore (>= 1.0.0),
     mrlandcore (>= 1.0.0),
