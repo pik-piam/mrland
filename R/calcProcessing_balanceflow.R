@@ -1,6 +1,6 @@
 
 calcProcessing_balanceflow<-function(){
-  massbalance<-calcOutput("FAOmassbalance",aggregate = F)
+  massbalance<-calcOutput("FAOmassbalance",aggregate = F) 
   
   # add cotton fibres, cause its not in the massabalance calculations
   conv<-calcOutput("Processing_conversion_factors",aggregate = F)[,,"ginning"]

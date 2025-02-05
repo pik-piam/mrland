@@ -1,16 +1,14 @@
 #' @importFrom magclass setNames getNames
 
-
 calcProcessing_conversion_factors<-function(){
-  massbalance<-calcOutput("FAOmassbalance",aggregate = F)
+  massbalance <- calcOutput("FAOmassbalance", aggregate = FALSE)
 
-  kpr<-findset("kpr")
+  kpr<-findset("kpr") 
   ksd<-findset("ksd")
   kprocessing<-findset("processing20")
   mb_reduced<-dimSums(massbalance[,,"dm"],dim=c(1,3.3))
   kmb<-paste("X",kpr,sep="")
 
-  
   production_estimated<-dimSums(mb_reduced[,,"production_estimated"][,,ksd],dim=c(3.2))
   convmatrix<-add_dimension(x = production_estimated,dim = 3.2,add = "kpr",nm = kmb)
   convmatrix<-add_dimension(x = convmatrix,dim = 3.1,add = "processing",nm = kprocessing)
@@ -30,6 +28,9 @@ calcProcessing_conversion_factors<-function(){
   tmp <- dimSums(mb_reduced2[,,c("branoil1")],dim = c(3.2))/dimSums(mb_reduced2[,,c("milling")],dim = c(3.2))
   convmatrix[,,"oils"][,,"milling"]<-setNames(tmp,paste0("X",getNames(tmp))) 
   
+  tmp <- dimSums(mb_reduced2[,,c("oilcakes1")],dim = c(3.2))/dimSums(mb_reduced2[,,c("milling")],dim = c(3.2))
+  convmatrix[,,"oilcakes"][,,"milling"]<-setNames(tmp,paste0("X",getNames(tmp))) 
+
   tmp <- dimSums(mb_reduced2[,,c("distillers_grain1")],dim = c(3.2))/dimSums(mb_reduced2[,,"distilling"],dim = c(3.2))
   convmatrix[,,"distillers_grain"][,,"distilling"]<-setNames(tmp,paste0("X",getNames(tmp)))   
   
@@ -39,7 +40,7 @@ calcProcessing_conversion_factors<-function(){
   tmp <- dimSums(mb_reduced2[,,c("molasses1")],dim = c(3.2))/dimSums(mb_reduced2[,,c("refining")],dim = c(3.2))
   convmatrix[,,"molasses"][,,"refining"]<-setNames(tmp,paste0("X",getNames(tmp))) 
   
-  tmp <- dimSums(mb_reduced2[,,c("sugar1")],dim = c(3.2))/dimSums(mb_reduced2[,,c("refining")],dim = c(3.2))
+  tmp <- dimSums(mb_reduced2[,,c("sugar1", "sugar2")],dim = c(3.2))/dimSums(mb_reduced2[,,c("refining")],dim = c(3.2))
   convmatrix[,,"sugar"][,,"refining"]<-setNames(tmp,paste0("X",getNames(tmp)))   
   
   tmp <- dimSums(mb_reduced2[,,c("oilcakes1")],dim = c(3.2))/dimSums(mb_reduced2[,,c("extracting")],dim = c(3.2))
@@ -64,7 +65,7 @@ calcProcessing_conversion_factors<-function(){
   convmatrix[,,"ginning"][,,"fibres"][,getYears(tmp),"Xcottn_pro"]=tmp
   convmatrix[is.nan(convmatrix)]<-0
   convmatrix[is.na(convmatrix)]<-0
-  
+  convmatrix[is.infinite(convmatrix)] <- 0
   # add conversion attributes of bioenergy crops into ethanol
   
   convmatrix[,,"extracting"][,,"ethanol"][,,"Xbetr"] <- 0.36
@@ -82,7 +83,6 @@ calcProcessing_conversion_factors<-function(){
     c<- dimSums(mb_reduced[,,ksd][,,"production_estimated"],dim=3.2)
     if (any(round(b-c,4)!=0)) {stop("conversion factors are incoherent with production_estimated column of massbalance!")}
   }
-  
   getNames(convmatrix,dim=3)<-substring(getNames(convmatrix,dim=3),2)
   
   convmatrix <- toolHoldConstantBeyondEnd(convmatrix)
