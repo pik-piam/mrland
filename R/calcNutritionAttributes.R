@@ -63,7 +63,7 @@ calcNutritionAttributes <- function() {
   out[, , "scp"][, , "kcal"]    <- 20.9 / 4.184
   out[, , "scp"][, , "protein"] <- 0.45
 
-  # add years beyond 2010
+  # add missing years
   years        <- findset("time")
   lastyear     <- paste0("y", max(getYears(out, as.integer = TRUE)))
   missingyears <- setdiff(years, getYears(out))
