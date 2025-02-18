@@ -20,8 +20,8 @@
 calcNINFruitvegRatio <- function(populationweight="PopulationPast") {
 
   ### FAO Commodity balance
-  FAO_CBS <- calcOutput(type = "FAOharmonized", aggregate = FALSE)[,,"food_supply_kcal"]
-  mag_past <- findset("past")
+  FAO_CBS <- calcOutput(type = "FAOharmonized", source = "join2010", aggregate = FALSE)[,,"food_supply_kcal"]
+  mag_past <- findset("past_til2020")
   FAO_CBS <- collapseNames(FAO_CBS[, mag_past,])
   getSets(FAO_CBS) <- c("region", "year", "ItemCodeItem")
 
@@ -36,15 +36,15 @@ calcNINFruitvegRatio <- function(populationweight="PopulationPast") {
 
 
   ### Sectoral mapping for FAO items
-  relationmatrix <- toolGetMapping("FAOitems.csv", type = "sectoral", where = "mappingfolder")
-  relationmatrix <- relationmatrix[, c("FoodBalanceItem", "k")]
-  relationmatrix <- relationmatrix[!duplicated(relationmatrix[, "FoodBalanceItem"]), ]
+  relationmatrix <- toolGetMapping("FAOitems_online_2010update.csv", type = "sectoral", where = "mrfaocore")
+  relationmatrix <- relationmatrix[, c("post2010_FoodBalanceItem", "k")]
+  relationmatrix <- relationmatrix[!duplicated(relationmatrix[, "post2010_FoodBalanceItem"]), ]
 
   ### Definitions of the food groups "others" and "fruitveg_others" (all fruits and vegetables contained in "others")
-  others <- relationmatrix[relationmatrix$k %in% "others", "FoodBalanceItem"]
+  others <- relationmatrix[relationmatrix$k %in% "others", "post2010_FoodBalanceItem"]
   fruitveg_others <- c("2601|Tomatoes and products",
                   "2602|Onions",
-                  "2605|Vegetables, Other",
+                  "2605|Vegetables, other",
                   "2611|Oranges, Mandarines",
                   "2612|Lemons, Limes and products",
                   "2613|Grapefruit and products",
@@ -53,7 +53,7 @@ calcNINFruitvegRatio <- function(populationweight="PopulationPast") {
                   "2618|Pineapples and products",
                   "2619|Dates",
                   "2620|Grapes and products (excl wine)",
-                  "2625|Fruits, Other"
+                  "2625|Fruits, other"
   )
   #Note: In FAOitems.csv 2615|Bananas and 2616|Plantains are mapped to the magpie commodity "cassav_sp".
 
