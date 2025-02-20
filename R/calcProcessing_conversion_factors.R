@@ -2,14 +2,13 @@
 
 
 calcProcessing_conversion_factors<-function(){
-  massbalance<-calcOutput("FAOmassbalance",aggregate = F)
+  massbalance<-calcOutput("FAOmassbalance_pre", version = "post2010", aggregate = F)
 
   kpr<-findset("kpr")
   ksd<-findset("ksd")
   kprocessing<-findset("processing20")
   mb_reduced<-dimSums(massbalance[,,"dm"],dim=c(1,3.3))
   kmb<-paste("X",kpr,sep="")
-
   
   production_estimated<-dimSums(mb_reduced[,,"production_estimated"][,,ksd],dim=c(3.2))
   convmatrix<-add_dimension(x = production_estimated,dim = 3.2,add = "kpr",nm = kmb)
@@ -39,7 +38,7 @@ calcProcessing_conversion_factors<-function(){
   tmp <- dimSums(mb_reduced2[,,c("molasses1")],dim = c(3.2))/dimSums(mb_reduced2[,,c("refining")],dim = c(3.2))
   convmatrix[,,"molasses"][,,"refining"]<-setNames(tmp,paste0("X",getNames(tmp))) 
   
-  tmp <- dimSums(mb_reduced2[,,c("sugar1")],dim = c(3.2))/dimSums(mb_reduced2[,,c("refining")],dim = c(3.2))
+  tmp <- dimSums(mb_reduced2[,,c("sugar1", "sugar2")],dim = c(3.2))/dimSums(mb_reduced2[,,c("refining")],dim = c(3.2))
   convmatrix[,,"sugar"][,,"refining"]<-setNames(tmp,paste0("X",getNames(tmp)))   
   
   tmp <- dimSums(mb_reduced2[,,c("oilcakes1")],dim = c(3.2))/dimSums(mb_reduced2[,,c("extracting")],dim = c(3.2))
