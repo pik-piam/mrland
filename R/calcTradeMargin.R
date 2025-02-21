@@ -78,37 +78,37 @@ calcTradeMargin <- function(gtap_version = "GTAP9", bilateral = FALSE, producer_
   }
   out <- y[, , kTrade] * p[, , kTrade]
 
- if (bilateral) {
-  out <- toolCountryFillBilateral(out, 0)
- } else {
-out <- toolCountryFill(out, 0)
-}
+  if (bilateral) {
+    out <- toolCountryFillBilateral(out, 0)
+  } else {
+    out <- toolCountryFill(out, 0)
+  }
 
-##### make countries with 0 margins high
-# take max by product and (exporting) region
-mapping <- toolGetMapping("regionmappingH12.csv", type = "regional", where = "mappingfolder")
-reg <- unique(mapping$RegionCode)
+  ##### make countries with 0 margins high
+  # take max by product and (exporting) region
+  mapping <- toolGetMapping("regionmappingH12.csv", type = "regional", where = "mappingfolder")
+  reg <- unique(mapping$RegionCode)
 
-for (i in getNames(out)) {
-  for (r in reg) {
-tmp <- out[list("Regions" = mapping[which(mapping$RegionCode == r), "CountryCode"]), , i]
-# round to include values that were in range of e-14
-tmp[which(round(tmp, 3) == 0)]  <- max(tmp)
-out[list("Regions" =  mapping[which(mapping$RegionCode == r), "CountryCode"]), , i] <- tmp
-}
-}
-# take 99 percetile by product for if still 0
-for (i in where(out == 0)$true$data) {
-tmp <- out[, , i]
-tmp[which(tmp == 0)]  <- quantile(tmp, .75)
-out[, , i] <- tmp
-}
+  for (i in getNames(out)) {
+    for (r in reg) {
+      tmp <- out[list("Regions" = mapping[which(mapping$RegionCode == r), "CountryCode"]), , i]
+      # round to include values that were in range of e-14
+      tmp[which(round(tmp, 3) == 0)]  <- max(tmp)
+      out[list("Regions" =  mapping[which(mapping$RegionCode == r), "CountryCode"]), , i] <- tmp
+    }
+  }
+  # take 99 percetile by product for if still 0
+  for (i in where(out == 0)$true$data) {
+    tmp <- out[, , i]
+    tmp[which(tmp == 0)]  <- quantile(tmp, .75)
+    out[, , i] <- tmp
+  }
 
   weight <- setYears(vxmd * voa, NULL)[, , kTrade]
- if (!any(c("wood", "woodfuel") %in% getNames(weight))) {
-  out <- add_columns(x = out, addnm = findset("kforestry"), dim = 3.1)
-  out[, , findset("kforestry")] <- out[, , "others"]
- }
+  if (!any(c("wood", "woodfuel") %in% getNames(weight))) {
+    out <- add_columns(x = out, addnm = findset("kforestry"), dim = 3.1)
+    out[, , findset("kforestry")] <- out[, , "others"]
+  }
 
   if (bilateral) {
     out <- toolCountryFillBilateral(out, 0)
