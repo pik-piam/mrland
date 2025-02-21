@@ -1,6 +1,6 @@
 #' @title calcHousehold_balanceflow
 #' @description Balance flow to make country-specific values on nutrition outcome consistent with global homogeneous nutrition values. In case of GE and Nr includes processing losses, in the case of DM just balances unhomogeneous products.
-#'#'
+#'
 #' @return magpie object in cellular resolution
 #' @author Benjamin Bodirsky
 #' @seealso
