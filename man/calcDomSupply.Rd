@@ -4,10 +4,12 @@
 \alias{calcDomSupply}
 \title{calcTradeMargin}
 \usage{
-calcDomSupply(nutrient = "dm")
+calcDomSupply(nutrient = "dm", extend = TRUE)
 }
 \arguments{
 \item{nutrient}{"dm"}
+
+\item{extend}{extend into magpie future years}
 }
 \value{
 magpie object domestic supply
