@@ -105,6 +105,30 @@ readREMIND <- function(subtype) {
                                        replacement = "R32M46-\\1",
                                        indicator = indicator))
     }
+
+    if (revision >= 4.118) {
+      # Please refer to the 2025-R34M49/readme.txt for the source of the data
+      fileList <- c("2025-R34M49/REMIND_generic_C_SSP1-NPi2025-rawluc-rem-5.mif",
+                    "2025-R34M49/REMIND_generic_C_SSP1-PkBudg1000-rawluc-rem-5.mif",
+                    "2025-R34M49/REMIND_generic_C_SSP1-PkBudg650-rawluc-rem-5.mif",
+                    "2025-R34M49/REMIND_generic_C_SSP2_lowEn-NPi2025-rawluc-rem-5.mif",
+                    "2025-R34M49/REMIND_generic_C_SSP2_lowEn-PkBudg1000-rawluc-rem-5.mif",
+                    "2025-R34M49/REMIND_generic_C_SSP2_lowEn-PkBudg650-rawluc-rem-5.mif",
+                    "2025-R34M49/REMIND_generic_C_SSP2-NPi2025-rawluc-rem-5.mif",
+                    "2025-R34M49/REMIND_generic_C_SSP2-PkBudg1000-rawluc-rem-5.mif",
+                    "2025-R34M49/REMIND_generic_C_SSP2-PkBudg650-rawluc-rem-5.mif",
+                    "2025-R34M49/REMIND_generic_C_SSP3-NPi2025-rawluc-rem-5.mif",
+                    "2025-R34M49/REMIND_generic_C_SSP3-PkBudg1000-rawluc-rem-5.mif",
+                    "2025-R34M49/REMIND_generic_C_SSP3-rollBack-rawluc-rem-5.mif",
+                    "2025-R34M49/REMIND_generic_C_SSP5-NPi2025-rawluc-rem-5.mif",
+                    "2025-R34M49/REMIND_generic_C_SSP5-PkBudg1000-rawluc-rem-5.mif",
+                    "2025-R34M49/REMIND_generic_C_SSP5-PkBudg650-rawluc-rem-5.mif")
+
+      out <- mbind(out, .readAndRename(fileList = fileList,
+                                       pattern = "C_SSP",
+                                       replacement = "R34M49-\\1",
+                                       indicator = indicator))
+    }
   }
 
   # shorten names of the REMIND scenarios
