@@ -11,7 +11,7 @@
 #' }
 #' @import magclass
 #' @importFrom madrat readSource calcOutput
-#' @importFrom magclass collapseNames time_interpolate mbind
+#' @importFrom magclass collapseNames time_interpolate mbind lowpass
 
 calc2ndBioDem <- function(datasource, rev = numeric_version("0.1")) {
 
@@ -103,6 +103,15 @@ calc2ndBioDem <- function(datasource, rev = numeric_version("0.1")) {
 
     ssp <- time_interpolate(ssp, getYears(rem), extrapolation_type = "constant")
     x <- mbind(ssp, rem, strefler)
+
+    # years
+    years <- getYears(x, as.integer = TRUE)
+    yrHist <- years[years > 1995 & years <= 2020]
+    yrFut <- years[years >= 2020]
+
+    # apply lowpass filter (not applied on 1st time step, applied separately on historic and future period)
+    iter <- 3
+    x <- mbind(x[, 1995, ], lowpass(x[, yrHist, ], i = iter), lowpass(x[, yrFut, ], i = iter)[, -1, ])
 
     # sort scenarios alphabetically
     x <- x[, , sort(getNames(x))]
