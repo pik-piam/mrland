@@ -23,12 +23,15 @@
 calcGHGPrices <- function(emissions = "pollutants", datasource = "REMMAG", rev = numeric_version("0.1")) {
 
   if (datasource == "REMIND") {
+  
+    # NOTE: for versions < 4.118 readREMIND automatically reads US$2005 from REMIND reports
+    
     x <- readSource("REMIND",
                     subtype = paste0("intensive_",
                                      rev,
                                      "_",
                                      "Price|Carbon (US$2017/t CO2)"))
-    outC <- x * 44 / 12 # US$2017/tCO2 -> US$2017/tC
+    outC <- x * 44 / 12 # US$/tCO2 -> US$/tC
     outC <- add_dimension(outC, dim = 3.1, nm = "co2_c")
 
     x <- readSource("REMIND",
@@ -36,7 +39,7 @@ calcGHGPrices <- function(emissions = "pollutants", datasource = "REMMAG", rev =
                                      rev,
                                      "_",
                                      "Price|N2O (US$2017/t N2O)"))
-    outN2oDirect <- x * 44 / 28 # US$2017/tN2O -> US$2017/tN
+    outN2oDirect <- x * 44 / 28 # US$/tN2O -> US$/tN
     outN2oDirect <- add_dimension(outN2oDirect, dim = 3.1, nm = "n2o_n_direct")
 
     x <- readSource("REMIND",
@@ -44,7 +47,7 @@ calcGHGPrices <- function(emissions = "pollutants", datasource = "REMMAG", rev =
                                      rev,
                                      "_",
                                      "Price|N2O (US$2017/t N2O)"))
-    outN2oIndirect <- x[, , ] * 44 / 28 # US$2017/tN2O -> US$2017/tN
+    outN2oIndirect <- x[, , ] * 44 / 28 # US$/tN2O -> US$/tN
     outN2oIndirect <- add_dimension(outN2oIndirect, dim = 3.1, nm = "n2o_n_indirect")
 
     x <- readSource("REMIND",
