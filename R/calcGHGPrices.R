@@ -23,43 +23,35 @@
 calcGHGPrices <- function(emissions = "pollutants", datasource = "REMMAG", rev = numeric_version("0.1")) {
 
   if (datasource == "REMIND") {
-    
-    # use US$2005 for revisions before 4.118
-    if (rev < 4.118) {
-      dollar <- "US$2005"
-    } else {
-      dollar <- "US$2017"
-    }
-  
     x <- readSource("REMIND",
                     subtype = paste0("intensive_",
                                      rev,
                                      "_",
-                                     paste0("Price|Carbon (", dollar, "/t CO2)"))
-    outC <- x * 44 / 12 # US$/tCO2 -> US$/tC
+                                     "Price|Carbon (US$2017/t CO2)"))
+    outC <- x * 44 / 12 # US$2017/tCO2 -> US$2017/tC
     outC <- add_dimension(outC, dim = 3.1, nm = "co2_c")
 
     x <- readSource("REMIND",
                     subtype = paste0("intensive_",
                                      rev,
                                      "_",
-                                     "Price|N2O (", dollar, "/t N2O)"))
-    outN2oDirect <- x * 44 / 28 # US$/tN2O -> US$/tN
+                                     "Price|N2O (US$2017/t N2O)"))
+    outN2oDirect <- x * 44 / 28 # US$2017/tN2O -> US$2017/tN
     outN2oDirect <- add_dimension(outN2oDirect, dim = 3.1, nm = "n2o_n_direct")
 
     x <- readSource("REMIND",
                     subtype = paste0("intensive_",
                                      rev,
                                      "_",
-                                     "Price|N2O (", dollar, "/t N2O)"))
-    outN2oIndirect <- x[, , ] * 44 / 28 # US$/tN2O -> US$/tN
+                                     "Price|N2O (US$2017/t N2O)"))
+    outN2oIndirect <- x[, , ] * 44 / 28 # US$2017/tN2O -> US$2017/tN
     outN2oIndirect <- add_dimension(outN2oIndirect, dim = 3.1, nm = "n2o_n_indirect")
 
     x <- readSource("REMIND",
                     subtype = paste0("intensive_",
                                      rev,
                                      "_",
-                                     "Price|CH4 (", dollar, "/t CH4)"))
+                                     "Price|CH4 (US$2017/t CH4)"))
     outCh4 <- x[, , ]
     outCh4 <- add_dimension(outCh4, dim = 3.1, nm = "ch4")
 
@@ -76,14 +68,6 @@ calcGHGPrices <- function(emissions = "pollutants", datasource = "REMMAG", rev =
     x[, , setToZero] <- 0
 
     description <- "GHG certificate prices for different scenarios based on data from REMIND-MAgPIE coupling"
-    
-    # convert US$ (for revisions before 4.118)
-    if (dollar == "US$2005") {
-      #convert from USD05MER to USD17MER based on USA values for all countries as the CO2 price is global.
-      x <- x * round(GDPuc::toolConvertSingle(1, "USA", unit_in = "constant 2005 US$MER",
-                                              unit_out = "constant 2017 US$MER"), 2)
-    }
-   
 
   } else if (datasource == "Strefler2021") {
     x <- readSource("Strefler2021", subtype = paste0("intensive_", rev))
