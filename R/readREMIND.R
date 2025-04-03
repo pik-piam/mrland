@@ -27,12 +27,12 @@ readREMIND <- function(subtype) {
     }
 
     # if data contains US$2005 convert them
-    if (grepl("US$2005", getNames(x)) {
+    if (any(grepl("US\\$2005", getItems(x, dim = 3.3)))) {
       #convert from USD05MER to USD17MER based on USA values for all countries as the CO2 price is global.
       x <- x * round(GDPuc::toolConvertSingle(1, "USA", unit_in = "constant 2005 US$MER",
                                               unit_out = "constant 2017 US$MER"), 2)
     }
-    
+
     # remove model and variable name
     x <- collapseNames(x)
     # shorten names of the REMIND scenarios
@@ -45,7 +45,7 @@ readREMIND <- function(subtype) {
     subtype  <- strsplit(subtype, split = "_")
     revision <- numeric_version(unlist(subtype)[2])
     indicator <- unlist(subtype)[3]
-    
+
     # for data that was added with revisions < 4.118 always look for US$2005
     indicator <- gsub("US\\$2017", "US$2005", indicator)
 
