@@ -33,7 +33,7 @@ calcPastureYield <- function(range_pastr = FALSE) { # nolint
                                nclasses = "nine", aggregate = FALSE)
     
     # use only common years for the following calculations
-    commonYears <- intersect(getYears(pastLand), magYearsPast)
+    commonYears <- intersect(getYears(land), magYearsPast)
     biomass <- biomass[, commonYears,]
     land <- land[, commonYears,]
     
