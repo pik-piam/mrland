@@ -23,35 +23,37 @@
 calcGHGPrices <- function(emissions = "pollutants", datasource = "REMMAG", rev = numeric_version("0.1")) {
 
   if (datasource == "REMIND") {
+    # NOTE: for versions < 4.118 readREMIND automatically reads US$2005 from REMIND reports
+
     x <- readSource("REMIND",
                     subtype = paste0("intensive_",
                                      rev,
                                      "_",
-                                     "Price|Carbon (US$2005/t CO2)"))
-    outC <- x * 44 / 12 # US$2005/tCO2 -> US$2005/tC
+                                     "Price|Carbon (US$2017/t CO2)"))
+    outC <- x * 44 / 12 # US$/tCO2 -> US$/tC
     outC <- add_dimension(outC, dim = 3.1, nm = "co2_c")
 
     x <- readSource("REMIND",
                     subtype = paste0("intensive_",
                                      rev,
                                      "_",
-                                     "Price|N2O (US$2005/t N2O)"))
-    outN2oDirect <- x * 44 / 28 # US$2005/tN2O -> US$2005/tN
+                                     "Price|N2O (US$2017/t N2O)"))
+    outN2oDirect <- x * 44 / 28 # US$/tN2O -> US$/tN
     outN2oDirect <- add_dimension(outN2oDirect, dim = 3.1, nm = "n2o_n_direct")
 
     x <- readSource("REMIND",
                     subtype = paste0("intensive_",
                                      rev,
                                      "_",
-                                     "Price|N2O (US$2005/t N2O)"))
-    outN2oIndirect <- x[, , ] * 44 / 28 # US$2005/tN2O -> US$2005/tN
+                                     "Price|N2O (US$2017/t N2O)"))
+    outN2oIndirect <- x[, , ] * 44 / 28 # US$/tN2O -> US$/tN
     outN2oIndirect <- add_dimension(outN2oIndirect, dim = 3.1, nm = "n2o_n_indirect")
 
     x <- readSource("REMIND",
                     subtype = paste0("intensive_",
                                      rev,
                                      "_",
-                                     "Price|CH4 (US$2005/t CH4)"))
+                                     "Price|CH4 (US$2017/t CH4)"))
     outCh4 <- x[, , ]
     outCh4 <- add_dimension(outCh4, dim = 3.1, nm = "ch4")
 
@@ -68,10 +70,6 @@ calcGHGPrices <- function(emissions = "pollutants", datasource = "REMMAG", rev =
     x[, , setToZero] <- 0
 
     description <- "GHG certificate prices for different scenarios based on data from REMIND-MAgPIE coupling"
-
-    #convert from USD05MER to USD17MER based on USA values for all countries as the CO2 price is global.
-    x <- x * round(GDPuc::toolConvertSingle(1, "USA", unit_in = "constant 2005 US$MER",
-                                            unit_out = "constant 2017 US$MER"), 2)
 
   } else if (datasource == "Strefler2021") {
     x <- readSource("Strefler2021", subtype = paste0("intensive_", rev))
@@ -102,7 +100,7 @@ calcGHGPrices <- function(emissions = "pollutants", datasource = "REMMAG", rev =
     # swap dimensions (scenario and gas) such that in the output file gas is in lines and scenarios in columns
     getNames(x) <- gsub("^([^\\.]*)\\.(.*$)", "\\2.\\1", getNames(x))
 
-    #convert from USD05MER to USD17MER based on USA values for all countries as the CO2 price is global.
+    # convert from USD05MER to USD17MER based on USA values for all countries as the CO2 price is global.
     x <- x * round(GDPuc::toolConvertSingle(1, "USA", unit_in = "constant 2005 US$MER",
                                             unit_out = "constant 2017 US$MER"), 2)
 
@@ -123,7 +121,7 @@ calcGHGPrices <- function(emissions = "pollutants", datasource = "REMMAG", rev =
       stop("unknown emission type")
     }
 
-    #convert from USD05MER to USD17MER based on USA values for all countries as the CO2 price is global.
+    # convert from USD05MER to USD17MER based on USA values for all countries as the CO2 price is global.
     x <- x * round(GDPuc::toolConvertSingle(1, "USA", unit_in = "constant 2005 US$MER",
                                             unit_out = "constant 2017 US$MER"), 2)
 
@@ -201,7 +199,7 @@ calcGHGPrices <- function(emissions = "pollutants", datasource = "REMMAG", rev =
     # fill missing years in the future
     x <- time_interpolate(x, seq(1995, 2150, 5), extrapolation_type = "constant")
 
-    #convert from USD05MER to USD17MER based on USA values for all countries as the CO2 price is global.
+    # convert from USD05MER to USD17MER based on USA values for all countries as the CO2 price is global.
     x <- x * round(GDPuc::toolConvertSingle(1, "USA", unit_in = "constant 2005 US$MER",
                                             unit_out = "constant 2017 US$MER"), 2)
 

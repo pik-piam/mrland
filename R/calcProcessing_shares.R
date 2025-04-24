@@ -3,7 +3,7 @@
 calcProcessing_shares <- function() { # nolint
   massbalance <- calcOutput("FAOmassbalance", aggregate = FALSE)
 
-  ksd <- findset("ksd") 
+  ksd <- findset("ksd")
   kpr <- findset("kpr")
 
   mbReduced <- dimSums(massbalance[, , "dm"], dim = c(3.3))

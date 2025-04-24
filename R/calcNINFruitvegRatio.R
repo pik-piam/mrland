@@ -17,22 +17,21 @@
 #' @importFrom madrat toolFillWithRegionAvg
 #' @export
 
-calcNINFruitvegRatio <- function(populationweight="PopulationPast") {
-
+calcNINFruitvegRatio <- function(populationweight = "PopulationPast") {
   ### FAO Commodity balance
-  FAO_CBS <- calcOutput(type = "FAOharmonized", source = "join2010", aggregate = FALSE)[,,"food_supply_kcal"]
-  mag_past <- findset("past_til2020")
-  FAO_CBS <- collapseNames(FAO_CBS[, mag_past,])
-  getSets(FAO_CBS) <- c("region", "year", "ItemCodeItem")
+  faoCbs <- calcOutput(type = "FAOharmonized", source = "join2010", aggregate = FALSE)[, , "food_supply_kcal"]
+  magpast <- findset("past_til2020")
+  faoCbs <- collapseNames(faoCbs[, magpast, ])
+  getSets(faoCbs) <- c("region", "year", "ItemCodeItem")
 
 
   ### Population weight
-  if (populationweight=="PopulationPast"){
-    weight=collapseNames(calcOutput("PopulationPast", aggregate = FALSE))
-  }else if (populationweight=="FAO"){
-    weight <- collapseNames(readSource(type="FAO", subtype = "Pop", convert = T)[,,"population"])/1000000
+  if (populationweight == "PopulationPast") {
+    weight <- collapseNames(calcOutput("PopulationPast", aggregate = FALSE))
+  } else if (populationweight == "FAO") {
+    weight <- collapseNames(readSource(type = "FAO", subtype = "Pop", convert = TRUE)[, , "population"]) / 1000000
   }
-  weight<-weight[,mag_past,]
+  weight <- weight[, magpast, ]
 
 
   ### Sectoral mapping for FAO items
@@ -42,42 +41,44 @@ calcNINFruitvegRatio <- function(populationweight="PopulationPast") {
 
   ### Definitions of the food groups "others" and "fruitveg_others" (all fruits and vegetables contained in "others")
   others <- relationmatrix[relationmatrix$k %in% "others", "post2010_FoodBalanceItem"]
-  fruitveg_others <- c("2601|Tomatoes and products",
-                  "2602|Onions",
-                  "2605|Vegetables, other",
-                  "2611|Oranges, Mandarines",
-                  "2612|Lemons, Limes and products",
-                  "2613|Grapefruit and products",
-                  "2614|Citrus, Other",
-                  "2617|Apples and products",
-                  "2618|Pineapples and products",
-                  "2619|Dates",
-                  "2620|Grapes and products (excl wine)",
-                  "2625|Fruits, other"
+  fruitvegOthers <- c("2601|Tomatoes and products",
+    "2602|Onions",
+    "2605|Vegetables, other",
+    "2611|Oranges, Mandarines",
+    "2612|Lemons, Limes and products",
+    "2613|Grapefruit and products",
+    "2614|Citrus, Other",
+    "2617|Apples and products",
+    "2618|Pineapples and products",
+    "2619|Dates",
+    "2620|Grapes and products (excl wine)",
+    "2625|Fruits, other"
   )
-  #Note: In FAOitems.csv 2615|Bananas and 2616|Plantains are mapped to the magpie commodity "cassav_sp".
+  # Note: In FAOitems.csv 2615|Bananas and 2616|Plantains are mapped to the magpie commodity "cassav_sp".
 
-  #check if all fruits and vegetables included in "fruitveg_others" are also contained in "others":
-  if (any(setdiff(fruitveg_others,others)) == TRUE) {
-    stop("The above definition of fruits and vegetables (fruitveg_others) is not consistent with the current mapping of FAO items to MAgPIE commodities.")
+  # check if all fruits and vegetables included in "fruitveg_others" are also contained in "others":
+  if (any(setdiff(fruitvegOthers, others)) == TRUE) {
+    stop("The above definition of fruits and vegetables (fruitveg_others)
+          is not consistent with the current mapping of FAO items to MAgPIE commodities.")
   }
 
   ### Aggregation of calories and calculation of ratios:
-  others_kcal <- dimSums(FAO_CBS[,,others],dim = 3)
-  fruitveg_kcal <- dimSums(FAO_CBS[,,fruitveg_others],dim = 3)
+  othersKcal <- dimSums(faoCbs[, , others], dim = 3)
+  fruitvegKcal <- dimSums(faoCbs[, , fruitvegOthers], dim = 3)
 
-  fruitveg2others_kcal_ratio <- fruitveg_kcal/others_kcal
-  out <- toolFillWithRegionAvg(fruitveg2others_kcal_ratio, weight = weight, verbose = FALSE)
+  fruitveg2othersKcalRatio <- fruitvegKcal / othersKcal
+  out <- toolFillWithRegionAvg(fruitveg2othersKcalRatio, weight = weight, verbose = FALSE)
 
   min <- 0
   max <- 1
 
 
-  return(list(x=out,
-              weight=weight,
-              unit="-",
-              description="share of fruits and vegetables in the others food group",
-              min=min
-              )
+  return(list(x = out,
+    weight = weight,
+    unit = "-",
+    description = "share of fruits and vegetables in the others food group",
+    min = min,
+    max = max
+  )
   )
 }
