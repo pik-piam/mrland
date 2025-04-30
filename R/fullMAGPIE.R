@@ -21,7 +21,7 @@ fullMAGPIE <- function(rev = numeric_version("0.1"), dev = "") {
   }
 
   magYears <- findset("time")
-  magYearsPast <- findset("past")
+  magYearsPast <- c(findset("past"), "y2015")
   shortYears <- findset("t_all")
 
   # Check if mapping comes with an additional "superregion" layer and if so,
@@ -234,7 +234,7 @@ fullMAGPIE <- function(rev = numeric_version("0.1"), dev = "") {
              file = "f38_historical_share_iso.csv")
   calcOutput("RegFactorShare", datasource = "USDA", round = 4, aggregate = FALSE,
              file = "f38_regression_cap_share.csv")
-  calcOutput("FactorCosts", aggregate = FALSE, years = c(1995, 2000, 2005, 2010), round = 2,
+  calcOutput("FactorCosts", aggregate = FALSE, years = c(1995, 2000, 2005, 2010, 2015), round = 2,
              file = "f38_hist_factor_costs_iso.csv")
 
   # 41 Area Equipped for Irrigation
