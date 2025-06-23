@@ -12,7 +12,7 @@
 #' @importFrom dplyr %>% inner_join
 #' @importFrom rlang .data :=
 
-calcTrademportSupplyStdDev <- function() {
+calcTradeImportSupplyStdDev <- function() {
 
   ratio <- calcOutput("TradeImportSupplyRatio", aggregate = FALSE)
 
