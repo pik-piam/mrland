@@ -147,7 +147,7 @@ calcTradeImportSupplyRatio <- function() {
 
   ratio <- collapseNames(ratio)
 
-  ratio2 <- time_interpolate(ratio1, interpolated_year = seq(1965, 1990, 5),
+  ratio2 <- time_interpolate(ratio, interpolated_year = seq(1965, 1990, 5),
                              integrate_interpolated_years = TRUE,
                              extrapolation_type = "constant")
   ratio2 <- time_interpolate(ratio2, interpolated_year = seq(2025, 2150, 5),
@@ -156,7 +156,7 @@ calcTradeImportSupplyRatio <- function() {
 
   t <- magpiesets::findset("t_all")
   ratio2 <- ratio2[, t, ]
-  ratio2 <- dimOrder(ratio2z, dim = 1, perm = c(2, 1))
+  ratio2 <- dimOrder(ratio2, dim = 1, perm = c(2, 1))
   citems <- intersect(getItems(ratio2, dim = 3), getItems(mb, dim = 3.1))
   weight <- mb[, , citems][, , "dm", drop = TRUE][, , "domestic_supply", drop = TRUE]
   weight <- toolHoldConstantBeyondEnd(weight)
