@@ -341,4 +341,6 @@ fullMAGPIE <- function(rev = numeric_version("0.1"), dev = "") {
   calcOutput("EndUseTimber", aggregate = FALSE, round = 4, outputStatistics = stats, file = "f73_prod_specific_timber.csv")
   calcOutput("EndUseTimber", aggregate = TRUE, round = 2, outputStatistics = stats, file = "f73_regional_timber_demand.csv")
   calcOutput("ConstructionWoodDemand", aggregate = TRUE, round = 2, outputStatistics = stats, file = "f73_construction_wood_demand.cs3")
+
+  mstools::toolWriteMadratLog()
 }
