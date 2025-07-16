@@ -318,6 +318,10 @@ fullMAGPIE <- function(rev = numeric_version("0.1"), dev = "") {
   calcOutput("HistBioplasticProd", aggregate = FALSE, years = c(2010, 2015, 2020), round = 3,
              file = "f62_hist_dem_bioplastic.csv")
 
+  # 63 biochar
+  calcOutput("BiocharProd", datasource = "REMIND", years = shortYears, round = 3, rev = rev,
+             biocharsystems = "disagg", unit = "EJ/yr", file = "f63_biochar_prod.cs3")
+
   # 70 livestock
   calcOutput("FeedBaskets",           years = magYears,  round = 4, file = "f70_feed_baskets.cs3")
   calcOutput("FeedBalanceflow",       years = magYears,  round = 4, file = "f70_feed_balanceflow.cs3")
