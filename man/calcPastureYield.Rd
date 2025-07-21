@@ -23,7 +23,7 @@ calcOutput("PastureYield")
 }
 }
 \seealso{
-\code{\link[madrat]{calcOutput}}, \code{\link{calcFAOmassbalance}},
+\code{\link[madrat]{calcOutput}}, \code{\link[mrcommons]{calcFAOmassbalance}},
 \code{\link[madrat]{readSource}}
 }
 \author{

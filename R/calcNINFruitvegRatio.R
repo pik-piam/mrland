@@ -8,7 +8,7 @@
 #' Normal datasource is PopulationPast
 #' @return List of magpie objects with results on country level, weight on country level, unit and description.
 #' @author Isabelle Weindl
-#' @seealso \code{\link[madrat]{calcOutput}}, \code{\link{calcNINTargets}}, \code{\link{calcFAOharmonized}},
+#' @seealso \code{\link[madrat]{calcOutput}}, \code{\link{calcNINTargets}}, \code{\link[mrfaocore]{calcFAOharmonized}},
 #' \code{\link{calcNINDiets}}
 #' @examples
 #' \dontrun{

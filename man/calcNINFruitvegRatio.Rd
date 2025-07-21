@@ -24,7 +24,7 @@ calcOutput("NINFruitvegRatio")
 }
 }
 \seealso{
-\code{\link[madrat]{calcOutput}}, \code{\link{calcNINTargets}}, \code{\link{calcFAOharmonized}},
+\code{\link[madrat]{calcOutput}}, \code{\link{calcNINTargets}}, \code{\link[mrfaocore]{calcFAOharmonized}},
 \code{\link{calcNINDiets}}
 }
 \author{

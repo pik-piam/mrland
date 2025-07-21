@@ -20,7 +20,7 @@ a <- calcTradeSelfSuff()
 
 }
 \seealso{
-\code{\link[madrat]{calcOutput}}, \code{\link{calcFAOmassbalance}}
+\code{\link[madrat]{calcOutput}}, \code{\link[mrcommons]{calcFAOmassbalance}}
 }
 \author{
 Ulrich Kreidenweis
