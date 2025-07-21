@@ -5,8 +5,8 @@
 #'                    should be split between rangelands and pastures.
 #' @return Pasture yields and corresponding weights as a list of two MAgPIE objects
 #' @author Isabelle Weindl, Marcos Alves
-#' @seealso \code{\link{calcOutput}}, \code{\link{calcFAOmassbalance}},
-#' \code{\link{readSource}}
+#' @seealso \code{\link[madrat]{calcOutput}}, \code{\link{calcFAOmassbalance}},
+#' \code{\link[madrat]{readSource}}
 #' @examples
 #' \dontrun{
 #' calcOutput("PastureYield")

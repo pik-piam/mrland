@@ -6,7 +6,7 @@
 #'
 #' @return Export shares
 #' @author Ulrich Kreidenweis, Xiaoxi Wang
-#' @seealso \code{\link{calcOutput}}, \code{\link{calcFAOmassbalance}}
+#' @seealso \code{\link[madrat]{calcOutput}}, \code{\link{calcFAOmassbalance}}
 #' @examples
 #' \dontrun{
 #' a <- calcTradeExportShr()

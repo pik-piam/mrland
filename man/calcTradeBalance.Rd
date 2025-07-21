@@ -21,7 +21,7 @@ a <- calcTradeBalance()
 }
 }
 \seealso{
-\code{\link{calcOutput}}, \code{\link{calcFAOmassbalance}}
+\code{\link[madrat]{calcOutput}}, \code{\link{calcFAOmassbalance}}
 }
 \author{
 Jan Philipp Dietrich

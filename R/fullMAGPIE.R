@@ -6,7 +6,7 @@
 #' @param dev For developing purposes, apply changes as per dev flag
 #' @author Jan Philipp Dietrich, Benjamin Leon Bodirsky, Florian Humpenoeder, Edna J. Molina Bacca
 #' @seealso
-#' \code{\link{readSource}}, \code{\link{getCalculations}}, \code{\link{calcOutput}}
+#' \code{\link[madrat]{readSource}}, \code{\link[madrat]{getCalculations}}, \code{\link[madrat]{calcOutput}}
 #' @examples
 #' \dontrun{
 #' retrieveData("MAGPIE", rev = numeric_version("12"),

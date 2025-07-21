@@ -25,7 +25,7 @@ Read in data from the NIN recommendations
 
 }
 \seealso{
-\code{\link{readSource}}
+\code{\link[madrat]{readSource}}
 }
 \author{
 Isabelle Weindl, Jan Philipp Dietrich
