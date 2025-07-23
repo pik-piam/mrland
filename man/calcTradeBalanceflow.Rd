@@ -25,7 +25,7 @@ a <- calcTradeBalanceflow()
 
 }
 \seealso{
-\code{\link{calcOutput}}, \code{\link{calcFAOmassbalance}}
+\code{\link[madrat]{calcOutput}}, \code{\link[mrcommons]{calcFAOmassbalance}}
 }
 \author{
 Ulrich Kreidenweis, Xiaoxi Wang
