@@ -12,7 +12,7 @@
 #'
 calcNitrogenFixationNdfa <- function() {
 
-  past      <- findset("past")
+  past      <- findset("past_til2020")
   ndfa      <- setYears(readSource("Herridge", subtype = "ndfa"), NULL)
   harvest   <- collapseNames(calcOutput("FAOmassbalance", aggregate = FALSE)[, , "nr"][, , "production"])
   harvest   <- add_dimension(harvest, dim = 3.1, add = "data1", nm = "organ")
