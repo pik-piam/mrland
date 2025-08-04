@@ -10,7 +10,7 @@
 #' a <- calcTradeImportSupplyRatio()
 #' }
 #'
-calcTradeImportSupplyRatio <- function() {
+calcTradeImportSupplyRatio <- function(yearly = FALSE) {
 
   mb <- calcOutput("FAOmassbalance_pre", aggregate = FALSE)
   tm <- calcOutput("FAOBilateralTrade", output = "qty",
@@ -154,8 +154,6 @@ calcTradeImportSupplyRatio <- function() {
                              integrate_interpolated_years = TRUE,
                              extrapolation_type = "constant")
 
-  t <- magpiesets::findset("t_all")
-  ratio2 <- ratio2[, t, ]
   ratio2 <- dimOrder(ratio2, dim = 1, perm = c(2, 1))
   citems <- intersect(getItems(ratio2, dim = 3), getItems(mb, dim = 3.1))
   weight <- mb[, , citems][, , "dm", drop = TRUE][, , "domestic_supply", drop = TRUE]
@@ -163,6 +161,11 @@ calcTradeImportSupplyRatio <- function() {
   cyears <- intersect(getYears(ratio2), getYears(weight))
   weight <- weight[, cyears, ]  
 
+  if (yearly == FALSE) {
+  t <- magpiesets::findset("t_all")
+  ratio2 <- ratio2[, t, ]
+  weight <- weight [, t, ]
+  }
 
   return(list(x = ratio2,
               weight = weight,

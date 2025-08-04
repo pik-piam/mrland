@@ -14,7 +14,8 @@
 
 calcTradeImportSupplyStdDev <- function() {
 
-  ratio <- calcOutput("TradeImportSupplyRatio", aggregate = FALSE)
+  ratio <- calcOutput("TradeImportSupplyRatio",# yearly = FALSE,
+                      aggregate = FALSE)
 
   ratiodf <- as.data.frame(collapseNames(ratio), rev = 2)
 
