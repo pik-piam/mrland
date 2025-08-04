@@ -186,12 +186,6 @@ fullMAGPIE <- function(rev = numeric_version("0.1"), dev = "") {
              aggregate = TRUE)
   calcOutput("TradeTariff", bilateral = TRUE, round = 6, file = "f21_trade_tariff_bilat.cs5",
              aggregate = TRUE)
-  calcOutput("TradeImportSupplyRatio", yearly = FALSE, round = 6, file = "f21_import_supply_historical.cs5",
-             aggregate = TRUE)
-  calcOutput("TradeImportSupplyStdDev", yearly = FALSE, round = 6, file = "f21_trade_bilat_stddev.cs5",
-              aggregate = TRUE)
-  calcOutput("TradeBilateralBalanceFlow", yearly = FALSE, round = 6, file = "f21_trade_bilat_balanceflow.cs5",
-             aggregate = TRUE)
 
   # 31 Past
   if (grepl("+grasslandRealization", dev)) {
