@@ -10,7 +10,7 @@
 #'
 #' @return global domestic balanceflows as MAgPIE object
 #' @author Ulrich Kreidenweis, Xiaoxi Wang
-#' @seealso \code{\link{calcOutput}}, \code{\link{calcFAOmassbalance}}
+#' @seealso \code{\link[madrat]{calcOutput}}, \code{\link[mrcommons]{calcFAOmassbalance}}
 #' @examples
 #' \dontrun{
 #' a <- calcTradeBalanceflow()

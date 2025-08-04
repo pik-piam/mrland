@@ -11,7 +11,7 @@
 #' country level, unit and description.
 #' @author David Chen, Benjamin Leon Bodirsky, David Klein
 #' @seealso
-#' \code{\link{readSSPResults}}
+#' \code{\link[mrcommons]{readSSPResults}}
 #' @examples
 #' \dontrun{
 #' calcOutput("GHGPrices")

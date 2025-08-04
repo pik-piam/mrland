@@ -11,7 +11,7 @@
 #' @return List of magpie objects with results on country level, weight on country level, unit and description.
 #'
 #' @author Isabelle Weindl
-#' @seealso \code{\link{calcOutput}}, \code{\link{readNIN}},
+#' @seealso \code{\link[madrat]{calcOutput}}, \code{\link{readNIN}},
 #' \code{\link{calcNINDiets}}, \code{\link{convertNIN}}
 #' @examples
 #' \dontrun{
