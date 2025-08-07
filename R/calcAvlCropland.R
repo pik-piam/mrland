@@ -60,8 +60,8 @@ calcAvlCropland <- function(marginal_land = "magpie", cell_upper_bound = 0.9, co
   }
 
   # read luh data in chosen base year
-  luh <- calcOutput("LUH2v2", landuse_types = "magpie", aggregate = FALSE,
-                    cellular = TRUE, cells = "lpjcell", irrigation = FALSE, years = luhBaseYear)
+  luh <- calcOutput("LUH3", landuseTypes = "magpie", aggregate = FALSE,
+                    cellular = TRUE, irrigation = FALSE, years = luhBaseYear)
   # sum land area per grid cell
   landarea <- dimSums(luh, dim = 3)
 
