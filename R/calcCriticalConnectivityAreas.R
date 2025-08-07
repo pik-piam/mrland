@@ -43,7 +43,7 @@ calcCriticalConnectivityAreas <- function(maginput = TRUE, nclasses = "seven",
     luh3 <- calcOutput("LUH3",
       landuseTypes = "LUH3", aggregate = FALSE,
       cellular = TRUE, irrigation = FALSE,
-      yrs = "y2015"
+      yrs = 2015
     )
     getYears(luh3) <- NULL
     getCells(luh3) <- getCells(cca)

@@ -33,9 +33,9 @@ calcProtectedAreaBaseline <- function(magpie_input = TRUE, nclasses = "seven", #
 
   if (magpie_input == TRUE) {
     luh3 <- calcOutput("LUH3",
-      landuse_types = "LUH3", aggregate = FALSE,
+      landuseTypes = "LUH3", aggregate = FALSE,
       cellular = TRUE, 
-      yrs = c("y1995", "y2000", "y2005", "y2010", "y2015", "y2020")
+      yrs = c(1995, 2000, 2005, 2010, 2015, 2020)
     )
 
     # extend the data set to all time steps provided in the protected area data

@@ -37,9 +37,9 @@ calcKeyBiodiversityAreas <- function(maginput = TRUE, unprotected = TRUE,
 
   if (maginput) {
     luh3 <- calcOutput("LUH3",
-      landuse_types = "LUH3", aggregate = FALSE,
+      landuseTypes = "LUH3", aggregate = FALSE,
       cellular = TRUE,
-      yrs = "y2015"
+      yrs = 2015
     )
     getYears(luh3) <- NULL
     getCells(luh3) <- getCells(kba)
