@@ -26,7 +26,7 @@ calcSNVTargetCropland <- function(maginput = TRUE, cells = "magpiecell") {
     luh <- calcOutput("LUH3",
       landuseTypes = "magpie", aggregate = FALSE,
       cellular = TRUE, 
-      selectyears = 2015
+      yrs = 2015
     )
     getYears(luh) <- NULL
     getCells(luh) <- getCells(targetCropland)
