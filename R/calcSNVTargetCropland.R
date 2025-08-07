@@ -23,9 +23,9 @@ calcSNVTargetCropland <- function(maginput = TRUE, cells = "magpiecell") {
   targetCropland <- readSource("Copernicus", subtype = "SNVTargetCropland", convert = "onlycorrect")
 
   if (maginput) {
-    luh <- calcOutput("LUH2v2",
+    luh <- calcOutput("LUH3",
       landuse_types = "magpie", aggregate = FALSE,
-      cellular = TRUE, cells = "lpjcell", irrigation = FALSE,
+      cellular = TRUE, 
       selectyears = "y2015"
     )
     getYears(luh) <- NULL
