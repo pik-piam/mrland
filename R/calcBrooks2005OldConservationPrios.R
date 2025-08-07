@@ -92,7 +92,7 @@ calcBrooks2005OldConservationPrios <- function(cells = "lpjcell", nclasses = "se
   x <- toolConditionalReplace(x, "<0", 0)
 
   urbanLand <- calcOutput("UrbanLandFuture",
-    subtype = "LUH2v2", aggregate = FALSE,
+    subtype = "LUH3", aggregate = FALSE,
     timestep = "5year", cells = cells
   )
 
