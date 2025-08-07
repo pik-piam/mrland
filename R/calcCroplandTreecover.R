@@ -27,7 +27,7 @@ calcCroplandTreecover <- function(maginput = TRUE, cells = "magpiecell", country
     luh <- calcOutput("LUH3",
       landuseTypes = "magpie", aggregate = FALSE,
       cellular = TRUE, irrigation = FALSE,
-      yrs = "y2015"
+      yrs = 2015
     )
     getYears(luh) <- NULL
     getCells(luh) <- getCells(treecover)
