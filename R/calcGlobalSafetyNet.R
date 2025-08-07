@@ -37,9 +37,9 @@ calcGlobalSafetyNet <- function(maginput = TRUE, nclasses = "seven", cells = "lp
 
   if (maginput == TRUE) {
     luh3 <- calcOutput("LUH3",
-      landuse_types = "LUH3", aggregate = FALSE,
-      cellular = TRUE, cells = "lpjcell", irrigation = FALSE,
-      selectyears = "y2015"
+      landuseTypes = "LUH3", aggregate = FALSE,
+      cellular = TRUE, irrigation = FALSE,
+      yrs = 2015
     )
     getYears(luh3) <- NULL
     getCells(luh3) <- getCells(gsn)
