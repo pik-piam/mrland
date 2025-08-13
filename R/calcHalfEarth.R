@@ -54,7 +54,7 @@ calcHalfEarth <- function(cells = "lpjcell", nclasses = "seven") {
   x <- toolConditionalReplace(x, "<0", 0)
 
   urbanLand <- calcOutput("UrbanLandFuture",
-                          subtype = "LUH2v2", aggregate = FALSE,
+                          subtype = "LUH3", aggregate = FALSE,
                           timestep = "5year", cells = cells)
 
   # Conservation potential after 2020
