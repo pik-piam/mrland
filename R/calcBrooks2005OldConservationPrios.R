@@ -24,7 +24,7 @@
 #' @importFrom mstools toolCoord2Isocell
 #'
 
-calcBrooks2005OldConservationPrios <- function(cells = "lpjcell", nclasses = "seven") {
+calcBrooks2005OldConservationPrios <- function(cells = "lpjcell", nclasses = "seven", rev = 0) {
   # Land area (in Mha):
   iniLU <- calcOutput("LanduseInitialisation",
     cellular = TRUE, cells = cells,
@@ -56,7 +56,6 @@ calcBrooks2005OldConservationPrios <- function(cells = "lpjcell", nclasses = "se
   if (cells == "magpiecell") {
     halfEarthShr <- toolCoord2Isocell(halfEarthShr, cells = cells)
   } else if (cells == "lpjcell") {
-    landArea <- collapseDim(addLocation(landArea), dim = c("N", "region"))
     tmp <- collapseDim(addLocation(x), dim = c("region", "cell"))
     x <- new.magpie(
       cells_and_regions = getCells(collapseDim(halfEarthShr, dim = "iso")),
