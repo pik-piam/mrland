@@ -198,7 +198,8 @@ calcConservationPriorities <- function(consvBaseYear = "y1750", cells = "lpjcell
   # in the additive options can be larger than total
   # land in a grid cell. This is corrected in the following.
 
-  luh3 <- calcOutput("LUH3", yrs = consvBaseYear)[, consvBaseYear, ]
+  luh3 <- calcOutput("LUH3", cellular = TRUE, yrs = consvBaseYear, 
+                     landuseTypes = "LUH3", aggregate = FALSE)[, consvBaseYear, ]
   if (cells == "magpiecell") {
     luh3 <- toolCoord2Isocell(luh3, cells = cells)
     getCells(luh3) <- getCells(consvPrio)
