@@ -17,47 +17,47 @@ calcProcessing_conversion_factors <- function() { #nolint
   mbReduced2 <- mbReduced[, , kpr]
 
   tmp <- dimSums(mbReduced2[, , c("alcohol1", "alcohol2", "alcohol3", "alcohol4")], dim = c(3.2)) /
-    dimSums(mbReduced2[, , c("fermentation")], dim = c(3.2))
+    dimSums(mbReduced2[, , "fermentation"], dim = 3.2)
   convmatrix[, , "alcohol"][, , "fermentation"] <- setNames(tmp, paste0("X", getNames(tmp)))
 
-  tmp <- dimSums(mbReduced2[, , c("brewers_grain1")], dim = c(3.2)) /
-    dimSums(mbReduced2[, , c("fermentation")], dim = c(3.2))
+  tmp <- dimSums(mbReduced2[, , "brewers_grain1"], dim = 3.2) /
+    dimSums(mbReduced2[, , "fermentation"], dim = 3.2)
   convmatrix[, , "distillers_grain"][, , "fermentation"] <- setNames(tmp, paste0("X", getNames(tmp)))
 
-  tmp <- dimSums(mbReduced2[, , c("brans1")], dim = c(3.2)) /
-    dimSums(mbReduced2[, , c("milling")], dim = c(3.2))
-  convmatrix[, , "brans"][, , c("milling")] <- setNames(tmp, paste0("X", getNames(tmp)))
+  tmp <- dimSums(mbReduced2[, , "brans1"], dim = 3.2) /
+    dimSums(mbReduced2[, , "milling"], dim = 3.2)
+  convmatrix[, , "brans"][, , "milling"] <- setNames(tmp, paste0("X", getNames(tmp)))
 
-  tmp <- dimSums(mbReduced2[, , c("branoil1")], dim = c(3.2)) /
-    dimSums(mbReduced2[, , c("milling")], dim = c(3.2))
+  tmp <- dimSums(mbReduced2[, , "branoil1"], dim = 3.2) /
+    dimSums(mbReduced2[, , "milling"], dim = 3.2)
   convmatrix[, , "oils"][, , "milling"] <- setNames(tmp, paste0("X", getNames(tmp)))
 
-  tmp <- dimSums(mbReduced2[, , c("oilcakes1")], dim = c(3.2)) /
-    dimSums(mbReduced2[, , c("milling")], dim = c(3.2))
+  tmp <- dimSums(mbReduced2[, , "oilcakes1"], dim = 3.2) /
+    dimSums(mbReduced2[, , "milling"], dim = 3.2)
   convmatrix[, , "oilcakes"][, , "milling"] <- setNames(tmp, paste0("X", getNames(tmp)))
 
-  tmp <- dimSums(mbReduced2[, , c("distillers_grain1")], dim = c(3.2)) /
-    dimSums(mbReduced2[, , "distilling"], dim = c(3.2))
+  tmp <- dimSums(mbReduced2[, , "distillers_grain1"], dim = 3.2) /
+    dimSums(mbReduced2[, , "distilling"], dim = 3.2)
   convmatrix[, , "distillers_grain"][, , "distilling"] <- setNames(tmp, paste0("X", getNames(tmp)))
 
-  tmp <- dimSums(mbReduced2[, , c("ethanol1")], dim = c(3.2)) /
-    dimSums(mbReduced2[, , c("distilling")], dim = c(3.2))
+  tmp <- dimSums(mbReduced2[, , "ethanol1"], dim = 3.2) /
+    dimSums(mbReduced2[, , "distilling"], dim = 3.2)
   convmatrix[, , "ethanol"][, , "distilling"] <- setNames(tmp, paste0("X", getNames(tmp)))
 
-  tmp <- dimSums(mbReduced2[, , c("molasses1")], dim = c(3.2)) /
-    dimSums(mbReduced2[, , c("refining")], dim = c(3.2))
+  tmp <- dimSums(mbReduced2[, , "molasses1"], dim = 3.2) /
+    dimSums(mbReduced2[, , "refining"], dim = 3.2)
   convmatrix[, , "molasses"][, , "refining"] <- setNames(tmp, paste0("X", getNames(tmp)))
 
-  tmp <- dimSums(mbReduced2[, , c("sugar1", "sugar2", "sugar3")], dim = c(3.2)) /
-    dimSums(mbReduced2[, , c("refining")], dim = c(3.2))
+  tmp <- dimSums(mbReduced2[, , c("sugar1", "sugar2", "sugar3")], dim = 3.2) /
+    dimSums(mbReduced2[, , "refining"], dim = c(3.2))
   convmatrix[, , "sugar"][, , "refining"] <- setNames(tmp, paste0("X", getNames(tmp)))
 
-  tmp <- dimSums(mbReduced2[, , c("oilcakes1")], dim = c(3.2)) /
-    dimSums(mbReduced2[, , c("extracting")], dim = c(3.2))
+  tmp <- dimSums(mbReduced2[, , "oilcakes1"], dim = 3.2) /
+    dimSums(mbReduced2[, , "extracting"], dim = 3.2)
   convmatrix[, , "oilcakes"][, , "extracting"] <- setNames(tmp, paste0("X", getNames(tmp)))
 
-  tmp <- dimSums(mbReduced2[, , c("oil1", "oil2")], dim = c(3.2)) /
-    dimSums(mbReduced2[, , c("extracting")], dim = c(3.2))
+  tmp <- dimSums(mbReduced2[, , c("oil1", "oil2")], dim = 3.2) /
+    dimSums(mbReduced2[, , "extracting"], dim = 3.2)
   convmatrix[, , "oils"][, , "extracting"] <- setNames(tmp, paste0("X", getNames(tmp)))
 
   # add conversion attributes of Single cell Protein (SCP)
@@ -73,8 +73,8 @@ calcProcessing_conversion_factors <- function() { #nolint
   convmatrix[, , "breeding"][, , "scp"][, , "Xsugr_cane"] <- 1 / 4.3 # 0.2326
   convmatrix[, , "breeding"][, , "scp"][, , "Xfoddr"] <- 1 / 5.6 # 0.1786
 
-  tmp <- collapseNames(dimSums(massbalance[, , "production"][, , "dm"][, , "fibres"], dim = c(1)) /
-                         dimSums(massbalance[, , "production"][, , "dm"][, , "cottn_pro"], dim = c(1)))
+  tmp <- collapseNames(dimSums(massbalance[, , "production"][, , "dm"][, , "fibres"], dim = 1) /
+                         dimSums(massbalance[, , "production"][, , "dm"][, , "cottn_pro"], dim = 1))
   convmatrix[, , "ginning"][, , "fibres"][, getYears(tmp), "Xcottn_pro"] <- tmp
   convmatrix[is.nan(convmatrix)] <- 0
   convmatrix[is.na(convmatrix)] <- 0

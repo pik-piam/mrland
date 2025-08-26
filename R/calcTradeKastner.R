@@ -34,11 +34,9 @@ calcTradeKastner <- function(datasource = "FAO") {
                                        tail(getYears(trade, as.integer = TRUE), n = 1)))
   tmfo <- toolHoldConstant(tmfo, years = c(1995:1996))
   tmfo[, 1995, ] <- tmfo[, 1996, ] <- tmfo[, 1997, ]
-  cyears <- intersect(getYears(trade), getYears(tmfo))
 
   trade <- mbind(trade, tmfo)
 
-  # toolScaleUpTradeMatrix <- function(
   mb <- calcOutput("FAOmassbalance_pre", aggregate = FALSE)
 
   tmi <- dimSums(trade, dim = 1.2)
@@ -49,7 +47,7 @@ calcTradeKastner <- function(datasource = "FAO") {
   citems <- intersect(getItems(trade, dim = 3), getItems(mb, dim = 3.1))
   missing <- setdiff(findset("k_trade"), citems)
   missing
-  # sodistillers grain, ethanol, scp, fish are now still  missing completely from the bilateral trade matrix
+  # distillers grain, ethanol, scp, fish are now still  missing completely from the bilateral trade matrix
   # the first 3 are made up producsts so don't exist in FAO either. Need to include fish at some point
 
 
@@ -59,9 +57,7 @@ calcTradeKastner <- function(datasource = "FAO") {
 
   imDiff[is.na(imDiff)] <- 0
 
-
   imDiff[is.infinite(imDiff)] <- 0
-  where(imDiff > 1000)$true
 
   # scale up imports
 
@@ -86,7 +82,6 @@ calcTradeKastner <- function(datasource = "FAO") {
   zz <- tmS2i[, cyears, citems] - mbi[, cyears, citems]
   magclass::where(round(zz, 2) < 0)$true
 
-  # but some don't even have any reporting for all proudcts, take a different year....
   tmS2 <- round(tmS2, 6)
   trade <- tmS2
   getItems(trade, dim = 1.2) <- gsub("[0-9]+", "", getItems(trade, dim = 1.2))
@@ -105,8 +100,6 @@ calcTradeKastner <- function(datasource = "FAO") {
 
   for (i in citems) {
     for (t in cyears) {
-
-      print(paste(c("doing", i, t), " "))
 
       ### create trade matrix ###
       tradeS <- trade[, t, i]

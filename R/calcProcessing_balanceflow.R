@@ -4,9 +4,9 @@ calcProcessing_balanceflow <- function() { # nolint
 
   # add cotton fibres, cause its not in the massabalance calculations
   conv <- calcOutput("Processing_conversion_factors", aggregate = FALSE)[, , "ginning"]
-  massbalance[, , "production_estimated"][, , "fibres"][, , "dm"] <- collapseNames(
-                                                                      conv[, getYears(massbalance), "ginning"][, ,"fibres"][, , "cottn_pro"] * #nolint
-                                                                                     massbalance[, , "production"][, , "dm"][, , "cottn_pro"]) #nolint
+  massbalance[, , "fibres.production_estimated.dm"] <- collapseNames(
+                                                                      conv[, getYears(massbalance), "ginning.fibres.cottn_pro"] *
+                                                                                     massbalance[, , "cottn_pro.production.dm"]) 
 
   ksd <- findset("ksd")
   ksdNoscp <- setdiff(ksd, "scp")
@@ -18,7 +18,7 @@ calcProcessing_balanceflow <- function() { # nolint
 
   out <- toolHoldConstantBeyondEnd(balanceflow)
   # fading out the balanceflow until 2050.
-  out <- convergence(origin = out, aim = 0, start_year = "y2010", end_year = "y2050", type = "s")
+  out <- convergence(origin = out, aim = 0, start_year = "y2015", end_year = "y2050", type = "s")
 
   return(list(x = out, weight = NULL, unit = "t DM",
               description = "Balanceflow to balance out the assumption of uniform

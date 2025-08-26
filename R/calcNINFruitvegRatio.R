@@ -19,7 +19,7 @@
 
 calcNINFruitvegRatio <- function(populationweight = "PopulationPast") {
   ### FAO Commodity balance
-  faoCbs <- calcOutput(type = "FAOharmonized", source = "join2010", aggregate = FALSE)[, , "food_supply_kcal"]
+  faoCbs <- calcOutput(type = "FAOharmonized", src = "join2010", aggregate = FALSE)[, , "food_supply_kcal"]
   magpast <- findset("past_til2020")
   faoCbs <- collapseNames(faoCbs[, magpast, ])
   getSets(faoCbs) <- c("region", "year", "ItemCodeItem")
