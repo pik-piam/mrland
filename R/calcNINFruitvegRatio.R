@@ -74,11 +74,9 @@ calcNINFruitvegRatio <- function(populationweight = "PopulationPast") {
 
 
   return(list(x = out,
-    weight = weight,
-    unit = "-",
-    description = "share of fruits and vegetables in the others food group",
-    min = min,
-    max = max
-  )
-  )
+              weight = weight,
+              unit = "-",
+              description = "share of fruits and vegetables in the others food group",
+              min = min,
+              max = max))
 }

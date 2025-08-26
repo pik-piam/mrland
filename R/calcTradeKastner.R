@@ -30,9 +30,9 @@ calcTradeKastner <- function(datasource = "FAO") {
   rm(tradel, tradeo)
   ## hold the timber bilat constant into past and future, as they just missing a few years
   tmfo <- toolHoldConstant(tmfo,
-                           years = c(tail(getYears(tmfo, as.integer = TRUE), n = 1):
-                                       tail(getYears(trade, as.integer = TRUE), n = 1)))
-  tmfo <- toolHoldConstant(tmfo, years = c(1995:1996))
+                           years = utils::tail(getYears(tmfo, as.integer = TRUE), n = 1):
+                                       utils::tail(getYears(trade, as.integer = TRUE), n = 1))
+  tmfo <- toolHoldConstant(tmfo, years = 1995:1996)
   tmfo[, 1995, ] <- tmfo[, 1996, ] <- tmfo[, 1997, ]
 
   trade <- mbind(trade, tmfo)
@@ -46,7 +46,6 @@ calcTradeKastner <- function(datasource = "FAO") {
   cyears <- intersect(getYears(trade), getYears(mb))
   citems <- intersect(getItems(trade, dim = 3), getItems(mb, dim = 3.1))
   missing <- setdiff(findset("k_trade"), citems)
-  missing
   # distillers grain, ethanol, scp, fish are now still  missing completely from the bilateral trade matrix
   # the first 3 are made up producsts so don't exist in FAO either. Need to include fish at some point
 
@@ -80,7 +79,6 @@ calcTradeKastner <- function(datasource = "FAO") {
 
   tmS2i <- dimSums(tmS2, dim = 1.2)
   zz <- tmS2i[, cyears, citems] - mbi[, cyears, citems]
-  magclass::where(round(zz, 2) < 0)$true
 
   tmS2 <- round(tmS2, 6)
   trade <- tmS2
