@@ -15,8 +15,7 @@
 calcTradeKastner <- function(datasource = "FAO") {
   # get production from mass balance
   prod <- collapseNames(calcOutput("FAOmassbalance_pre",
-                                   aggregate = FALSE)[, , "dm"][, , "production"])
-
+                                   aggregate = FALSE)[, , "production.dm"])
   # get bilateral trade matrix
   trade <- calcOutput("FAOBilateralTrade", output = "qty",
                       products = "kcr", harmonize = FALSE, fiveYear = FALSE, aggregate = FALSE)
@@ -31,9 +30,10 @@ calcTradeKastner <- function(datasource = "FAO") {
   ## hold the timber bilat constant into past and future, as they just missing a few years
   tmfo <- toolHoldConstant(tmfo,
                            years = utils::tail(getYears(tmfo, as.integer = TRUE), n = 1):
-                                       utils::tail(getYears(trade, as.integer = TRUE), n = 1))
+                            utils::tail(getYears(trade, as.integer = TRUE), n = 1))
   tmfo <- toolHoldConstant(tmfo, years = 1995:1996)
-  tmfo[, 1995, ] <- tmfo[, 1996, ] <- tmfo[, 1997, ]
+  tmfo[, 1995, ] <- tmfo[, 1997, ]
+  tmfo[, 1996, ] <- tmfo[, 1997, ]
 
   trade <- mbind(trade, tmfo)
 
@@ -47,7 +47,7 @@ calcTradeKastner <- function(datasource = "FAO") {
   citems <- intersect(getItems(trade, dim = 3), getItems(mb, dim = 3.1))
   missing <- setdiff(findset("k_trade"), citems)
   # distillers grain, ethanol, scp, fish are now still  missing completely from the bilateral trade matrix
-  # the first 3 are made up producsts so don't exist in FAO either. Need to include fish at some point
+  # the first 3 are made up products so don't exist in FAO either. Need to include fish at some point
 
 
   # here we look at difference between trade matrix and mass balance and scale the trade matrix to mb
@@ -72,7 +72,6 @@ calcTradeKastner <- function(datasource = "FAO") {
   allPRatio[is.na(allPRatio)] <- 0
 
   mbiS <-  mbi[, cyears, citems] * allPRatio[, cyears, ]
-
   tmS2 <- ifelse(dimSums(tmS[, cyears, citems], dim = 1.2) == 0 & mbiS[, cyears, citems] > 0,
                  mbiS,
                  tmS)
