@@ -22,7 +22,7 @@ calcPastureYield <- function(range_pastr = FALSE) { # nolint
     mapping$coordiso <- paste(mapping$coords, mapping$iso, sep = ".")
 
     # get years
-    magYearsPast <- findset("past_til2020")[c(7, 8, 9, 10, 11, 12)]
+    magYearsPast <- findset("past_til2020")[7:12]
 
     # read in country-level biomass
     biomass <- calcOutput("FAOmassbalance", aggregate = FALSE)[, , "production.dm"][, magYearsPast, "pasture"]

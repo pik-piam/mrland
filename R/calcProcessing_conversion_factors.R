@@ -9,14 +9,14 @@ calcProcessing_conversion_factors <- function() { #nolint
   mbReduced <- dimSums(massbalance[, , "dm"], dim = c(1, 3.3))
   kmb <- paste("X", kpr, sep = "")
 
-  productionEstimated <- dimSums(mbReduced[, , "production_estimated"][, , ksd], dim = c(3.2))
+  productionEstimated <- dimSums(mbReduced[, , "production_estimated"][, , ksd], dim = 3.2)
   convmatrix <- add_dimension(x = productionEstimated, dim = 3.2, add = "kpr", nm = kmb)
   convmatrix <- add_dimension(x = convmatrix, dim = 3.1, add = "processing", nm = kprocessing)
   convmatrix[, , ] <- 0
 
   mbReduced2 <- mbReduced[, , kpr]
 
-  tmp <- dimSums(mbReduced2[, , c("alcohol1", "alcohol2", "alcohol3", "alcohol4")], dim = c(3.2)) /
+  tmp <- dimSums(mbReduced2[, , c("alcohol1", "alcohol2", "alcohol3", "alcohol4")], dim = 3.2) /
     dimSums(mbReduced2[, , "fermentation"], dim = 3.2)
   convmatrix[, , "alcohol"][, , "fermentation"] <- setNames(tmp, paste0("X", getNames(tmp)))
 
@@ -49,7 +49,7 @@ calcProcessing_conversion_factors <- function() { #nolint
   convmatrix[, , "molasses"][, , "refining"] <- setNames(tmp, paste0("X", getNames(tmp)))
 
   tmp <- dimSums(mbReduced2[, , c("sugar1", "sugar2", "sugar3")], dim = 3.2) /
-    dimSums(mbReduced2[, , "refining"], dim = c(3.2))
+    dimSums(mbReduced2[, , "refining"], dim = 3.2)
   convmatrix[, , "sugar"][, , "refining"] <- setNames(tmp, paste0("X", getNames(tmp)))
 
   tmp <- dimSums(mbReduced2[, , "oilcakes1"], dim = 3.2) /
@@ -88,7 +88,7 @@ calcProcessing_conversion_factors <- function() { #nolint
   test <- TRUE
   if (test == TRUE) {
     kprocessingM <- setdiff(kprocessing, c("breeding", "ginning"))
-    mbReduced <- dimSums(massbalance[, , "dm"], dim = c(3.3))
+    mbReduced <- dimSums(massbalance[, , "dm"], dim = 3.3)
 
     a <- mbReduced[, , kprocessingM][, , kpr]
     getNames(a, dim = 1) <- paste0("X", getNames(a, dim = 1))
