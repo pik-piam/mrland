@@ -17,8 +17,6 @@
 #' \dontrun{
 #' calcOutput("EATLancetWaste")
 #' }
-#' @export
-
 calcEATLancetWaste <- function(out_type = "ratio") { # nolint: object_name_linter.
 
   fsupplyHist <- calcOutput(type = "FoodSupplyPast", aggregate = FALSE, per_capita = TRUE,

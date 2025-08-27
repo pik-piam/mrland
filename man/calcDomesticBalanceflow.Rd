@@ -10,7 +10,7 @@ calcDomesticBalanceflow()
 List of magpie objects with results on country level, weight on country level, unit and description.
 }
 \description{
-alculate the corrective balance flow that is needed
+calculate the corrective balance flow that is needed
 because global production doesn't equal global supply
 }
 \examples{
