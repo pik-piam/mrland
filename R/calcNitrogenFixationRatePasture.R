@@ -1,11 +1,13 @@
 calcNitrogenFixationRatePasture<-function(){
   a<-collapseNames(calcOutput("NitrogenBNF",aggregate = FALSE)[,,"past"])
   b<-collapseNames(calcOutput("LanduseInitialisation",aggregate = FALSE)[,,"past"])
+  commonYears <- intersect(getYears(a), getYears(b))
+  a <- a[, commonYears, ]
+  b <- b[, commonYears, ]
   a<-toolHoldConstantBeyondEnd(a)
   b<-toolHoldConstantBeyondEnd(b)
   out<-a/b
-  out[is.na(out)]<-0
-  
+  out[is.na(out)] <- 0
   
   return(list(x=out,
               weight=b,
