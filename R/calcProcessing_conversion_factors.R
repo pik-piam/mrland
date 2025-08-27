@@ -13,7 +13,7 @@
 #' }
 #' @importFrom magclass setNames getNames
 
-calcProcessing_conversion_factors <- function() { #nolint
+calcProcessing_conversion_factors <- function() { # nolint: object_name_linter.
   massbalance <- calcOutput("FAOmassbalance", aggregate = FALSE)
 
   kpr <- findset("kpr")
@@ -117,6 +117,6 @@ calcProcessing_conversion_factors <- function() { #nolint
   return(list(x = convmatrix,
               weight = NULL,
               unit = "t DM / t DM",
-              description = "Conversion factors of primary products into secondary products.
-                             primary product x conversion factor = secondary product"))
+              description = paste0("Conversion factors of primary products into secondary products. ",
+                                   "primary product x conversion factor = secondary product")))
 }
