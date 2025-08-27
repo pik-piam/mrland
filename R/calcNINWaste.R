@@ -53,10 +53,10 @@ calcNINWaste <- function(out_type = "ratio") { # nolint: object_name_linter.
                   "Roots and tubers", "Oilseeds and pulses", "Oilseeds and pulses", "Cereals",
                   "Oilseeds and pulses", "Oilseeds and pulses", "Oilseeds and pulses",
                   "Roots and tubers", "Roots and tubers", "Oilseeds and pulses", "Cereals", "Cereals")
-  relMatrix <- cbind(magKfo, faoWgroups)
+  relMatrix <- cbind(magKfo = magKfo, faoWgroups = faoWgroups)
 
   faoWasteShrDetailed <- toolAggregate(faoWasteShr, rel = relMatrix,
-                                       dim = 3, from = "FAO_wgroups", to = "Mag_kfo", partrel = FALSE)
+                                       dim = 3, from = "faoWgroups", to = "magKfo", partrel = FALSE)
 
   # Conversion factors into edible matter: 0.82 for roots, 0.79 for maize, 0.78 for whNIN, 1 for rice,
   # 0.78 for other grains, 0.77 for fruits and vegetables, 1 for mNIN, 1 for oilseeds and pulses, 1 for milk
@@ -70,7 +70,7 @@ calcNINWaste <- function(out_type = "ratio") { # nolint: object_name_linter.
   convFact[, , "Milk"] <- 1
 
   convFactDetailed <- toolAggregate(convFact, rel = relMatrix,
-                                    dim = 3, from = "FAO_wgroups", to = "Mag_kfo", partrel = FALSE)
+                                    dim = 3, from = "faoWgroups", to = "magKfo", partrel = FALSE)
 
   convFactDetailed[, , "brans"] <- 1
   convFactDetailed[, , "maiz"] <- 0.79
