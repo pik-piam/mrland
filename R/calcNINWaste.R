@@ -19,15 +19,18 @@
 #' }
 #' @export
 
-calcNINWaste <- function(out_type = "ratio") {
+calcNINWaste <- function(out_type = "ratio") { # nolint: object_name_linter.
 
-  fsupply.hist <- calcOutput(type = "FoodSupplyPast", aggregate = FALSE, per_capita = TRUE, product_aggr = FALSE, attributes = "kcal")[, "y2010", ]
+  fsupply.hist <- calcOutput(type = "FoodSupplyPast", aggregate = FALSE, per_capita = TRUE,
+                             product_aggr = FALSE, attributes = "kcal")[, "y2010", ]
   getSets(fsupply.hist)[3] <- "kfo"
 
-  Mag_Intake <- calcOutput("Intake", modelinput = "TRUE", standardize = FALSE, method = "FAO_WHO_UNU1985", aggregate = FALSE)
+  Mag_Intake <- calcOutput("Intake", modelinput = TRUE, standardize = FALSE, method = "FAO_WHO_UNU1985",
+                           aggregate = FALSE)
   Mag_Intake <- collapseNames(Mag_Intake[, "y2010", "SSP2"])
 
-  Mag_NIN_diets <- calcOutput(type = "NINDiets", aggregate = FALSE, attributes = c("kcal", "wm"), calib = TRUE, FAOcountr = FALSE)
+  Mag_NIN_diets <- calcOutput(type = "NINDiets", aggregate = FALSE, attributes = c("kcal", "wm"),
+                              calib = TRUE, FAOcountr = FALSE)
   Mag_NIN_diets <- collapseNames(Mag_NIN_diets[, "y2010", "BMK"][, , "2100kcal"][, , "wm", invert = TRUE])
 
   Intake_calib <- Mag_Intake / dimSums(Mag_NIN_diets, dim = 3)
@@ -44,13 +47,16 @@ calcNINWaste <- function(out_type = "ratio") {
   # mapping of FAO waste categories to MAgPIE food commodities
   Mag_kfo <- findset("kfo")
 
-  FAO_wgroups <- c("Oilseeds and pulses", "Cereals", "Roots and tubers", "Fish and seafood", "Oilseeds and pulses", "MNIN", "Eggs", "Milk", "MNIN", "MNIN",
-                   "Cereals", "Roots and tubers", "Oilseeds and pulses", "Fruits and vegetables", "Roots and tubers", "Oilseeds and pulses", "Oilseeds and pulses", "Cereals",
-                   "Oilseeds and pulses", "Oilseeds and pulses", "Oilseeds and pulses", "Roots and tubers", "Roots and tubers", "Oilseeds and pulses", "Cereals", "Cereals")
+  FAO_wgroups <- c("Oilseeds and pulses", "Cereals", "Roots and tubers", "Fish and seafood",
+                   "Oilseeds and pulses", "MNIN", "Eggs", "Milk", "MNIN", "MNIN",
+                   "Cereals", "Roots and tubers", "Oilseeds and pulses", "Fruits and vegetables",
+                   "Roots and tubers", "Oilseeds and pulses", "Oilseeds and pulses", "Cereals",
+                   "Oilseeds and pulses", "Oilseeds and pulses", "Oilseeds and pulses",
+                   "Roots and tubers", "Roots and tubers", "Oilseeds and pulses", "Cereals", "Cereals")
   rel_matrix <- cbind(Mag_kfo, FAO_wgroups)
 
   FAO_waste_shr_detailed <- toolAggregate(FAO_waste_shr, rel = rel_matrix,
-                                        dim = 3, from = "FAO_wgroups", to = "Mag_kfo", partrel = FALSE)
+                                          dim = 3, from = "FAO_wgroups", to = "Mag_kfo", partrel = FALSE)
 
   # Conversion factors into edible matter: 0.82 for roots, 0.79 for maize, 0.78 for whNIN, 1 for rice,
   # 0.78 for other grains, 0.77 for fruits and vegetables, 1 for mNIN, 1 for oilseeds and pulses, 1 for milk
@@ -64,14 +70,15 @@ calcNINWaste <- function(out_type = "ratio") {
   conv_fact[, , "Milk"] <- 1
 
   conv_fact_detailed <- toolAggregate(conv_fact, rel = rel_matrix,
-                                    dim = 3, from = "FAO_wgroups", to = "Mag_kfo", partrel = FALSE)
+                                      dim = 3, from = "FAO_wgroups", to = "Mag_kfo", partrel = FALSE)
 
   conv_fact_detailed[, , "brans"] <- 1
   conv_fact_detailed[, , "maiz"] <- 0.79
   conv_fact_detailed[, , "rice_pro"] <- 1
 
 
-  # calculation of the ratio of available food at household level to intake (accounting also for losses from food conversion into edible matter)
+  # calculation of the ratio of available food at household level to intake
+  # (accounting also for losses from food conversion into edible matter)
   overcons_FAO <- 1 / (1 - FAO_waste_shr_detailed) / conv_fact_detailed
 
   fsupply_estimated <- Mag_NIN_diets * overcons_FAO
@@ -97,13 +104,15 @@ calcNINWaste <- function(out_type = "ratio") {
     description <- "food-specific ratio between calorie supply and intake consistent with NIN-Lancet baseline diets"
   } else if (out_type == "ratio_detailed") {
     data.out <- overcons_FAO
-    description <- "food-specific ratio between calorie supply and intake based on FAO food waste shares and conversion factors"
+    description <- paste0("food-specific ratio between calorie supply and intake based on ",
+                          "FAO food waste shares and conversion factors")
   } else if (out_type == "calib") {
     data.out <-  fsupply_calib
-    description <- "factor for calibrating estimated food supply (based on NIN-Lancet baseline diets and FAO waste shares) to FAO food supply"
+    description <- paste0("factor for calibrating estimated food supply ",
+                          "(based on NIN-Lancet baseline diets and FAO waste shares) to FAO food supply")
   } else {
-stop("unknown type")
-}
+    stop("unknown type")
+  }
 
   data.out <- setYears(data.out, NULL)
 
@@ -115,6 +124,5 @@ stop("unknown type")
   return(list(x = data.out,
               weight = weight.pop,
               unit = unit,
-              description = description)
-  )
+              description = description))
 }
