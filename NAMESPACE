@@ -3,7 +3,6 @@
 export(calcEATFruitvegRatio)
 export(calcEATLancetDiets)
 export(calcEATLancetTargets)
-export(calcEATLancetWaste)
 export(calcEndUseTimber)
 export(calcFAOLossesWaste)
 export(calcForestAreaInitialization)
