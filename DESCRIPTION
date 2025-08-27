@@ -51,9 +51,7 @@ Imports:
     SPEI,
     stringr,
     terra,
-    withr,
-    MASS,
-    tidyr
+    withr
 Suggests:
     covr,
     ggplot2,
