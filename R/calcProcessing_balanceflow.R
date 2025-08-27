@@ -1,5 +1,4 @@
-
-calcProcessing_balanceflow <- function() { # nolint
+calcProcessing_balanceflow <- function() { # nolint: object_name_linter.
   massbalance <- calcOutput("FAOmassbalance", aggregate = FALSE)
 
   # add cotton fibres, cause its not in the massabalance calculations
@@ -11,8 +10,7 @@ calcProcessing_balanceflow <- function() { # nolint
   ksd <- findset("ksd")
   ksdNoscp <- setdiff(ksd, "scp")
   balanceflow <- dimSums(massbalance[, , "production"][, , "dm"][, , ksdNoscp], dim = c(3.2, 3.3)) -
-    dimSums(massbalance[, , "production_estimated"][, , "dm"][, , ksdNoscp],
-            dim = c(3.2, 3.3))
+    dimSums(massbalance[, , "production_estimated"][, , "dm"][, , ksdNoscp], dim = c(3.2, 3.3))
   balanceflow <- add_columns(balanceflow, addnm = "scp", dim = 3.1)
   balanceflow[, , "scp"] <- 0
 
@@ -21,6 +19,6 @@ calcProcessing_balanceflow <- function() { # nolint
   out <- convergence(origin = out, aim = 0, start_year = "y2015", end_year = "y2050", type = "s")
 
   return(list(x = out, weight = NULL, unit = "t DM",
-              description = "Balanceflow to balance out the assumption of uniform
-                        conversion factors worldwide but match FAO."))
+              description = paste0("Balanceflow to balance out the assumption of uniform ",
+                                   "conversion factors worldwide but match FAO.")))
 }
