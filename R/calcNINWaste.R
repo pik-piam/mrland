@@ -21,108 +21,108 @@
 
 calcNINWaste <- function(out_type = "ratio") { # nolint: object_name_linter.
 
-  fsupply.hist <- calcOutput(type = "FoodSupplyPast", aggregate = FALSE, per_capita = TRUE,
-                             product_aggr = FALSE, attributes = "kcal")[, "y2010", ]
-  getSets(fsupply.hist)[3] <- "kfo"
+  fsupplyHist <- calcOutput(type = "FoodSupplyPast", aggregate = FALSE, per_capita = TRUE,
+                            product_aggr = FALSE, attributes = "kcal")[, "y2010", ]
+  getSets(fsupplyHist)[3] <- "kfo"
 
-  Mag_Intake <- calcOutput("Intake", modelinput = TRUE, standardize = FALSE, method = "FAO_WHO_UNU1985",
-                           aggregate = FALSE)
-  Mag_Intake <- collapseNames(Mag_Intake[, "y2010", "SSP2"])
+  magIntake <- calcOutput("Intake", modelinput = TRUE, standardize = FALSE, method = "FAO_WHO_UNU1985",
+                          aggregate = FALSE)
+  magIntake <- collapseNames(magIntake[, "y2010", "SSP2"])
 
-  Mag_NIN_diets <- calcOutput(type = "NINDiets", aggregate = FALSE, attributes = c("kcal", "wm"),
-                              calib = TRUE, FAOcountr = FALSE)
-  Mag_NIN_diets <- collapseNames(Mag_NIN_diets[, "y2010", "BMK"][, , "2100kcal"][, , "wm", invert = TRUE])
+  magNINDiets <- calcOutput(type = "NINDiets", aggregate = FALSE, attributes = c("kcal", "wm"),
+                            calib = TRUE, FAOcountr = FALSE)
+  magNINDiets <- collapseNames(magNINDiets[, "y2010", "BMK"][, , "2100kcal"][, , "wm", invert = TRUE])
 
-  Intake_calib <- Mag_Intake / dimSums(Mag_NIN_diets, dim = 3)
-  Intake_calib[which(!is.finite(Intake_calib))] <- 1
+  intakeCalib <- magIntake / dimSums(magNINDiets, dim = 3)
+  intakeCalib[which(!is.finite(intakeCalib))] <- 1
 
-  Mag_NIN_diets <- Mag_NIN_diets * Intake_calib
+  magNINDiets <- magNINDiets * intakeCalib
 
 
   #### Calculation of the ratio between food supply at household level and food intake
   # based on FAO estimates on food waste at consumption level and food conversion factors
 
-  FAO_waste_shr <- readSource(type = "FAOLossesWaste", subtype = "Consumption")
+  faoWasteShr <- readSource(type = "FAOLossesWaste", subtype = "Consumption")
 
   # mapping of FAO waste categories to MAgPIE food commodities
-  Mag_kfo <- findset("kfo")
+  magKfo <- findset("kfo")
 
-  FAO_wgroups <- c("Oilseeds and pulses", "Cereals", "Roots and tubers", "Fish and seafood",
-                   "Oilseeds and pulses", "MNIN", "Eggs", "Milk", "MNIN", "MNIN",
-                   "Cereals", "Roots and tubers", "Oilseeds and pulses", "Fruits and vegetables",
-                   "Roots and tubers", "Oilseeds and pulses", "Oilseeds and pulses", "Cereals",
-                   "Oilseeds and pulses", "Oilseeds and pulses", "Oilseeds and pulses",
-                   "Roots and tubers", "Roots and tubers", "Oilseeds and pulses", "Cereals", "Cereals")
-  rel_matrix <- cbind(Mag_kfo, FAO_wgroups)
+  faoWgroups <- c("Oilseeds and pulses", "Cereals", "Roots and tubers", "Fish and seafood",
+                  "Oilseeds and pulses", "MNIN", "Eggs", "Milk", "MNIN", "MNIN",
+                  "Cereals", "Roots and tubers", "Oilseeds and pulses", "Fruits and vegetables",
+                  "Roots and tubers", "Oilseeds and pulses", "Oilseeds and pulses", "Cereals",
+                  "Oilseeds and pulses", "Oilseeds and pulses", "Oilseeds and pulses",
+                  "Roots and tubers", "Roots and tubers", "Oilseeds and pulses", "Cereals", "Cereals")
+  relMatrix <- cbind(magKfo, faoWgroups)
 
-  FAO_waste_shr_detailed <- toolAggregate(FAO_waste_shr, rel = rel_matrix,
-                                          dim = 3, from = "FAO_wgroups", to = "Mag_kfo", partrel = FALSE)
+  faoWasteShrDetailed <- toolAggregate(faoWasteShr, rel = relMatrix,
+                                       dim = 3, from = "FAO_wgroups", to = "Mag_kfo", partrel = FALSE)
 
   # Conversion factors into edible matter: 0.82 for roots, 0.79 for maize, 0.78 for whNIN, 1 for rice,
   # 0.78 for other grains, 0.77 for fruits and vegetables, 1 for mNIN, 1 for oilseeds and pulses, 1 for milk
-  conv_fact <- dimSums(FAO_waste_shr, dim = 1)
-  conv_fact[, , ] <- 1
-  conv_fact[, , "Cereals"] <- 0.78
-  conv_fact[, , "Roots and tubers"] <- 0.82
-  conv_fact[, , "Oilseeds and pulses"] <- 1
-  conv_fact[, , "Fruits and vegetables"] <- 0.77
-  conv_fact[, , "MNIN"] <- 1
-  conv_fact[, , "Milk"] <- 1
+  convFact <- dimSums(faoWasteShr, dim = 1)
+  convFact[, , ] <- 1
+  convFact[, , "Cereals"] <- 0.78
+  convFact[, , "Roots and tubers"] <- 0.82
+  convFact[, , "Oilseeds and pulses"] <- 1
+  convFact[, , "Fruits and vegetables"] <- 0.77
+  convFact[, , "MNIN"] <- 1
+  convFact[, , "Milk"] <- 1
 
-  conv_fact_detailed <- toolAggregate(conv_fact, rel = rel_matrix,
-                                      dim = 3, from = "FAO_wgroups", to = "Mag_kfo", partrel = FALSE)
+  convFactDetailed <- toolAggregate(convFact, rel = relMatrix,
+                                    dim = 3, from = "FAO_wgroups", to = "Mag_kfo", partrel = FALSE)
 
-  conv_fact_detailed[, , "brans"] <- 1
-  conv_fact_detailed[, , "maiz"] <- 0.79
-  conv_fact_detailed[, , "rice_pro"] <- 1
+  convFactDetailed[, , "brans"] <- 1
+  convFactDetailed[, , "maiz"] <- 0.79
+  convFactDetailed[, , "rice_pro"] <- 1
 
 
   # calculation of the ratio of available food at household level to intake
   # (accounting also for losses from food conversion into edible matter)
-  overcons_FAO <- 1 / (1 - FAO_waste_shr_detailed) / conv_fact_detailed
+  overconsFAO <- 1 / (1 - faoWasteShrDetailed) / convFactDetailed
 
-  fsupply_estimated <- Mag_NIN_diets * overcons_FAO
-  fsupply_calib <-  dimSums(fsupply.hist, dim = 3) / dimSums(fsupply_estimated, dim = 3)
-  fsupply_calib[which(!is.finite(fsupply_calib))] <- 1
+  fsupplyEstimated <- magNINDiets * overconsFAO
+  fsupplyCalib <-  dimSums(fsupplyHist, dim = 3) / dimSums(fsupplyEstimated, dim = 3)
+  fsupplyCalib[which(!is.finite(fsupplyCalib))] <- 1
 
-  overcons_calib <- overcons_FAO * fsupply_calib
+  overconsCalib <- overconsFAO * fsupplyCalib
 
 
-  Mag_overcons_fctr <- dimSums(fsupply.hist, dim = 3) / Mag_Intake
-  if (min(Mag_overcons_fctr) == 0) {
-    temp_overcons <- Mag_overcons_fctr
-    temp_overcons[which(Mag_overcons_fctr == 0)] <- NA
-    replacement <- as.magpie(apply(temp_overcons, 3, mean, na.rm = TRUE))
-    Mag_overcons_fctr[which(Mag_overcons_fctr == 0)] <- replacement
+  magOverconsFctr <- dimSums(fsupplyHist, dim = 3) / magIntake
+  if (min(magOverconsFctr) == 0) {
+    tempOvercons <- magOverconsFctr
+    tempOvercons[which(magOverconsFctr == 0)] <- NA
+    replacement <- as.magpie(apply(tempOvercons, 3, mean, na.rm = TRUE))
+    magOverconsFctr[which(magOverconsFctr == 0)] <- replacement
   }
 
   if (out_type == "ratio") {
-    data.out <- Mag_overcons_fctr
+    dataOut <- magOverconsFctr
     description <- "ratio between total calorie supply and total calorie intake"
   } else if (out_type == "ratio_detailed_calib") {
-    data.out <- overcons_calib
+    dataOut <- overconsCalib
     description <- "food-specific ratio between calorie supply and intake consistent with NIN-Lancet baseline diets"
   } else if (out_type == "ratio_detailed") {
-    data.out <- overcons_FAO
+    dataOut <- overconsFAO
     description <- paste0("food-specific ratio between calorie supply and intake based on ",
                           "FAO food waste shares and conversion factors")
   } else if (out_type == "calib") {
-    data.out <-  fsupply_calib
+    dataOut <-  fsupplyCalib
     description <- paste0("factor for calibrating estimated food supply ",
                           "(based on NIN-Lancet baseline diets and FAO waste shares) to FAO food supply")
   } else {
     stop("unknown type")
   }
 
-  data.out <- setYears(data.out, NULL)
+  dataOut <- setYears(dataOut, NULL)
 
   #### Define weights and units
 
-  weight.pop <- collapseNames(calcOutput("Population", scenario = "SSP2", aggregate = FALSE)[, "y2010", ])
+  weightPop <- collapseNames(calcOutput("Population", scenario = "SSP2", aggregate = FALSE)[, "y2010", ])
   unit <- "-"
 
-  return(list(x = data.out,
-              weight = weight.pop,
+  return(list(x = dataOut,
+              weight = weightPop,
               unit = unit,
               description = description))
 }
