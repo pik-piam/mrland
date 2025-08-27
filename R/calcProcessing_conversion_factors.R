@@ -1,3 +1,16 @@
+#' @title calcProcessing_conversion_factors
+#'
+#' @description Calculates global conversion factors
+#' from the FAOmassbalance_pre in order to feed to MAgPIE for
+#' conversion of primary to secondary products
+#'
+#' @return magpie object of conversion factors
+#' @author Benjamin Bodirsky, David M Chen
+#' @examples
+#' \dontrun{
+#' a <- calcOutput("Processing_conversion_factors",
+#'                 aggregate = FALSE)
+#' }
 #' @importFrom magclass setNames getNames
 
 calcProcessing_conversion_factors <- function() { #nolint
@@ -84,9 +97,8 @@ calcProcessing_conversion_factors <- function() { #nolint
   convmatrix[, , "extracting"][, , "ethanol"][, , "Xbetr"] <- 0.36
   convmatrix[, , "extracting"][, , "ethanol"][, , "Xbegr"] <- 0.36
 
-  # test
-  test <- TRUE
-  if (test == TRUE) {
+    # test that the conversion factors are congruent with the 
+    # production_estimated in FAOmassbalance_pre
     kprocessingM <- setdiff(kprocessing, c("breeding", "ginning"))
     mbReduced <- dimSums(massbalance[, , "dm"], dim = 3.3)
 
@@ -97,7 +109,7 @@ calcProcessing_conversion_factors <- function() { #nolint
     if (any(round(b - c, 4) != 0)) {
       stop("conversion factors are incoherent with production_estimated column of massbalance!")
     }
-  }
+
   getNames(convmatrix, dim = 3) <- substring(getNames(convmatrix, dim = 3), 2)
 
   convmatrix <- toolHoldConstantBeyondEnd(convmatrix)

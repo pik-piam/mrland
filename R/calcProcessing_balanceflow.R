@@ -1,3 +1,20 @@
+#' @title calcProcessing_balanceflow
+#'
+#' @description Calculates the difference between
+#' what is recorded in FAOSTAT production of secondary
+#' products, and what is calculated from our global
+#' processing conversion factors in order to meet FAOSTAT
+#' production. Fades out by 2050.
+#'
+#' @return magpie object of secondary product balanceflow
+#' @author Benjamin Bodirsky, David M Chen
+#' @seealso \code{\link[mrland]{calcProcessing_conversion_factors}}
+
+#' @examples
+#' \dontrun{
+#' a <- calcOutput("Processing_balanceflow",
+#'                 aggregate = FALSE)
+#' }
 
 calcProcessing_balanceflow <- function() { # nolint
   massbalance <- calcOutput("FAOmassbalance", aggregate = FALSE)
