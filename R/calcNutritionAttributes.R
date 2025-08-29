@@ -29,9 +29,9 @@ calcNutritionAttributes <- function() {
     message(paste("The following items violate massbalance constraints: ",
                   paste(unique(dimnames(household)[[3]][which(household > fooduseFlour, arr.ind = TRUE)[, 3]]),
                         collapse = " "),
-                  ". Violating items are corrected through household balance flow.
-                  Epecially for livestock products it seems like FAOSTAT's nutrient conversion may be very
-                  different from our reasonable values."))
+                  ". Violating items are corrected through household balance flow.",
+                  "Epecially for livestock products it seems like FAOSTAT's nutrient conversion may be very",
+                  "different from our reasonable values."))
     household[household > fooduseFlour] <- fooduseFlour[household > fooduseFlour]
   }
 

@@ -1,5 +1,5 @@
 #' @title calcDomesticBalanceflow
-#' @description alculate the corrective balance flow that is needed
+#' @description calculate the corrective balance flow that is needed
 #' because global production doesn't equal global supply
 #'
 #' @return List of magpie objects with results on country level, weight on country level, unit and description.

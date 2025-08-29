@@ -8,8 +8,8 @@
 #' Normal datasource is PopulationPast
 #' @return List of magpie objects with results on country level, weight on country level, unit and description.
 #' @author Isabelle Weindl, Felicitas Beier
-#' @seealso \code{\link[madrat]{calcOutput}}, \code{\link{calcEATLancetTargets}}, \code{\link[mrfaocore]{calcFAOharmonized}},
-#' \code{\link{calcEATLancetDiets}}
+#' @seealso \code{\link[madrat]{calcOutput}}, \code{\link{calcEATLancetTargets}},
+#' \code{\link[mrfaocore]{calcFAOharmonized}}, \code{\link{calcEATLancetDiets}}
 #' @examples
 #' \dontrun{
 #' calcOutput("EATFruitvegRatio")
@@ -20,7 +20,7 @@
 
 calcEATFruitvegRatio <- function(populationweight = "PopulationPast") {
   ### FAO Commodity balance
-  cbsFAO  <- calcOutput(type = "FAOharmonized", source = "join2010", aggregate = FALSE)[, , "food_supply_kcal"]
+  cbsFAO  <- calcOutput(type = "FAOharmonized", src = "join2010", aggregate = FALSE)[, , "food_supply_kcal"]
   pastYrs <- findset("past_til2020")
   cbsFAO  <- collapseNames(cbsFAO[, pastYrs, ])
   getSets(cbsFAO) <- c("region", "year", "ItemCodeItem")
