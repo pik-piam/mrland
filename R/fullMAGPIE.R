@@ -21,7 +21,7 @@ fullMAGPIE <- function(rev = numeric_version("0.1"), dev = "") {
   }
 
   magYears <- findset("time")
-  magYearsPast <- findset("past")
+  magYearsPast <- c(findset("past"), "y2015")
   shortYears <- findset("t_all")
 
   # Standard statistics to be calculated when set
@@ -284,14 +284,16 @@ fullMAGPIE <- function(rev = numeric_version("0.1"), dev = "") {
   # 38 factor costs
   calcOutput("FAOYield", cut = 0.98, years = 1995, round = 2, outputStatistics = stats, file = "f38_region_yield.csv")
   # Question: Is f38_region_yield used? And why not f14_region_yield?
-  calcOutput("FacReq", round = 2, aggregate = "GLO", years = 2005,
-             outputStatistics = stats, file = "f38_fac_req_fao.csv")
-  calcOutput("FacReq", round = 2, aggregate = TRUE, outputStatistics = stats, file = "f38_fac_req_fao_regional.cs4")
-  calcOutput("AgCapLabourShare", round = 4, aggregate = FALSE, years = c(1995, 2000, 2005, 2010),
-             outputStatistics = stats, file = "f38_historical_share_iso.csv")
+  calcOutput("FacReq", round = 2, aggregate = "GLO", years = 2005, outputStatistics = stats,
+             file = "f38_fac_req_fao.csv")
+  calcOutput("FacReq", round = 2, aggregate = TRUE, outputStatistics = stats,
+             file = "f38_fac_req_fao_regional.cs4")
+  calcOutput("AgCapLabourShare", round = 4, aggregate = FALSE, projection = "SSP2",
+             years = c(1995, 2000, 2005, 2010, 2015), file = "f38_historical_share_iso.csv",
+             outputStatistics = stats)
   calcOutput("RegFactorShare", datasource = "USDA", round = 4, aggregate = FALSE,
              outputStatistics = stats, file = "f38_regression_cap_share.csv")
-  calcOutput("FactorCosts", aggregate = FALSE, years = c(1995, 2000, 2005, 2010), round = 2,
+  calcOutput("FactorCosts", aggregate = FALSE, years = c(1995, 2000, 2005, 2010, 2015), round = 2,
              outputStatistics = stats, file = "f38_hist_factor_costs_iso.csv")
 
   # 41 Area Equipped for Irrigation
