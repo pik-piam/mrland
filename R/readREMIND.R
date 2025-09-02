@@ -7,7 +7,7 @@
 #' @return MAgPIE object with regional aggregation of REMIND H12
 #' @author David Klein
 #' @seealso
-#' \code{\link{readSource}}
+#' \code{\link[madrat]{readSource}}
 #' @examples
 #'
 #' \dontrun{

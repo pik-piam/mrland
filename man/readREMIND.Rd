@@ -24,7 +24,7 @@ readSource("REMIND",aggregate=FALSE)
 }
 }
 \seealso{
-\code{\link{readSource}}
+\code{\link[madrat]{readSource}}
 }
 \author{
 David Klein
