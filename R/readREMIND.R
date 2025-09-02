@@ -159,7 +159,7 @@ readREMIND <- function(subtype) {
                                        indicator = indicator))
     }
 
-    if (revision >= 4.121) {
+    if (revision >= 4.123) {
       # Please refer to the 2025-R34withBC/readme.txt for the source of the data
       fileList <- c("2025-R34withBC/REMIND_generic_PB650-BCdef-CTS01-BM70-noFuel-CHP17.mif",
                     "2025-R34withBC/REMIND_generic_PB650-BCdef-CTS01-noFuel-CHP17.mif",
