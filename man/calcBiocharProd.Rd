@@ -16,9 +16,9 @@ calcBiocharProd(
 
 \item{rev}{data revision the output will be produced for (numeric_version).}
 
-\item{biocharsystems}{selects the biochar systems for which data is returned.
-Options are disagg which returns data for all available biochar systems separately,
-and agg which returns the total of all biochar systems.}
+\item{biocharsystems}{selects the biochar production systems for which data is returned.
+Options are disagg which returns data for all available biochar production systems separately,
+and agg which returns the total of all biochar production systems.}
 
 \item{unit}{(available: EJ/yr and Mt/yr)}
 }
