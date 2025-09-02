@@ -4,9 +4,9 @@
 #' @param datasource source to be used
 #' @param rev data revision the output will be produced for (numeric_version).
 #'
-#' @param biocharsystems selects the biochar systems for which data is returned.
-#' Options are disagg which returns data for all available biochar systems separately,
-#' and agg which returns the total of all biochar systems.
+#' @param biocharsystems selects the biochar production systems for which data is returned.
+#' Options are disagg which returns data for all available biochar production systems separately,
+#' and agg which returns the total of all biochar production systems.
 #' @param unit (available: EJ/yr and Mt/yr)
 #' @return magpie object with results on country level, weight on country level, unit and description.
 #'
@@ -45,8 +45,8 @@ calcBiocharProd <- function(datasource, rev = numeric_version("0.1"),
     } else if (biocharsystems == "disagg") {
 
       # Note: If future data revisions include REMIND simulations with a different
-      # set of biochar systems, `biocharSys` must be updated to include all relevant
-      # system definitions.
+      # set of biochar production systems, `biocharSys` must be updated to include
+      # all relevant system definitions.
       biocharSys <- c(
         "KonTiki",
         "biopyrCHP",
