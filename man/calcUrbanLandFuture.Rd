@@ -6,7 +6,7 @@
 \usage{
 calcUrbanLandFuture(
   timestep = "5year",
-  subtype = "LUH2v2",
+  subtype = "LUH3",
   cells = "lpjcell",
   cellular = TRUE
 )
