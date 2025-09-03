@@ -411,7 +411,7 @@ fullMAGPIE <- function(rev = numeric_version("0.1"), dev = "") {
              outputStatistics = stats, file = "f70_slaughter_feed_share.cs4")
   calcOutput("PYieldSlope",                              round = 2,
              outputStatistics = stats, file = "f70_pyld_slope_reg.cs4")
-  calcOutput("Production", round = 4, products = "kli", aggregate = TRUE, years = seq(1995, 2010, 5),
+  calcOutput("Production", round = 4, products = "kli", aggregate = TRUE, years = seq(1995, 2015, 5),
              outputStatistics = stats, file = "f70_hist_prod_livst.cs3")
   calcOutput("FactorCostsLivst", round = 4, aggregate = TRUE, years = seq(1995, 2015, 5),
              outputStatistics = stats, file = "f70_hist_factor_costs_livst.cs3")
