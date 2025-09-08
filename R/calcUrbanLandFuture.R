@@ -2,8 +2,8 @@
 #' @description Urban land in Mha on 0.5deg grid
 #' @param cellular TRUE for results on 0.5 degree grid.
 #' @param timestep 5year or yearly
-#' @param cells    magpiecell (59199 cells) or lpjcell (67420 cells)
-#' @param subtype  where the data source comes from ("LUH2v2" or "Gao")
+#' @param cells    (deprecated) lpjcell (67420 cells)
+#' @param subtype  where the data source comes from ("LUH3" or "Gao")
 #' @return List of magpie objects with results on 0.5deg grid level, weights NULL, unit and description.
 #' @author David Chen, Patrick v. Jeetze, Felicitas Beier
 #' @importFrom magpiesets findset
@@ -61,12 +61,6 @@ calcUrbanLandFuture <- function(timestep = "5year", subtype = "LUH3",
   yHarm <- seq(1995, 2025, 5)
   for (i in c("SSP1", "SSP3", "SSP4", "SSP5")) {
     out[, yHarm, i] <- out[, yHarm, "SSP2"]
-  }
-
-  if (cells == "magpiecell") {
-    out <- toolCoord2Isocell(out)
-  } else if (cells != "lpjcell") {
-    stop("Please specify cells argument")
   }
 
   return(list(

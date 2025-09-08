@@ -27,7 +27,7 @@
 calcHalfEarth <- function(cells = "lpjcell", nclasses = "seven") {
   # Land area (in Mha):
   iniLU <- calcOutput("LanduseInitialisation",
-                      cellular = TRUE, cells = cells,
+                      cellular = TRUE,
                       nclasses = nclasses, input_magpie = TRUE,
                       years = "y1995", aggregate = FALSE)
   landArea <- dimSums(iniLU, dim = 3)
@@ -37,15 +37,12 @@ calcHalfEarth <- function(cells = "lpjcell", nclasses = "seven") {
   getNames(halfEarthShr) <- "HalfEarth"
   getSets(halfEarthShr)  <- c("x", "y", "iso", "year", "data")
 
-  if (cells == "magpiecell") {
-    halfEarthShr <- toolCoord2Isocell(halfEarthShr, cells = cells)
-  }
   # Land area to be protected by 2050 (in Mha)
   x <- halfEarthShr * landArea
 
   # get WDPA baseline data (1995 - 2020)
   wdpaBase <- calcOutput("ProtectedAreaBaseline",
-                         aggregate = FALSE, cells = cells,
+                         aggregate = FALSE,
                          nclasses = nclasses, magpie_input = TRUE)
 
   # make sure that current WDPA protected areas
@@ -55,7 +52,7 @@ calcHalfEarth <- function(cells = "lpjcell", nclasses = "seven") {
 
   urbanLand <- calcOutput("UrbanLandFuture",
                           subtype = "LUH3", aggregate = FALSE,
-                          timestep = "5year", cells = cells)
+                          timestep = "5year")
 
   # Conservation potential after 2020
   consvPot <- landArea - dimSums(wdpaBase[, "y2020", ], dim = 3) -
