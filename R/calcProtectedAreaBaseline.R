@@ -3,7 +3,7 @@
 #' @description Returns protected land area (Mha) in terms of cropland, pasture, forest and other
 #' land between 1995 and 2020.
 #'
-#' @param magpie_input Whether data should be transformed (based on luh3 data) to match land use types used in MAgPIE.
+#' @param magpie_input Whether data should be transformed (based on LUH3 data) to match land use types used in MAgPIE.
 #' @param nclasses If \code{magpie_input = TRUE}. Options are either "seven" or "nine". Note that by default,
 #' the protected area is reported for urban land and forestry is zero.
 #' \itemize{
@@ -13,7 +13,7 @@
 #' differentiation of primary and secondary non-forest vegetation and therefore returns
 #' "crop", "past", "range", "forestry", "primforest", "secdforest", "urban", "primother" and "secdother"
 #' }
-#' @param cells magpiecell (59199 cells) or lpjcell (67420 cells)
+#' @param cells (deprecated) only lpjcell (67420 cells)
 #'
 #' @return List with a magpie object
 #' @author Patrick v. Jeetze
@@ -34,7 +34,7 @@ calcProtectedAreaBaseline <- function(magpie_input = TRUE, nclasses = "seven", #
   if (magpie_input == TRUE) {
     luh3 <- calcOutput("LUH3",
       landuseTypes = "LUH3", aggregate = FALSE,
-      cellular = TRUE, 
+      cellular = TRUE,
       yrs = c(1995, 2000, 2005, 2010, 2015, 2020)
     )
 
@@ -150,12 +150,6 @@ calcProtectedAreaBaseline <- function(magpie_input = TRUE, nclasses = "seven", #
     }
   } else {
     out <- PABaseline
-  }
-
-  if (cells == "magpiecell") {
-    out <- toolCoord2Isocell(out)
-  } else if (cells != "lpjcell") {
-    stop("Please specify cells argument")
   }
 
   return(list(
