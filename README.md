@@ -48,13 +48,9 @@ A BibTeX entry for LaTeX users is
   title = {mrland: MadRaT land data package},
   author = {Jan Philipp Dietrich and Abhijeet Mishra and Isabelle Weindl and Benjamin Leon Bodirsky and Xiaoxi Wang and Lavinia Baumstark and Ulrich Kreidenweis and David Klein and Nele Steinmetz and David Chen and Florian Humpenoeder and Patrick {von Jeetze} and Stephen Wirth and Felicitas Beier and David Hoetten and Pascal Sauer and Jake Tommey},
   doi = {10.5281/zenodo.3822083},
-  date = {2025-09-08},
+  date = {2025-09-09},
   year = {2025},
   url = {https://github.com/pik-piam/mrland},
-<<<<<<< HEAD
-  note = {Version: 0.69.0},
-=======
   note = {Version: 0.68.2},
->>>>>>> 72d49a990afd876cc8fb97b650b7eea68f836e23
 }
 ```
