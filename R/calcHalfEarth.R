@@ -1,7 +1,7 @@
 #' @title calcHalfEarth
 #' @description Function calculates land area in 'Half Earth' conservation priority area
 #'
-#' @param cells number of cells of landmask (select "magpiecell" for 59199 cells or "lpjcell" for 67420 cells)
+#' @param cells (deprecated) always lpjcell (67420 cells)
 #' @param nclasses Options are either "seven" or "nine".
 #' \itemize{
 #' \item "seven" separates primary and secondary forest and includes "crop", "past", "forestry",
