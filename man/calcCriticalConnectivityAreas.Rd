@@ -24,7 +24,7 @@ differentiation of primary and secondary non-forest vegetation and therefore ret
 "crop", "past", "range", "forestry", "primforest", "secdforest", "urban", "primother" and "secdother"
 }}
 
-\item{cells}{magpiecell (59199 cells) or lpjcell (67420 cells)}
+\item{cells}{(deprecated) always lpjcell (67420 cells)}
 
 \item{mask}{Whether Key Biodiversity Areas ("KBA") or Global Safety Net and Key Biodiversity Areas
 ("KBA_GSN") are masked. This switch is useful for complementary scenario building.}

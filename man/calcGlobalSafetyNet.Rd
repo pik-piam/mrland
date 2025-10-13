@@ -19,7 +19,7 @@ differentiation of primary and secondary non-forest vegetation and therefore ret
 "crop", "past", "range", "forestry", "primforest", "secdforest", "urban", "primother" and "secdother"
 }}
 
-\item{cells}{magpiecell (59199 cells) or lpjcell (67420 cells)}
+\item{cells}{(deprecated) always lpjcell (67420 cells)}
 }
 \value{
 List with a magpie object

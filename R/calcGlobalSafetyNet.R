@@ -12,7 +12,7 @@
 #' differentiation of primary and secondary non-forest vegetation and therefore returns
 #' "crop", "past", "range", "forestry", "primforest", "secdforest", "urban", "primother" and "secdother"
 #' }
-#' @param cells magpiecell (59199 cells) or lpjcell (67420 cells)
+#' @param cells (deprecated) always lpjcell (67420 cells)
 #'
 #' @return List with a magpie object
 #' @author Patrick v. Jeetze
@@ -52,10 +52,12 @@ calcGlobalSafetyNet <- function(maginput = TRUE, nclasses = "seven", cells = "lp
       subtype = "LUH3", aggregate = FALSE,
       timestep = "5year", cells = "lpjcell"
     )
+    urbanLand <- setCells(urbanLand, getCells(landArea))
 
     # make sure that GSN land is not greater than total land area minus urban area
-    landNoUrban <- setYears(landArea, "y2020") - setCells(urbanLand[, "y2020", "SSP2"], getCells(landArea))
+    landNoUrban <- landArea - urbanLand[, "y2015", "SSP2"]
     getYears(landNoUrban) <- getYears(gsn)
+
     # compute mismatch factor
     gsnTotalLand <- mbind(
       dimSums(gsn[, , "GSN_DSA"], dim = 3.2),
@@ -66,6 +68,7 @@ calcGlobalSafetyNet <- function(maginput = TRUE, nclasses = "seven", cells = "lp
     )
     landMismatch <- setNames(landNoUrban, NULL) / gsnTotalLand
     landMismatch <- toolConditionalReplace(landMismatch, c(">1", "is.na()"), 1)
+
     # correct GSN data
     gsn[, , "GSN_DSA"] <- gsn[, , "GSN_DSA"] * landMismatch[, , "GSN_DSA"]
     gsn[, , "GSN_RarePhen"] <- gsn[, , "GSN_RarePhen"] * landMismatch[, , "GSN_RarePhen"]
@@ -74,7 +77,6 @@ calcGlobalSafetyNet <- function(maginput = TRUE, nclasses = "seven", cells = "lp
     gsn[, , "GSN_ClimTier2"] <- gsn[, , "GSN_ClimTier2"] * landMismatch[, , "GSN_ClimTier2"]
 
     if (nclasses %in% c("seven", "nine")) {
-
       # differentiate primary and secondary forest based on LUH3 data
       totForestLUH <- dimSums(luh3[, , c("primf", "secdf")], dim = 3) # nolint
       primforestShr <- luh3[, , "primf"] / setNames(totForestLUH + 1e-10, NULL)
@@ -134,12 +136,6 @@ calcGlobalSafetyNet <- function(maginput = TRUE, nclasses = "seven", cells = "lp
     }
   } else {
     out <- gsn
-  }
-
-  if (cells == "magpiecell") {
-    out <- toolCoord2Isocell(out)
-  } else if (cells != "lpjcell") {
-    stop("Please specify cells argument")
   }
 
   return(list(

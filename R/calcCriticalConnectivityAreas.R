@@ -13,7 +13,7 @@
 #' differentiation of primary and secondary non-forest vegetation and therefore returns
 #' "crop", "past", "range", "forestry", "primforest", "secdforest", "urban", "primother" and "secdother"
 #' }
-#' @param cells magpiecell (59199 cells) or lpjcell (67420 cells)
+#' @param cells (deprecated) always lpjcell (67420 cells)
 #' @param mask Whether Key Biodiversity Areas ("KBA") or Global Safety Net and Key Biodiversity Areas
 #' ("KBA_GSN") are masked. This switch is useful for complementary scenario building.
 #'
@@ -56,9 +56,10 @@ calcCriticalConnectivityAreas <- function(maginput = TRUE, nclasses = "seven",
       subtype = "LUH3", aggregate = FALSE,
       timestep = "5year", cells = "lpjcell"
     )
+    urbanLand <- setCells(urbanLand, getCells(landArea))
 
     # make sure that cca land is not greater than total land area minus urban area
-    landNoUrban <- setYears(landArea, "y2020") - setCells(urbanLand[, "y2020", "SSP2"], getCells(landArea))
+    landNoUrban <- landArea - urbanLand[, "y2015", "SSP2"]
     getYears(landNoUrban) <- getYears(cca)
     # compute mismatch factor
     ccaTotalLand <- dimSums(cca[, , "CCA"], dim = 3.2)
@@ -126,12 +127,6 @@ calcCriticalConnectivityAreas <- function(maginput = TRUE, nclasses = "seven",
     }
   } else {
     out <- cca
-  }
-
-  if (cells == "magpiecell") {
-    out <- toolCoord2Isocell(out)
-  } else if (cells != "lpjcell") {
-    stop("Please specify cells argument")
   }
 
   return(list(
