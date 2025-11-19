@@ -41,12 +41,13 @@ calcTradeBilateralFAOHarmonized <- function(yearly = TRUE) {
   tm <- add_columns(tm, addnm = c("fish", "ethanol"), dim = 3.1, fill = 0)
 
   tmi <- dimSums(tm, dim = 1.2)
-  mbx <- mb[, , "export"][, , "dm", drop = TRUE]
-  mbi <- mb[, , "import"][, , "dm", drop = TRUE]
 
   cyears <- intersect(getYears(tm), getYears(mb))
   citems <- intersect(getItems(tm, dim = 3), getItems(mb, dim = 3.1))
-  missing <- setdiff(findset("k_trade"), citems)
+
+  mb <- mb[, cyears, citems]
+  mbx <- mb[, , "export"][, , "dm", drop = TRUE]
+  mbi <- mb[, , "import"][, , "dm", drop = TRUE]
 
   # sodistillers grain, scp, still  missing completely from the bilateral trade matrix
   # the first is a made up producsts so don't exist in FAO either, but
@@ -137,7 +138,6 @@ calcTradeBilateralFAOHarmonized <- function(yearly = TRUE) {
       mbx[, missing$Year[i], missing$ItemCodeItem[i]] /
       dimSums(mbx[, missing$Year[i], missing$ItemCodeItem[i]], dim = 1)
   }
-
 
   getItems(tmSout, dim = 1.2) <- gsub("[0-9]+", "", getItems(tmSout, dim = 1.2))
 
