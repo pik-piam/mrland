@@ -37,8 +37,8 @@ calcTradeBilateralFAOHarmonized <- function(yearly = TRUE) {
   cyears <- intersect(getYears(tm), getYears(tmfo))
 
   tm <- mbind(tm, tmfo)
-  # add fish to trade matrix with 0's to be filled by mb
-  tm <- add_columns(tm, addnm = "fish", dim = 3.1, fill = 0)
+  # add fish and ethanol to trade matrix with 0's to be filled by mb
+  tm <- add_columns(tm, addnm = c("fish", "ethanol"), dim = 3.1, fill = 0)
 
   tmi <- dimSums(tm, dim = 1.2)
   mbx <- mb[, , "export"][, , "dm", drop = TRUE]
@@ -109,8 +109,6 @@ calcTradeBilateralFAOHarmonized <- function(yearly = TRUE) {
   tmSout <- tmS
 
   for (i in seq(1:5)) {
-    # state round
-    print(paste("round", i))
     # first both
     tmS2 <- .fillMiss(tmSout, year = "both")
     # then after
@@ -118,9 +116,6 @@ calcTradeBilateralFAOHarmonized <- function(yearly = TRUE) {
     # then before
     tmSout <- .fillMiss(tmS3, year = "before")
 
-    # check
-    z <- dimSums(tmSout, dim = 1.2) - mbi[, cyears, citems]
-    print(paste(nrow(magclass::where(round(z, 8) < 0)$true$individual), "still not matching mb"))
   }
 
   # give exporters the 2 suffix
