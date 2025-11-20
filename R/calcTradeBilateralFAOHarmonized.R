@@ -123,7 +123,10 @@ calcTradeBilateralFAOHarmonized <- function(yearly = TRUE) {
   getItems(mbx, dim = 1) <- paste0(getItems(mbx, dim = 1), "2")
 
   # for ethanol we will sum the total amount imported globally and distribute according to global exporters ratio
-  tmSout[, , "ethanol"] <- dimSums(tmSout[, , "ethanol"], dim = 1.2) * mbx[, , "ethanol"] /
+  # also for ethanol we know that exports are 0 globally for 1995-1997 but not 0 for imports
+  # so for these years give the same ratio as 1998
+  mbx[, c(1995:1997), "ethanol"] <- mbx[, 1998, "ethanol"]
+  tmSout[, , "ethanol"] <- mbi[, , "ethanol"] * mbx[, , "ethanol"] /
     dimSums(mbx[, , "ethanol"], dim = 1)
 
   nonmatch <- dimSums(tmSout, dim = 1.2) - mbi[, cyears, citems]
