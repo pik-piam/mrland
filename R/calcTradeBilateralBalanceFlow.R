@@ -2,7 +2,7 @@
 #'
 #' @description Calculates balanceflows for trade and total mass balance
 #' to match historical production
-#' @param type "trade" or "total"
+#' @param balanceflow "trade" or "total"
 #' @return Self import to dupply ratio
 #' @author David M Chen
 #' @seealso \code{\link{calcOutput}}, \code{\link{calcFAOmassbalance}}
@@ -13,7 +13,7 @@
 #' @importFrom dplyr %>% inner_join
 #' @importFrom rlang .data :=
 
-calcTradeBilateralBalanceFlow <- function(type = "trade") {
+calcTradeBilateralBalanceFlow <- function(balanceflow = "trade") {
 
   tm <- calcOutput("TradeBilateralFAOHarmonized", aggregate = FALSE, yearly = TRUE)
   mb <- calcOutput("FAOmassbalance", aggregate = FALSE)[, , "dm", drop = TRUE]
@@ -33,7 +33,7 @@ calcTradeBilateralBalanceFlow <- function(type = "trade") {
   out <- mbx[, cyears, citems] - tmx[, cyears, citems]
   xbf <- out
 
-  if (type == "total") {
+  if (balanceflow == "total") {
     # Exports and imports also mismatch in the mass balance so we need to then
     # account for full mass balance prod - domestic supply + exports - imports
     # balance flow
