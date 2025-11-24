@@ -5,7 +5,7 @@
 #' @param balanceflow "trade" or "total"
 #' @return Self import to dupply ratio
 #' @author David M Chen
-#' @seealso \code{\link{calcOutput}}, \code{\link{calcFAOmassbalance}}
+#' @seealso \code{\link[madrat]{calcOutput}}, \code{\link[mrcommons]{calcFAOmassbalance}}
 #' @examples
 #' \dontrun{
 #' a <- calcTrademportSupplyStdDev()
@@ -23,7 +23,7 @@ calcTradeBilateralBalanceFlow <- function(balanceflow = "trade") {
   citems <- intersect(getItems(mb, dim = 3.1), getItems(tm, dim = 3))
 
   if (any(round(dimSums(tm[, cyears, citems], dim = 1.2) -
-                  mb[, cyears, citems][, , "import"], 3)) != 0) {
+                  mb[, cyears, citems][, , "import"], 3) != 0)) {
     warning("FAO trade matrix imports and mass balance imports don't match, \n
            something wrong in the TradeBilateralFAOHarmonized fucntion")
   }

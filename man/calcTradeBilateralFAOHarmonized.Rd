@@ -23,7 +23,7 @@ a <- calcTradeBilateralFAOHarmonized()
 
 }
 \seealso{
-\code{\link{calcOutput}}, \code{\link{calcFAOmassbalance}}
+\code{\link[madrat]{calcOutput}}, \code{\link[mrcommons]{calcFAOmassbalance}}
 }
 \author{
 David M Chen

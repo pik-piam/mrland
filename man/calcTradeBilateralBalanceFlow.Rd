@@ -4,10 +4,10 @@
 \alias{calcTradeBilateralBalanceFlow}
 \title{calcTradeBilateralBalanceFlow}
 \usage{
-calcTradeBilateralBalanceFlow(type = "trade")
+calcTradeBilateralBalanceFlow(balanceflow = "trade")
 }
 \arguments{
-\item{type}{"trade" or "total"}
+\item{balanceflow}{"trade" or "total"}
 }
 \value{
 Self import to dupply ratio
@@ -22,7 +22,7 @@ a <- calcTrademportSupplyStdDev()
 }
 }
 \seealso{
-\code{\link{calcOutput}}, \code{\link{calcFAOmassbalance}}
+\code{\link[madrat]{calcOutput}}, \code{\link[mrcommons]{calcFAOmassbalance}}
 }
 \author{
 David M Chen

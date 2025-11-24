@@ -1,7 +1,7 @@
 Type: Package
 Package: mrland
 Title: MadRaT land data package
-Version: 0.69.8
+Version: 0.69.9
 Date: 2025-11-24
 Authors@R: c(
     person("Jan Philipp", "Dietrich", , "dietrich@pik-potsdam.de", role = c("aut", "cre")),

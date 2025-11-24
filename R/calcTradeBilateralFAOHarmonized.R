@@ -5,7 +5,7 @@
 #' @param yearly whether to calculate yearly data or only magpie 5year timesteps
 #' @return Self import to dupply ratio
 #' @author David M Chen
-#' @seealso \code{\link{calcOutput}}, \code{\link{calcFAOmassbalance}}
+#' @seealso \code{\link[madrat]{calcOutput}}, \code{\link[mrcommons]{calcFAOmassbalance}}
 #' @examples
 #' \dontrun{
 #' a <- calcTradeBilateralFAOHarmonized()
