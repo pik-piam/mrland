@@ -4,7 +4,11 @@
 \alias{calcTradeBilateralScenarioAdj}
 \title{calcTradeBilateralScenarioAdj}
 \usage{
-calcTradeBilateralScenarioAdj()
+calcTradeBilateralScenarioAdj(magYears = TRUE)
+}
+\arguments{
+\item{magYears}{logical or character vector. If TRUE, filters to t_all 5-year
+time steps using findset("t_all").}
 }
 \value{
 dummy file with 0's to befilled in MAgPIE
