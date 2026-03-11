@@ -1,6 +1,6 @@
-#' @title calcGlobalSafetyNet
+#' @title calcIPLCLand
 #'
-#' @description Returns unprotected land area (Mha) within the Global Safety Net (Dinerstein et al. 2020).
+#' @description Returns unprotected land area (Mha) covered by Indigenous Peoples' and Local Community Lands.
 
 #' @param maginput Whether data should be transformed (based on LUH3 data) to match land use types used in MAgPIE.
 #' @param nclasses If \code{magpie_input = TRUE}. Options are either "seven" or "nine". Note that by default,
@@ -12,28 +12,33 @@
 #' differentiation of primary and secondary non-forest vegetation and therefore returns
 #' "crop", "past", "range", "forestry", "primforest", "secdforest", "urban", "primother" and "secdother"
 #' }
-#' @param cells (deprecated) always lpjcell (67420 cells)
+#' @param datasource Currently only \code{"LandMark"}
 #'
 #' @return List with a magpie object
 #' @author Patrick v. Jeetze
 #' @seealso
-#' \code{\link{readDinerstein2020}}
+#' \code{\link{readLandMark}}
 #'
 #' @examples
 #' \dontrun{
-#' calcOutput("calcGlobalSafetyNet", aggregate = FALSE)
+#' calcOutput("calcIPLCLand", aggregate = FALSE)
 #' }
 #'
 #' @importFrom mstools toolCoord2Isocell
 #'
-calcGlobalSafetyNet <- function(maginput = TRUE, nclasses = "seven", cells = "lpjcell") {
-  gsn <- mbind(
-    readSource("Dinerstein2020", subtype = "GSN:distinct_species_assemblages", convert = "onlycorrect"),
-    readSource("Dinerstein2020", subtype = "GSN:rare_phenomena", convert = "onlycorrect"),
-    readSource("Dinerstein2020", subtype = "GSN:areas_of_intactness", convert = "onlycorrect"),
-    readSource("Dinerstein2020", subtype = "GSN:climate_stabilisation_tier1", convert = "onlycorrect"),
-    readSource("Dinerstein2020", subtype = "GSN:climate_stabilisation_tier2", convert = "onlycorrect")
-  )
+calcIPLCLand <- function(maginput = TRUE, nclasses = "seven", datasource = "LandMark") {
+  if (datasource == "LandMark") {
+    iplc <- mbind(
+      readSource("LandMark", subtype = "delineated", convert = "onlycorrect"),
+      readSource("LandMark", subtype = "indicative", convert = "onlycorrect")
+    )
+    iplcAll <- dimSums(iplc, dim = 3.1)
+    iplcAll <- add_dimension(iplcAll, dim = 3.1, nm = "LandMark_IPLC_all")
+    iplc <- mbind(iplc, iplcAll)
+  } else {
+    stop("Please select a valid data source")
+  }
+
 
   if (maginput == TRUE) {
     luh3 <- calcOutput("LUH3",
@@ -42,7 +47,7 @@ calcGlobalSafetyNet <- function(maginput = TRUE, nclasses = "seven", cells = "lp
       yrs = 2015
     )
     getYears(luh3) <- NULL
-    getCells(luh3) <- getCells(gsn)
+    getCells(luh3) <- getCells(iplc)
 
     # calculate total land area
     landArea <- dimSums(luh3, dim = 3)
@@ -54,27 +59,17 @@ calcGlobalSafetyNet <- function(maginput = TRUE, nclasses = "seven", cells = "lp
     )
     urbanLand <- setCells(urbanLand, getCells(landArea))
 
-    # make sure that GSN land is not greater than total land area minus urban area
+    # make sure that IPLC land is not greater than total land area minus urban area
     landNoUrban <- landArea - urbanLand[, "y2015", "SSP2"]
-    getYears(landNoUrban) <- getYears(gsn)
+    getYears(landNoUrban) <- getYears(iplc)
 
     # compute mismatch factor
-    gsnTotalLand <- mbind(
-      dimSums(gsn[, , "GSN_DSA"], dim = 3.2),
-      dimSums(gsn[, , "GSN_RarePhen"], dim = 3.2),
-      dimSums(gsn[, , "GSN_AreaIntct"], dim = 3.2),
-      dimSums(gsn[, , "GSN_ClimTier1"], dim = 3.2),
-      dimSums(gsn[, , "GSN_ClimTier2"], dim = 3.2)
-    )
-    landMismatch <- setNames(landNoUrban, NULL) / gsnTotalLand
+    iplcTotalLand <- dimSums(iplc, dim = 3.2)
+    landMismatch <- setNames(landNoUrban, NULL) / iplcTotalLand
     landMismatch <- toolConditionalReplace(landMismatch, c(">1", "is.na()"), 1)
 
-    # correct GSN data
-    gsn[, , "GSN_DSA"] <- gsn[, , "GSN_DSA"] * landMismatch[, , "GSN_DSA"]
-    gsn[, , "GSN_RarePhen"] <- gsn[, , "GSN_RarePhen"] * landMismatch[, , "GSN_RarePhen"]
-    gsn[, , "GSN_AreaIntct"] <- gsn[, , "GSN_AreaIntct"] * landMismatch[, , "GSN_AreaIntct"]
-    gsn[, , "GSN_ClimTier1"] <- gsn[, , "GSN_ClimTier1"] * landMismatch[, , "GSN_ClimTier1"]
-    gsn[, , "GSN_ClimTier2"] <- gsn[, , "GSN_ClimTier2"] * landMismatch[, , "GSN_ClimTier2"]
+    # correct IPLC data
+    iplc <- iplc * landMismatch
 
     # Consider mismatches in the classification of open
     # ecosystems into pasture and other between land-use
@@ -83,19 +78,19 @@ calcGlobalSafetyNet <- function(maginput = TRUE, nclasses = "seven", cells = "lp
       nclasses = "seven", aggregate = FALSE, cellular = TRUE, input_magpie = TRUE
     )[, "y2020", ]
     getYears(luIni) <- NULL
-    getCells(luIni) <- getCells(gsn)
+    getCells(luIni) <- getCells(iplc)
     # calculate mismatch that is shifted to pasture
-    otherMismatch <- gsn[, , "other"] - luIni[, , "other"]
+    otherMismatch <- iplc[, , "other"] - luIni[, , "other"]
     otherMismatch <- toolConditionalReplace(otherMismatch, c("<0", "is.na()"), 0)
     # but shift cannot be bigger than current LUH pasture
     # to avoid additional pasture expansion due to conservation measure
-    pastMaxShift <- setNames(luIni[, , "past"], NULL) - gsn[, , "past"]
+    pastMaxShift <- setNames(luIni[, , "past"], NULL) - iplc[, , "past"]
     pastMaxShift <- toolConditionalReplace(pastMaxShift, c("<0", "is.na()"), 0)
     otherMismatch <- pmin(otherMismatch, setItems(pastMaxShift, dim = 3.2, "other"))
     # subtract other land mismatch
-    gsn[, , "other"] <- gsn[, , "other"] - otherMismatch
+    iplc[, , "other"] <- iplc[, , "other"] - otherMismatch
     # add to ESA CCI "pasture & rangeland" class instead
-    gsn[, , "past"] <- gsn[, , "past"] + setItems(otherMismatch, dim = 3.2, "past")
+    iplc[, , "past"] <- iplc[, , "past"] + setItems(otherMismatch, dim = 3.2, "past")
 
     if (nclasses %in% c("seven", "nine")) {
       # differentiate primary and secondary forest based on LUH3 data
@@ -103,20 +98,20 @@ calcGlobalSafetyNet <- function(maginput = TRUE, nclasses = "seven", cells = "lp
       primforestShr <- luh3[, , "primf"] / setNames(totForestLUH + 1e-10, NULL)
       secdforestShr <- luh3[, , "secdf"] / setNames(totForestLUH + 1e-10, NULL)
       # where luh3 does not report forest, but we find forest land in
-      # GSN data, set share of secondary forest land to 1
+      # IPLC data, set share of secondary forest land to 1
       secdforestShr[secdforestShr == 0 & primforestShr == 0] <- 1
-      # multiply shares of primary and secondary non-forest veg with
-      # land pools in GSN data set
-      primforest <- setNames(primforestShr, NULL) * gsn[, , paste(getItems(gsn, dim = 3.1), "forest", sep = ".")]
-      secdforest <- setNames(secdforestShr, NULL) * gsn[, , paste(getItems(gsn, dim = 3.1), "forest", sep = ".")]
+      # multiply shares of primary and secondary forest with
+      # land pools in IPLC data set
+      primforest <- setNames(primforestShr, NULL) * iplc[, , paste(getItems(iplc, dim = 3.1), "forest", sep = ".")]
+      secdforest <- setNames(secdforestShr, NULL) * iplc[, , paste(getItems(iplc, dim = 3.1), "forest", sep = ".")]
 
       out <- mbind(
-        gsn[, , c("crop", "past")],
-        new.magpie(getCells(gsn), getYears(gsn), paste(getItems(gsn, dim = 3.1), "forestry", sep = "."), fill = 0),
-        setNames(primforest, paste(getItems(gsn, dim = 3.1), "primforest", sep = ".")),
-        setNames(secdforest, paste(getItems(gsn, dim = 3.1), "secdforest", sep = ".")),
-        new.magpie(getCells(gsn), getYears(gsn), paste(getItems(gsn, dim = 3.1), "urban", sep = "."), fill = 0),
-        gsn[, , "other"]
+        iplc[, , c("crop", "past")],
+        new.magpie(getCells(iplc), getYears(iplc), paste(getItems(iplc, dim = 3.1), "forestry", sep = "."), fill = 0),
+        setNames(primforest, paste(getItems(iplc, dim = 3.1), "primforest", sep = ".")),
+        setNames(secdforest, paste(getItems(iplc, dim = 3.1), "secdforest", sep = ".")),
+        new.magpie(getCells(iplc), getYears(iplc), paste(getItems(iplc, dim = 3.1), "urban", sep = "."), fill = 0),
+        iplc[, , "other"]
       )
     } else {
       stop("Option specified for argument 'nclasses' does not exist.")
@@ -125,35 +120,35 @@ calcGlobalSafetyNet <- function(maginput = TRUE, nclasses = "seven", cells = "lp
     if (nclasses == "nine") {
       # separate pasture into pasture and rangeland
       past <- new.magpie(
-        cells_and_regions = getCells(gsn),
-        years = getYears(gsn),
-        names = paste(getItems(gsn, dim = 3.1), "past", sep = "."),
+        cells_and_regions = getCells(iplc),
+        years = getYears(iplc),
+        names = paste(getItems(iplc, dim = 3.1), "past", sep = "."),
         fill = 0
       )
-      range <- gsn[, , paste(getItems(gsn, dim = 3.1), "past", sep = ".")]
+      range <- iplc[, , paste(getItems(iplc, dim = 3.1), "past", sep = ".")]
 
       # separate other land into primary and secondary
       totOtherLUH <- dimSums(luh3[, , c("primn", "secdn")], dim = 3) # nolint
       primotherShr <- luh3[, , "primn"] / setNames(totOtherLUH + 1e-10, NULL)
       secdotherShr <- luh3[, , "secdn"] / setNames(totOtherLUH + 1e-10, NULL)
       # where luh3 does not report other land, but we find other land in
-      # GSN data, set share of secondary other land to 1
+      # IPLC data, set share of secondary other land to 1
       secdotherShr[secdotherShr == 0 & primotherShr == 0] <- 1
       # multiply shares of primary and secondary non-forest veg with other land
-      primother <- setNames(primotherShr, NULL) * gsn[, , paste(getItems(gsn, dim = 3.1), "other", sep = ".")]
-      secdother <- setNames(secdotherShr, NULL) * gsn[, , paste(getItems(gsn, dim = 3.1), "other", sep = ".")]
+      primother <- setNames(primotherShr, NULL) * iplc[, , paste(getItems(iplc, dim = 3.1), "other", sep = ".")]
+      secdother <- setNames(secdotherShr, NULL) * iplc[, , paste(getItems(iplc, dim = 3.1), "other", sep = ".")]
 
       out <- mbind(
         out[, , "crop"],
         past,
-        setNames(range, paste(getItems(gsn, dim = 3.1), "range", sep = ".")),
+        setNames(range, paste(getItems(iplc, dim = 3.1), "range", sep = ".")),
         out[, , c("forestry", "primforest", "secdforest", "urban")],
-        setNames(primother, paste(getItems(gsn, dim = 3.1), "primother", sep = ".")),
-        setNames(secdother, paste(getItems(gsn, dim = 3.1), "secdother", sep = "."))
+        setNames(primother, paste(getItems(iplc, dim = 3.1), "primother", sep = ".")),
+        setNames(secdother, paste(getItems(iplc, dim = 3.1), "secdother", sep = "."))
       )
     }
   } else {
-    out <- gsn
+    out <- iplc
   }
 
   return(list(
@@ -161,7 +156,8 @@ calcGlobalSafetyNet <- function(maginput = TRUE, nclasses = "seven", cells = "lp
     weight = NULL,
     unit = "Mha",
     description = paste(
-      "Unprotected land area of the Global Safety Net (Dinerstein et al. 2020)."
+      "Unprotected land area covered by Indigenous Peoples' and Local Community Lands",
+      paste0("(source: '", datasource, "')")
     ),
     isocountries = FALSE
   ))
