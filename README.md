@@ -39,11 +39,7 @@ In case of questions / problems please contact Jan Philipp Dietrich <dietrich@pi
 
 To cite package **mrland** in publications use:
 
-<<<<<<< HEAD
-Dietrich J, Mishra A, Weindl I, Bodirsky B, Wang X, Baumstark L, Kreidenweis U, Klein D, Steinmetz N, Chen D, Humpenoeder F, von Jeetze P, Wirth S, Beier F, Hoetten D, Sauer P, Tommey J (2026). "mrland: MadRaT land data package." doi:10.5281/zenodo.3822083 <https://doi.org/10.5281/zenodo.3822083>, Version: 0.70.0.9002, <https://github.com/pik-piam/mrland>.
-=======
 Dietrich J, Mishra A, Weindl I, Bodirsky B, Wang X, Baumstark L, Kreidenweis U, Klein D, Steinmetz N, Chen D, Humpenoeder F, von Jeetze P, Wirth S, Beier F, Hoetten D, Sauer P, Tommey J (2026). "mrland: MadRaT land data package." doi:10.5281/zenodo.3822083 <https://doi.org/10.5281/zenodo.3822083>, Version: 0.71.4, <https://github.com/pik-piam/mrland>.
->>>>>>> 293b5197295791d9abb41d683a159d946db7acfb
 
 A BibTeX entry for LaTeX users is
 
@@ -52,16 +48,9 @@ A BibTeX entry for LaTeX users is
   title = {mrland: MadRaT land data package},
   author = {Jan Philipp Dietrich and Abhijeet Mishra and Isabelle Weindl and Benjamin Leon Bodirsky and Xiaoxi Wang and Lavinia Baumstark and Ulrich Kreidenweis and David Klein and Nele Steinmetz and David Chen and Florian Humpenoeder and Patrick {von Jeetze} and Stephen Wirth and Felicitas Beier and David Hoetten and Pascal Sauer and Jake Tommey},
   doi = {10.5281/zenodo.3822083},
-<<<<<<< HEAD
-  date = {2026-01-29},
-  year = {2026},
-  url = {https://github.com/pik-piam/mrland},
-  note = {Version: 0.70.0.9002},
-=======
   date = {2026-03-05},
   year = {2026},
   url = {https://github.com/pik-piam/mrland},
   note = {Version: 0.71.4},
->>>>>>> 293b5197295791d9abb41d683a159d946db7acfb
 }
 ```
