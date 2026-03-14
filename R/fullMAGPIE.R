@@ -267,21 +267,11 @@ fullMAGPIE <- function(rev = numeric_version("0.1"), dev = "") {
   }
 
   # 32 forestry
-  calcOutput("AfforestCosts", years = 2001, round = 0,
-             outputStatistics = stats, file = "f32_fac_req_ha.csv")
   calcOutput("GrowingStockPlantations", aggregate = TRUE, round = 0,
-             outputStatistics = stats, file = "f32_gs_target.cs4")
-  calcOutput("GrowingStockPlantAbsolute", aggregate = TRUE, round = 0,
-             outputStatistics = stats, file = "f32_gs_absolutetarget.cs4")
-  calcOutput("GrowingStockpha", aggregate = TRUE, round = 0,
-             outputStatistics = stats, file = "f32_gs_relativetarget.cs4")
-  calcOutput("PlantationContribution", aggregate = TRUE, round = 3,
-             outputStatistics = stats, file = "f32_plantation_contribution.cs3")
+             outputStatistics = stats, file = "f32_gs_plantations.cs4")
+  calcOutput("calcGrowingStockNRF", aggregate = TRUE, round = 0,
+             outputStatistics = stats, file = "f32_gs_natregforest.cs4")
   calcOutput("PlantedForest", aggregate = TRUE, round = 3, outputStatistics = stats, file = "f32_plantedforest.cs4")
-  calcOutput("PlantEstablishCalib", aggregate = TRUE, round = 2, outputStatistics = stats, file = "f32_estb_calib.cs4")
-  calcOutput("TradeSelfSuff", years = magYears, round = 2,
-             outputStatistics = stats, file = "f32_trade_self_suff.cs3",
-             aggregate = superregion)
 
   # 35 natural vegetation
   calcOutput("ForestLossShare", round = 7, outputStatistics = stats, file = "f35_forest_lost_share.cs3")
@@ -417,6 +407,10 @@ fullMAGPIE <- function(rev = numeric_version("0.1"), dev = "") {
              outputStatistics = stats, file = "f62_bioplastic2biomass.csv")
   calcOutput("HistBioplasticProd", aggregate = FALSE, years = c(2010, 2015, 2020), round = 3,
              outputStatistics = stats, file = "f62_hist_dem_bioplastic.csv")
+  calcOutput("BioChemDemand", round = 3,
+             outputStatistics = stats, file = "f62_biochem_demand.cs3")
+  calcOutput("BioChemToBiomass", aggregate = FALSE, round = 4,
+             outputStatistics = stats, file = "f62_biochem2biomass.csv")
 
   # 63 biochar
   calcOutput("BiocharProd", datasource = "REMIND", years = shortYears, round = 3, rev = rev,
