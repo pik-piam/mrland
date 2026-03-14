@@ -269,7 +269,7 @@ fullMAGPIE <- function(rev = numeric_version("0.1"), dev = "") {
   # 32 forestry
   calcOutput("GrowingStockPlantations", aggregate = TRUE, round = 0,
              outputStatistics = stats, file = "f32_gs_plantations.cs4")
-  calcOutput("calcGrowingStockNRF", aggregate = TRUE, round = 0,
+  calcOutput("GrowingStockNRF", aggregate = TRUE, round = 0,
              outputStatistics = stats, file = "f32_gs_natregforest.cs4")
   calcOutput("PlantedForest", aggregate = TRUE, round = 3, outputStatistics = stats, file = "f32_plantedforest.cs4")
 
