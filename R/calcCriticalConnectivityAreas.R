@@ -68,6 +68,27 @@ calcCriticalConnectivityAreas <- function(maginput = TRUE, nclasses = "seven",
     # correct cca data
     cca[, , "CCA"] <- cca[, , "CCA"] * landMismatch[, , "CCA"]
 
+    # Consider mismatches in the classification of open
+    # ecosystems into pasture and other between land-use
+    # initialisation (LUH) and ESA CCI:
+    luIni <- calcOutput("LanduseInitialisation",
+      nclasses = "seven", aggregate = FALSE, cellular = TRUE, input_magpie = TRUE
+    )[, "y2020", ]
+    getYears(luIni) <- NULL
+    getCells(luIni) <- getCells(cca)
+    # calculate mismatch that is shifted to pasture
+    otherMismatch <- cca[, , "other"] - luIni[, , "other"]
+    otherMismatch <- toolConditionalReplace(otherMismatch, c("<0", "is.na()"), 0)
+    # but shift cannot be bigger than current LUH pasture
+    # to avoid additional pasture expansion due to conservation measure
+    pastMaxShift <- setNames(luIni[, , "past"], NULL) - cca[, , "past"]
+    pastMaxShift <- toolConditionalReplace(pastMaxShift, c("<0", "is.na()"), 0)
+    otherMismatch <- pmin(otherMismatch, setItems(pastMaxShift, dim = 3.2, "other"))
+    # subtract other land mismatch
+    cca[, , "other"] <- cca[, , "other"] - otherMismatch
+    # add to ESA CCI "pasture & rangeland" class instead
+    cca[, , "past"] <- cca[, , "past"] + setItems(otherMismatch, dim = 3.2, "past")
+
     if (nclasses %in% c("seven", "nine")) {
       # differentiate primary and secondary forest based on LUH3 data
       totForestLUH <- dimSums(luh3[, , c("primf", "secdf")], dim = 3) # nolint
@@ -78,15 +99,15 @@ calcCriticalConnectivityAreas <- function(maginput = TRUE, nclasses = "seven",
       secdforestShr[secdforestShr == 0 & primforestShr == 0] <- 1
       # multiply shares of primary and secondary non-forest veg with
       # land pools in CCA data set
-      primforest <- setNames(primforestShr, NULL) * cca[, , paste(getNames(cca, dim = 1), "forest", sep = ".")]
-      secdforest <- setNames(secdforestShr, NULL) * cca[, , paste(getNames(cca, dim = 1), "forest", sep = ".")]
+      primforest <- setNames(primforestShr, NULL) * cca[, , paste(getItems(cca, dim = 3.1), "forest", sep = ".")]
+      secdforest <- setNames(secdforestShr, NULL) * cca[, , paste(getItems(cca, dim = 3.1), "forest", sep = ".")]
 
       out <- mbind(
         cca[, , c("crop", "past")],
-        new.magpie(getCells(cca), getYears(cca), paste(getNames(cca, dim = 1), "forestry", sep = "."), fill = 0),
-        setNames(primforest, paste(getNames(cca, dim = 1), "primforest", sep = ".")),
-        setNames(secdforest, paste(getNames(cca, dim = 1), "secdforest", sep = ".")),
-        new.magpie(getCells(cca), getYears(cca), paste(getNames(cca, dim = 1), "urban", sep = "."), fill = 0),
+        new.magpie(getCells(cca), getYears(cca), paste(getItems(cca, dim = 3.1), "forestry", sep = "."), fill = 0),
+        setNames(primforest, paste(getItems(cca, dim = 3.1), "primforest", sep = ".")),
+        setNames(secdforest, paste(getItems(cca, dim = 3.1), "secdforest", sep = ".")),
+        new.magpie(getCells(cca), getYears(cca), paste(getItems(cca, dim = 3.1), "urban", sep = "."), fill = 0),
         cca[, , "other"]
       )
     } else {
@@ -95,15 +116,13 @@ calcCriticalConnectivityAreas <- function(maginput = TRUE, nclasses = "seven",
 
     if (nclasses == "nine") {
       # separate pasture into pasture and rangeland
-      totGrassLUH <- dimSums(luh3[, , c("pastr", "range")], dim = 3) # nolint
-      pastShr <- luh3[, , "pastr"] / setNames(totGrassLUH + 1e-10, NULL)
-      rangeShr <- luh3[, , "range"] / setNames(totGrassLUH + 1e-10, NULL)
-      # where luh3 does not report grassland, but we find grassland in
-      # CCA data, set share of rangeland to 1
-      rangeShr[pastShr == 0 & rangeShr == 0] <- 1
-      # multiply shares of pasture and rangeland with pasture in CCA data
-      past <- setNames(pastShr, NULL) * cca[, , paste(getNames(cca, dim = 1), "past", sep = ".")]
-      range <- setNames(rangeShr, NULL) * cca[, , paste(getNames(cca, dim = 1), "past", sep = ".")]
+      past <- new.magpie(
+        cells_and_regions = getCells(cca),
+        years = getYears(cca),
+        names = paste(getItems(cca, dim = 3.1), "past", sep = "."),
+        fill = 0
+      )
+      range <- cca[, , paste(getItems(cca, dim = 3.1), "past", sep = ".")]
 
       # separate other land into primary and secondary
       totOtherLUH <- dimSums(luh3[, , c("primn", "secdn")], dim = 3) # nolint
@@ -113,16 +132,16 @@ calcCriticalConnectivityAreas <- function(maginput = TRUE, nclasses = "seven",
       # CCA data, set share of secondary other land to 1
       secdotherShr[secdotherShr == 0 & primotherShr == 0] <- 1
       # multiply shares of primary and secondary non-forest veg with other land
-      primother <- setNames(primotherShr, NULL) * cca[, , paste(getNames(cca, dim = 1), "other", sep = ".")]
-      secdother <- setNames(secdotherShr, NULL) * cca[, , paste(getNames(cca, dim = 1), "other", sep = ".")]
+      primother <- setNames(primotherShr, NULL) * cca[, , paste(getItems(cca, dim = 3.1), "other", sep = ".")]
+      secdother <- setNames(secdotherShr, NULL) * cca[, , paste(getItems(cca, dim = 3.1), "other", sep = ".")]
 
       out <- mbind(
         out[, , "crop"],
-        setNames(past, paste(getNames(cca, dim = 1), "past", sep = ".")),
-        setNames(range, paste(getNames(cca, dim = 1), "range", sep = ".")),
+        past,
+        setNames(range, paste(getItems(cca, dim = 3.1), "range", sep = ".")),
         out[, , c("forestry", "primforest", "secdforest", "urban")],
-        setNames(primother, paste(getNames(cca, dim = 1), "primother", sep = ".")),
-        setNames(secdother, paste(getNames(cca, dim = 1), "secdother", sep = "."))
+        setNames(primother, paste(getItems(cca, dim = 3.1), "primother", sep = ".")),
+        setNames(secdother, paste(getItems(cca, dim = 3.1), "secdother", sep = "."))
       )
     }
   } else {
