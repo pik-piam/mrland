@@ -272,10 +272,6 @@ fullMAGPIE <- function(rev = numeric_version("0.1"), dev = "") {
   # 35 natural vegetation
   calcOutput("ForestLossShare", round = 7, outputStatistics = stats, file = "f35_forest_lost_share.cs3")
   calcOutput("ForestDisturbances", round = 7, outputStatistics = stats, file = "f35_forest_disturbance_share.cs4")
-  calcOutput("GrowingStockNatVegAbsolute", aggregate = TRUE, round = 0,
-             outputStatistics = stats, file = "f35_gs_absolutetarget.cs4")
-  calcOutput("GrowingStockNRF", aggregate = TRUE, round = 0,
-             outputStatistics = stats, file = "f35_gs_relativetarget.cs4")
 
   # 36 employment
   calcOutput("WeeklyHoursILO", projections = TRUE, aggregate = TRUE, years = seq(1965, 2150, 5),
