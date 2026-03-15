@@ -267,10 +267,6 @@ fullMAGPIE <- function(rev = numeric_version("0.1"), dev = "") {
   }
 
   # 32 forestry
-  calcOutput("GrowingStockPlantations", aggregate = TRUE, round = 0,
-             outputStatistics = stats, file = "f32_gs_plantations.cs4")
-  calcOutput("GrowingStockNRF", aggregate = TRUE, round = 0,
-             outputStatistics = stats, file = "f32_gs_natregforest.cs4")
   calcOutput("PlantedForest", aggregate = TRUE, round = 3, outputStatistics = stats, file = "f32_plantedforest.cs4")
 
   # 35 natural vegetation
@@ -352,6 +348,10 @@ fullMAGPIE <- function(rev = numeric_version("0.1"), dev = "") {
   # 52 carbon
   calcOutput("AdjustGrassi2021", aggregate = TRUE,
              outputStatistics = stats, file = "f52_land_carbon_sink_adjust_grassi.cs3")
+  calcOutput("GrowingStockPlantations", aggregate = TRUE, round = 0,
+             outputStatistics = stats, file = "f52_fra_pla_gs.cs4")
+  calcOutput("GrowingStockNRF", aggregate = TRUE, round = 0,
+             outputStatistics = stats, file = "f52_fra_nrf_gs.cs4")
 
   # 53 methane
   calcOutput("EFch4Rice", years = magYears, round = 4, outputStatistics = stats, file = "f53_EFch4Rice.cs4")
