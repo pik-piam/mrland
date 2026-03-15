@@ -407,10 +407,6 @@ fullMAGPIE <- function(rev = numeric_version("0.1"), dev = "") {
              outputStatistics = stats, file = "f62_bioplastic2biomass.csv")
   calcOutput("HistBioplasticProd", aggregate = FALSE, years = c(2010, 2015, 2020), round = 3,
              outputStatistics = stats, file = "f62_hist_dem_bioplastic.csv")
-  calcOutput("BioChemDemand", round = 3,
-             outputStatistics = stats, file = "f62_biochem_demand.cs3")
-  calcOutput("BioChemToBiomass", aggregate = FALSE, round = 4,
-             outputStatistics = stats, file = "f62_biochem2biomass.csv")
 
   # 63 biochar
   calcOutput("BiocharProd", datasource = "REMIND", years = shortYears, round = 3, rev = rev,
