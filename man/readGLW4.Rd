@@ -4,31 +4,41 @@
 \alias{readGLW4}
 \title{readGLW4}
 \usage{
-readGLW4(subtype = "Da_Ct")
+readGLW4(subtype = "Da_Ct_2015")
 }
 \arguments{
-\item{subtype}{Weighting method and livestock type:
-\itemize{
-\item {Da}: Dasymetric weighting informed by Random Forest
-\item {Aw}: Areal weighting (distributed uniformly in each census)
-\itemize{
-\item \code{Ch}: Chicken
-\item \code{Ct}: Cattle
-\item \code{Pg}: Pigs
-\item \code{Sh}: Sheep
-\item \code{Gt}: Goats
-\item \code{Ho}: Horse
-\item \code{Dk}: ducks
-\item \code{Bf}: Buffaloes
-}}}
+\item{subtype}{Weighting method, livestock species, and reference year
+(\code{"<method>_<species>_<year>"}):
+     \itemize{
+     \item {Da}: Dasymetric weighting informed by Random Forest
+     \item {Aw}: Areal weighting – 2015 only
+     \itemize{
+     \item \code{Ch}: Chicken
+     \item \code{Ct}: Cattle
+     \item \code{Pg}: Pigs
+     \item \code{Sh}: Sheep
+     \item \code{Gt}: Goats
+     \item \code{Ho}: Horse (2015 only)
+     \item \code{Dk}: Ducks (2015 only)
+     \item \code{Bf}: Buffaloes
+     }}}
 }
 \value{
-A gridded magpie object with gridded livstock of the world
+A gridded magpie object with gridded livestock counts.
+  2015 data: heads per 0.5-degree pixel (aggregated by sum).
+  2020 data: heads per km2 (aggregated by mean, native density unit).
 }
 \description{
 reads in Gridded Livestock of the World v4,
-downloaded from: https://dataverse.harvard.edu/dataverse/glw_4
+downloaded from: https://dataverse.harvard.edu/dataverse/glw_4 (2015)
+and https://data.apps.fao.org/catalog/iso/9d1e149b-d63f-4213-978b-317a8eb42d02 (2020)
+}
+\examples{
+\dontrun{
+readSource("GLW4", subtype = "Da_Ct_2015", convert = FALSE)
+readSource("GLW4", subtype = "Da_Ct_2020", convert = FALSE)
+}
 }
 \author{
-David M Chen
+David M Chen, Bin Lin
 }
