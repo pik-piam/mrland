@@ -39,6 +39,7 @@ Depends:
     mrlandcore (>= 1.0.0),
     R (>= 2.10.0)
 Imports:
+    archive,
     countrycode,
     data.table,
     dplyr,

@@ -1,16 +1,14 @@
 #' @title correctGLW3
-#' @description Read GLW3 file
-#' @return Magpie objects with results on cellular level, weight, unit and description.
+#' @description Replaces NA values and any negative artefacts with zero in
+#'   GLW 3 gridded livestock rasters (reference year 2010).
+#' @return Magpie object with NA and negative values replaced by 0.
 #' @param x magpie object provided by the read function
-#' @author Marcos Alves
-#' @seealso
-#'   \code{\link{readGLW3}}
+#' @author Marcos Alves, Bin Lin
+#' @seealso \code{\link{readGLW3}}
 #' @examples
-#'
 #' \dontrun{
-#'   readSource("GLW3", subtype = "DA", convert="onlycorrect")
+#'   readSource("GLW3", subtype = "Da_Ct_2010", convert = "onlycorrect")
 #' }
-#'
 #' @importFrom madrat toolConditionalReplace
 
 correctGLW3<- function(x){
