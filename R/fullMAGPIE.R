@@ -104,6 +104,8 @@ fullMAGPIE <- function(rev = numeric_version("0.1"), dev = "") {
   calcOutput("FAOYield", cut = 0.98, years = magYearsPast, round = 2,
              outputStatistics = stats, file = "f14_region_yields.cs3")
   calcOutput("Ir2RfYieldRatio", round = 2, outputStatistics = stats, file = "f14_ir2rf_ratio.cs4")
+  calcOutput("YldPastSwitch", round = 2,
+             outputStatistics = stats, file = "f14_yld_past_switch.csv", aggregate = superregion)
 
   # 15 food
   calcOutput("BodyHeight", aggregate = FALSE, years = magYearsPast, round = 2, outputStatistics = stats,
@@ -236,18 +238,26 @@ fullMAGPIE <- function(rev = numeric_version("0.1"), dev = "") {
   calcOutput("TradeImportSupplyRatio", magYears = TRUE, round = 6,
              outputStatistics = stats, file = "f21_import_supply_historical.cs5",
              aggregate = TRUE)
+  calcOutput("TradeBilateralScenarioAdj", magYears = TRUE, round = 6,
+             outputStatistics = stats, file = "f21_trade_scenario_adjustments.cs5",
+             aggregate = TRUE)
 
-  # We need to calculate the observed standard deviation of the import supply ratio for each region-to-region pair.
-  # As this is only possible on regional level (no simple weighting of std. deviations possible via calcOutput),
-  # we run this function manually here.
+  # We need to calculate the observed flexibility band (rolling range) of the import supply ratio for each
+  # region-to-region pair. As this is only possible on regional level (no simple weighting of the band possible
+  # via calcOutput), we run this function manually here. The rolling RANGE (max - min) is used instead of the
+  # standard deviation because it is a monotone set function, so the max-over-windows band widens monotonically
+  # with the 5/10/15 year horizon (the std did not). The band is capped at 1 below: a flexibility window wider
+  # than the importer's entire domestic supply is economically meaningless and would only occur for near-zero-
+  # supply products (e.g. ethanol into IND) where the import supply ratio itself is a near-zero-denominator artifact.
 
   ratio <- calcOutput("TradeImportSupplyRatio", magYears = FALSE,
                       aggregate = TRUE)
-  ratio5 <- calcOutput("TradeStdDevHelper", dataIn = ratio, sdYears = 5, aggregate = FALSE)
-  ratio10 <- calcOutput("TradeStdDevHelper", dataIn = ratio, sdYears = 10, aggregate = FALSE)
-  ratio15 <- calcOutput("TradeStdDevHelper", dataIn = ratio, sdYears = 15, aggregate = FALSE)
-  ratiosd <- mbind(ratio5, ratio10, ratio15)
-  write.magpie(ratiosd, round = 6, file_name = "f21_trade_bilat_stddev.cs5")
+  ratio5 <- calcOutput("TradeFlexBandHelper", dataIn = ratio, windowYears = 5, aggregate = FALSE)
+  ratio10 <- calcOutput("TradeFlexBandHelper", dataIn = ratio, windowYears = 10, aggregate = FALSE)
+  ratio15 <- calcOutput("TradeFlexBandHelper", dataIn = ratio, windowYears = 15, aggregate = FALSE)
+  ratioFlexBand <- mbind(ratio5, ratio10, ratio15)
+  ratioFlexBand[ratioFlexBand > 1] <- 1   # cap flexibility band at 100% of domestic supply
+  write.magpie(ratioFlexBand, round = 6, file_name = "f21_trade_bilat_flexBand.cs5")
 
   calcOutput("TradeBilateralBalanceFlow", balanceflow = "trade", round = 6, outputStatistics = stats,
              file = "f21_trade_export_balanceflow.cs3", aggregate = TRUE)
@@ -264,29 +274,11 @@ fullMAGPIE <- function(rev = numeric_version("0.1"), dev = "") {
   }
 
   # 32 forestry
-  calcOutput("AfforestCosts", years = 2001, round = 0,
-             outputStatistics = stats, file = "f32_fac_req_ha.csv")
-  calcOutput("GrowingStockPlantations", aggregate = TRUE, round = 0,
-             outputStatistics = stats, file = "f32_gs_target.cs4")
-  calcOutput("GrowingStockPlantAbsolute", aggregate = TRUE, round = 0,
-             outputStatistics = stats, file = "f32_gs_absolutetarget.cs4")
-  calcOutput("GrowingStockpha", aggregate = TRUE, round = 0,
-             outputStatistics = stats, file = "f32_gs_relativetarget.cs4")
-  calcOutput("PlantationContribution", aggregate = TRUE, round = 3,
-             outputStatistics = stats, file = "f32_plantation_contribution.cs3")
   calcOutput("PlantedForest", aggregate = TRUE, round = 3, outputStatistics = stats, file = "f32_plantedforest.cs4")
-  calcOutput("PlantEstablishCalib", aggregate = TRUE, round = 2, outputStatistics = stats, file = "f32_estb_calib.cs4")
-  calcOutput("TradeSelfSuff", years = magYears, round = 2,
-             outputStatistics = stats, file = "f32_trade_self_suff.cs3",
-             aggregate = superregion)
 
   # 35 natural vegetation
   calcOutput("ForestLossShare", round = 7, outputStatistics = stats, file = "f35_forest_lost_share.cs3")
   calcOutput("ForestDisturbances", round = 7, outputStatistics = stats, file = "f35_forest_disturbance_share.cs4")
-  calcOutput("GrowingStockNatVegAbsolute", aggregate = TRUE, round = 0,
-             outputStatistics = stats, file = "f35_gs_absolutetarget.cs4")
-  calcOutput("GrowingStockNRF", aggregate = TRUE, round = 0,
-             outputStatistics = stats, file = "f35_gs_relativetarget.cs4")
 
   # 36 employment
   calcOutput("WeeklyHoursILO", projections = TRUE, aggregate = TRUE, years = seq(1965, 2150, 5),
@@ -359,6 +351,10 @@ fullMAGPIE <- function(rev = numeric_version("0.1"), dev = "") {
   # 52 carbon
   calcOutput("AdjustGrassi2021", aggregate = TRUE,
              outputStatistics = stats, file = "f52_land_carbon_sink_adjust_grassi.cs3")
+  calcOutput("GrowingStockPlantations", aggregate = TRUE, round = 0,
+             outputStatistics = stats, file = "f52_fra_pla_gs.cs4")
+  calcOutput("GrowingStockNRF", aggregate = TRUE, round = 0,
+             outputStatistics = stats, file = "f52_fra_nrf_gs.cs4")
 
   # 53 methane
   calcOutput("EFch4Rice", years = magYears, round = 4, outputStatistics = stats, file = "f53_EFch4Rice.cs4")
