@@ -103,6 +103,7 @@ fullMAGPIE <- function(rev = numeric_version("0.1"), dev = "") {
              outputStatistics = stats, file = "f14_pasture_yields_hist.csv")
   calcOutput("FAOYield", cut = 0.98, years = magYearsPast, round = 2,
              outputStatistics = stats, file = "f14_region_yields.cs3")
+
   calcOutput("Ir2RfYieldRatio", round = 2, outputStatistics = stats, file = "f14_ir2rf_ratio.cs4")
   calcOutput("YldPastSwitch", round = 2,
              outputStatistics = stats, file = "f14_yld_past_switch.csv", aggregate = superregion)
@@ -297,8 +298,6 @@ fullMAGPIE <- function(rev = numeric_version("0.1"), dev = "") {
              round = 4, outputStatistics = stats, file = "f36_nonmagpie_factor_costs.csv")
 
   # 38 factor costs
-  calcOutput("FAOYield", cut = 0.98, years = 1995, round = 2, outputStatistics = stats, file = "f38_region_yield.csv")
-  # Question: Is f38_region_yield used? And why not f14_region_yield?
   calcOutput("FacReq", round = 2, aggregate = "GLO", years = 2005, outputStatistics = stats,
              file = "f38_fac_req_fao.csv")
   calcOutput("FacReq", round = 2, aggregate = TRUE, outputStatistics = stats,
@@ -313,7 +312,12 @@ fullMAGPIE <- function(rev = numeric_version("0.1"), dev = "") {
 
   # 41 Area Equipped for Irrigation
   # f41_irrig(j) should be read out of calcAreaEquippedForIrrigation()
-  calcOutput("IrrigationInvCosts", years = shortYears, round = 0, outputStatistics = stats, file = "f41_c_irrig.csv")
+  calcOutput("IrrigationInvCosts", years = shortYears, round = 0,
+             outputStatistics = stats, file = "f41_c_irrig.csv")
+
+  # unit cost for irrigation expansion and maintenance/rehabilitation for iniyear
+  calcOutput("IrrigUnitCost", aggregate = TRUE, round = 0,
+             outputStatistics = stats, file = "f41_irrig_unit_cost.csv")
 
   # 42_water_demand
   calcOutput("PumpingCosts", round = 4, outputStatistics = stats, file = "f42_pumping_cost.cs4", aggregate = TRUE)

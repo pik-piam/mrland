@@ -59,7 +59,10 @@ Suggests:
     covr,
     ggplot2,
     rmarkdown,
-    testthat
+    testthat,
+    knitr
+VignetteBuilder:
+    knitr
 Encoding: UTF-8
 LazyData: no
 Config/Needs/website: tidyverse/tidytemplate
