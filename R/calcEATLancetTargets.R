@@ -39,8 +39,9 @@ calcEATLancetTargets <- function(attributes = "kcal/d") {
 
   relMatrixFood <- cbind(eatFood, eatTFood15)
 
+  # dim to 3.2 is the dietscen dimension
   eat <- toolAggregate(eatTargets, rel = relMatrixFood,
-                       dim = 3.1, partrel = TRUE,
+                       dim = 3.2, partrel = TRUE,
                        from = "eatFood", to = "eatTFood15")
 
 

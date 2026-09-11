@@ -21,6 +21,7 @@
 #' a <- readSource(type = "EATLancet", subtype = "cons_data")
 #' }
 #'
+
 readEATLancet <- function(subtype) {
 
   if (subtype == "cons_data") {
@@ -48,6 +49,16 @@ readEATLancet <- function(subtype) {
                       stringsAsFactors = FALSE)
     mdata <- as.magpie(data, spatial = 0, temporal = 0, datacol = 2)
     getSets(mdata, fulldim = FALSE)[3] <- "target.unit.type"
+
+    mdata <- add_dimension(mdata, dim = 3.1, add = "diet", nm = "EL2")
+
+    data2  <- read.csv("NIN_recommendations.csv", sep = ",", header = TRUE,
+                      stringsAsFactors = FALSE)
+    mdata2 <- as.magpie(data2, spatial = 0, temporal = 0, datacol = 2)
+    getSets(mdata2, fulldim = FALSE)[3] <- "target.unit.type"
+    mdata2 <- add_dimension(mdata2, dim = 3.1, add = "diet", nm = "NIN")
+
+    mdata <- mbind(mdata, mdata2)
 
   } else {
     stop("Not a valid subtype!")
