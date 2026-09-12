@@ -67,10 +67,10 @@ makes the error unambiguous.
 ## Mapping
 
 `mapping.csv` assigns each ISO3 country to one of the seven Curtis source regions. It was
-built from `madrat::regionmappingH12` (identical country set, 249 rows, same `;`-delimited
-`X;CountryCode;RegionCode` layout) by rewriting the region column. The article does not list
-countries per region, so the assignment is geographic. Corrected in mrland 0.76.0: the
-original put the Middle East and North Africa block in `Latin America`. DZA, EGY, LBY, MAR
-and TUN now map to `Africa`; ARE, BHR, IRN, IRQ, ISR, JOR, KWT, LBN, OMN, PSE, QAT, SAU,
-SYR and YEM to `Russia China South Asia`; REU moves from `Russia China South Asia` to
-`Africa`.
+built from `madrat::regionmappingH12` (identical country set, 249 rows; comma-separated
+since mrland 0.76.0, the shared source folder's original is `;`-delimited) by rewriting the
+region column. The article does not list countries per region, so the assignment is
+geographic. Corrected in mrland 0.76.0: the original put the Middle East and North Africa
+block in `Latin America`. DZA, EGY, LBY, MAR and TUN now map to `Africa`; ARE, BHR, IRN,
+IRQ, ISR, JOR, KWT, LBN, OMN, PSE, QAT, SAU, SYR and YEM to `Russia China South Asia`; REU
+moves from `Russia China South Asia` to `Africa`.
