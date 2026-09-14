@@ -14,7 +14,7 @@ dominant-driver classification of Sims et al. (2025), plus tree cover extent in 
 the same canopy threshold from `gadm__tcl__iso_summary`, the base the loss is measured on.
 
 Route notes:
-* `/dataset/{d}/{v}/download/csv` is open and honours the full SQL (`GROUP BY` included);
+* `/dataset/<dataset>/<version>/download/csv` is open and honours the full SQL (`GROUP BY` included);
   only `/query` needs an API key.
 * Dataset versions are immutable (`is_mutable: false`), so the pinned URL is the
   reproducibility mechanism. No checksum, as elsewhere in the stack.
