@@ -4,7 +4,7 @@
 #' forest loss.
 #'
 #' @param source Driver data to use, `"GFW"` (default) or `"Curtis"`. See
-#' [calcForestFireLoss()].
+#' [calcForestLossByDriver()].
 #' @param period Years averaged to give the annual rate, for `source = "GFW"` only.
 #'
 #' @details For `source = "GFW"` numerator and denominator come from the same product at the
@@ -20,7 +20,7 @@
 #' @importFrom magclass setYears setNames getItems
 #' @importFrom utils head
 #' @importFrom madrat calcOutput readSource
-#' @seealso [calcForestFireLoss()]
+#' @seealso [calcForestLossByDriver()]
 #' @examples
 #' \dontrun{
 #' calcOutput("ForestLossShare", aggregate = FALSE)
@@ -29,7 +29,7 @@
 
 calcForestLossShare <- function(source = "GFW", period = 2015:2024) {
 
-  lostArea <- calcOutput("ForestFireLoss", source = source,  # nolint: undesirable_function_linter.
+  lostArea <- calcOutput("ForestLossByDriver", source = source,  # nolint: undesirable_function_linter.
                          period = period, aggregate = FALSE)
 
   forestArea <- switch(

@@ -7,7 +7,7 @@
 # MAgPIE's own timber harvest, wildfire and other natural disturbances are natural.
 gfwModelDrivers <- c("shifting_cultivation")
 
-#' @title calcForestFireLoss
+#' @title calcForestLossByDriver
 #'
 #' @description Annual forest area loss by driver, Mha per year, from the Sims et al. (2025)
 #' driver product (`source = "GFW"`, default) or the Curtis et al. (2018) table
@@ -29,11 +29,11 @@ gfwModelDrivers <- c("shifting_cultivation")
 #' @seealso [readGFWLossByDriver()], [readForestLossDrivers()]
 #' @examples
 #' \dontrun{
-#' calcOutput("ForestFireLoss", aggregate = FALSE)
-#' calcOutput("ForestFireLoss", source = "Curtis", aggregate = FALSE)
+#' calcOutput("ForestLossByDriver", aggregate = FALSE)
+#' calcOutput("ForestLossByDriver", source = "Curtis", aggregate = FALSE)
 #' }
 
-calcForestFireLoss <- function(source = "GFW", period = 2015:2024) {
+calcForestLossByDriver <- function(source = "GFW", period = 2015:2024) {
 
   fao <- setNames(readSource("FRA2020", subtype = "forest_fire", convert = TRUE), "overall")
   fao <- dimSums(fao, dim = 2) / length(getYears(fao)) # mean annual area lost to fire
@@ -46,17 +46,17 @@ calcForestFireLoss <- function(source = "GFW", period = 2015:2024) {
       wanted <- paste0("y", period)
       absent <- setdiff(wanted, getYears(x))
       if (length(absent) > 0) {
-        stop("calcForestFireLoss: the GFW record does not cover ", toString(absent),
+        stop("calcForestLossByDriver: the GFW record does not cover ", toString(absent),
              ". It runs ", min(getYears(x, TRUE)), "-", max(getYears(x, TRUE)), ".")
       }
       absent <- setdiff(gfwModelDrivers, getItems(x, 3))
       if (length(absent) > 0) {
-        stop("calcForestFireLoss: the GFW source does not carry driver class(es) ",
+        stop("calcForestLossByDriver: the GFW source does not carry driver class(es) ",
              toString(absent), ".")
       }
       dimSums(x[, wanted, gfwModelDrivers], dim = 2) / length(wanted)
     },
-    stop("calcForestFireLoss: unknown source '", source,  # nolint: undesirable_function_linter.
+    stop("calcForestLossByDriver: unknown source '", source,  # nolint: undesirable_function_linter.
          "'. Use \"GFW\" or \"Curtis\".")
   )
 

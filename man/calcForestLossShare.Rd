@@ -8,7 +8,7 @@ calcForestLossShare(source = "GFW", period = 2015:2024)
 }
 \arguments{
 \item{source}{Driver data to use, `"GFW"` (default) or `"Curtis"`. See
-[calcForestFireLoss()].}
+[calcForestLossByDriver()].}
 
 \item{period}{Years averaged to give the annual rate, for `source = "GFW"` only.}
 }
@@ -35,7 +35,7 @@ calcOutput("ForestLossShare", source = "Curtis", aggregate = FALSE)
 }
 }
 \seealso{
-[calcForestFireLoss()]
+[calcForestLossByDriver()]
 }
 \author{
 Abhijeet Mishra, Michael Crawford
