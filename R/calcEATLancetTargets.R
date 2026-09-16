@@ -39,7 +39,7 @@ calcEATLancetTargets <- function(attributes = "kcal/d") {
 
   relMatrixFood <- cbind(eatFood, eatTFood15)
 
-  # dim 3.1 is the dietscen (diet) dimension; dim 3.2 is the target dimension used below
+  # translate food groups names of exodiet input to MAgPIE's target food group names
   eat <- toolAggregate(eatTargets, rel = relMatrixFood,
                        dim = "target", partrel = TRUE,
                        from = "eatFood", to = "eatTFood15")
