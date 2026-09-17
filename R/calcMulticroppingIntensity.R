@@ -42,25 +42,30 @@ calcMulticroppingIntensity <- function(scenario, selectyears,
   }
 
   # areas where multicropping takes place currently (crop- and irrigation-specific)
-  phys <- calcOutput("CropareaLandInG", physical = TRUE, sectoral = sectoral,
-                     cellular = TRUE, cells = "lpjcell", irrigation = TRUE,
-                     selectyears = selectyears, aggregate = FALSE)
-  harv <- calcOutput("CropareaLandInG", physical = FALSE, sectoral = sectoral,
-                     cellular = TRUE, cells = "lpjcell", irrigation = TRUE,
-                     selectyears = selectyears, aggregate = FALSE)
+  phys <- calcOutput("Croparea", physical = TRUE, fallow = FALSE,
+                     sectoral = sectoral,
+                     cellular = TRUE, irrigation = TRUE,
+                     aggregate = FALSE)[, selectyears, ]
+  harv <- calcOutput("Croparea", physical = FALSE, fallow = FALSE,
+                     sectoral = sectoral,
+                     cellular = TRUE, irrigation = TRUE,
+                     aggregate = FALSE)[, selectyears, ]
+
   # keep for dimensionality
   phys[, , ] <- NA
   harv[, , ] <- NA
 
   if (scenario == "total") {
     # total actual multicropping area
-    tempPhys <- dimSums(calcOutput("CropareaLandInG", physical = TRUE, sectoral = sectoral,
-                                   cellular = TRUE, cells = "lpjcell", irrigation = FALSE,
-                                   selectyears = selectyears, aggregate = FALSE),
+    tempPhys <- dimSums(calcOutput("Croparea", physical = TRUE, fallow = FALSE,
+                                   sectoral = sectoral,
+                                   cellular = TRUE, irrigation = FALSE,
+                                   aggregate = FALSE)[, selectyears, ],
                         dim = "crop")
-    tempHarv <- dimSums(calcOutput("CropareaLandInG", physical = FALSE, sectoral = sectoral,
-                                   cellular = TRUE, cells = "lpjcell", irrigation = FALSE,
-                                   selectyears = selectyears, aggregate = FALSE),
+    tempHarv <- dimSums(calcOutput("Croparea", physical = FALSE, fallow = FALSE,
+                                   sectoral = sectoral,
+                                   cellular = TRUE, irrigation = FALSE,
+                                   aggregate = FALSE)[, selectyears, ],
                         dim = "crop")
 
     # expand dimension
@@ -69,13 +74,15 @@ calcMulticroppingIntensity <- function(scenario, selectyears,
 
   } else if (scenario == "irrig") {
     # total actual multicropping area (irrigation-specific)
-    tempPhys <- dimSums(calcOutput("CropareaLandInG", physical = TRUE, sectoral = sectoral,
-                                   cellular = TRUE, cells = "lpjcell", irrigation = TRUE,
-                                   selectyears = selectyears, aggregate = FALSE),
+    tempPhys <- dimSums(calcOutput("Croparea", physical = TRUE, fallow = FALSE,
+                                   sectoral = sectoral,
+                                   cellular = TRUE, irrigation = TRUE,
+                                   aggregate = FALSE)[, selectyears, ],
                         dim = "crop")
-    tempHarv <- dimSums(calcOutput("CropareaLandInG", physical = FALSE, sectoral = sectoral,
-                                   cellular = TRUE, cells = "lpjcell", irrigation = TRUE,
-                                   selectyears = selectyears, aggregate = FALSE),
+    tempHarv <- dimSums(calcOutput("Croparea", physical = FALSE, fallow = FALSE,
+                                   sectoral = sectoral,
+                                   cellular = TRUE, irrigation = TRUE,
+                                   aggregate = FALSE)[, selectyears, ],
                         dim = "crop")
 
     # expand dimension
@@ -84,12 +91,14 @@ calcMulticroppingIntensity <- function(scenario, selectyears,
 
   } else if (scenario == "crop") {
     # areas where multicropping takes place currently (crop-specific)
-    tempPhys <- calcOutput("CropareaLandInG", physical = TRUE, sectoral = sectoral,
-                           cellular = TRUE, cells = "lpjcell", irrigation = FALSE,
-                           selectyears = selectyears, aggregate = FALSE)
-    tempHarv <- calcOutput("CropareaLandInG", physical = FALSE, sectoral = sectoral,
-                           cellular = TRUE, cells = "lpjcell", irrigation = FALSE,
-                           selectyears = selectyears, aggregate = FALSE)
+    tempPhys <- calcOutput("Croparea", physical = TRUE, fallow = FALSE,
+                           sectoral = sectoral,
+                           cellular = TRUE, irrigation = FALSE,
+                           aggregate = FALSE)[, selectyears, ]
+    tempHarv <- calcOutput("Croparea", physical = FALSE, fallow = FALSE,
+                           sectoral = sectoral,
+                           cellular = TRUE, irrigation = TRUE,
+                           aggregate = FALSE)[, selectyears, ]
 
     # expand dimension
     phys[, , ] <- tempPhys
@@ -97,12 +106,14 @@ calcMulticroppingIntensity <- function(scenario, selectyears,
 
   } else if (scenario == "irrig_crop") {
     # areas where multicropping takes place currently (crop- and irrigation-specific)
-    phys <- calcOutput("CropareaLandInG", physical = TRUE, sectoral = sectoral,
-                       cellular = TRUE, cells = "lpjcell", irrigation = TRUE,
-                       selectyears = selectyears, aggregate = FALSE)
-    harv <- calcOutput("CropareaLandInG", physical = FALSE, sectoral = sectoral,
-                       cellular = TRUE, cells = "lpjcell", irrigation = TRUE,
-                       selectyears = selectyears, aggregate = FALSE)
+    phys <- calcOutput("Croparea", physical = TRUE, fallow = FALSE,
+                       sectoral = sectoral,
+                       cellular = TRUE, irrigation = TRUE,
+                       aggregate = FALSE)[, selectyears, ]
+    harv <- calcOutput("Croparea", physical = FALSE, fallow = FALSE,
+                       sectoral = sectoral,
+                       cellular = TRUE, irrigation = TRUE,
+                       aggregate = FALSE)[, selectyears, ]
 
   } else {
     stop("Please select whether total, irrigation-specific (irrig), crop-specific (crop),
@@ -151,7 +162,7 @@ calcMulticroppingIntensity <- function(scenario, selectyears,
                         "under irrigated and rainfed conditions respectively")
 
   return(list(x            = out,
-              weight       = NULL,
+              weight       = phys,
               unit         = unit,
               description  = description,
               isocountries = FALSE))

@@ -1,19 +1,17 @@
-#' @title calcNitrogenFixationFreeliving
+#' @title calcNitrogenFixationFreelivingRate
 #' @description calculates fixation rates from freeliving bacteria per area
 #' @return List of magpie objects with results on global level, empty weight, unit and description.
 #' @author Benjamin Leon Bodirsky
 #' @seealso
-#' \code{\link[mrcommons]{calcNitrogenFixationPast}}
-#' \code{\link[mrcommons]{readHerridge}} 
+#' \code{\link[mrcommons]{readHerridge}}
 #' @examples
-#' 
-#' \dontrun{ 
-#' calcOutput("NitrogenFixationFreeliving")
+#'
+#' \dontrun{
+#' calcOutput("NitrogenFixationFreelivingRate")
 #' }
-#' 
+#'
 
-
-calcNitrogenFixationFreeliving <- function() {
+calcNitrogenFixationFreelivingRate <- function() {
   out <- setYears(readSource("Herridge", subtype = "freeliving", convert = FALSE),
                   NULL)
   return(list(x = out,
