@@ -52,7 +52,7 @@ readEATLancet <- function(subtype) {
 
     mdata <- add_dimension(mdata, dim = 3.1, add = "diet", nm = "EL2")
 
-    data2  <- read.csv("NIN_recommendations.csv", sep = ",", header = TRUE,
+    data2 <- read.csv("NIN_recommendations.csv", sep = ",", header = TRUE,
                       stringsAsFactors = FALSE)
     mdata2 <- as.magpie(data2, spatial = 0, temporal = 0, datacol = 2)
     getSets(mdata2, fulldim = FALSE)[3] <- "target.unit.type"
