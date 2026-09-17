@@ -1,5 +1,6 @@
 #' @title toolPatternScaling
 #' @description This tool scales time series based on the approach used in the magpiemodel yield module.
+#'#ToDo kristine: describe approach
 #'
 #' @param scen      time series of the scenario
 #' @param scenMean mean of scenario time series
@@ -16,6 +17,9 @@
 #' @export
 
 toolPatternScaling <- function(scen, scenMean, refMean, refYear = "y2010", variation = "yieldCalibMAG") {
+
+  #ToDo discuss with Kristine: what happens with edge cases? (e.g., scenMean = 0)
+  # they are set to zero? doesn't this distort the calibration? (see e.g., calc YieldsCalibrated)
 
   if (!is.magpie(scen) || !is.magpie(scenMean) || !is.magpie(refMean)) {
     stop("Input is not a MAgPIE object, x has to be a MAgPIE object!")
@@ -34,7 +38,7 @@ toolPatternScaling <- function(scen, scenMean, refMean, refYear = "y2010", varia
   }
 
   # check if x and base are identical in dimension except time
-  # TO-DO find a way of muliple checking
+  # TO-DO find a way of multiple checking
 
   # create new magpie object with full time horizon
   out      <- new.magpie(getCells(scen), afterRef, getNames(scen), sets = getSets(scen))
