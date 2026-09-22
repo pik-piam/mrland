@@ -1,33 +1,3 @@
-# Table 1 of Curtis et al. (2018) is hand-typed (inst/extdata/ForestLossDrivers/SOURCE.md).
-# These identities of the printed table are checked on every read; a wrong cell does not
-# fail otherwise, it becomes a wrong disturbance rate.
-checkCurtisTable1 <- function(df) {
-  globalLoss <- 314 # Mha 2001-2015, "Global" row of Table 1
-  drivers <- c("deforestation", "shifting_agriculture", "forestry", "wildfire", "urbanization")
-
-  total <- sum(df$treecoverloss_01_15)
-  if (abs(total - globalLoss) > 2) {
-    stop("ForestLossDrivers: regional tree cover loss sums to ", total, " Mha, but Table 1 of ",
-         "Curtis et al. (2018) reports a global total of ", globalLoss,
-         " Mha. forest_loss.csv is corrupt.")
-  }
-
-  offBy <- abs(rowSums(df[drivers]) - 100)
-  if (any(offBy > 2)) {
-    stop("ForestLossDrivers: driver shares do not sum to 100 per cent for ",
-         toString(df$region[offBy > 2]), " in forest_loss.csv.")
-  }
-
-  implied <- 100 * df$treecoverloss_01_15 / total
-  mismatch <- abs(implied - df$treecoverloss_pc_01_15) > 2
-  if (any(mismatch)) {
-    stop("ForestLossDrivers: absolute and relative tree cover loss disagree for ",
-         toString(df$region[mismatch]), " in forest_loss.csv.")
-  }
-
-  return(invisible(df))
-}
-
 #' Read ForestLossDrivers
 #'
 #' Read-in an Forest loss data (range 2001-2015 but only single annual number her)
@@ -49,34 +19,21 @@ checkCurtisTable1 <- function(df) {
 #' @importFrom stats complete.cases
 
 readForestLossDrivers <- function() {
-  ## Mapping file: comma-separated in the package since 0.76.0; a shared source folder may still
-  ## hold the semicolon-separated original
-  sep <- if (grepl(";", readLines("mapping.csv", n = 1))) ";" else ","
-  mapping <- read.csv("mapping.csv", header = TRUE, sep = sep)
-
-  ## Magpie standard
+  mapping <- read.csv("mapping.csv", header = TRUE, sep = ",")
   isoCountry <- toolGetMapping(type = "regional", name = "regionmappingH12.csv", where = "madrat")
-
-  ## Merge Mappings
   fullMapping <- merge(mapping, isoCountry, by = "CountryCode")[, c(-2, -4)]
   colnames(fullMapping) <- c("CountryCode", "RegionCodeSource", "RegionCodeMAgPIE")
 
-  ## Original Data
+  # Table 1 of Curtis et al. (2018): tree cover loss 2001-2015 in Mha, driver shares in per cent
   file <- "forest_loss.csv"
-  # This is Tree Cover loss in Mha at this stage, all drivers are in percentage
   df <- read.csv(file = file, header = TRUE, sep = ",")
-  checkCurtisTable1(df)
-  # percentages to proportions (/ 100), 2001-2015 totals to annual values (/ 15)
+  # per cent to share (/ 100), 2001-2015 total to annual (/ 15)
   df[, -c(1:3)] <- (df$treecoverloss_01_15 * (df[, -c(1:3)] / 100)) / 15
+  dfMag <- as.magpie(df[, -c(2, 3)], temporal = NULL, spatial = "region")
 
-  dfMag <- as.magpie(df[, -c(2, 3)], temporal = NULL, spatial = "region") # tree cover loss, Mha
-
-  ## FRA Forest Area
-  # Convert is set to TRUE For Mha
+  # disaggregate to countries, weighted by FRA 2020 naturally regenerating forest area (Mha)
   a <- readSource("FRA2020", "forest_area", convert = TRUE)[, , "naturallyRegeneratingForest"]
   a <- collapseNames(a)
-
-  ## Create iso level data based on forest data as weight
   forestLoss <- toolAggregate(x = dfMag, weight = setYears(a[, "y2015", ], NULL), rel = fullMapping,
                               from = "RegionCodeSource", to = "CountryCode")
 

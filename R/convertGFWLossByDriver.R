@@ -1,36 +1,31 @@
-# GADM codes that are not madrat ISO countries but sit inside one, so their loss is added
-# to the host rather than discarded. Measured over 2001-2025 at a 30 per cent threshold:
-# XKO 19 126 ha, ZNC 1740 ha, XAD 80 ha.
-gfwIsoHosts <- c(XKO = "SRB",  # Kosovo, inside Serbia in madrat's country set
-                 ZNC = "CYP",  # Northern Cyprus
-                 XAD = "CYP")  # Akrotiri and Dhekelia, the sovereign base areas on Cyprus
-
-# Undocumented GADM placeholders for disputed territories, dropped rather than guessed at. Loss
-# 2001-2025: Z01, Z06 and Z07 carry 169 451 ha together, 0.031 per cent of the global total.
-# Extent 2000: 6.5 Mha over all nine, 0.16 per cent, mostly Z07 and Z01.
-gfwIsoDropped <- sprintf("Z%02d", 1:9)
-
 #' @title convertGFWLossByDriver
 #'
-#' @description Reconciles the GADM country set used by GFW with madrat's ISO set.
+#' @description Moves the GFW data from the GADM country set to madrat's ISO country set: Kosovo,
+#' Northern Cyprus and the Akrotiri and Dhekelia base areas are added to Serbia and Cyprus, GADM's
+#' placeholder codes for disputed territories are dropped and countries GFW does not list are
+#' filled with zero.
 #'
-#' GADM and madrat disagree on 6 codes carrying loss and on 39 madrat countries GFW does
-#' not list; both are handled explicitly rather than by a silent inner join.
-#'
-#' @param x magpie object as returned by [readGFWLossByDriver()]
-#' @param subtype `"loss"` or `"extent"`, as passed to the read function; the reconciliation is
-#' the same for both
-#' @return magpie object on madrat's ISO country set, unit Mha
+#' @param x magpie object as returned by \code{\link{readGFWLossByDriver}}
+#' @param subtype \code{"loss"} or \code{"extent"}, as passed to the read function; the conversion
+#' is the same for both
+#' @return magpie object on madrat's ISO country set, Mha
 #' @author Michael Crawford
 #' @importFrom madrat toolCountryFill
 #' @importFrom magclass getItems
-#' @seealso [readGFWLossByDriver()]
+#' @seealso \code{\link{readGFWLossByDriver}}
 #' @examples
 #' \dontrun{
 #' a <- readSource("GFWLossByDriver", convert = TRUE)
 #' }
 
 convertGFWLossByDriver <- function(x, subtype = "loss") {
+
+  # GADM codes inside a madrat country; their loss is added to the host rather than dropped
+  gfwIsoHosts <- c(XKO = "SRB",  # Kosovo
+                   ZNC = "CYP",  # Northern Cyprus
+                   XAD = "CYP")  # Akrotiri and Dhekelia
+  # GADM placeholders for disputed territories, together about 0.03 per cent of global loss
+  gfwIsoDropped <- sprintf("Z%02d", 1:9)
 
   before <- sum(x)
 
@@ -49,7 +44,7 @@ convertGFWLossByDriver <- function(x, subtype = "loss") {
 
   out <- toolCountryFill(x, fill = 0, no_remove_warning = gfwIsoDropped)
 
-  # A future version moving real loss onto a code madrat does not know must fail here.
+  # a new GADM code carrying real loss must fail here rather than vanish
   lost <- (before - sum(out)) / before
   if (lost > 0.005) {
     stop("GFWLossByDriver: reconciling GADM with madrat's ISO set dropped ",

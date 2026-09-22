@@ -1,5 +1,5 @@
-# Driver class strings as they occur in the data, and their GAMS-safe names. Eight, not the
-# paper's seven: the data carries `Unknown` (0.3 per cent of global loss).
+# driver classes as named in the data, with GAMS-safe names; the data carries "Unknown" on top of
+# the seven classes of Sims et al. (2025)
 gfwDriverClasses <- c("Permanent agriculture"        = "permanent_agriculture",
                       "Hard commodities"             = "hard_commodities",
                       "Shifting cultivation"         = "shifting_cultivation",
@@ -9,14 +9,9 @@ gfwDriverClasses <- c("Permanent agriculture"        = "permanent_agriculture",
                       "Other natural disturbances"   = "other_natural_disturbances",
                       "Unknown"                      = "unknown")
 
-# Global loss 2001-2025 in Mha for the dataset version and threshold pinned in
-# downloadGFWLossByDriver(). Versions are immutable; update this deliberately after a re-pin.
+# global loss 2001-2025 in Mha for the dataset version and threshold pinned in downloadGFWLossByDriver()
 gfwGlobalLossMha <- 542.81
 
-# Integrity checks on the extract. These reconcile the file against its own schema, a second
-# query of the same table (loss_totals.csv) and a pinned snapshot, not against an external
-# source: a truncated download, a renamed class or a mixed threshold would otherwise become a
-# plausible disturbance rate rather than an error.
 checkGFWLossByDriver <- function(df, totals) {
 
   required <- c("iso", "year", "threshold", "driver", "loss_ha")
@@ -45,7 +40,7 @@ checkGFWLossByDriver <- function(df, totals) {
          sum(df$loss_ha < 0, na.rm = TRUE), " negative values.")
   }
 
-  # The driver file summed over drivers must reproduce the separately queried totals file.
+  # summed over drivers, the driver file must reproduce the separately queried totals file
   byDriver <- stats::aggregate(list(drv = df$loss_ha),
                                by = list(iso = df$iso, year = df$year), FUN = sum)
   both <- merge(byDriver, totals[, c("iso", "year", "loss_ha")],
@@ -80,9 +75,8 @@ checkGFWLossByDriver <- function(df, totals) {
   return(invisible(df))
 }
 
-# Checks on the extent file against the loss file. Loss pixels are a subset of the 2000 extent
-# at the same threshold, so a country's cumulative loss cannot exceed its extent; a mismatched
-# version pair or threshold fails here.
+# loss pixels are a subset of the 2000 extent at the same threshold, so a country's cumulative loss
+# cannot exceed its extent
 checkGFWExtent <- function(ext, df) {
 
   required <- c("iso", "threshold", "extent_ha")
@@ -118,20 +112,18 @@ checkGFWExtent <- function(ext, df) {
 
 #' @title readGFWLossByDriver
 #'
-#' @description Reads the GFW extract: tree cover loss by country, year and driver
-#' (`subtype = "loss"`, default), or tree cover extent in 2000 at the same canopy threshold
-#' (`subtype = "extent"`), the base the loss is measured on. Both in Mha.
+#' @description Reads the Global Forest Watch extract downloaded by
+#' \code{\link{downloadGFWLossByDriver}}: tree cover loss by country, year and driver
+#' (\code{subtype = "loss"}, default) or tree cover extent in 2000 at the same canopy threshold
+#' (\code{subtype = "extent"}). Both in Mha.
 #'
-#' @details The canopy threshold is pinned in [downloadGFWLossByDriver()] and stamped into
-#' every row; this function only insists that the extract carries exactly one.
-#'
-#' @param subtype `"loss"` (default) or `"extent"`
-#' @return magpie object: loss as ISO country x 2001..2025 x eight driver classes; extent as
-#' ISO country x y2000. Unit Mha.
+#' @param subtype \code{"loss"} (default) or \code{"extent"}
+#' @return magpie object; loss by ISO country x year (2001-2025) x driver class, extent by ISO
+#' country for y2000. Mha.
 #' @author Michael Crawford
 #' @importFrom magclass as.magpie magpiesort
 #' @importFrom utils read.csv head
-#' @seealso [downloadGFWLossByDriver()], [convertGFWLossByDriver()]
+#' @seealso \code{\link{downloadGFWLossByDriver}}, \code{\link{convertGFWLossByDriver}}
 #' @examples
 #' \dontrun{
 #' a <- readSource("GFWLossByDriver")
@@ -161,7 +153,7 @@ readGFWLossByDriver <- function(subtype = "loss") {
 
   x <- as.magpie(df[, c("iso", "year", "driver", "loss")], spatial = 1, temporal = 2)
 
-  # Absent country-year-driver combinations carry no loss: zero, not NA.
+  # country-year-driver combinations absent from the file carry no loss
   x[is.na(x)] <- 0
 
   return(magpiesort(x))

@@ -7,21 +7,10 @@
 downloadGFWLossByDriver()
 }
 \description{
-Downloads tree cover loss by country, year and dominant driver from the
-Global Forest Watch data-api table `gadm__tcl__iso_change`, which cross-tabulates the
-UMD/Hansen annual tree cover loss product with the WRI/Google DeepMind 1 km
-dominant-driver classification of Sims et al. (2025), plus tree cover extent in 2000 at
-the same canopy threshold from `gadm__tcl__iso_summary`, the base the loss is measured on.
-
-Route notes:
-* `/dataset/<dataset>/<version>/download/csv` is open and honours the full SQL (`GROUP BY` included);
-  only `/query` needs an API key.
-* Dataset versions are immutable (`is_mutable: false`), so the pinned URL is the
-  reproducibility mechanism. No checksum, as elsewhere in the stack.
-* The driver map is the annually updated `wri_google_tree_cover_loss_drivers` v1.13
-  (2001-2025), not the paper's v20241121 (2001-2022). Regional shares therefore do not
-  reproduce the paper's tables; Africa's permanent/shifting split moved by about 11 pp.
-* Versions are listed under `data.versions`; `is_latest` is `false` on all of them.
+Downloads tree cover loss by country, year and dominant driver from the Global
+Forest Watch data API, table \code{gadm__tcl__iso_change}: the UMD/Hansen annual tree cover loss
+cross-tabulated with the 1 km dominant-driver map of Sims et al. (2025). Tree cover extent in
+2000 at the same canopy threshold is taken from \code{gadm__tcl__iso_summary}.
 }
 \examples{
 \dontrun{
@@ -29,7 +18,7 @@ madrat::downloadSource("GFWLossByDriver")
 }
 }
 \seealso{
-[readGFWLossByDriver()]
+\code{\link{readGFWLossByDriver}}
 }
 \author{
 Michael Crawford

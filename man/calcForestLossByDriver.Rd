@@ -7,24 +7,19 @@
 calcForestLossByDriver(source = "GFW", period = 2015:2024)
 }
 \arguments{
-\item{source}{`"GFW"` (default) or `"Curtis"`. Curtis computes as before, from the
-corrected Curtis et al. (2018) table.}
+\item{source}{\code{"GFW"} (default) or \code{"Curtis"}}
 
-\item{period}{Years averaged into the annual rate, GFW only (default 2015:2024). Curtis
-carries a single 2001-2015 mean.}
+\item{period}{Years averaged into the annual rate, GFW only; Curtis carries a single 2001-2015
+mean}
 }
 \value{
 MAgPIE object with forest area lost per year by driver, Mha
 }
 \description{
-Annual forest area loss by driver, Mha per year, from the Sims et al. (2025)
-driver product (`source = "GFW"`, default) or the Curtis et al. (2018) table
-(`source = "Curtis"`), with the FRA 2020 fire series bound on as `overall`.
-}
-\details{
-For GFW only the classes in `gfwModelDrivers` are returned. `overall` is the FRA
-fire series averaged over its own years (2000-2017), as before; GAMS loads it but never
-reads it.
+Forest area lost per year by driver, in Mha, from the Global Forest Watch driver
+product of Sims et al. (2025) (\code{source = "GFW"}, default) or from Table 1 of Curtis et al.
+(2018) (\code{source = "Curtis"}), together with the FRA 2020 forest fire area as
+\code{overall}.
 }
 \examples{
 \dontrun{
@@ -33,7 +28,7 @@ calcOutput("ForestLossByDriver", source = "Curtis", aggregate = FALSE)
 }
 }
 \seealso{
-[readGFWLossByDriver()], [readForestLossDrivers()]
+\code{\link{readGFWLossByDriver}}, \code{\link{readForestLossDrivers}}
 }
 \author{
 Abhijeet Mishra, Michael Crawford

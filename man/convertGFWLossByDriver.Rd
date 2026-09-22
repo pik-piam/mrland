@@ -7,19 +7,19 @@
 convertGFWLossByDriver(x, subtype = "loss")
 }
 \arguments{
-\item{x}{magpie object as returned by [readGFWLossByDriver()]}
+\item{x}{magpie object as returned by \code{\link{readGFWLossByDriver}}}
 
-\item{subtype}{`"loss"` or `"extent"`, as passed to the read function; the reconciliation is
-the same for both}
+\item{subtype}{\code{"loss"} or \code{"extent"}, as passed to the read function; the conversion
+is the same for both}
 }
 \value{
-magpie object on madrat's ISO country set, unit Mha
+magpie object on madrat's ISO country set, Mha
 }
 \description{
-Reconciles the GADM country set used by GFW with madrat's ISO set.
-
-GADM and madrat disagree on 6 codes carrying loss and on 39 madrat countries GFW does
-not list; both are handled explicitly rather than by a silent inner join.
+Moves the GFW data from the GADM country set to madrat's ISO country set: Kosovo,
+Northern Cyprus and the Akrotiri and Dhekelia base areas are added to Serbia and Cyprus, GADM's
+placeholder codes for disputed territories are dropped and countries GFW does not list are
+filled with zero.
 }
 \examples{
 \dontrun{
@@ -27,7 +27,7 @@ a <- readSource("GFWLossByDriver", convert = TRUE)
 }
 }
 \seealso{
-[readGFWLossByDriver()]
+\code{\link{readGFWLossByDriver}}
 }
 \author{
 Michael Crawford

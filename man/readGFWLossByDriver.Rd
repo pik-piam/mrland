@@ -7,20 +7,17 @@
 readGFWLossByDriver(subtype = "loss")
 }
 \arguments{
-\item{subtype}{`"loss"` (default) or `"extent"`}
+\item{subtype}{\code{"loss"} (default) or \code{"extent"}}
 }
 \value{
-magpie object: loss as ISO country x 2001..2025 x eight driver classes; extent as
-ISO country x y2000. Unit Mha.
+magpie object; loss by ISO country x year (2001-2025) x driver class, extent by ISO
+country for y2000. Mha.
 }
 \description{
-Reads the GFW extract: tree cover loss by country, year and driver
-(`subtype = "loss"`, default), or tree cover extent in 2000 at the same canopy threshold
-(`subtype = "extent"`), the base the loss is measured on. Both in Mha.
-}
-\details{
-The canopy threshold is pinned in [downloadGFWLossByDriver()] and stamped into
-every row; this function only insists that the extract carries exactly one.
+Reads the Global Forest Watch extract downloaded by
+\code{\link{downloadGFWLossByDriver}}: tree cover loss by country, year and driver
+(\code{subtype = "loss"}, default) or tree cover extent in 2000 at the same canopy threshold
+(\code{subtype = "extent"}). Both in Mha.
 }
 \examples{
 \dontrun{
@@ -28,7 +25,7 @@ a <- readSource("GFWLossByDriver")
 }
 }
 \seealso{
-[downloadGFWLossByDriver()], [convertGFWLossByDriver()]
+\code{\link{downloadGFWLossByDriver}}, \code{\link{convertGFWLossByDriver}}
 }
 \author{
 Michael Crawford

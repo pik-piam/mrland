@@ -1,36 +1,14 @@
-gfwDataset <- "gadm__tcl__iso_change"          # annual loss by country and driver
-gfwVersion <- "v20260424"
-gfwSummaryDataset <- "gadm__tcl__iso_summary"  # tree cover extent 2000 by country, same threshold
-gfwSummaryVersion <- "v20260424"
-
-# Canopy density in 2000 (per cent) defining forest for the loss figures; 30 is GFW's
-# convention. Not a detail: global loss 2001-2025 is 647 Mha at 0 per cent and 334 at 75.
-# Dataset, version and threshold are pinned here only; the read side takes the threshold
-# from the data.
-gfwCanopyThreshold <- 30
-
 #' @title downloadGFWLossByDriver
 #'
-#' @description Downloads tree cover loss by country, year and dominant driver from the
-#' Global Forest Watch data-api table `gadm__tcl__iso_change`, which cross-tabulates the
-#' UMD/Hansen annual tree cover loss product with the WRI/Google DeepMind 1 km
-#' dominant-driver classification of Sims et al. (2025), plus tree cover extent in 2000 at
-#' the same canopy threshold from `gadm__tcl__iso_summary`, the base the loss is measured on.
-#'
-#' Route notes:
-#' * `/dataset/<dataset>/<version>/download/csv` is open and honours the full SQL (`GROUP BY` included);
-#'   only `/query` needs an API key.
-#' * Dataset versions are immutable (`is_mutable: false`), so the pinned URL is the
-#'   reproducibility mechanism. No checksum, as elsewhere in the stack.
-#' * The driver map is the annually updated `wri_google_tree_cover_loss_drivers` v1.13
-#'   (2001-2025), not the paper's v20241121 (2001-2022). Regional shares therefore do not
-#'   reproduce the paper's tables; Africa's permanent/shifting split moved by about 11 pp.
-#' * Versions are listed under `data.versions`; `is_latest` is `false` on all of them.
+#' @description Downloads tree cover loss by country, year and dominant driver from the Global
+#' Forest Watch data API, table \code{gadm__tcl__iso_change}: the UMD/Hansen annual tree cover loss
+#' cross-tabulated with the 1 km dominant-driver map of Sims et al. (2025). Tree cover extent in
+#' 2000 at the same canopy threshold is taken from \code{gadm__tcl__iso_summary}.
 #'
 #' @author Michael Crawford
 #' @importFrom utils download.file URLencode read.csv bibentry person
 #' @importFrom withr local_options
-#' @seealso [readGFWLossByDriver()]
+#' @seealso \code{\link{readGFWLossByDriver}}
 #' @examples
 #' \dontrun{
 #' madrat::downloadSource("GFWLossByDriver")
@@ -38,14 +16,27 @@ gfwCanopyThreshold <- 30
 
 downloadGFWLossByDriver <- function() {
 
+  # Dataset versions are immutable, so the pinned version fixes the download. The driver map behind
+  # this version is the annually updated wri_google_tree_cover_loss_drivers v1.13 (2001-2025), not
+  # the 2001-2022 map published with the paper, so regional driver shares differ from the paper's
+  # tables.
+  # Versions are listed under data.versions in the API response; is_latest is false on all of
+  # them, so a re-pin has to pick by date rather than by that flag.
+  gfwDataset <- "gadm__tcl__iso_change"          # annual loss by country and driver
+  gfwVersion <- "v20260424"
+  gfwSummaryDataset <- "gadm__tcl__iso_summary"  # tree cover extent 2000 by country
+  gfwSummaryVersion <- "v20260424"
+  # canopy density in 2000 (per cent) defining forest, GFW's convention; the total is sensitive to
+  # it (global loss 2001-2025 is 647 Mha at 0 per cent and 334 Mha at 75)
+  gfwCanopyThreshold <- 30
+
   dims <- paste("iso, umd_tree_cover_loss__year AS year,",
                 "umd_tree_cover_density_2000__threshold AS threshold")
   where <- paste("FROM data WHERE umd_tree_cover_density_2000__threshold =",
                  gfwCanopyThreshold)
 
-  # Two aggregations of the loss table (the read side checks that the first sums to the
-  # second, which is what makes a truncated driver file fail rather than pass) and the 2000
-  # extent from the summary table, at the same threshold.
+  # loss by driver, the same loss without the driver split (the read function checks that the two
+  # agree) and the 2000 extent
   queries <- list(
     "loss_by_driver.csv" = paste("SELECT", dims,
                                  ", wri_google_tree_cover_loss_drivers__driver AS driver,",
@@ -67,22 +58,22 @@ downloadGFWLossByDriver <- function() {
     "extent_2000.csv" = "\"iso\",\"threshold\",\"extent_ha\""
   )
 
-  # madrat::downloadSource() runs this under warn = 2: keep it warning-clean.
+  # a timeout warning would be an error, downloadSource() runs this with warn = 2
   local_options(timeout = max(3e6, getOption("timeout")))
 
   for (f in names(queries)) {
+    # the open download route honours the full SQL; only the query route needs an API key
     url <- paste0("https://data-api.globalforestwatch.org/dataset/", datasets[[f]],
                   "/download/csv?sql=", URLencode(queries[[f]], reserved = TRUE))
     download.file(url, f, quiet = TRUE, mode = "wb")
 
-    # download.file() errors on HTTP 400/500; any other non-CSV body is caught here.
+    # download.file() errors on HTTP 400/500; any other non-CSV body is caught here
     header <- readLines(f, n = 1, warn = FALSE)
     if (!identical(header, unname(headers[f]))) {
       stop("GFWLossByDriver: the endpoint did not return the expected CSV for ", f,
            ". First line was: ", substr(header, 1, 200))
     }
 
-    # Did we get the threshold we asked for? Checked here, where the pin is defined.
     got <- unique(read.csv(f, stringsAsFactors = FALSE)$threshold)
     if (!identical(got, as.integer(gfwCanopyThreshold))) {
       stop("GFWLossByDriver: asked for canopy threshold ", gfwCanopyThreshold, " but ", f,
