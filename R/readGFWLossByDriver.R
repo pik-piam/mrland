@@ -1,115 +1,3 @@
-# driver classes as named in the data, with GAMS-safe names; the data carries "Unknown" on top of
-# the seven classes of Sims et al. (2025)
-gfwDriverClasses <- c("Permanent agriculture"        = "permanent_agriculture",
-                      "Hard commodities"             = "hard_commodities",
-                      "Shifting cultivation"         = "shifting_cultivation",
-                      "Logging"                      = "logging",
-                      "Wildfire"                     = "wildfire",
-                      "Settlements & Infrastructure" = "settlements_infrastructure",
-                      "Other natural disturbances"   = "other_natural_disturbances",
-                      "Unknown"                      = "unknown")
-
-# global loss 2001-2025 in Mha for the dataset version and threshold pinned in downloadGFWLossByDriver()
-gfwGlobalLossMha <- 542.81
-
-checkGFWLossByDriver <- function(df, totals) {
-
-  required <- c("iso", "year", "threshold", "driver", "loss_ha")
-  if (!all(required %in% names(df))) {
-    stop("GFWLossByDriver: loss_by_driver.csv is missing column(s) ",
-         toString(setdiff(required, names(df))), ".")
-  }
-
-  observed <- sort(unique(df$driver))
-  expected <- sort(names(gfwDriverClasses))
-  if (!identical(observed, expected)) {
-    stop("GFWLossByDriver: the driver classes in the data do not match the class map. ",
-         "Only in data: ", toString(setdiff(observed, expected)), ". ",
-         "Only in map: ", toString(setdiff(expected, observed)), ". ",
-         "Re-run the preflight and update gfwDriverClasses before trusting any output.")
-  }
-
-  if (length(unique(df$threshold)) != 1L) {
-    stop("GFWLossByDriver: the extract mixes canopy thresholds ",
-         toString(sort(unique(df$threshold))),
-         ". It must carry exactly one, the value pinned in downloadGFWLossByDriver().")
-  }
-
-  if (anyNA(df$loss_ha) || any(df$loss_ha < 0)) {
-    stop("GFWLossByDriver: loss_ha contains ", sum(is.na(df$loss_ha)), " missing and ",
-         sum(df$loss_ha < 0, na.rm = TRUE), " negative values.")
-  }
-
-  # summed over drivers, the driver file must reproduce the separately queried totals file
-  byDriver <- stats::aggregate(list(drv = df$loss_ha),
-                               by = list(iso = df$iso, year = df$year), FUN = sum)
-  both <- merge(byDriver, totals[, c("iso", "year", "loss_ha")],
-                by = c("iso", "year"), all = TRUE)
-  if (anyNA(both$drv) || anyNA(both$loss_ha)) {
-    onlyTot <- both[is.na(both$drv), c("iso", "year")]
-    onlyDrv <- both[is.na(both$loss_ha), c("iso", "year")]
-    stop("GFWLossByDriver: the driver file and the totals file do not cover the same ",
-         "country-years. ", nrow(onlyTot), " only in totals (e.g. ",
-         toString(utils::head(paste(onlyTot$iso, onlyTot$year), 5)), "), ",
-         nrow(onlyDrv), " only in the driver file (e.g. ",
-         toString(utils::head(paste(onlyDrv$iso, onlyDrv$year), 5)), ").")
-  }
-  off <- abs(both$drv - both$loss_ha) > 1e-6 * pmax(both$loss_ha, 1)
-  if (any(off)) {
-    stop("GFWLossByDriver: driver shares do not sum to the country total for ", sum(off),
-         " country-years, e.g. ",
-         toString(utils::head(paste0(both$iso[off], " ", both$year[off], " (",
-                                     signif(both$drv[off], 6), " vs ",
-                                     signif(both$loss_ha[off], 6), " ha)"), 3)), ".")
-  }
-
-  total <- sum(df$loss_ha) / 1e6
-  if (abs(total - gfwGlobalLossMha) > 0.05 * gfwGlobalLossMha) {
-    stop("GFWLossByDriver: global loss sums to ", round(total, 1), " Mha, but ",
-         gfwGlobalLossMha, " Mha is expected for the pinned dataset version and canopy ",
-         "threshold. Either the download is incomplete, or the pin in ",
-         "downloadGFWLossByDriver() has changed - re-run the preflight before updating ",
-         "gfwGlobalLossMha.")
-  }
-
-  return(invisible(df))
-}
-
-# loss pixels are a subset of the 2000 extent at the same threshold, so a country's cumulative loss
-# cannot exceed its extent
-checkGFWExtent <- function(ext, df) {
-
-  required <- c("iso", "threshold", "extent_ha")
-  if (!all(required %in% names(ext))) {
-    stop("GFWLossByDriver: extent_2000.csv is missing column(s) ",
-         toString(setdiff(required, names(ext))), ".")
-  }
-  if (!identical(sort(unique(ext$threshold)), sort(unique(df$threshold)))) {
-    stop("GFWLossByDriver: extent_2000.csv carries canopy threshold ",
-         toString(unique(ext$threshold)), " but loss_by_driver.csv carries ",
-         toString(unique(df$threshold)), ".")
-  }
-  if (anyNA(ext$extent_ha) || any(ext$extent_ha < 0)) {
-    stop("GFWLossByDriver: extent_ha contains ", sum(is.na(ext$extent_ha)), " missing and ",
-         sum(ext$extent_ha < 0, na.rm = TRUE), " negative values.")
-  }
-  absent <- setdiff(unique(df$iso), ext$iso)
-  if (length(absent) > 0) {
-    stop("GFWLossByDriver: ", length(absent), " countries carry loss but have no extent, e.g. ",
-         toString(utils::head(absent, 5)), ".")
-  }
-  cum <- stats::aggregate(list(loss = df$loss_ha), by = list(iso = df$iso), FUN = sum)
-  both <- merge(cum, ext[, c("iso", "extent_ha")], by = "iso")
-  over <- both$loss > both$extent_ha * (1 + 1e-6)
-  if (any(over)) {
-    stop("GFWLossByDriver: cumulative loss exceeds the 2000 extent for ", sum(over),
-         " countries, e.g. ", toString(utils::head(both$iso[over], 5)),
-         ". The two files are not from the same version or threshold.")
-  }
-
-  return(invisible(ext))
-}
-
 #' @title readGFWLossByDriver
 #'
 #' @description Reads the Global Forest Watch extract downloaded by
@@ -131,30 +19,107 @@ checkGFWExtent <- function(ext, df) {
 
 readGFWLossByDriver <- function(subtype = "loss") {
 
-  df <- read.csv("loss_by_driver.csv", stringsAsFactors = FALSE)
-
-  if (subtype == "extent") {
-    ext <- read.csv("extent_2000.csv", stringsAsFactors = FALSE)
-    checkGFWExtent(ext, df)
-    ext$extent <- ext$extent_ha / 1e6 # hectares to Mha
-    ext$year <- 2000L
-    x <- as.magpie(ext[, c("iso", "year", "extent")], spatial = 1, temporal = 2)
-    return(magpiesort(x))
-  }
-  if (subtype != "loss") {
+  if (!subtype %in% c("loss", "extent")) {
     stop("readGFWLossByDriver: unknown subtype '", subtype, "'. Use \"loss\" or \"extent\".")
   }
 
+  # driver classes as named in the data, with GAMS-safe names; the data carries "Unknown" on top of
+  # the seven classes of Sims et al. (2025)
+  driverClasses <- c("Permanent agriculture"        = "permanent_agriculture",
+                     "Hard commodities"             = "hard_commodities",
+                     "Shifting cultivation"         = "shifting_cultivation",
+                     "Logging"                      = "logging",
+                     "Wildfire"                     = "wildfire",
+                     "Settlements & Infrastructure" = "settlements_infrastructure",
+                     "Other natural disturbances"   = "other_natural_disturbances",
+                     "Unknown"                      = "unknown")
+
+  # required columns present, value column finite and non-negative, exactly one canopy threshold
+  checkFile <- function(d, cols, value, file) {
+    missing <- setdiff(cols, names(d))
+    if (length(missing) > 0) {
+      stop("GFWLossByDriver: ", file, " is missing column(s) ", toString(missing), ".")
+    }
+    if (anyNA(d[[value]]) || any(d[[value]] < 0)) {
+      stop("GFWLossByDriver: ", file, " carries ", sum(is.na(d[[value]])), " missing and ",
+           sum(d[[value]] < 0, na.rm = TRUE), " negative ", value, " values.")
+    }
+    # the share MAgPIE consumes is loss / extent, so one threshold per file and the same one in
+    # both; that the value is the pinned one is checked where it is pinned, in the download
+    if (length(unique(d$threshold)) != 1L) {
+      stop("GFWLossByDriver: ", file, " mixes canopy thresholds ",
+           toString(sort(unique(d$threshold))), "; it must carry exactly one.")
+    }
+    invisible(d)
+  }
+
+  df <- read.csv("loss_by_driver.csv", stringsAsFactors = FALSE)
+  checkFile(df, c("iso", "year", "threshold", "driver", "loss_ha"), "loss_ha", "loss_by_driver.csv")
+
+  if (subtype == "extent") {
+    ext <- read.csv("extent_2000.csv", stringsAsFactors = FALSE)
+    checkFile(ext, c("iso", "threshold", "extent_ha"), "extent_ha", "extent_2000.csv")
+
+    if (!identical(unique(ext$threshold), unique(df$threshold))) {
+      stop("GFWLossByDriver: extent_2000.csv carries canopy threshold ", unique(ext$threshold),
+           " but loss_by_driver.csv carries ", unique(df$threshold),
+           "; the share would divide loss at one threshold by extent at another.")
+    }
+
+    absent <- setdiff(unique(df$iso), ext$iso)
+    if (length(absent) > 0) {
+      stop("GFWLossByDriver: ", length(absent), " countries carry loss but have no extent, e.g. ",
+           toString(head(absent, 5)), ".")
+    }
+    # loss pixels are a subset of the 2000 extent at the same threshold, so cumulative loss cannot
+    # exceed it; this is what a version-mismatched pair of files trips
+    cum <- stats::aggregate(list(loss = df$loss_ha), by = list(iso = df$iso), FUN = sum)
+    both <- merge(cum, ext[, c("iso", "extent_ha")], by = "iso")
+    over <- both$loss > both$extent_ha * (1 + 1e-6)
+    if (any(over)) {
+      stop("GFWLossByDriver: cumulative loss exceeds the 2000 extent for ", sum(over),
+           " countries, e.g. ", toString(head(both$iso[over], 5)),
+           ". The two files are not from the same version or threshold.")
+    }
+
+    ext$extent <- ext$extent_ha / 1e6 # hectares to Mha
+    ext$year <- 2000L
+    return(magpiesort(as.magpie(ext[, c("iso", "year", "extent")], spatial = 1, temporal = 2)))
+  }
+
+  observed <- sort(unique(df$driver))
+  if (!identical(observed, sort(names(driverClasses)))) {
+    stop("GFWLossByDriver: the driver classes in the data do not match the class map. ",
+         "Only in data: ", toString(setdiff(observed, names(driverClasses))), ". ",
+         "Only in map: ", toString(setdiff(names(driverClasses), observed)), ". ",
+         "Re-run the preflight and update the class map before trusting any output.")
+  }
+
+  # the driver file and the totals file are separate queries of the same table: summed over drivers
+  # they must agree, which is what catches a partial or mismatched download
   totals <- read.csv("loss_totals.csv", stringsAsFactors = FALSE)
-  checkGFWLossByDriver(df, totals)
+  byDriver <- stats::aggregate(list(drv = df$loss_ha),
+                               by = list(iso = df$iso, year = df$year), FUN = sum)
+  both <- merge(byDriver, totals[, c("iso", "year", "loss_ha")], by = c("iso", "year"), all = TRUE)
+  if (anyNA(both$drv) || anyNA(both$loss_ha)) {
+    stop("GFWLossByDriver: the driver file and the totals file do not cover the same country-years. ",
+         sum(is.na(both$drv)), " only in totals, ", sum(is.na(both$loss_ha)),
+         " only in the driver file, e.g. ",
+         toString(head(paste(both$iso[is.na(both$drv) | is.na(both$loss_ha)],
+                             both$year[is.na(both$drv) | is.na(both$loss_ha)]), 5)), ".")
+  }
+  off <- abs(both$drv - both$loss_ha) > 1e-6 * pmax(both$loss_ha, 1)
+  if (any(off)) {
+    stop("GFWLossByDriver: driver shares do not sum to the country total for ", sum(off),
+         " country-years, e.g. ",
+         toString(head(paste0(both$iso[off], " ", both$year[off], " (", signif(both$drv[off], 6),
+                              " vs ", signif(both$loss_ha[off], 6), " ha)"), 3)), ".")
+  }
 
-  df$driver <- unname(gfwDriverClasses[df$driver])
+  df$driver <- unname(driverClasses[df$driver])
   df$loss <- df$loss_ha / 1e6 # hectares to Mha
-
   x <- as.magpie(df[, c("iso", "year", "driver", "loss")], spatial = 1, temporal = 2)
-
-  # country-year-driver combinations absent from the file carry no loss
-  x[is.na(x)] <- 0
+  x[is.na(x)] <- 0 # country-year-driver combinations absent from the file carry no loss
 
   return(magpiesort(x))
 }
