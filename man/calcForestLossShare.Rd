@@ -4,25 +4,36 @@
 \alias{calcForestLossShare}
 \title{calcForestLossShare}
 \usage{
-calcForestLossShare()
+calcForestLossShare(source = "GFW", period = 2015:2024)
+}
+\arguments{
+\item{source}{Driver data to use, \code{"GFW"} (default) or \code{"Curtis"}, see
+\code{\link{calcForestLossByDriver}}}
+
+\item{period}{Years averaged into the annual rate, GFW only}
 }
 \value{
-MAgPIE object with share of area lost in forests due to different drivers
+MAgPIE object with the share of forest area lost per year by driver
 }
 \description{
-Calculates which share of forest land is lost due to different drivers
+Calculates which share of forest area is lost per year to each driver of
+forest loss.
+}
+\details{
+The denominator is tree cover extent in 2000 at the same canopy threshold for
+\code{source = "GFW"} and FRA 2020 naturally regenerating forest area in 2010 for
+\code{source = "Curtis"}. Shares above 1 are clamped to 1; for a driver column this also
+warns with the country names.
 }
 \examples{
-
-\dontrun{ 
-calcOutput("ForestLossShare",aggregate=FALSE)
+\dontrun{
+calcOutput("ForestLossShare", aggregate = FALSE)
+calcOutput("ForestLossShare", source = "Curtis", aggregate = FALSE)
 }
-
-
 }
 \seealso{
-\code{\link{readForestLossDrivers}}
+\code{\link{calcForestLossByDriver}}
 }
 \author{
-Abhijeet Mishra
+Abhijeet Mishra, Michael Crawford
 }
