@@ -9,8 +9,7 @@ downloadGFWLossByDriver()
 \description{
 Downloads tree cover loss by country, year and dominant driver from the Global
 Forest Watch data API, table \code{gadm__tcl__iso_change}: the UMD/Hansen annual tree cover loss
-cross-tabulated with the 1 km dominant-driver map of Sims et al. (2025). Tree cover extent in
-2000 at the same canopy threshold is taken from \code{gadm__tcl__iso_summary}.
+cross-tabulated with the 1 km dominant-driver map of Sims et al. (2025).
 }
 \examples{
 \dontrun{

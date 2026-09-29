@@ -1,37 +1,47 @@
 #' @title calcForestLossByDriver
 #'
 #' @description Forest area lost per year by driver, in Mha, from the Global Forest Watch driver
-#' product of Sims et al. (2025) (\code{source = "GFW"}, default) or from Table 1 of Curtis et al.
-#' (2018) (\code{source = "Curtis"}), together with the FRA 2020 forest fire area as
-#' \code{overall}.
+#' product of Sims et al. (2025) (\code{src = "GFW"}, default) or from Table 1 of Curtis et al.
+#' (2018) (\code{src = "Curtis"}). Only the driver classes passed on to MAgPIE are returned.
 #'
-#' @param source \code{"GFW"} (default) or \code{"Curtis"}
+#' @details Curtis et al. (2018) report loss for seven world regions. It is distributed to
+#' countries by FRA 2020 naturally regenerating forest area in 2010.
+#'
+#' @param src \code{"GFW"} (default) or \code{"Curtis"}
 #' @param period Years averaged into the annual rate, GFW only; Curtis carries a single 2001-2015
 #' mean
 #' @return MAgPIE object with forest area lost per year by driver, Mha
 #' @author Abhijeet Mishra, Michael Crawford
-#' @importFrom magclass mbind setNames dimSums getYears getItems
-#' @importFrom madrat readSource
 #' @seealso \code{\link{readGFWLossByDriver}}, \code{\link{readForestLossDrivers}}
 #' @examples
 #' \dontrun{
 #' calcOutput("ForestLossByDriver", aggregate = FALSE)
-#' calcOutput("ForestLossByDriver", source = "Curtis", aggregate = FALSE)
+#' calcOutput("ForestLossByDriver", src = "Curtis", aggregate = FALSE)
 #' }
 
-calcForestLossByDriver <- function(source = "GFW", period = 2015:2024) {
+calcForestLossByDriver <- function(src = "GFW", period = 2015:2024) {
 
-  # Only shifting cultivation is passed on to MAgPIE: it leaves the land as forest and MAgPIE does
-  # not model it itself. Clearing for agriculture, commodities and settlements removes the forest,
-  # logging is MAgPIE's own harvest, wildfire and other natural disturbances are natural processes.
-  gfwModelDrivers <- c("shifting_cultivation")
+  # Driver classes passed on to MAgPIE, each needing an element in MAgPIE's driver_source set.
+  # GFW options: permanent_agriculture, hard_commodities, shifting_cultivation, logging, wildfire,
+  # settlements_infrastructure, other_natural_disturbances, unknown. Curtis shares only
+  # shifting_cultivation and wildfire with these names.
+  # Only shifting cultivation is passed on: it leaves the land as forest and MAgPIE does not model
+  # it itself. Clearing for agriculture, commodities and settlements removes the forest, logging
+  # is MAgPIE's own harvest, wildfire and other natural disturbances are natural processes.
+  modelDrivers <- c("shifting_cultivation")
 
-  fao <- setNames(readSource("FRA2020", subtype = "forest_fire", convert = TRUE), "overall")
-  fao <- dimSums(fao, dim = 2) / length(getYears(fao)) # mean annual area lost to fire, Mha
-
-  drivers <- switch(
-    source,  # nolint: undesirable_function_linter.
-    "Curtis" = readSource("ForestLossDrivers"),
+  out <- switch(
+    src,
+    "Curtis" = {
+      x <- readSource("ForestLossDrivers", convert = FALSE)
+      getItems(x, dim = 3)[getItems(x, dim = 3) == "shifting_agriculture"] <- "shifting_cultivation"
+      mapping <- toolGetMapping("regionmappingCurtis2018.csv", type = "regional", where = "mrland")
+      # the area and year calcForestLossShare divides by, so every country in a region carries the
+      # region's rate
+      weight <- readSource("FRA2020", "forest_area", convert = TRUE)[, "y2010", "naturallyRegeneratingForest"]
+      toolAggregate(x[, , modelDrivers], rel = mapping, weight = setYears(collapseNames(weight), NULL),
+                    from = "RegionCode", to = "CountryCode")
+    },
     "GFW" = {
       x <- readSource("GFWLossByDriver", convert = TRUE)
       wanted <- paste0("y", period)
@@ -40,23 +50,14 @@ calcForestLossByDriver <- function(source = "GFW", period = 2015:2024) {
         stop("calcForestLossByDriver: the GFW record does not cover ", toString(absent),
              ". It runs ", min(getYears(x, TRUE)), "-", max(getYears(x, TRUE)), ".")
       }
-      absent <- setdiff(gfwModelDrivers, getItems(x, 3))
-      if (length(absent) > 0) {
-        stop("calcForestLossByDriver: the GFW source does not carry driver class(es) ",
-             toString(absent), ".")
-      }
-      dimSums(x[, wanted, gfwModelDrivers], dim = 2) / length(wanted)
+      dimSums(x[, wanted, modelDrivers], dim = 2) / length(wanted)
     },
-    stop("calcForestLossByDriver: unknown source '", source,  # nolint: undesirable_function_linter.
-         "'. Use \"GFW\" or \"Curtis\".")
+    stop("calcForestLossByDriver: unknown src '", src, "'. Use \"GFW\" or \"Curtis\".")
   )
-
-  out <- mbind(fao, drivers)
 
   return(list(x = out,
               weight = NULL,
               unit = "Mha",
-              description = paste0("Forest area lost per year by driver (",
-                                   source, ")"),  # nolint: undesirable_function_linter.
+              description = paste0("Forest area lost per year by driver (", src, ")"),
               isocountries = FALSE))
 }

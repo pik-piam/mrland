@@ -4,20 +4,14 @@
 \alias{readGFWLossByDriver}
 \title{readGFWLossByDriver}
 \usage{
-readGFWLossByDriver(subtype = "loss")
-}
-\arguments{
-\item{subtype}{\code{"loss"} (default) or \code{"extent"}}
+readGFWLossByDriver()
 }
 \value{
-magpie object; loss by ISO country x year (2001-2025) x driver class, extent by ISO
-country for y2000. Mha.
+magpie object, ISO country x year (2001-2025) x driver class, Mha
 }
 \description{
 Reads the Global Forest Watch extract downloaded by
-\code{\link{downloadGFWLossByDriver}}: tree cover loss by country, year and driver
-(\code{subtype = "loss"}, default) or tree cover extent in 2000 at the same canopy threshold
-(\code{subtype = "extent"}). Both in Mha.
+\code{\link{downloadGFWLossByDriver}}: tree cover loss by country, year and driver, in Mha.
 }
 \examples{
 \dontrun{

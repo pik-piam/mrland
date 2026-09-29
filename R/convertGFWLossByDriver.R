@@ -6,19 +6,15 @@
 #' filled with zero.
 #'
 #' @param x magpie object as returned by \code{\link{readGFWLossByDriver}}
-#' @param subtype \code{"loss"} or \code{"extent"}, as passed to the read function; the conversion
-#' is the same for both
 #' @return magpie object on madrat's ISO country set, Mha
 #' @author Michael Crawford
-#' @importFrom madrat toolCountryFill
-#' @importFrom magclass getItems
 #' @seealso \code{\link{readGFWLossByDriver}}
 #' @examples
 #' \dontrun{
 #' a <- readSource("GFWLossByDriver", convert = TRUE)
 #' }
 
-convertGFWLossByDriver <- function(x, subtype = "loss") {
+convertGFWLossByDriver <- function(x) {
 
   # GADM codes inside a madrat country; their loss is added to the host rather than dropped
   gfwIsoHosts <- c(XKO = "SRB",  # Kosovo
