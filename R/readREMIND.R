@@ -190,6 +190,29 @@ readREMIND <- function(subtype) {
                                        indicator = indicator))
     }
 
+    if (revision >= "4.137") {
+      # Please refer to the 2026-ScenarioMIP-CMIP7/readme.txt for the source of the data
+      # scenario names (SMIP7-*) are already set in the files
+      fileList <- c("2026-ScenarioMIP-CMIP7/SMIP7-H-SSP2-sens.mif",
+                    "2026-ScenarioMIP-CMIP7/SMIP7-H-SSP3-main.mif",
+                    "2026-ScenarioMIP-CMIP7/SMIP7-L-SSP1-sens.mif",
+                    "2026-ScenarioMIP-CMIP7/SMIP7-L-SSP2-main.mif",
+                    "2026-ScenarioMIP-CMIP7/SMIP7-LN-SSP2-main.mif",
+                    "2026-ScenarioMIP-CMIP7/SMIP7-M-SSP1-sens.mif",
+                    "2026-ScenarioMIP-CMIP7/SMIP7-M-SSP2-main.mif",
+                    "2026-ScenarioMIP-CMIP7/SMIP7-M-SSP3-sens.mif",
+                    "2026-ScenarioMIP-CMIP7/SMIP7-ML-SSP1-sens.mif",
+                    "2026-ScenarioMIP-CMIP7/SMIP7-ML-SSP2-main.mif",
+                    "2026-ScenarioMIP-CMIP7/SMIP7-ML-SSP3-sens.mif",
+                    "2026-ScenarioMIP-CMIP7/SMIP7-VL-SSP1-main.mif",
+                    "2026-ScenarioMIP-CMIP7/SMIP7-VL-SSP2-sens.mif")
+
+      out <- mbind(out, .readAndRename(fileList = fileList,
+                                       pattern = "^SMIP7-",
+                                       replacement = "SMIP7-",
+                                       indicator = indicator))
+    }
+
   }
 
   # shorten names of the REMIND scenarios
