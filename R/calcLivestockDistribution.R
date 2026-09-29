@@ -30,7 +30,7 @@
 #' @param landProxy Land proxy controlling spatial allocation for ruminants only.
 #'   Monogastrics always use fixed GLW spatial shares regardless of this setting:
 #'   \itemize{
-#'     \item \code{"glw"}: all categories use fixed GLW spatial shares; no land data used.
+#'     \item \code{"glw"} (default): all categories use fixed GLW spatial shares; no land data used.
 #'     \item \code{"pastRange"}: ruminants (Ct, Bf, Sh, Gt, Ho) scaled by combined
 #'       managed pasture and rangeland (\code{past + range}).
 #'     \item \code{"speciesSpecific"}: cattle/buffalo (Ct, Bf) scaled by managed
@@ -39,8 +39,8 @@
 #'   }
 #' @param category Livestock category classification for output:
 #'   \itemize{
-#'     \item \code{"FAO"} (default): eight FAO/GLW species (Ct, Bf, Sh, Gt, Ho, Pg, Ch, Dk).
-#'     \item \code{"magpie"}: five MAgPIE livestock categories
+#'     \item \code{"FAO"}: eight FAO/GLW species (Ct, Bf, Sh, Gt, Ho, Pg, Ch, Dk).
+#'     \item \code{"magpie"} (default): five MAgPIE livestock categories
 #'       (livst_rum, livst_milk, livst_pig, livst_chick, livst_egg). FAO species are computed
 #'       first and then aggregated using national dairy/broiler fractions from
 #'       \code{\link[mrcommons]{calcAnimalStocks}}.
@@ -64,7 +64,7 @@
 #' @importFrom mstools toolHoldConstant
 
 calcLivestockDistribution <- function(output = "head",
-                                      landProxy = "speciesSpecific",
+                                      landProxy = "glw",
                                       category  = "magpie",
                                       selectyears = paste0("y", 1961:2025)) {
 
