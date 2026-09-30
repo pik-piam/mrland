@@ -207,7 +207,7 @@ fullMAGPIE <- function(rev = numeric_version("0.1"), dev = "") {
              outputStatistics = stats, file = "f20_processing_shares.cs3")
   calcOutput("Processing_conversion_factors", years = magYears, round = 4,
              outputStatistics = stats, file = "f20_processing_conversion_factors.cs3", aggregate = FALSE)
-  calcOutput("Processing_balanceflow",        years = magYears, round = 4,
+  calcOutput("Processing_balanceflow",        years = magYears, round = 6,
              outputStatistics = stats, file = "f20_processing_balanceflow.cs3")
 
   # 21 trade
