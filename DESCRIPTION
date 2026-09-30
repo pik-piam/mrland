@@ -12,6 +12,7 @@ Authors@R: c(
     person("Lavinia", "Baumstark", role = "aut"),
     person("Ulrich", "Kreidenweis", role = "aut"),
     person("David", "Klein", role = "aut"),
+    person("Michael", "Crawford", role = "aut"),
     person("Nele", "Steinmetz", role = "aut"),
     person("David", "Chen", role = "aut"),
     person("Florian", "Humpenoeder", role = "aut"),
@@ -20,8 +21,7 @@ Authors@R: c(
     person("Felicitas", "Beier", role = "aut"),
     person("David", "Hoetten", role = "aut"),
     person("Pascal", "Sauer", role = "aut"),
-    person("Jake", "Tommey", role = "aut"),
-    person("Michael", "Crawford", role = "aut")
+    person("Jake", "Tommey", role = "aut")
   )
 Description: The package provides land related data via the madrat
     framework.
