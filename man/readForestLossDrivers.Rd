@@ -11,7 +11,7 @@ magpie object with the mean annual loss per Curtis region and driver, Mha
 }
 \description{
 Reads Table 1 of Curtis et al. (2018), tree cover loss 2001-2015 by world region
-and dominant driver, transcribed by hand from the article into \code{forest_loss.csv}.
+and dominant driver, transcribed by hand from the article into \code{forest_loss_fixed.csv}.
 }
 \examples{
 \dontrun{
