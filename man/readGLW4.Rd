@@ -11,7 +11,7 @@ readGLW4(subtype = "Da_Ct_2015")
 (\code{"<method>_<species>_<year>"}):
      \itemize{
      \item {Da}: Dasymetric weighting informed by Random Forest
-     \item {Aw}: Areal weighting – 2015 only
+     \item {Aw}: Areal weighting - 2015 only
      \itemize{
      \item \code{Ch}: Chicken
      \item \code{Ct}: Cattle

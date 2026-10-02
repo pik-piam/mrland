@@ -11,7 +11,7 @@
 #'   (\code{"<method>_<species>_<year>"}):
 #'        \itemize{
 #'        \item {Da}: Dasymetric weighting informed by Random Forest
-#'        \item {Aw}: Areal weighting – 2015 only
+#'        \item {Aw}: Areal weighting - 2015 only
 #'        \itemize{
 #'        \item \code{Ch}: Chicken
 #'        \item \code{Ct}: Cattle
@@ -70,13 +70,13 @@ readGLW4 <- function(subtype = "Da_Ct_2015") {
   )
 
   if (subtype %in% names(subtypes2015)) {
-    # 2015 data: units are heads/pixel → aggregate by sum
+    # 2015 data: units are heads/pixel -> aggregate by sum
     file <- toolSubtypeSelect(subtype, subtypes2015)
     r <- rast(file)
     r <- aggregate(r, fact = 6, fun = sum, na.rm = TRUE)
     unit <- "heads/pixel"
   } else {
-    # 2020 data: native unit is heads/km² → multiply by cell area to get
+    # 2020 data: native unit is heads/km2 -> multiply by cell area to get
     # heads/pixel at native resolution, then aggregate by sum to 0.5 degree
     file <- toolSubtypeSelect(subtype, subtypes2020)
     r    <- rast(file)
