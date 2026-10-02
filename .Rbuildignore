@@ -15,3 +15,5 @@ carbon_stored.*
 ^.*CITATION.cff$
 ^\.claude$
 ^_pkgdown\.yml$
+^CODE_STYLE\.md$
+^CONTRIBUTING\.md$
