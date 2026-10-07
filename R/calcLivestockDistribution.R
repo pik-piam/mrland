@@ -7,15 +7,11 @@
 #'   Horses and ducks are not available in GLW4 2020 and fall back to the 2015
 #'   spatial distribution.
 #'
-#'   Monogastrics (Pg, Ch, Dk) fall back to total land area (all nine land classes summed)
-#'   for countries where GLW has zero grid signal - about 70 countries per product, mostly
-#'   small island states with no satellite pixel coverage. This recovers countries that
-#'   have any land recorded at all (e.g. WSM, TON) but not micro-states whose total land
-#'   area is itself ~0 at 0.5-degree resolution (e.g. KIR, TUV, NRU, NIU, COK, SYC, FSM,
-#'   PYF) - for those, no land-based proxy of any kind has anything to fall back to, since
-#'   the country doesn't register a meaningful land footprint in the underlying cellular
-#'   land-use data at all. This is a grid-resolution limit (like Macau having no grid cell
-#'   of its own), not something this function's fallback logic can resolve.
+#'   Where GLW has no pixel of a species in a country - mostly small island states, but
+#'   also e.g. goats in DNK - the country's stock is spread by land area instead: by
+#'   managed pasture and rangeland (or the \code{landProxy} area) for ruminants and by total
+#'   land (all nine land classes) for monogastrics, and as a last resort evenly over the
+#'   country's cells. Country totals of the grid therefore match the FAO stocks.
 #'
 #' @param output Type of output:
 #'   \itemize{
@@ -28,9 +24,10 @@
 #'       is used as the denominator.
 #'   }
 #' @param landProxy Land proxy controlling spatial allocation for ruminants only.
-#'   Monogastrics always use fixed GLW spatial shares regardless of this setting:
+#'   Monogastrics always use GLW spatial shares regardless of this setting:
 #'   \itemize{
-#'     \item \code{"glw"} (default): all categories use fixed GLW spatial shares; no land data used.
+#'     \item \code{"glw"} (default): all categories use GLW spatial shares; land data are
+#'       used only for countries where GLW has no pixel of a species (see description).
 #'     \item \code{"pastRange"}: ruminants (Ct, Bf, Sh, Gt, Ho) scaled by combined
 #'       managed pasture and rangeland (\code{past + range}).
 #'     \item \code{"speciesSpecific"}: cattle/buffalo (Ct, Bf) scaled by managed
@@ -317,9 +314,15 @@ calcLivestockDistribution <- function(output = "head",
         outSp[, , ] <- as.numeric(share) * as.numeric(faoGrid[, yrStr, sp])
 
       } else if (sp %in% speciesRuminant) {
-        # landProxy == "glw": ruminants use fixed GLW spatial shares by design, no land
-        # data, no fallback (see @param landProxy "glw" in the docs above).
-        share <- normalizeWithinCountry(glwInterp[, yrStr, sp], isoPerCell)
+        # landProxy == "glw": ruminants use GLW spatial shares; countries without a GLW
+        # pixel of the species fall back to managed pasture + rangeland, then total land
+        landYrStr <- if (yrStr %in% getYears(land)) yrStr else nearestLandYear(yr, landYears)
+        pastRange <- land[, landYrStr, "past"] + land[, landYrStr, "range"]
+        getYears(pastRange) <- yrStr
+        totalLand <- dimSums(land[, landYrStr, ], dim = 3)
+        getYears(totalLand) <- yrStr
+
+        share <- withFallback(glwInterp[, yrStr, sp], pastRange, totalLand, isoPerCell)
         outSp <- share
         outSp[, , ] <- as.numeric(share) * as.numeric(faoGrid[, yrStr, sp])
 
