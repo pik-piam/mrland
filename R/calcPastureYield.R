@@ -4,7 +4,7 @@
 #' @param range_pastr Boolean value indicating if the grass yields
 #'                    should be split between rangelands and pastures.
 #' @return Pasture yields and corresponding weights as a list of two MAgPIE objects
-#' @author Isabelle Weindl, Marcos Alves, Bin Lin
+#' @author Isabelle Weindl, Marcos Alves
 #' @seealso \code{\link[madrat]{calcOutput}}, \code{\link[mrcommons]{calcFAOmassbalance}},
 #' \code{\link[madrat]{readSource}}
 #' @examples
@@ -45,9 +45,8 @@ calcPastureYield <- function(range_pastr = FALSE) { # nolint
     grasslShares[is.nan(grasslShares) | is.infinite(grasslShares)] <- 0
 
     # cellular livestock data
-    livestock      <- setNames(readSource("GLW3all", subtype = "Da_Ct_2010"), "liv_numb")
+    livestock      <- setNames(readSource("GLW3"), "liv_numb")
     livstSplit     <- livestock * grasslShares
-    getYears(livstSplit) <- getYears(grasslShares)  # livestock is y2010 only
     livstSplit     <- collapseNames(livstSplit)
 
     # aggregate to country-level

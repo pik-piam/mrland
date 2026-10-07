@@ -27,5 +27,5 @@ calcOutput("PastureYield")
 \code{\link[madrat]{readSource}}
 }
 \author{
-Isabelle Weindl, Marcos Alves, Bin Lin
+Isabelle Weindl, Marcos Alves
 }
