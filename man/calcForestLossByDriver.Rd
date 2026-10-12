@@ -18,11 +18,14 @@ MAgPIE object with forest area lost per year by driver, Mha
 \description{
 Forest area lost per year by driver, in Mha, from the Global Forest Watch driver
 product of Sims et al. (2025) (\code{src = "GFW"}, default) or from Table 1 of Curtis et al.
-(2018) (\code{src = "Curtis"}). Only the driver classes passed on to MAgPIE are returned.
+(2018) (\code{src = "Curtis"}).
 }
 \details{
-Curtis et al. (2018) report loss for seven world regions. It is distributed to
-countries by FRA 2020 naturally regenerating forest area in 2010.
+Of the GFW driver classes only shifting cultivation is returned, the one MAgPIE reads.
+Curtis et al. (2018) report loss for seven world regions. It is distributed to countries by
+FRA 2020 naturally regenerating forest area in 2010 and returned with all drivers and with
+\code{overall}, the mean annual forest fire area of FRA 2020: the columns of
+\code{f35_forest_lost_share.cs3} that MAgPIE's \code{pot_forest_may24} realization declares.
 }
 \examples{
 \dontrun{
