@@ -31,7 +31,7 @@ calcClimateRegionsIPCC <- function(landusetypes = "all", cellular = FALSE,
                     stage       = "smoothed:cut",
                     monthly     = TRUE,
                     aggregate   = FALSE)
-  # transfrom from m³/ha to mm to match precipitation below
+  # transform from m³/ha to mm to match precipitation below
   pet <- pet / 10
 
   # LPJmL climate inputs: precipitation and temperature
