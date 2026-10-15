@@ -31,6 +31,8 @@ calcClimateRegionsIPCC <- function(landusetypes = "all", cellular = FALSE,
                     stage       = "smoothed:cut",
                     monthly     = TRUE,
                     aggregate   = FALSE)
+  # transfrom from m³/ha to mm to match precipitation below
+  pet <- pet / 10
 
   # LPJmL climate inputs: precipitation and temperature
   precip <- calcOutput("LPJmLClimateInput", climatetype = cfg$baselineHist,
@@ -40,6 +42,12 @@ calcClimateRegionsIPCC <- function(landusetypes = "all", cellular = FALSE,
   temp <- calcOutput("LPJmLClimateInput", climatetype = cfg$baselineHist,
                      variable = "temperature:monthlyMean", stage = "smoothed",
                      lpjmlVersion = cfg$defaultLPJmLVersion, aggregate = FALSE)
+
+  # use the years that pet, precipitation and temperature share
+  years  <- intersect(intersect(getItems(pet, dim = 2), getItems(precip, dim = 2)), getItems(temp, dim = 2))
+  pet    <- pet[, years, ]
+  precip <- precip[, years, ]
+  temp   <- temp[, years, ]
 
   # yearly total precip and pet
   precip <- dimSums(precip, dim = c(3.1))
