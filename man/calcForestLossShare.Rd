@@ -4,10 +4,10 @@
 \alias{calcForestLossShare}
 \title{calcForestLossShare}
 \usage{
-calcForestLossShare(src = "GFW", period = 2015:2024)
+calcForestLossShare(src = "Curtis", period = 2015:2024)
 }
 \arguments{
-\item{src}{Driver data to use, \code{"GFW"} (default) or \code{"Curtis"}, see
+\item{src}{Driver data to use, \code{"Curtis"} (default) or \code{"GFW"}, see
 \code{\link{calcForestLossByDriver}}}
 
 \item{period}{Years averaged into the annual rate, GFW only}
@@ -27,7 +27,7 @@ MAgPIE applies the share to: 2020 for \code{src = "GFW"}, 2010 for \code{src = "
 \examples{
 \dontrun{
 calcOutput("ForestLossShare", aggregate = FALSE)
-calcOutput("ForestLossShare", src = "Curtis", aggregate = FALSE)
+calcOutput("ForestLossShare", src = "GFW", aggregate = FALSE)
 }
 }
 \seealso{

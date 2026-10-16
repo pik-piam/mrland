@@ -4,10 +4,10 @@
 \alias{calcForestLossByDriver}
 \title{calcForestLossByDriver}
 \usage{
-calcForestLossByDriver(src = "GFW", period = 2015:2024)
+calcForestLossByDriver(src = "Curtis", period = 2015:2024)
 }
 \arguments{
-\item{src}{\code{"GFW"} (default) or \code{"Curtis"}}
+\item{src}{\code{"Curtis"} (default) or \code{"GFW"}}
 
 \item{period}{Years averaged into the annual rate, GFW only; Curtis carries a single 2001-2015
 mean}
@@ -17,8 +17,8 @@ MAgPIE object with forest area lost per year by driver, Mha
 }
 \description{
 Forest area lost per year by driver, in Mha, from the Global Forest Watch driver
-product of Sims et al. (2025) (\code{src = "GFW"}, default) or from Table 1 of Curtis et al.
-(2018) (\code{src = "Curtis"}).
+product of Sims et al. (2025) (\code{src = "GFW"}) or from Table 1 of Curtis et al. (2018)
+(\code{src = "Curtis"}, default).
 }
 \details{
 Of the GFW driver classes only shifting cultivation is returned, the one MAgPIE reads.
@@ -30,7 +30,7 @@ FRA 2020 naturally regenerating forest area in 2010 and returned with all driver
 \examples{
 \dontrun{
 calcOutput("ForestLossByDriver", aggregate = FALSE)
-calcOutput("ForestLossByDriver", src = "Curtis", aggregate = FALSE)
+calcOutput("ForestLossByDriver", src = "GFW", aggregate = FALSE)
 }
 }
 \seealso{
