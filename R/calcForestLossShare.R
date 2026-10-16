@@ -3,7 +3,7 @@
 #' @description Calculates which share of forest area is lost per year to each driver of
 #' forest loss.
 #'
-#' @param src Driver data to use, \code{"GFW"} (default) or \code{"Curtis"}, see
+#' @param src Driver data to use, \code{"Curtis"} (default) or \code{"GFW"}, see
 #' \code{\link{calcForestLossByDriver}}
 #' @param period Years averaged into the annual rate, GFW only
 #'
@@ -17,10 +17,10 @@
 #' @examples
 #' \dontrun{
 #' calcOutput("ForestLossShare", aggregate = FALSE)
-#' calcOutput("ForestLossShare", src = "Curtis", aggregate = FALSE)
+#' calcOutput("ForestLossShare", src = "GFW", aggregate = FALSE)
 #' }
 
-calcForestLossShare <- function(src = "GFW", period = 2015:2024) {
+calcForestLossShare <- function(src = "Curtis", period = 2015:2024) {
 
   lostArea <- calcOutput("ForestLossByDriver", src = src, period = period, aggregate = FALSE)
 

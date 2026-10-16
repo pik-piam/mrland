@@ -1,8 +1,8 @@
 #' @title calcForestLossByDriver
 #'
 #' @description Forest area lost per year by driver, in Mha, from the Global Forest Watch driver
-#' product of Sims et al. (2025) (\code{src = "GFW"}, default) or from Table 1 of Curtis et al.
-#' (2018) (\code{src = "Curtis"}).
+#' product of Sims et al. (2025) (\code{src = "GFW"}) or from Table 1 of Curtis et al. (2018)
+#' (\code{src = "Curtis"}, default).
 #'
 #' @details Of the GFW driver classes only shifting cultivation is returned, the one MAgPIE reads.
 #' Curtis et al. (2018) report loss for seven world regions. It is distributed to countries by
@@ -10,7 +10,7 @@
 #' \code{overall}, the mean annual forest fire area of FRA 2020: the columns of
 #' \code{f35_forest_lost_share.cs3} that MAgPIE's \code{pot_forest_may24} realization declares.
 #'
-#' @param src \code{"GFW"} (default) or \code{"Curtis"}
+#' @param src \code{"Curtis"} (default) or \code{"GFW"}
 #' @param period Years averaged into the annual rate, GFW only; Curtis carries a single 2001-2015
 #' mean
 #' @return MAgPIE object with forest area lost per year by driver, Mha
@@ -19,10 +19,10 @@
 #' @examples
 #' \dontrun{
 #' calcOutput("ForestLossByDriver", aggregate = FALSE)
-#' calcOutput("ForestLossByDriver", src = "Curtis", aggregate = FALSE)
+#' calcOutput("ForestLossByDriver", src = "GFW", aggregate = FALSE)
 #' }
 
-calcForestLossByDriver <- function(src = "GFW", period = 2015:2024) {
+calcForestLossByDriver <- function(src = "Curtis", period = 2015:2024) {
 
   # GFW driver classes passed on to MAgPIE, each needing an element in MAgPIE's driver_source set.
   # Options: permanent_agriculture, hard_commodities, shifting_cultivation, logging, wildfire,

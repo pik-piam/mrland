@@ -14,7 +14,7 @@
 #' }
 
 readForestLossDrivers <- function() {
-  # loss 2001-2015 in Mha and driver shares in per cent. Rows are normalised to sum to 100: the
+  # loss 2001-2015 in Mha and driver shares in per cent. Rows in the file are normalised to sum to 100: the
   # printed rows sum to 99-102 (rounding, and cells printed as "<1%"), while the drivers must sum
   # to the observed loss rather than exceed it.
   df <- read.csv("forest_loss_fixed.csv")
