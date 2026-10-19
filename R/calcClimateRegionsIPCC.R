@@ -44,7 +44,9 @@ calcClimateRegionsIPCC <- function(landusetypes = "all", cellular = FALSE,
                      lpjmlVersion = cfg$defaultLPJmLVersion, aggregate = FALSE)
 
   # use the years that pet, precipitation and temperature share
-  years  <- intersect(intersect(getItems(pet, dim = 2), getItems(precip, dim = 2)), getItems(temp, dim = 2))
+  years  <- intersect(intersect(getItems(pet, dim = 2), 
+                                getItems(precip, dim = 2)), 
+                      getItems(temp, dim = 2))
   pet    <- pet[, years, ]
   precip <- precip[, years, ]
   temp   <- temp[, years, ]
