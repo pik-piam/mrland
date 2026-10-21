@@ -59,6 +59,7 @@
 #' @importFrom magpiesets findset
 #' @importFrom madrat calcOutput readSource
 #' @importFrom mstools toolHoldConstant
+#' @importFrom stats quantile
 
 calcLivestockDistribution <- function(output = "head",
                                       landProxy = "glw",
@@ -130,14 +131,28 @@ calcLivestockDistribution <- function(output = "head",
     faoStocks <- toolHoldConstant(faoStocks, years = beyondFAO)
   }
   selectyears <- intersect(selectyears, getYears(faoStocks))
-  if (length(selectyears) == 0) stop("No requested years available in FAO data.")
+  if (length(selectyears) == 0) {
+    stop("No requested years available in FAO data.")
+  }
   faoStocks <- faoStocks[, selectyears, ]
   faoYears  <- getYears(faoStocks, as.integer = TRUE)
 
-  land      <- calcOutput("LanduseInitialisation", cellular = TRUE, cells = "lpjcell",
-                          nclasses = "nine", aggregate = FALSE)
-  land[is.na(land) | land < 0] <- 0
-  landYears   <- getYears(land, as.integer = TRUE)
+  land <- calcOutput("LanduseInitialisation", cellular = TRUE, cells = "lpjcell",
+                     nclasses = "nine", aggregate = FALSE)
+  # land use comes in 5-year steps; interpolated to every FAO year and GLW anchor year, so that
+  # heads and density use the same land area in each year
+  land <- time_interpolate(land,
+                           interpolated_year            = union(paste0("y", faoYears), c("y2010", "y2015", "y2020")),
+                           integrate_interpolated_years = FALSE,
+                           extrapolation_type           = "constant")
+
+  # land proxy for ruminants: "pastRange" combines pasture and rangeland,
+  # otherwise cattle/buffalo use pasture and sheep/goats/horses use rangeland
+  proxyClasses <- list(Ct = "past", Bf = "past", Sh = "range", Gt = "range", Ho = "range")
+  getLandProxy <- function(sp, yrs) {
+    classes <- if (landProxy == "pastRange") c("past", "range") else proxyClasses[[sp]]
+    return(dimSums(land[, yrs, classes], dim = 3))
+  }
 
   # expand country-level data to grid, preserving glw's full spatial structure
   expandToGrid <- function(countryData, yrStr, isoVec) {
@@ -189,17 +204,21 @@ calcLivestockDistribution <- function(output = "head",
   # gap-fill uses that anchor's own real land proxy, not a placeholder.
   # All arithmetic uses as.numeric() to avoid magclass outer-product when dim3
   # set names differ between GLW (species) and land-area objects.
+  # Densities are only computed for cells with at least 1e-6 Mha of land proxy and are capped
+  # at the country's 99th percentile among cells with at least 1e-3 Mha, as a small area at one
+  # anchor would otherwise give an extreme density that is multiplied with the larger area of
+  # other years.
   fillGLWZeros <- function(baseGLW, cellArea, landYr, isoVec) {
+    minArea <- 1e-6
     glwArr  <- as.numeric(baseGLW)
     areaArr <- as.numeric(cellArea)
     glwDensity <- baseGLW
-    glwDensity[, , ] <- ifelse(areaArr > 0, glwArr / areaArr, 0)
+    glwDensity[, , ] <- ifelse(areaArr >= minArea, glwArr / areaArr, 0)
 
-    positive     <- glwArr > 0
     ctryHeads    <- dimSums(baseGLW, dim = c("x", "y"))
 
     positiveArea <- cellArea
-    positiveArea[!positive] <- 0
+    positiveArea[glwArr <= 0] <- 0
     positiveArea[is.na(positiveArea)] <- 0
     ctryArea <- dimSums(positiveArea, dim = c("x", "y"))
     ctryArea[ctryArea <= 0] <- NA
@@ -213,6 +232,12 @@ calcLivestockDistribution <- function(output = "head",
     zeroCells <- glwArr == 0 & as.numeric(landYr) > 0
     glwDensity[zeroCells] <- ctryMeanGrid[zeroCells]
     glwDensity[is.na(glwDensity)] <- 0
+
+    densArr <- as.numeric(glwDensity)
+    valid   <- densArr > 0 & areaArr >= 1e-3
+    capCtry <- tapply(densArr[valid], isoVec[valid], quantile, probs = 0.99, names = FALSE)
+    capCell <- as.numeric(capCtry[isoVec])
+    glwDensity[, , ] <- ifelse(!is.na(capCell) & densArr > capCell, capCell, densArr)
     return(glwDensity)
   }
 
@@ -262,19 +287,16 @@ calcLivestockDistribution <- function(output = "head",
                                 integrate_interpolated_years = FALSE,
                                 extrapolation_type           = "constant")
 
-  # land-adjusted ruminants: compute a land-proxy density at each real GLW anchor year
+  # land-adjusted ruminants: compute a land-proxy density at each GLW anchor year
   # (2010/2015/2020), paired with that same year's land proxy area, then interpolate the
-  # density itself over time (same scheme as glwInterp above) so it exactly reproduces
-  # GLW at every anchor and only drifts from it in proportion to how the land proxy
-  # itself changes in other years.
+  # density itself over time (same scheme as glwInterp above). At the anchors this
+  # reproduces GLW in cells where GLW has animals; cells without GLW animals but with land
+  # proxy area get the country mean density (see fillGLWZeros), so that grassland is not left
+  # empty. In other years the result drifts from GLW in proportion to the land proxy change.
   if (landProxy != "glw") {
-    anchorYrs      <- c(2010, 2015, 2020)
-    densityAnchors <- mbind(lapply(anchorYrs, function(ay) {
-      ayStr     <- paste0("y", ay)
-      landAyStr <- nearestLandYear(ay, landYears)
+    densityAnchors <- mbind(lapply(c("y2010", "y2015", "y2020"), function(ayStr) {
       mbind(lapply(speciesRuminant, function(sp) {
-        proxyAy <- getLandProxy(sp, landAyStr, land, landProxy)
-        getYears(proxyAy) <- ayStr
+        proxyAy <- getLandProxy(sp, ayStr)
         d <- fillGLWZeros(glw[, ayStr, sp], proxyAy, proxyAy, isoPerCell)
         setNames(d, sp)
       }))
@@ -295,10 +317,7 @@ calcLivestockDistribution <- function(output = "head",
 
       if (sp %in% speciesRuminant && landProxy != "glw") {
 
-        landYrStr <- if (yrStr %in% getYears(land)) yrStr else nearestLandYear(yr, landYears)
-        landYr    <- getLandProxy(sp, landYrStr, land, landProxy)
-        getYears(landYr) <- yrStr
-
+        landYr  <- getLandProxy(sp, yrStr)
         baseGLW <- glwInterp[, yrStr, sp]
         dens    <- densityInterp[, yrStr, sp]
 
@@ -316,11 +335,8 @@ calcLivestockDistribution <- function(output = "head",
       } else if (sp %in% speciesRuminant) {
         # landProxy == "glw": ruminants use GLW spatial shares; countries without a GLW
         # pixel of the species fall back to managed pasture + rangeland, then total land
-        landYrStr <- if (yrStr %in% getYears(land)) yrStr else nearestLandYear(yr, landYears)
-        pastRange <- land[, landYrStr, "past"] + land[, landYrStr, "range"]
-        getYears(pastRange) <- yrStr
-        totalLand <- dimSums(land[, landYrStr, ], dim = 3)
-        getYears(totalLand) <- yrStr
+        pastRange <- land[, yrStr, "past"] + land[, yrStr, "range"]
+        totalLand <- dimSums(land[, yrStr, ], dim = 3)
 
         share <- withFallback(glwInterp[, yrStr, sp], pastRange, totalLand, isoPerCell)
         outSp <- share
@@ -333,10 +349,7 @@ calcLivestockDistribution <- function(output = "head",
         # grid instead of just being misallocated. Fall back to total land area (all nine
         # classes summed), spreading the country's stock across whatever land it has
         # rather than concentrating it into a single land class.
-        landYrStr <- if (yrStr %in% getYears(land)) yrStr else nearestLandYear(yr, landYears)
-        totalLand <- dimSums(land[, landYrStr, ], dim = 3)
-        getYears(totalLand) <- yrStr
-
+        totalLand <- dimSums(land[, yrStr, ], dim = 3)
         baseGLW <- glwInterp[, yrStr, sp]
         share   <- withFallback(baseGLW, totalLand, totalLand, isoPerCell)
         outSp   <- share
@@ -349,10 +362,75 @@ calcLivestockDistribution <- function(output = "head",
     mbind(speciesOut)
   })
 
+  # aggregate the 8 FAO/GLW species to the 5 MAgPIE kli categories using national
+  # dairy and egg-layer fractions from calcAnimalStocks
+  aggregateToMagpieKli <- function(heads, animalStocks, isoPerCell) {
+    yrs    <- getYears(heads)
+    astExt <- setdiff(yrs, getYears(animalStocks))
+    if (length(astExt) > 0) {
+      animalStocks <- toolHoldConstant(animalStocks, years = astExt)
+    }
+    ast <- animalStocks[, yrs, ]
+
+    safeFrac <- function(num, den) {
+      f <- num
+      f[, , ] <- ifelse(as.numeric(den) > 0, as.numeric(num) / as.numeric(den), 0)
+      f
+    }
+
+    dairyCowFrac   <- safeFrac(ast[, , "dairy cows"],
+                               dimSums(ast[, , c("dairy cows", "other cattle")], dim = 3))
+    dairyBufFrac   <- safeFrac(ast[, , "dairy buffalo"],
+                               dimSums(ast[, , c("dairy buffalo", "other buffalo")], dim = 3))
+    dairySheepFrac <- safeFrac(ast[, , "dairy sheep"],
+                               dimSums(ast[, , c("dairy sheep", "other sheep")], dim = 3))
+    dairyGoatFrac  <- safeFrac(ast[, , "dairy goats"],
+                               dimSums(ast[, , c("dairy goats", "other goats")], dim = 3))
+    layerFrac      <- safeFrac(ast[, , "poultry layers"],
+                               dimSums(ast[, , c("poultry layers", "broilers")], dim = 3))
+
+    expandFrac <- function(frac) {
+      g <- heads[, , "Ct"]
+      g[, , ] <- as.numeric(frac[isoPerCell, , ])
+      g
+    }
+
+    fCt <- as.numeric(expandFrac(dairyCowFrac))
+    fBf <- as.numeric(expandFrac(dairyBufFrac))
+    fSh <- as.numeric(expandFrac(dairySheepFrac))
+    fGt <- as.numeric(expandFrac(dairyGoatFrac))
+    fCh <- as.numeric(expandFrac(layerFrac))
+
+    nCt <- as.numeric(heads[, , "Ct"])
+    nBf <- as.numeric(heads[, , "Bf"])
+    nSh <- as.numeric(heads[, , "Sh"])
+    nGt <- as.numeric(heads[, , "Gt"])
+    nHo <- as.numeric(heads[, , "Ho"])
+    nPg <- as.numeric(heads[, , "Pg"])
+    nCh <- as.numeric(heads[, , "Ch"])
+    nDk <- as.numeric(heads[, , "Dk"])
+
+    tmpl <- heads[, , "Ct"]
+    mkKli <- function(vals, name) {
+      x <- tmpl
+      x[, , ] <- vals
+      setNames(x, name)
+    }
+
+    out <- mbind(
+      mkKli((1 - fCt) * nCt + (1 - fBf) * nBf + (1 - fSh) * nSh + (1 - fGt) * nGt + nHo, "livst_rum"),
+      mkKli(fCt * nCt + fBf * nBf + fSh * nSh + fGt * nGt,                              "livst_milk"),
+      mkKli(nPg,                                                                        "livst_pig"),
+      mkKli((1 - fCh) * nCh + nDk,                                                      "livst_chick"),
+      mkKli(fCh * nCh,                                                                  "livst_egg")
+    )
+    out[is.na(out) | out < 0] <- 0
+    out
+  }
+
   heads <- mbind(headsList)
   heads[is.na(heads) | heads < 0] <- 0
 
-  # aggregate 8 FAO species to 5 MAgPIE kli categories
   if (category == "magpie") {
     heads <- aggregateToMagpieKli(heads, animalStocks, isoPerCell)
     speciesAll      <- c("livst_rum", "livst_milk", "livst_pig", "livst_chick", "livst_egg")
@@ -370,21 +448,15 @@ calcLivestockDistribution <- function(output = "head",
     unit <- "1"
 
   } else {
-    # output == "density"; extrapolate land to head years so no years are dropped
-    landDens <- time_interpolate(land,
-                                 interpolated_year            = getYears(heads),
-                                 integrate_interpolated_years = FALSE,
-                                 extrapolation_type           = "constant")
+    landDens <- land[, getYears(heads), ]
 
     densityList <- lapply(speciesAll, function(sp) {
-      denom <- if (sp %in% speciesRuminant) {
-        if (category == "magpie" || landProxy %in% c("glw", "pastRange")) {
-          landDens[, , "past"] + landDens[, , "range"]
-        } else {
-          if (sp %in% c("Ct", "Bf")) landDens[, , "past"] else landDens[, , "range"]
-        }
+      if (!sp %in% speciesRuminant) {
+        denom <- dimSums(landDens, dim = 3)
+      } else if (category == "magpie" || landProxy == "glw") {
+        denom <- landDens[, , "past"] + landDens[, , "range"]
       } else {
-        dimSums(landDens, dim = 3)
+        denom <- getLandProxy(sp, getYears(heads))
       }
       denom[as.numeric(denom) < 1e-6] <- NA
       dens <- heads[, , sp]
@@ -397,15 +469,11 @@ calcLivestockDistribution <- function(output = "head",
     unit <- "Million animals per Mha"
   }
 
-  # round to a sane file-size precision, with a tiny epsilon so genuinely non-zero cells
-  # never round down to a literal stored zero. Only cells that are actually non-zero are
-  # bumped - genuine zeros stay zero, so empty areas (e.g. the entire Arctic) are not
-  # seeded with a spurious 1e-6 weight that a region-level GLW disaggregation would then
-  # smear livestock into. Runs after all fallback/normalisation logic above, so it doesn't
-  # affect any of the country-sum-is-zero checks.
-  zeroCells <- out == 0
-  out <- round(out + 1e-6, 6)
-  out[zeroCells] <- 0
+  # round to 6 digits; non-zero cells that would round to 0 are kept at 1e-6,
+  # while genuine zeros (e.g. the Arctic) stay zero
+  tiny <- out > 0 & out < 1e-6
+  out  <- round(out, 6)
+  out[tiny] <- 1e-6
 
   return(list(
     x            = out,
@@ -416,88 +484,4 @@ calcLivestockDistribution <- function(output = "head",
                           "', category='", category, "'"),
     isocountries = FALSE
   ))
-}
-
-#' Land proxy (pasture/rangeland area) for a given species and land-use year,
-#' controlled by the landProxy setting ("pastRange" combines both classes;
-#' otherwise cattle/buffalo use pasture and sheep/goats/horses use rangeland).
-#' @noRd
-getLandProxy <- function(sp, yrs, land, landProxy) {
-  if (landProxy == "pastRange") {
-    return(land[, yrs, "past"] + land[, yrs, "range"])
-  }
-  if (sp %in% c("Ct", "Bf")) return(land[, yrs, "past"])
-  if (sp %in% c("Sh", "Gt", "Ho")) return(land[, yrs, "range"])
-  stop("No land proxy defined for species ", sp, " with landProxy '", landProxy, "'")
-}
-
-#' Nearest available land-use year to a given target year.
-#' @noRd
-nearestLandYear <- function(yr, landYears) {
-  paste0("y", landYears[which.min(abs(landYears - yr))])
-}
-
-#' Aggregate 8 FAO/GLW species to 5 MAgPIE kli categories using national
-#' dairy-cow/-buffalo/-sheep/-goat and egg-layer fractions from calcAnimalStocks.
-#' @noRd
-aggregateToMagpieKli <- function(heads, animalStocks, isoPerCell) {
-  yrs    <- getYears(heads)
-  astExt <- setdiff(yrs, getYears(animalStocks))
-  if (length(astExt) > 0) animalStocks <- toolHoldConstant(animalStocks, years = astExt)
-  ast <- animalStocks[, yrs, ]
-
-  safeFrac <- function(num, den) {
-    f <- num
-    f[, , ] <- ifelse(as.numeric(den) > 0, as.numeric(num) / as.numeric(den), 0)
-    f
-  }
-
-  dairyCowFrac   <- safeFrac(ast[, , "dairy cows"],
-                             dimSums(ast[, , c("dairy cows", "other cattle")], dim = 3))
-  dairyBufFrac   <- safeFrac(ast[, , "dairy buffalo"],
-                             dimSums(ast[, , c("dairy buffalo", "other buffalo")], dim = 3))
-  dairySheepFrac <- safeFrac(ast[, , "dairy sheep"],
-                             dimSums(ast[, , c("dairy sheep", "other sheep")], dim = 3))
-  dairyGoatFrac  <- safeFrac(ast[, , "dairy goats"],
-                             dimSums(ast[, , c("dairy goats", "other goats")], dim = 3))
-  layerFrac      <- safeFrac(ast[, , "poultry layers"],
-                             dimSums(ast[, , c("poultry layers", "broilers")], dim = 3))
-
-  expandFrac <- function(frac) {
-    g <- heads[, , "Ct"]
-    g[, , ] <- as.numeric(frac[isoPerCell, , ])
-    g
-  }
-
-  fCt <- as.numeric(expandFrac(dairyCowFrac))
-  fBf <- as.numeric(expandFrac(dairyBufFrac))
-  fSh <- as.numeric(expandFrac(dairySheepFrac))
-  fGt <- as.numeric(expandFrac(dairyGoatFrac))
-  fCh <- as.numeric(expandFrac(layerFrac))
-
-  nCt <- as.numeric(heads[, , "Ct"])
-  nBf <- as.numeric(heads[, , "Bf"])
-  nSh <- as.numeric(heads[, , "Sh"])
-  nGt <- as.numeric(heads[, , "Gt"])
-  nHo <- as.numeric(heads[, , "Ho"])
-  nPg <- as.numeric(heads[, , "Pg"])
-  nCh <- as.numeric(heads[, , "Ch"])
-  nDk <- as.numeric(heads[, , "Dk"])
-
-  tmpl <- heads[, , "Ct"]
-  mkKli <- function(vals, name) {
-    x <- tmpl
-    x[, , ] <- vals
-    setNames(x, name)
-  }
-
-  out <- mbind(
-    mkKli((1 - fCt) * nCt + (1 - fBf) * nBf + (1 - fSh) * nSh + (1 - fGt) * nGt + nHo, "livst_rum"),
-    mkKli(fCt * nCt + fBf * nBf + fSh * nSh + fGt * nGt,                              "livst_milk"),
-    mkKli(nPg,                                                                        "livst_pig"),
-    mkKli((1 - fCh) * nCh + nDk,                                                      "livst_chick"),
-    mkKli(fCh * nCh,                                                                  "livst_egg")
-  )
-  out[is.na(out) | out < 0] <- 0
-  out
 }

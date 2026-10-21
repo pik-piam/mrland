@@ -52,10 +52,7 @@ readGLPS <- function(subtype = "Ch_Ext_2010") {
     r <- aggregate(r, fact = 6, fun = sum, na.rm = TRUE)
     unit <- "heads/pixel"
   } else if (subtype == "Ruminant_2000") {
-    gisFile <- list.files(pattern = "^glps.*\\.(tif|img|asc)$", ignore.case = TRUE)
-    if (length(gisFile) == 0) stop("No ruminant raster file found for Ruminant_2000. Run downloadSource first.")
-    gisFile <- gisFile[1]
-    r <- rast(gisFile)
+    r <- rast("glps_gleam_61113_10km.tif")
     levels(r) <- NULL  # class codes, not labels
     r <- aggregate(r, fact = 6, fun = "modal", na.rm = TRUE)  # string: the generic needs a SpatRaster
     r[is.nan(r)] <- NA  # all-NA blocks
