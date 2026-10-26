@@ -425,11 +425,11 @@ fullMAGPIE <- function(rev = numeric_version("0.1"), dev = "") {
   # 70 livestock
   calcOutput("FeedBaskets",           years = magYears,  round = 4,
              outputStatistics = stats, file = "f70_feed_baskets.cs3")
-  calcOutput("FeedBalanceflow",       years = magYears,  round = 4,
+  calcOutput("FeedBalanceflow", lastHistoricalYear = 2015, years = magYears,  round = 4,
              outputStatistics = stats, file = "f70_feed_balanceflow.cs3")
   calcOutput("LivestockProductivity", years = magYears,  round = 4,
              outputStatistics = stats, file = "f70_livestock_productivity.cs3")
-  calcOutput("SlaughterFeedShare",    years = magYears,  round = 4,
+  calcOutput("SlaughterFeedShare", lastHistoricalYear = 2015,  years = magYears,  round = 4,
              outputStatistics = stats, file = "f70_slaughter_feed_share.cs4")
   calcOutput("PYieldSlope",                              round = 2,
              outputStatistics = stats, file = "f70_pyld_slope_reg.cs4")
