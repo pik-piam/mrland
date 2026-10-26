@@ -44,8 +44,7 @@ readGFWLossByDriver <- function() {
   if (!identical(observed, sort(names(driverClasses)))) {
     stop("GFWLossByDriver: the driver classes in the data do not match the class map. ",
          "Only in data: ", toString(setdiff(observed, names(driverClasses))), ". ",
-         "Only in map: ", toString(setdiff(names(driverClasses), observed)), ". ",
-         "Re-run the preflight and update the class map before trusting any output.")
+         "Only in map: ", toString(setdiff(names(driverClasses), observed)), ".")
   }
 
   # the driver file and the totals file are separate queries of the same table: summed over drivers

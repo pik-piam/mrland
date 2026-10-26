@@ -21,7 +21,7 @@ product of Sims et al. (2025) (\code{src = "GFW"}) or from Table 1 of Curtis et 
 (\code{src = "Curtis"}, default).
 }
 \details{
-Of the GFW driver classes only shifting cultivation is returned, the one MAgPIE reads.
+Of the GFW driver classes only shifting cultivation is returned.
 Curtis et al. (2018) report loss for seven world regions. It is distributed to countries by
 FRA 2020 naturally regenerating forest area in 2010 and returned with all drivers and with
 \code{overall}, the mean annual forest fire area of FRA 2020: the columns of
