@@ -97,7 +97,7 @@ calcMulticroppingIntensity <- function(scenario, selectyears,
                            aggregate = FALSE)[, selectyears, ]
     tempHarv <- calcOutput("Croparea", physical = FALSE, fallow = FALSE,
                            sectoral = sectoral,
-                           cellular = TRUE, irrigation = TRUE,
+                           cellular = TRUE, irrigation = FALSE,
                            aggregate = FALSE)[, selectyears, ]
 
     # expand dimension
