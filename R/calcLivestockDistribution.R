@@ -152,6 +152,15 @@ calcLivestockDistribution <- function(output = "head",
   faoStocks[is.na(faoStocks) | faoStocks < 0] <- 0
   faoStocks[faoStocks == 0] <- 1e-6 # 1 animal
 
+  # expandToGrid() fills the grid template by position, so the stocks have to hold the same
+  # species in the same order as the GLW maps; otherwise every species would silently be
+  # distributed with another species' country total
+  if (!identical(getItems(faoStocks, dim = 3), getItems(glw, dim = 3))) {
+    stop("faoStocks and glw must hold the same species in the same order: ",
+         paste(getItems(faoStocks, dim = 3), collapse = ", "), " vs ",
+         paste(getItems(glw, dim = 3), collapse = ", "))
+  }
+
   availYears <- getYears(faoStocks)
   beyondFAO  <- selectyears[selectyears > max(availYears)]
   if (length(beyondFAO) > 0) {
