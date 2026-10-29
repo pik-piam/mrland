@@ -273,7 +273,10 @@ fullMAGPIE <- function(rev = numeric_version("0.1"), dev = "") {
   calcOutput("PlantedForest", aggregate = TRUE, round = 3, outputStatistics = stats, file = "f32_plantedforest.cs4")
 
   # 35 natural vegetation
-  calcOutput("ForestLossShare", round = 7, outputStatistics = stats, file = "f35_forest_lost_share.cs3")
+  calcOutput("ForestLossShare", src = "Curtis", round = 7, outputStatistics = stats,
+             file = "f35_forest_lost_share.cs3")
+  calcOutput("ForestLossShare", src = "GFW", round = 7, outputStatistics = stats,
+             file = "f35_forest_lost_share_gfw.cs3")
   calcOutput("ForestDisturbances", round = 7, outputStatistics = stats, file = "f35_forest_disturbance_share.cs4")
 
   # 36 employment
@@ -418,11 +421,11 @@ fullMAGPIE <- function(rev = numeric_version("0.1"), dev = "") {
   # 70 livestock
   calcOutput("FeedBaskets",           years = magYears,  round = 4,
              outputStatistics = stats, file = "f70_feed_baskets.cs3")
-  calcOutput("FeedBalanceflow",       years = magYears,  round = 4,
+  calcOutput("FeedBalanceflow", lastHistoricalYear = 2015, years = magYears,  round = 4,
              outputStatistics = stats, file = "f70_feed_balanceflow.cs3")
   calcOutput("LivestockProductivity", years = magYears,  round = 4,
              outputStatistics = stats, file = "f70_livestock_productivity.cs3")
-  calcOutput("SlaughterFeedShare",    years = magYears,  round = 4,
+  calcOutput("SlaughterFeedShare", lastHistoricalYear = 2015,  years = magYears,  round = 4,
              outputStatistics = stats, file = "f70_slaughter_feed_share.cs4")
   calcOutput("PYieldSlope",                              round = 2,
              outputStatistics = stats, file = "f70_pyld_slope_reg.cs4")
