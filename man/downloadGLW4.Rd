@@ -25,7 +25,7 @@ options:
 \value{
 A list with dataset metadata: \code{url}, \code{doi}, \code{title},
   \code{author}, \code{version}, \code{release_date}, \code{unit},
-  \code{description}, \code{license}, and \code{reference} (2015 only).
+  \code{description}, \code{license}, and \code{reference}.
 }
 \description{
 Downloads Gridded Livestock of the World version 4 (GLW 4)
@@ -34,7 +34,7 @@ Downloads Gridded Livestock of the World version 4 (GLW 4)
   (dasymetric and areal weighting); six species for 2020 (dasymetric only).
   Source catalogues:
   https://dataverse.harvard.edu/dataverse/glw_4
-  https://data.apps.fao.org/catalog/iso/9d1e149b-d63f-4213-978b-317a8eb42d02
+  https://data.apps.fao.org/catalog/dataset/9d1e149b-d63f-4213-978b-317a8eb42d02
 }
 \examples{
 \dontrun{

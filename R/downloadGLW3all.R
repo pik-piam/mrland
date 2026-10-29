@@ -89,7 +89,7 @@ downloadGLW3all <- function(subtype = "Da_Ct_2010") {
       "Units: absolute number of animals per pixel.",
       "Spatial reference: EPSG:4326 WGS84."
     ),
-    license      = "CC BY 4.0",
+    license      = "CC0 1.0",
     reference    = bibentry(
       "Article",
       title   = paste("Global distribution data for cattle, buffaloes,",

@@ -11,7 +11,8 @@
 #'   also e.g. goats in DNK - the country's stock is spread by land area instead: by
 #'   managed pasture and rangeland (or the \code{landProxy} area) for ruminants and by total
 #'   land (all nine land classes) for monogastrics, and as a last resort evenly over the
-#'   country's cells. Country totals of the grid therefore match the FAO stocks.
+#'   country's cells. Country totals of the grid therefore match the FAO stocks, except for
+#'   the 15 countries without a grid cell (of these, only MAC has livestock).
 #'
 #' @param output Type of output:
 #'   \itemize{
