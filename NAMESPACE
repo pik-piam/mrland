@@ -157,8 +157,10 @@ importFrom(terra,
   tmpFiles
 )
 importFrom(utils,
+  URLencode,
   bibentry,
   download.file,
+  head,
   person,
   read.csv,
   read.csv2,
