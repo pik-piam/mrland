@@ -34,7 +34,7 @@ Returns unprotected land area (Mha) that covers 50 %, 75% and
 }
 \examples{
 \dontrun{
-calcOutput("calcIrrecoverableCarbonLand", aggregate = FALSE)
+calcOutput("IrrecoverableCarbonLand", aggregate = FALSE)
 }
 
 }

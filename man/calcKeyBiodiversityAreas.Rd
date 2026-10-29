@@ -36,7 +36,7 @@ Returns unprotected land area (Mha) within Key Biodiversity Areas.
 }
 \examples{
 \dontrun{
-calcOutput("calcKeyBiodiversityAreas", aggregate = FALSE)
+calcOutput("KeyBiodiversityAreas", aggregate = FALSE)
 }
 
 }
