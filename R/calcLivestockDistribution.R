@@ -2,14 +2,17 @@
 #' @description Calculates gridded livestock distribution by species using GLW3/GLW4
 #'   spatial snapshots (2010, 2015, 2020) linearly interpolated to requested FAO years,
 #'   with constant extrapolation beyond the anchor range. Country totals come from
-#'   \code{\link[mrcommons]{calcAnimalStocks}}. Eight species are covered: cattle (Ct), buffaloes
+#'   \code{\link[mrcommons]{calcAnimalStocks}}. Eight species are mapped by GLW: cattle (Ct), buffaloes
 #'   (Bf), sheep (Sh), goats (Gt), horses (Ho), pigs (Pg), chickens (Ch), ducks (Dk).
 #'   Horses and ducks are not available in GLW4 2020 and fall back to the 2015
-#'   spatial distribution.
+#'   spatial distribution. Camels (Cm), mules and asses (Mu) and turkeys, which in
+#'   \code{\link[mrcommons]{calcAnimalStocks}} also hold geese (Tk), have no GLW map of
+#'   their own and are distributed with the map of the closest mapped species: camels with
+#'   goats, mules and asses with horses, turkeys and geese with chickens.
 #'
 #'   Where GLW has no pixel of a species in a country - mostly small island states, but
 #'   also e.g. goats in DNK - the country's stock is spread by land area instead: by
-#'   managed pasture and rangeland (or the \code{landProxy} area) for ruminants and by total
+#'   managed pasture and rangeland (or the \code{landProxy} area) for grazers and by total
 #'   land (all nine land classes) for monogastrics, and as a last resort evenly over the
 #'   country's cells. Country totals of the grid therefore match the FAO stocks, except for
 #'   the 15 countries without a grid cell (of these, only MAC has livestock).
@@ -21,23 +24,24 @@
 #'     \item \code{"head"}: absolute livestock numbers (Million animals per grid cell).
 #'     \item \code{"density"}: livestock per land area (Million animals per Mha).
 #'       For ruminants, the denominator is the pasture/rangeland proxy area controlled
-#'       by \code{landProxy}. For monogastrics (Pg, Ch, Dk), total grid-cell land area
+#'       by \code{landProxy}. For monogastrics (Pg, Ch, Dk, Tk), total grid-cell land area
 #'       is used as the denominator.
 #'   }
-#' @param landProxy Land proxy controlling spatial allocation for ruminants only.
+#' @param landProxy Land proxy controlling spatial allocation for the grazing species only.
 #'   Monogastrics always use GLW spatial shares regardless of this setting:
 #'   \itemize{
 #'     \item \code{"glw"} (default): all categories use GLW spatial shares; land data are
 #'       used only for countries where GLW has no pixel of a species (see description).
-#'     \item \code{"pastRange"}: ruminants (Ct, Bf, Sh, Gt, Ho) scaled by combined
+#'     \item \code{"pastRange"}: grazers (Ct, Bf, Sh, Gt, Ho, Cm, Mu) scaled by combined
 #'       managed pasture and rangeland (\code{past + range}).
 #'     \item \code{"speciesSpecific"}: cattle/buffalo (Ct, Bf) scaled by managed
-#'       pasture (\code{past}); sheep/goats/horses (Sh, Gt, Ho) scaled by rangeland
-#'       (\code{range}).
+#'       pasture (\code{past}); sheep, goats, horses, camels, mules and asses
+#'       (Sh, Gt, Ho, Cm, Mu) scaled by rangeland (\code{range}).
 #'   }
 #' @param category Livestock category classification for output:
 #'   \itemize{
-#'     \item \code{"FAO"}: eight FAO/GLW species (Ct, Bf, Sh, Gt, Ho, Pg, Ch, Dk).
+#'     \item \code{"FAO"}: the eight GLW species (Ct, Bf, Sh, Gt, Ho, Pg, Ch, Dk) plus
+#'       camels (Cm), mules and asses (Mu) and turkeys and geese (Tk).
 #'     \item \code{"magpie"} (default): five MAgPIE livestock categories
 #'       (livst_rum, livst_milk, livst_pig, livst_chick, livst_egg). FAO species are computed
 #'       first and then aggregated using national dairy/broiler fractions from
@@ -45,8 +49,13 @@
 #'   }
 #' @param selectyears Years to compute. Intersected with available FAO years.
 #' @return A list with elements: \code{x} (magpie object at lpjcell resolution,
-#'   67420 cells), \code{weight} (NULL), \code{unit} (character), \code{description}
-#'   (character), and \code{isocountries} (FALSE — data is cellular, not country-level).
+#'   67420 cells), \code{weight} (the land area each species was divided by for
+#'   \code{output = "density"}, so that an aggregated call returns the area-weighted mean
+#'   density; NULL for \code{"head"} and \code{"weight"}, which are summed. Summing the
+#'   within-country shares of \code{output = "weight"} is only meaningful for aggregation
+#'   that stays inside a country, such as \code{aggregate = "cluster"}), \code{unit}
+#'   (character), \code{description} (character), and \code{isocountries}
+#'   (FALSE — data is cellular, not country-level).
 #' @author Bin Lin
 #' @examples
 #' \dontrun{
@@ -108,6 +117,20 @@ calcLivestockDistribution <- function(output = "head",
   glw <- mbind(glw2010, glw2015, glw2020)
   glw[is.na(glw) | glw < 0] <- 0
 
+  # calcAnimalStocks also reports camels, mules and asses, and turkeys (the item holds
+  # geese as well), none of which GLW maps. They are distributed with the map of the
+  # closest mapped species, so that the MAgPIE categories they feed into still add up to
+  # the FAO country totals:
+  #   Cm camels            -> goats    (arid rangeland, mapped in all three anchor years)
+  #   Mu mules and asses   -> horses   (equids; like horses they use the 2015 map for 2020)
+  #   Tk turkeys and geese -> chickens
+  proxySpecies <- c(Cm = "Gt", Mu = "Ho", Tk = "Ch")
+  glw <- mbind(glw, mbind(lapply(names(proxySpecies), function(sp) {
+    setNames(glw[, , proxySpecies[[sp]]], sp)
+  })))
+  speciesAll      <- c(speciesAll, names(proxySpecies))
+  speciesRuminant <- c(speciesRuminant, "Cm", "Mu")
+
   isoPerCell <- getItems(glw, dim = "iso", full = TRUE)
 
   # aggregate IPCC categories from calcAnimalStocks to GLW species
@@ -121,7 +144,10 @@ calcLivestockDistribution <- function(output = "head",
     setNames(animalStocks[, , "horses"],                                                "Ho"),
     setNames(dimSums(animalStocks[, , c("market swine",   "breeding swine")], dim = 3), "Pg"),
     setNames(dimSums(animalStocks[, , c("poultry layers", "broilers")],       dim = 3), "Ch"),
-    setNames(animalStocks[, , "ducks"],                                                 "Dk")
+    setNames(animalStocks[, , "ducks"],                                                 "Dk"),
+    setNames(dimSums(animalStocks[, , c("dairy camels", "other camels")],  dim = 3), "Cm"),
+    setNames(animalStocks[, , "mules and asses"],                                    "Mu"),
+    setNames(animalStocks[, , "turkey"],                                             "Tk")
   )
   faoStocks[is.na(faoStocks) | faoStocks < 0] <- 0
   faoStocks[faoStocks == 0] <- 1e-6 # 1 animal
@@ -148,8 +174,9 @@ calcLivestockDistribution <- function(output = "head",
                            extrapolation_type           = "constant")
 
   # land proxy for ruminants: "pastRange" combines pasture and rangeland,
-  # otherwise cattle/buffalo use pasture and sheep/goats/horses use rangeland
-  proxyClasses <- list(Ct = "past", Bf = "past", Sh = "range", Gt = "range", Ho = "range")
+  # otherwise cattle/buffalo use pasture and the other grazers use rangeland
+  proxyClasses <- list(Ct = "past", Bf = "past", Sh = "range", Gt = "range", Ho = "range",
+                       Cm = "range", Mu = "range")
   getLandProxy <- function(sp, yrs) {
     classes <- if (landProxy == "pastRange") c("past", "range") else proxyClasses[[sp]]
     return(dimSums(land[, yrs, classes], dim = 3))
@@ -389,6 +416,8 @@ calcLivestockDistribution <- function(output = "head",
                                dimSums(ast[, , c("dairy goats", "other goats")], dim = 3))
     layerFrac      <- safeFrac(ast[, , "poultry layers"],
                                dimSums(ast[, , c("poultry layers", "broilers")], dim = 3))
+    dairyCamelFrac <- safeFrac(ast[, , "dairy camels"],
+                               dimSums(ast[, , c("dairy camels", "other camels")], dim = 3))
 
     expandFrac <- function(frac) {
       g <- heads[, , "Ct"]
@@ -401,6 +430,7 @@ calcLivestockDistribution <- function(output = "head",
     fSh <- as.numeric(expandFrac(dairySheepFrac))
     fGt <- as.numeric(expandFrac(dairyGoatFrac))
     fCh <- as.numeric(expandFrac(layerFrac))
+    fCm <- as.numeric(expandFrac(dairyCamelFrac))
 
     nCt <- as.numeric(heads[, , "Ct"])
     nBf <- as.numeric(heads[, , "Bf"])
@@ -410,6 +440,9 @@ calcLivestockDistribution <- function(output = "head",
     nPg <- as.numeric(heads[, , "Pg"])
     nCh <- as.numeric(heads[, , "Ch"])
     nDk <- as.numeric(heads[, , "Dk"])
+    nCm <- as.numeric(heads[, , "Cm"])
+    nMu <- as.numeric(heads[, , "Mu"])
+    nTk <- as.numeric(heads[, , "Tk"])
 
     tmpl <- heads[, , "Ct"]
     mkKli <- function(vals, name) {
@@ -419,10 +452,11 @@ calcLivestockDistribution <- function(output = "head",
     }
 
     out <- mbind(
-      mkKli((1 - fCt) * nCt + (1 - fBf) * nBf + (1 - fSh) * nSh + (1 - fGt) * nGt + nHo, "livst_rum"),
-      mkKli(fCt * nCt + fBf * nBf + fSh * nSh + fGt * nGt,                              "livst_milk"),
+      mkKli((1 - fCt) * nCt + (1 - fBf) * nBf + (1 - fSh) * nSh + (1 - fGt) * nGt + nHo +
+              (1 - fCm) * nCm + nMu,                                                    "livst_rum"),
+      mkKli(fCt * nCt + fBf * nBf + fSh * nSh + fGt * nGt + fCm * nCm,                  "livst_milk"),
       mkKli(nPg,                                                                        "livst_pig"),
-      mkKli((1 - fCh) * nCh + nDk,                                                      "livst_chick"),
+      mkKli((1 - fCh) * nCh + nDk + nTk,                                                "livst_chick"),
       mkKli(fCh * nCh,                                                                  "livst_egg")
     )
     out[is.na(out) | out < 0] <- 0
@@ -438,6 +472,10 @@ calcLivestockDistribution <- function(output = "head",
     speciesRuminant <- c("livst_rum", "livst_milk")
   }
 
+  # heads and within-country shares are extensive and are summed when aggregated; a
+  # density is not (see the density branch below)
+  aggWeight <- NULL
+
   if (output == "head") {
 
     out  <- heads
@@ -451,7 +489,7 @@ calcLivestockDistribution <- function(output = "head",
   } else {
     landDens <- land[, getYears(heads), ]
 
-    densityList <- lapply(speciesAll, function(sp) {
+    denomList <- lapply(speciesAll, function(sp) {
       if (!sp %in% speciesRuminant) {
         denom <- dimSums(landDens, dim = 3)
       } else if (category == "magpie" || landProxy == "glw") {
@@ -459,6 +497,12 @@ calcLivestockDistribution <- function(output = "head",
       } else {
         denom <- getLandProxy(sp, getYears(heads))
       }
+      setNames(denom, sp)
+    })
+    names(denomList) <- speciesAll
+
+    densityList <- lapply(speciesAll, function(sp) {
+      denom <- denomList[[sp]]
       denom[as.numeric(denom) < 1e-6] <- NA
       dens <- heads[, , sp]
       dens[, , ] <- as.numeric(heads[, , sp]) / as.numeric(denom)
@@ -468,6 +512,12 @@ calcLivestockDistribution <- function(output = "head",
 
     out  <- mbind(densityList)
     unit <- "Million animals per Mha"
+
+    # a density must not be summed over cells: aggregating it weights each cell by the
+    # land area it was divided by, which gives the area-weighted mean density
+    aggWeight <- mbind(denomList)
+    aggWeight[!is.finite(as.numeric(aggWeight)) | as.numeric(aggWeight) < 0] <- 0
+    aggWeight <- aggWeight + 1e-10 # madrat needs a positive weight in every group
   }
 
   # round to 6 digits; non-zero cells that would round to 0 are kept at 1e-6,
@@ -478,7 +528,7 @@ calcLivestockDistribution <- function(output = "head",
 
   return(list(
     x            = out,
-    weight       = NULL,
+    weight       = aggWeight,
     unit         = unit,
     description  = paste0("Gridded livestock (GLW3/4 spatial anchors, FAO time series). ",
                           "output='", output, "', landProxy='", landProxy,
