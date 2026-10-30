@@ -1,8 +1,8 @@
 Type: Package
 Package: mrland
 Title: MadRaT land data package
-Version: 0.79.1
-Date: 2026-10-26
+Version: 0.79.2
+Date: 2026-10-29
 Authors@R: c(
     person("Jan Philipp", "Dietrich", , "dietrich@pik-potsdam.de", role = c("aut", "cre")),
     person("Abhijeet", "Mishra", role = "aut"),
@@ -60,7 +60,10 @@ Suggests:
     covr,
     ggplot2,
     rmarkdown,
-    testthat
+    testthat,
+    knitr
+VignetteBuilder:
+    knitr
 Encoding: UTF-8
 LazyData: no
 Config/Needs/website: tidyverse/tidytemplate

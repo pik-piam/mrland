@@ -103,6 +103,7 @@ fullMAGPIE <- function(rev = numeric_version("0.1"), dev = "") {
              outputStatistics = stats, file = "f14_pasture_yields_hist.csv")
   calcOutput("FAOYield", cut = 0.98, years = magYearsPast, round = 2,
              outputStatistics = stats, file = "f14_region_yields.cs3")
+
   calcOutput("Ir2RfYieldRatio", round = 2, outputStatistics = stats, file = "f14_ir2rf_ratio.cs4")
   calcOutput("YldPastSwitch", round = 2,
              outputStatistics = stats, file = "f14_yld_past_switch.csv", aggregate = superregion)
@@ -198,8 +199,6 @@ fullMAGPIE <- function(rev = numeric_version("0.1"), dev = "") {
              outputStatistics = stats, file = "f16_domestic_balanceflow.csv")
 
   # 18 residues
-  calcOutput("Multicropping", extend_future = TRUE, years = magYears, round = 4,
-             outputStatistics = stats, file = "f18_multicropping.csv", aggregate = TRUE)
   calcOutput("ResCombustEff", round = 4, outputStatistics = stats, file = "f18_res_combust_eff.cs4", aggregate = FALSE)
 
   # 20 processing
@@ -265,8 +264,6 @@ fullMAGPIE <- function(rev = numeric_version("0.1"), dev = "") {
   calcOutput("TradeBilateralBalanceFlow", balanceflow = "total", round = 6, outputStatistics = stats,
              file = "f21_trade_regional_balanceflow.cs3", aggregate = TRUE)
 
-
-
   # 31 Past
   if (grepl("+grasslandRealization", dev)) {
     calcOutput("PastureYield", range_pastr = TRUE, round = 3,
@@ -300,8 +297,6 @@ fullMAGPIE <- function(rev = numeric_version("0.1"), dev = "") {
              round = 4, outputStatistics = stats, file = "f36_nonmagpie_factor_costs.csv")
 
   # 38 factor costs
-  calcOutput("FAOYield", cut = 0.98, years = 1995, round = 2, outputStatistics = stats, file = "f38_region_yield.csv")
-  # Question: Is f38_region_yield used? And why not f14_region_yield?
   calcOutput("FacReq", round = 2, aggregate = "GLO", years = 2005, outputStatistics = stats,
              file = "f38_fac_req_fao.csv")
   calcOutput("FacReq", round = 2, aggregate = TRUE, outputStatistics = stats,
@@ -316,7 +311,13 @@ fullMAGPIE <- function(rev = numeric_version("0.1"), dev = "") {
 
   # 41 Area Equipped for Irrigation
   # f41_irrig(j) should be read out of calcAreaEquippedForIrrigation()
-  calcOutput("IrrigationInvCosts", years = shortYears, round = 0, outputStatistics = stats, file = "f41_c_irrig.csv")
+  calcOutput("IrrigationInvCosts", years = shortYears, round = 0,
+             outputStatistics = stats, file = "f41_c_irrig.csv")
+
+  # unit cost for irrigation expansion and maintenance/rehabilitation for iniyear
+  # (not read by any MAgPIE module yet; named for its future reader, module 25 irrigation)
+  calcOutput("IrrigUnitCost", aggregate = TRUE, round = 0,
+             outputStatistics = stats, file = "f25_irrig_unit_cost.csv")
 
   # 42_water_demand
   calcOutput("PumpingCosts", round = 4, outputStatistics = stats, file = "f42_pumping_cost.cs4", aggregate = TRUE)
@@ -330,7 +331,7 @@ fullMAGPIE <- function(rev = numeric_version("0.1"), dev = "") {
              outputStatistics = stats, file = "f50_nitrogen_balanceflow.cs4")
   calcOutput("NitrogenFixationNdfa", years = magYears, round = 4,
              outputStatistics = stats, file = "f50_ndfa.cs4")
-  calcOutput("NitrogenFixationFreeliving", round = 4,
+  calcOutput("NitrogenFixationFreelivingRate", round = 4,
              outputStatistics = stats, file = "f50_fixation_freeliving.cs4", aggregate = FALSE)
   calcOutput("AtmosphericDepositionRates", round = 4,
              outputStatistics = stats, file = "f50_atmospheric_deposition_rates.cs4")
