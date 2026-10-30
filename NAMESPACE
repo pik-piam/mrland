@@ -108,7 +108,6 @@ importFrom(magpiesets,
   addLocation,
   findset
 )
-importFrom(mrlandcore,toolLPJmLVersion)
 importFrom(mstools,
   toolAggregateCell2Country,
   toolCell2isoCell,
