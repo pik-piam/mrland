@@ -199,8 +199,6 @@ fullMAGPIE <- function(rev = numeric_version("0.1"), dev = "") {
              outputStatistics = stats, file = "f16_domestic_balanceflow.csv")
 
   # 18 residues
-  calcOutput("Multicropping", extend_future = TRUE, years = magYears, round = 4,
-             outputStatistics = stats, file = "f18_multicropping.csv", aggregate = TRUE)
   calcOutput("ResCombustEff", round = 4, outputStatistics = stats, file = "f18_res_combust_eff.cs4", aggregate = FALSE)
 
   # 20 processing
@@ -208,7 +206,7 @@ fullMAGPIE <- function(rev = numeric_version("0.1"), dev = "") {
              outputStatistics = stats, file = "f20_processing_shares.cs3")
   calcOutput("Processing_conversion_factors", years = magYears, round = 4,
              outputStatistics = stats, file = "f20_processing_conversion_factors.cs3", aggregate = FALSE)
-  calcOutput("Processing_balanceflow",        years = magYears, round = 4,
+  calcOutput("Processing_balanceflow",        years = magYears, round = 6,
              outputStatistics = stats, file = "f20_processing_balanceflow.cs3")
 
   # 21 trade
@@ -266,8 +264,6 @@ fullMAGPIE <- function(rev = numeric_version("0.1"), dev = "") {
   calcOutput("TradeBilateralBalanceFlow", balanceflow = "total", round = 6, outputStatistics = stats,
              file = "f21_trade_regional_balanceflow.cs3", aggregate = TRUE)
 
-
-
   # 31 Past
   if (grepl("+grasslandRealization", dev)) {
     calcOutput("PastureYield", range_pastr = TRUE, round = 3,
@@ -278,7 +274,10 @@ fullMAGPIE <- function(rev = numeric_version("0.1"), dev = "") {
   calcOutput("PlantedForest", aggregate = TRUE, round = 3, outputStatistics = stats, file = "f32_plantedforest.cs4")
 
   # 35 natural vegetation
-  calcOutput("ForestLossShare", round = 7, outputStatistics = stats, file = "f35_forest_lost_share.cs3")
+  calcOutput("ForestLossShare", src = "Curtis", round = 7, outputStatistics = stats,
+             file = "f35_forest_lost_share.cs3")
+  calcOutput("ForestLossShare", src = "GFW", round = 7, outputStatistics = stats,
+             file = "f35_forest_lost_share_gfw.cs3")
   calcOutput("ForestDisturbances", round = 7, outputStatistics = stats, file = "f35_forest_disturbance_share.cs4")
 
   # 36 employment
@@ -332,7 +331,7 @@ fullMAGPIE <- function(rev = numeric_version("0.1"), dev = "") {
              outputStatistics = stats, file = "f50_nitrogen_balanceflow.cs4")
   calcOutput("NitrogenFixationNdfa", years = magYears, round = 4,
              outputStatistics = stats, file = "f50_ndfa.cs4")
-  calcOutput("NitrogenFixationFreeliving", round = 4,
+  calcOutput("NitrogenFixationFreelivingRate", round = 4,
              outputStatistics = stats, file = "f50_fixation_freeliving.cs4", aggregate = FALSE)
   calcOutput("AtmosphericDepositionRates", round = 4,
              outputStatistics = stats, file = "f50_atmospheric_deposition_rates.cs4")
@@ -427,11 +426,11 @@ fullMAGPIE <- function(rev = numeric_version("0.1"), dev = "") {
   # 70 livestock
   calcOutput("FeedBaskets",           years = magYears,  round = 4,
              outputStatistics = stats, file = "f70_feed_baskets.cs3")
-  calcOutput("FeedBalanceflow",       years = magYears,  round = 4,
+  calcOutput("FeedBalanceflow", lastHistoricalYear = 2015, years = magYears,  round = 4,
              outputStatistics = stats, file = "f70_feed_balanceflow.cs3")
   calcOutput("LivestockProductivity", years = magYears,  round = 4,
              outputStatistics = stats, file = "f70_livestock_productivity.cs3")
-  calcOutput("SlaughterFeedShare",    years = magYears,  round = 4,
+  calcOutput("SlaughterFeedShare", lastHistoricalYear = 2015,  years = magYears,  round = 4,
              outputStatistics = stats, file = "f70_slaughter_feed_share.cs4")
   calcOutput("PYieldSlope",                              round = 2,
              outputStatistics = stats, file = "f70_pyld_slope_reg.cs4")

@@ -24,10 +24,10 @@
 #' @param calibration   NULL for uncalibrated yields (default)
 #'                      or a list with FAO calibration settings.
 #'                      Expected keys:
-#'                      refYear, refYields, areaSource, average, aggregation.
+#'                      refYear, refYields, average, aggregation.
 #'                      Example:
 #'                      list(refYear = "y1995", refYields = FALSE,
-#'                           areaSource = "FAO", average = 5,
+#'                           average = 5,
 #'                           aggregation = "country")
 #'
 #' @return magpie object in cellular resolution
@@ -135,18 +135,17 @@ calcYieldsMAgPIEcrops <- function(lpjml = "lpjml5.10.0-m4",
   ################################
   ### Optional FAO calibration ###
   ################################
-  # This section mimicks the yield calibrtion to FAO levels that takes place
+  # This section mimicks the yield calibration to FAO levels that takes place
   # in MAgPIE's preloop. Different settings can be chosen via argument list.
   if (!is.null(calibration)) {
     # Extract calibration arguments
     refYear     <- calibration$refYear
     refYields   <- calibration$refYields
-    areaSource  <- calibration$areaSource
     average     <- calibration$average
     aggregation <- calibration$aggregation
 
-    if (is.null(refYear) || is.null(refYields) || is.null(areaSource)) {
-      stop("Please provide a list with: refYear, refYields, areaSource,
+    if (is.null(refYear) || is.null(refYields)) {
+      stop("Please provide a list with: refYear, refYields,
            (optional: average), (optional: aggregation) for calibration of yields.")
     }
 
@@ -158,7 +157,7 @@ calcYieldsMAgPIEcrops <- function(lpjml = "lpjml5.10.0-m4",
     crops <- setdiff(findset("kcr"), c("betr", "begr"))
 
     # read FAO and LPJmL yields
-    yieldFAOiso    <- calcOutput("FAOYield", cut = 0.98, areaSource = areaSource,
+    yieldFAOiso    <- calcOutput("FAOYield", cut = 0.98,
                                  average = average,
                                  aggregate = FALSE)[, refYear, crops]
 
@@ -182,22 +181,10 @@ calcYieldsMAgPIEcrops <- function(lpjml = "lpjml5.10.0-m4",
     yieldLPJmLbase <- yieldLPJmLbase[, refYear, crops]
 
     # crop-specific cropland area split by irrigation and rainfed
-    # To Do: adjust both to calcCroparea (if cropareaUpdate is merged first, see calcYieldsCalibrated)
-    if (areaSource == "FAO") {
-      cropareaMAGgrid <- calcOutput("Croparea", sectoral = "kcr", physical = TRUE,
-                                    cellular = TRUE, cells = "lpjcell",
-                                    irrigation = TRUE, aggregate = FALSE)[, refYear, crops]
-      proxyMAGgrid    <- dimSums(cropareaMAGgrid, dim = "MAG")
-    } else if (areaSource == "LandInG") {
-      cropareaMAGgrid <- calcOutput("CropareaLandInG", sectoral = "kcr", physical = TRUE,
-                                    irrigation = TRUE, selectyears = refYear,
-                                    cellular = TRUE, aggregate = FALSE)[, , crops]
-      cropareaMAGgrid <- dimOrder(cropareaMAGgrid, perm = c(2, 1), dim = 3)
-      proxyMAGgrid    <- dimSums(cropareaMAGgrid, dim = "crop")
-    } else {
-      stop("Please specify which area should be used for calculation.\n
-           Note: LandInG should be FAO-consistent.")
-    }
+    cropareaMAGgrid <- calcOutput("Croparea", sectoral = "kcr", physical = TRUE,
+                                  fallow = FALSE, cellular = TRUE,
+                                  irrigation = TRUE, aggregate = FALSE)[, refYear, crops]
+    proxyMAGgrid    <- dimSums(cropareaMAGgrid, dim = "crop")
 
     # Aggregate to country values
     # Crop-specific total cropland area per country

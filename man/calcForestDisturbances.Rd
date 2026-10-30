@@ -10,15 +10,13 @@ calcForestDisturbances()
 MAgPIE object with FRA 2020 forest disturbance shares
 }
 \description{
-Calculates which share of forest land is lost due to forest disturbances (including insects, diseases, severe weather events and other causes)
+Calculates which share of forest land is lost due to forest disturbances
+(including insects, diseases, severe weather events and other causes)
 }
 \examples{
-
-\dontrun{ 
-calcOutput("ForestDisturbances",aggregate=FALSE)
+\dontrun{
+calcOutput("ForestDisturbances", aggregate = FALSE)
 }
-
-
 }
 \seealso{
 \code{\link[mrfaocore]{readFRA2020}}

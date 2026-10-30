@@ -3,9 +3,9 @@
 #' @description Returns area on cropland covered by trees (Mha).
 
 #' @param maginput Whether data should be corrected to align with cropland
-#' initialised in MAgPIE.
-#' @param countryLevel    Whether output shall be at country level.
-#'                        Requires aggregate=FALSE in calcOutput.
+#'                  initialised in MAgPIE.
+#' @param countryLevel Whether output shall be at country level.
+#'                     Requires aggregate=FALSE in calcOutput.
 #'
 #' @return List with a magpie object
 #' @author Patrick v. Jeetze
@@ -18,22 +18,20 @@
 #' }
 #'
 #' @importFrom mstools toolCoord2Isocell
-
+#'
 calcCroplandTreecover <- function(maginput = TRUE, countryLevel = FALSE) {
   treecover <- readSource("Copernicus", subtype = "CroplandTreecover", convert = "onlycorrect")
 
   if (maginput) {
-    luh <- calcOutput("LUH3",
-      landuseTypes = "magpie", aggregate = FALSE,
-      cellular = TRUE, irrigation = FALSE,
-      yrs = 2015
+    landuseInit <- calcOutput("LanduseInitialisation",
+      nclasses = "five", input_magpie = TRUE,
+      cellular = TRUE, aggregate = FALSE,
+      years = 2015
     )
-    getYears(luh) <- NULL
-    getCells(luh) <- getCells(treecover)
 
     # cropland treecover area is corrected to make sure that it is not
     # larger than cropland area reported by LUH
-    out <- pmin(treecover, luh[, , "crop"])
+    out <- pmin(treecover, landuseInit[, , "crop"])
   } else {
     out <- treecover
   }
@@ -42,6 +40,7 @@ calcCroplandTreecover <- function(maginput = TRUE, countryLevel = FALSE) {
 
   if (countryLevel) {
     out <- toolCountryFill(dimSums(out, dim = c("x", "y")), fill = 0)
+
   }
 
   return(list(
