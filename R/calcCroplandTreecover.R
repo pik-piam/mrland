@@ -39,7 +39,6 @@ calcCroplandTreecover <- function(maginput = TRUE, countryLevel = FALSE) {
   out <- collapseDim(out, dim = 3)
 
   if (countryLevel) {
-
     out <- toolCountryFill(dimSums(out, dim = c("x", "y")), fill = 0)
 
   }

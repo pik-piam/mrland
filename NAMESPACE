@@ -13,6 +13,7 @@ export(calcPlantationContribution)
 export(calcPlantedForest)
 export(calcSOMexogenous)
 export(calcTimberDemandExt)
+export(downloadInocencio2007)
 export(calcTradeFlexBandHelper)
 export(readH08evapotranspiration)
 export(readPYieldCoeff)
@@ -107,7 +108,6 @@ importFrom(magpiesets,
   addLocation,
   findset
 )
-importFrom(mrlandcore,toolLPJmLVersion)
 importFrom(mstools,
   toolAggregateCell2Country,
   toolCell2isoCell,
